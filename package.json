@@ -1,22 +1,23 @@
 {
 	"name": "image-viewer.js",
 	"version": "1.0.0",
-	"description": "modal-video",
+	"description": "img-viewer",
 	"homepage": "http://developer.a-blogcms.jp",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"js": "npm run babel && npm run uglify",
-		"babel": "babel ./src/index.js --out-file ./js/modal-video.js",
-		"uglify": "uglifyjs ./js/modal-video.js > ./js/modal-video.min.js",
-		"sass": "node-sass ./scss/modal-video.scss ./css/modal-video.min.css --output-style compressed",
+		"babel": "babel ./src/index.js --out-file ./js/img-viewer.js",
+		"uglify": "uglifyjs ./js/img-viewer.js > ./js/img-viewer.min.js",
+		"sass": "node-sass ./scss/img-viewer.scss ./css/img-viewer.min.css --output-style compressed",
 		"watch": "nodemon --ignore 'js/*.js' -x \"npm run js && npm run sass\"",
-		"server": "http-server ./",
-		"start": "npm-run-all -p watch server"
+    "sync": "browser-sync start --files ./ --open",
+		"start": "npm-run-all -p watch sync"
 	},
 	"author": "appleple",
 	"license": "appleple",
 	"devDependencies": {
+    "browser-sync": "^2.18.6",
 		"babel-cli": "^6.18.0",
 		"babel-preset-es2015": "^6.18.0",
 		"node-sass": "^4.3.0",
