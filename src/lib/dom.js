@@ -10,6 +10,14 @@ module.exports.addClass = (element, className) => {
 	}
 }
 
+module.exports.hasClass = (element, className) => {
+	if(element.classList){
+		return element.classList.contains(className);
+	}else {
+		return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+	}
+}
+
 module.exports.remove = (element) => {
 	element.parentNode.removeChild(element);
 }

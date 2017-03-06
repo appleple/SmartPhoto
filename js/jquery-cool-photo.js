@@ -48,6 +48,7 @@ module.exports = applyJQuery;
 
 var extend = require('../lib/extend');
 var dom = require('../lib/dom');
+var assets = [];
 
 var defaults = {
 	classNames: {
@@ -56,31 +57,69 @@ var defaults = {
 		coolPhotoBody: 'cool-photo-body',
 		coolPhotoInner: 'cool-photo-inner',
 		coolPhotoImg: 'cool-photo-img',
-		coolPhotoArrows: 'cool-photo-arrows'
+		coolPhotoArrows: 'cool-photo-arrows',
+		coolPhotoArrowRight: 'cool-photo-arrow-right',
+		coolPhotoArrowLeft: 'cool-photo-arrow-left'
 	},
 	arrows: true,
 	dots: true,
 	animationSpeed: 300
 };
 
+var addNewAsset = function addNewAsset(element) {
+	var src = element.getAttribute('href');
+	assets.push({
+		src: src,
+		element: element
+	});
+	return assets.length - 1;
+};
+
+var getAsset = function getAsset(index) {
+	return assets[index];
+};
+
+var removeComponent = function removeComponent(element, settings) {
+	dom.addClass(element, settings.classNames.coolPhotoClose);
+	// element.removeEventListener('click');
+	setTimeout(function () {
+		dom.remove(element);
+	}, settings.animationSpeed);
+};
+
 var dispatchEvent = function dispatchEvent(element, settings) {
 	element.addEventListener('click', function (event) {
-		if (event.target === element) {
-			dom.addClass(element, settings.classNames.coolPhotoClose);
-			setTimeout(function () {
-				dom.remove(element);
-			}, settings.animationSpeed);
+		var target = event.target;
+		if (dom.hasClass(target, settings.classNames.coolPhotoArrowLeft)) {
+			var index = target.getAttribute('data-index');
+			var _event = new Event('click');
+			removeComponent(element, settings);
+			assets[index].element.dispatchEvent(_event);
+		} else if (dom.hasClass(target, settings.classNames.coolPhotoArrowRight)) {
+			var _index = target.getAttribute('data-index');
+			var _event2 = new Event('click');
+			removeComponent(element, settings);
+			assets[_index].element.dispatchEvent(_event2);
+		} else {
+			removeComponent(element, settings);
 		}
+	});
+
+	element.addEventListener('mousedown', function (event) {
+		if (dom.hasClass(settings.classNames.coolPhotoImg)) {}
 	});
 };
 
 var render = function render(element, settings) {
-	var src = element.getAttribute('data-src');
-	var html = '\n\t\t<div class="' + settings.classNames.coolPhoto + '">\n\t\t\t<div class="' + settings.classNames.coolPhotoBody + '">\n\t\t\t\t<div class="' + settings.classNames.coolPhotoInner + '">\n\t\t\t\t\t<img src="' + src + '" class="' + settings.classNames.coolPhotoImg + '">\n\t\t\t\t\t' + (settings.arrows ? '\n\t\t\t\t\t\t<ul class="' + settings.classNames.coolPhotoArrows + '">\n\t\t\t\t\t\t\t<li></li>\n\t\t\t\t\t\t\t<li></li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t' : '') + '\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t';
+	var index = parseInt(element.getAttribute('data-index'));
+	var src = assets[index].src;
+	var html = '\n\t\t<div class="' + settings.classNames.coolPhoto + '">\n\t\t\t<div class="' + settings.classNames.coolPhotoBody + '">\n\t\t\t\t<div class="' + settings.classNames.coolPhotoInner + '">\n\t\t\t\t\t<img src="' + src + '" class="' + settings.classNames.coolPhotoImg + '">\n\t\t\t\t\t' + (settings.arrows ? '\n\t\t\t\t\t\t<ul class="' + settings.classNames.coolPhotoArrows + '">\n\t\t\t\t\t\t\t' + (index > 0 ? '\n\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowLeft + '" data-index="' + (index - 1) + '"></li>\n\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t' + (index !== assets.length - 1 ? '\n\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowRight + '" data-index="' + (index + 1) + '"></li>\n\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t' : '') + '\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t';
 	element.insertAdjacentHTML('afterend', html);
 };
 
 module.exports = function (element, settings) {
+	var index = addNewAsset(element);
+	element.setAttribute('data-index', index);
 	settings = extend({}, defaults, settings);
 	element.addEventListener('click', function () {
 		render(element, settings);
@@ -109,6 +148,14 @@ module.exports.addClass = function (element, className) {
 		} else {
 			element.className = className;
 		}
+	}
+};
+
+module.exports.hasClass = function (element, className) {
+	if (element.classList) {
+		return element.classList.contains(className);
+	} else {
+		return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
 	}
 };
 
