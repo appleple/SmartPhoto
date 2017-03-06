@@ -14,7 +14,7 @@ module.exports.hasClass = (element, className) => {
 	if(element.classList){
 		return element.classList.contains(className);
 	}else {
-		return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+		return new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
 	}
 }
 

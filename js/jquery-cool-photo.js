@@ -14,16 +14,15 @@
 'use strict';
 
 var coolPhoto = require('../index');
+console.log(coolPhoto);
 
 var applyJQuery = function applyJQuery(jQuery) {
 	jQuery.fn.coolPhoto = function (settings) {
 		return this.each(function () {
 			if (typeof settings === 'strings') {
-				if (settings === 'destroy') {
-					coolPhoto.destroy(this);
-				}
+				if (settings === 'destroy') {}
 			} else {
-				coolPhoto.initialize(this, settings);
+				new coolPhoto(this, settings);
 			}
 		});
 	};
@@ -40,11 +39,12 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = applyJQuery;
 
-},{"../index":4}],2:[function(require,module,exports){
-"use strict";
-
-},{}],3:[function(require,module,exports){
+},{"../index":3}],2:[function(require,module,exports){
 'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var extend = require('../lib/extend');
 var dom = require('../lib/dom');
@@ -66,77 +66,103 @@ var defaults = {
 	animationSpeed: 300
 };
 
-var addNewAsset = function addNewAsset(element) {
-	var src = element.getAttribute('href');
-	assets.push({
-		src: src,
-		element: element
-	});
-	return assets.length - 1;
-};
+var coolPhoto = function () {
+	function coolPhoto(element, settings) {
+		var _this = this;
 
-var getAsset = function getAsset(index) {
-	return assets[index];
-};
+		_classCallCheck(this, coolPhoto);
 
-var removeComponent = function removeComponent(element, settings) {
-	dom.addClass(element, settings.classNames.coolPhotoClose);
-	// element.removeEventListener('click');
-	setTimeout(function () {
-		dom.remove(element);
-	}, settings.animationSpeed);
-};
+		settings = extend({}, defaults, settings);
+		this.element = element;
+		this.settings = settings;
+		var index = this.addNewAsset();
+		element.setAttribute('data-index', index);
+		element.addEventListener('click', function (event) {
+			_this.render();
+			_this.dispatchEvent();
+			event.preventDefault();
+		});
+	}
 
-var dispatchEvent = function dispatchEvent(element, settings) {
-	element.addEventListener('click', function (event) {
-		var target = event.target;
-		if (dom.hasClass(target, settings.classNames.coolPhotoArrowLeft)) {
-			var index = target.getAttribute('data-index');
-			var _event = new Event('click');
-			removeComponent(element, settings);
-			assets[index].element.dispatchEvent(_event);
-		} else if (dom.hasClass(target, settings.classNames.coolPhotoArrowRight)) {
-			var _index = target.getAttribute('data-index');
-			var _event2 = new Event('click');
-			removeComponent(element, settings);
-			assets[_index].element.dispatchEvent(_event2);
-		} else {
-			removeComponent(element, settings);
+	_createClass(coolPhoto, [{
+		key: 'dispatchEvent',
+		value: function dispatchEvent() {
+			var _this2 = this;
+
+			var element = this.element.nextElementSibling;
+			var settings = this.settings;
+
+			element.addEventListener('click', function (event) {
+				var target = event.target;
+				if (dom.hasClass(target, settings.classNames.coolPhotoArrowLeft)) {
+					var index = target.getAttribute('data-index');
+					var _event = new Event('click');
+					_this2.removeComponent();
+					assets[index].element.dispatchEvent(_event);
+				} else if (dom.hasClass(target, settings.classNames.coolPhotoArrowRight)) {
+					var _index = target.getAttribute('data-index');
+					var _event2 = new Event('click');
+					_this2.removeComponent();
+					assets[_index].element.dispatchEvent(_event2);
+				} else {
+					_this2.removeComponent();
+				}
+			});
+
+			element.addEventListener('mousedown', function (event) {
+				if (dom.hasClass(settings.classNames.coolPhotoImg)) {}
+			});
 		}
-	});
+	}, {
+		key: 'addNewAsset',
+		value: function addNewAsset() {
+			var element = this.element;
+			var src = element.getAttribute('href');
+			assets.push({
+				src: src,
+				element: element
+			});
+			return assets.length - 1;
+		}
+	}, {
+		key: 'getAsset',
+		value: function getAsset(index) {
+			return assets[index];
+		}
+	}, {
+		key: 'removeComponent',
+		value: function removeComponent() {
+			var element = this.element.nextElementSibling;
+			var settings = this.settings;
+			dom.addClass(element, settings.classNames.coolPhotoClose);
+			// element.removeEventListener('click');
+			setTimeout(function () {
+				dom.remove(element);
+			}, settings.animationSpeed);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var element = this.element;
+			var settings = this.settings;
+			var index = parseInt(element.getAttribute('data-index'));
+			var src = assets[index].src;
+			var html = '\n\t\t\t<div class="' + settings.classNames.coolPhoto + '">\n\t\t\t\t<div class="' + settings.classNames.coolPhotoBody + '">\n\t\t\t\t\t<div class="' + settings.classNames.coolPhotoInner + '">\n\t\t\t\t\t\t<img src="' + src + '" class="' + settings.classNames.coolPhotoImg + '">\n\t\t\t\t\t\t' + (settings.arrows ? '\n\t\t\t\t\t\t\t<ul class="' + settings.classNames.coolPhotoArrows + '">\n\t\t\t\t\t\t\t\t' + (index > 0 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowLeft + '" data-index="' + (index - 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t\t' + (index !== assets.length - 1 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowRight + '" data-index="' + (index + 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t';
+			element.insertAdjacentHTML('afterend', html);
+		}
+	}]);
 
-	element.addEventListener('mousedown', function (event) {
-		if (dom.hasClass(settings.classNames.coolPhotoImg)) {}
-	});
-};
+	return coolPhoto;
+}();
 
-var render = function render(element, settings) {
-	var index = parseInt(element.getAttribute('data-index'));
-	var src = assets[index].src;
-	var html = '\n\t\t<div class="' + settings.classNames.coolPhoto + '">\n\t\t\t<div class="' + settings.classNames.coolPhotoBody + '">\n\t\t\t\t<div class="' + settings.classNames.coolPhotoInner + '">\n\t\t\t\t\t<img src="' + src + '" class="' + settings.classNames.coolPhotoImg + '">\n\t\t\t\t\t' + (settings.arrows ? '\n\t\t\t\t\t\t<ul class="' + settings.classNames.coolPhotoArrows + '">\n\t\t\t\t\t\t\t' + (index > 0 ? '\n\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowLeft + '" data-index="' + (index - 1) + '"></li>\n\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t' + (index !== assets.length - 1 ? '\n\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowRight + '" data-index="' + (index + 1) + '"></li>\n\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t' : '') + '\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t';
-	element.insertAdjacentHTML('afterend', html);
-};
+module.exports = coolPhoto;
 
-module.exports = function (element, settings) {
-	var index = addNewAsset(element);
-	element.setAttribute('data-index', index);
-	settings = extend({}, defaults, settings);
-	element.addEventListener('click', function () {
-		render(element, settings);
-		var imgViwer = element.nextElementSibling;
-		dispatchEvent(imgViwer, settings);
-	});
-};
-
-},{"../lib/dom":5,"../lib/extend":6}],4:[function(require,module,exports){
+},{"../lib/dom":4,"../lib/extend":5}],3:[function(require,module,exports){
 'use strict';
 
-module.exports = {
-	initialize: require('./core/initialize'),
-	destroy: require('./core/destroy')
-};
+module.exports = require('./core/');
 
-},{"./core/destroy":2,"./core/initialize":3}],5:[function(require,module,exports){
+},{"./core/":2}],4:[function(require,module,exports){
 'use strict';
 
 module.exports.addClass = function (element, className) {
@@ -155,7 +181,7 @@ module.exports.hasClass = function (element, className) {
 	if (element.classList) {
 		return element.classList.contains(className);
 	} else {
-		return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+		return new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
 	}
 };
 
@@ -163,7 +189,7 @@ module.exports.remove = function (element) {
 	element.parentNode.removeChild(element);
 };
 
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };

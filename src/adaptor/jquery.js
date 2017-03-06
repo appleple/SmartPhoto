@@ -1,16 +1,16 @@
 'use strict';
 
 const coolPhoto = require('../index');
+console.log(coolPhoto);
 
 const applyJQuery = (jQuery) => {
 	jQuery.fn.coolPhoto = function(settings) {
 		return this.each(function () {
 			if (typeof settings === 'strings'){
 				if (settings === 'destroy'){
-					coolPhoto.destroy(this);
 				}
 			} else {
-				coolPhoto.initialize(this,settings);
+				new coolPhoto(this,settings);
 			}
 		});
 	}
