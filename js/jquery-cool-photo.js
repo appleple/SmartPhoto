@@ -65,7 +65,8 @@ var defaults = {
 	},
 	arrows: true,
 	dots: true,
-	animationSpeed: 300
+	animationSpeed: 300,
+	swipeOffset: 100
 };
 
 var coolPhoto = function () {
@@ -114,9 +115,7 @@ var coolPhoto = function () {
 				if (dom.hasClass(target, settings.classNames.coolPhotoImg)) {
 					var pos = _this2.getTouchPos(event);
 					_this2.isSwipable = true;
-					if (!_this2.pos) {
-						_this2.pos = { x: 0, y: 0 };
-					}
+					_this2.pos = { x: 0, y: 0 };
 					_this2.oldPos = pos;
 				}
 				event.preventDefault();
@@ -138,18 +137,24 @@ var coolPhoto = function () {
 				var photoImg = element.querySelector('.' + settings.classNames.coolPhotoImg);
 				var nextIndex = index;
 				if (_this2.isSwipable) {
-					if (_this2.pos.x < 0) {
-						dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgRight);
+					if (_this2.pos.x < -_this2.settings.swipeOffset) {
+						photoImg.style = 'transition: all .3s;';
+						setTimeout(function () {
+							dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgRight);
+						}, 1);
 						nextIndex = index + 1;
-					} else {
-						dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgLeft);
+					} else if (_this2.pos.x > _this2.settings.swipeOffset) {
+						photoImg.style = 'transition: all .3s;';
+						setTimeout(function () {
+							dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgLeft);
+						}, 1);
 						nextIndex = index - 1;
 					}
 					setTimeout(function () {
 						_this2.removeComponent();
 						var event = new Event('click');
 						assets[nextIndex].element.dispatchEvent(event);
-					}, _this2.animationSpeed);
+					}, _this2.settings.animationSpeed);
 					_this2.isSwipable = false;
 				}
 			});

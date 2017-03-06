@@ -77,15 +77,14 @@ $modal-bg-color: #333;
 .cool-photo-img{
 	width: 100%;
 	height: auto;
-	transition: all .3s;
 }
 
 .cool-photo-img-left{
-	transform: translateX(-100%);
+	transform: translateX(150%) !important;
 }
 
 .cool-photo-img-right{
-	transform: translateX(100%);
+	transform: translateX(-150%) !important;
 }
 
 .cool-photo-arrows li {

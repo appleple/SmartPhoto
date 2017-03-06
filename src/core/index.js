@@ -17,7 +17,8 @@ const defaults = {
 	},
 	arrows:true,
 	dots:true,
-	animationSpeed: 300
+	animationSpeed: 300,
+  swipeOffset: 100
 }
 
 class coolPhoto {
@@ -59,9 +60,7 @@ class coolPhoto {
 			if (dom.hasClass(target,settings.classNames.coolPhotoImg)){
 				const pos = this.getTouchPos(event);
 				this.isSwipable = true;
-				if(!this.pos){
-					this.pos = { x: 0, y: 0 };
-				}
+				this.pos = { x: 0, y: 0 };
 				this.oldPos = pos;
 			}
 			event.preventDefault();
@@ -83,18 +82,24 @@ class coolPhoto {
       const photoImg = element.querySelector(`.${settings.classNames.coolPhotoImg}`);
       let nextIndex = index;
 			if(this.isSwipable) {
-        if (this.pos.x < 0) {
-          dom.addClass(photoImg,this.settings.classNames.coolPhotoImgRight);
+        if (this.pos.x < - this.settings.swipeOffset) {
+          photoImg.style = 'transition: all .3s;';
+          setTimeout(()=>{
+            dom.addClass(photoImg,this.settings.classNames.coolPhotoImgRight);
+          },1);
           nextIndex = index + 1;
-        } else {
-          dom.addClass(photoImg,this.settings.classNames.coolPhotoImgLeft);
+        } else if (this.pos.x > this.settings.swipeOffset){
+          photoImg.style = 'transition: all .3s;';
+          setTimeout(()=>{
+            dom.addClass(photoImg,this.settings.classNames.coolPhotoImgLeft);
+          },1);
           nextIndex = index - 1;
         }
         setTimeout(()=>{
           this.removeComponent();
           const event = new Event('click');
           assets[nextIndex].element.dispatchEvent(event);
-        },this.animationSpeed);
+        },this.settings.animationSpeed);
 				this.isSwipable = false;
 			}
 		});
