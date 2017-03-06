@@ -82,9 +82,9 @@ var coolPhoto = function () {
     this.isSmartPhone = coolPhoto.isSmartPhone();
     element.setAttribute('data-index', this.index);
     element.addEventListener('click', function (event) {
+      event.preventDefault();
       _this.render();
       _this.dispatchEvent();
-      event.preventDefault();
     });
   }
 
