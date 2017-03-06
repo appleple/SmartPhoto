@@ -31,9 +31,9 @@ class coolPhoto {
     this.isSmartPhone = coolPhoto.isSmartPhone();
 		element.setAttribute('data-index', this.index);
 		element.addEventListener('click', (event) => {
+      event.preventDefault();
 			this.render();
 			this.dispatchEvent();
-			event.preventDefault();
 		});
 	}
 
