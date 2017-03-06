@@ -28,6 +28,7 @@ class coolPhoto {
 		this.element = element;
 		this.settings = settings;
 		this.index = this.addNewAsset();
+    this.isSmartPhone = coolPhoto.isSmartPhone();
 		element.setAttribute('data-index', this.index);
 		element.addEventListener('click', (event) => {
 			this.render();
@@ -39,9 +40,15 @@ class coolPhoto {
 	dispatchEvent () {
     const element = this.element.nextElementSibling;
 		element.addEventListener('click',this.onClick.bind(this));
-		element.addEventListener('mousedown', this.onTouchStart.bind(this));
-		element.addEventListener('mousemove', this.onTouchMove.bind(this));
-		element.addEventListener('mouseup', this.onTouchEnd.bind(this));
+    if(this.isSmartPhone){
+      element.addEventListener('touchstart', this.onTouchStart.bind(this));
+      element.addEventListener('touchmove', this.onTouchMove.bind(this));
+      element.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }else{
+      element.addEventListener('mousedown', this.onTouchStart.bind(this));
+      element.addEventListener('mousemove', this.onTouchMove.bind(this));
+      element.addEventListener('mouseup', this.onTouchEnd.bind(this));
+    }
 	}
   
   onClick (event) {
@@ -113,7 +120,7 @@ class coolPhoto {
       move = true;
       nextIndex--;
     } else if (this.pos.x === 0) {
-      
+      console.log(photoImg.width);
     } else {
       photoImg.style.transition = 'all .3s';
       setTimeout(()=>{
@@ -197,6 +204,17 @@ class coolPhoto {
 		`;
 		element.insertAdjacentHTML('afterend', html);
 	}
+
+  static isSmartPhone () {
+    const agent = navigator.userAgent
+    if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0
+        || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+
 }
 
 module.exports = coolPhoto;

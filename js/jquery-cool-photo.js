@@ -51,198 +51,217 @@ var dom = require('../lib/dom');
 var assets = [];
 
 var defaults = {
-	classNames: {
-		coolPhoto: 'cool-photo',
-		coolPhotoClose: 'cool-photo-close',
-		coolPhotoBody: 'cool-photo-body',
-		coolPhotoInner: 'cool-photo-inner',
-		coolPhotoImg: 'cool-photo-img',
-		coolPhotoArrows: 'cool-photo-arrows',
-		coolPhotoArrowRight: 'cool-photo-arrow-right',
-		coolPhotoArrowLeft: 'cool-photo-arrow-left',
-		coolPhotoImgLeft: 'cool-photo-img-left',
-		coolPhotoImgRight: 'cool-photo-img-right'
-	},
-	arrows: true,
-	dots: true,
-	animationSpeed: 300,
-	swipeOffset: 100
+  classNames: {
+    coolPhoto: 'cool-photo',
+    coolPhotoClose: 'cool-photo-close',
+    coolPhotoBody: 'cool-photo-body',
+    coolPhotoInner: 'cool-photo-inner',
+    coolPhotoImg: 'cool-photo-img',
+    coolPhotoArrows: 'cool-photo-arrows',
+    coolPhotoArrowRight: 'cool-photo-arrow-right',
+    coolPhotoArrowLeft: 'cool-photo-arrow-left',
+    coolPhotoImgLeft: 'cool-photo-img-left',
+    coolPhotoImgRight: 'cool-photo-img-right'
+  },
+  arrows: true,
+  dots: true,
+  animationSpeed: 300,
+  swipeOffset: 100
 };
 
 var coolPhoto = function () {
-	function coolPhoto(element, settings) {
-		var _this = this;
+  function coolPhoto(element, settings) {
+    var _this = this;
 
-		_classCallCheck(this, coolPhoto);
+    _classCallCheck(this, coolPhoto);
 
-		settings = extend({}, defaults, settings);
-		this.element = element;
-		this.settings = settings;
-		this.index = this.addNewAsset();
-		element.setAttribute('data-index', this.index);
-		element.addEventListener('click', function (event) {
-			_this.render();
-			_this.dispatchEvent();
-			event.preventDefault();
-		});
-	}
+    settings = extend({}, defaults, settings);
+    this.element = element;
+    this.settings = settings;
+    this.index = this.addNewAsset();
+    this.isSmartPhone = coolPhoto.isSmartPhone();
+    element.setAttribute('data-index', this.index);
+    element.addEventListener('click', function (event) {
+      _this.render();
+      _this.dispatchEvent();
+      event.preventDefault();
+    });
+  }
 
-	_createClass(coolPhoto, [{
-		key: 'dispatchEvent',
-		value: function dispatchEvent() {
-			var element = this.element.nextElementSibling;
-			element.addEventListener('click', this.onClick.bind(this));
-			element.addEventListener('mousedown', this.onTouchStart.bind(this));
-			element.addEventListener('mousemove', this.onTouchMove.bind(this));
-			element.addEventListener('mouseup', this.onTouchEnd.bind(this));
-		}
-	}, {
-		key: 'onClick',
-		value: function onClick(event) {
-			var element = this.element.nextElementSibling;
-			var settings = this.settings;
-			var index = this.index;
-			var target = event.target;
-			if (dom.hasClass(target, settings.classNames.coolPhotoArrowLeft)) {
-				var _event = new Event('click');
-				this.removeComponent();
-				assets[index - 1].element.dispatchEvent(_event);
-			} else if (dom.hasClass(target, settings.classNames.coolPhotoArrowRight)) {
-				var _event2 = new Event('click');
-				this.removeComponent();
-				assets[index + 1].element.dispatchEvent(_event2);
-			} else if (!dom.hasClass(target, settings.classNames.coolPhotoImg)) {
-				this.removeComponent();
-			}
-		}
-	}, {
-		key: 'onTouchStart',
-		value: function onTouchStart(event) {
-			var target = event.target;
-			var settings = this.settings;
-			if (dom.hasClass(target, settings.classNames.coolPhotoImg)) {
-				var pos = this.getTouchPos(event);
-				this.isSwipable = true;
-				this.pos = { x: 0, y: 0 };
-				this.oldPos = pos;
-			}
-			event.preventDefault();
-		}
-	}, {
-		key: 'onTouchMove',
-		value: function onTouchMove(event) {
-			var target = event.target;
-			var settings = this.settings;
-			if (dom.hasClass(target, settings.classNames.coolPhotoImg) && this.isSwipable) {
-				var pos = this.getTouchPos(event);
-				var x = pos.x - this.oldPos.x;
-				this.pos.x += x;
-				target.style.transform = 'translateX(' + this.pos.x + 'px)';
-				this.oldPos = pos;
-			}
-			event.preventDefault();
-		}
-	}, {
-		key: 'onTouchEnd',
-		value: function onTouchEnd(event) {
-			var _this2 = this;
+  _createClass(coolPhoto, [{
+    key: 'dispatchEvent',
+    value: function dispatchEvent() {
+      var element = this.element.nextElementSibling;
+      element.addEventListener('click', this.onClick.bind(this));
+      if (this.isSmartPhone) {
+        element.addEventListener('touchstart', this.onTouchStart.bind(this));
+        element.addEventListener('touchmove', this.onTouchMove.bind(this));
+        element.addEventListener('touchend', this.onTouchEnd.bind(this));
+      } else {
+        element.addEventListener('mousedown', this.onTouchStart.bind(this));
+        element.addEventListener('mousemove', this.onTouchMove.bind(this));
+        element.addEventListener('mouseup', this.onTouchEnd.bind(this));
+      }
+    }
+  }, {
+    key: 'onClick',
+    value: function onClick(event) {
+      var element = this.element.nextElementSibling;
+      var settings = this.settings;
+      var index = this.index;
+      var target = event.target;
+      if (dom.hasClass(target, settings.classNames.coolPhotoArrowLeft)) {
+        var _event = new Event('click');
+        this.removeComponent();
+        assets[index - 1].element.dispatchEvent(_event);
+      } else if (dom.hasClass(target, settings.classNames.coolPhotoArrowRight)) {
+        var _event2 = new Event('click');
+        this.removeComponent();
+        assets[index + 1].element.dispatchEvent(_event2);
+      } else if (!dom.hasClass(target, settings.classNames.coolPhotoImg)) {
+        this.removeComponent();
+      }
+    }
+  }, {
+    key: 'onTouchStart',
+    value: function onTouchStart(event) {
+      var target = event.target;
+      var settings = this.settings;
+      if (dom.hasClass(target, settings.classNames.coolPhotoImg)) {
+        var pos = this.getTouchPos(event);
+        this.isSwipable = true;
+        this.pos = { x: 0, y: 0 };
+        this.oldPos = pos;
+      }
+      event.preventDefault();
+    }
+  }, {
+    key: 'onTouchMove',
+    value: function onTouchMove(event) {
+      var target = event.target;
+      var settings = this.settings;
+      if (dom.hasClass(target, settings.classNames.coolPhotoImg) && this.isSwipable) {
+        var pos = this.getTouchPos(event);
+        var x = pos.x - this.oldPos.x;
+        this.pos.x += x;
+        target.style.transform = 'translateX(' + this.pos.x + 'px)';
+        this.oldPos = pos;
+      }
+      event.preventDefault();
+    }
+  }, {
+    key: 'onTouchEnd',
+    value: function onTouchEnd(event) {
+      var _this2 = this;
 
-			var element = this.element.nextElementSibling;
-			var settings = this.settings;
-			var target = event.target;
-			var photoImg = element.querySelector('.' + settings.classNames.coolPhotoImg);
-			var nextIndex = this.index;
-			var move = false;
-			if (!this.isSwipable) {
-				return;
-			}
-			this.isSwipable = false;
-			if (this.pos.x < -this.settings.swipeOffset) {
-				photoImg.style.transition = 'all .3s';
-				setTimeout(function () {
-					dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgRight);
-				}, 1);
-				move = true;
-				nextIndex++;
-			} else if (this.pos.x > this.settings.swipeOffset) {
-				photoImg.style.transition = 'all .3s';
-				setTimeout(function () {
-					dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgLeft);
-				}, 1);
-				move = true;
-				nextIndex--;
-			} else if (this.pos.x === 0) {} else {
-				photoImg.style.transition = 'all .3s';
-				setTimeout(function () {
-					photoImg.style.transform = 'translateX(0px)';
-				}, 1);
-				setTimeout(function () {
-					photoImg.style.transition = 'none';
-				});
-			}
-			if (!move) {
-				return;
-			}
-			setTimeout(function () {
-				_this2.removeComponent();
-				var event = new Event('click');
-				assets[nextIndex].element.dispatchEvent(event);
-			}, settings.animationSpeed);
-		}
-	}, {
-		key: 'getTouchPos',
-		value: function getTouchPos(e) {
-			var x = 0;
-			var y = 0;
-			if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches[0].pageX) {
-				x = event.originalEvent.touches[0].pageX;
-				y = event.originalEvent.touches[0].pageY;
-			} else if (event.pageX) {
-				x = event.pageX;
-				y = event.pageY;
-			}
-			return { x: x, y: y };
-		}
-	}, {
-		key: 'addNewAsset',
-		value: function addNewAsset() {
-			var element = this.element;
-			var src = element.getAttribute('href');
-			assets.push({
-				src: src,
-				element: element
-			});
-			return assets.length - 1;
-		}
-	}, {
-		key: 'getAsset',
-		value: function getAsset(index) {
-			return assets[index];
-		}
-	}, {
-		key: 'removeComponent',
-		value: function removeComponent() {
-			var element = this.element.nextElementSibling;
-			var settings = this.settings;
-			dom.addClass(element, settings.classNames.coolPhotoClose);
-			// element.removeEventListener('click');
-			setTimeout(function () {
-				dom.remove(element);
-			}, settings.animationSpeed);
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var element = this.element;
-			var settings = this.settings;
-			var index = parseInt(element.getAttribute('data-index'));
-			var src = assets[index].src;
-			var html = '\n\t\t\t<div class="' + settings.classNames.coolPhoto + '">\n\t\t\t\t<div class="' + settings.classNames.coolPhotoBody + '">\n\t\t\t\t\t<div class="' + settings.classNames.coolPhotoInner + '">\n\t\t\t\t\t\t<img src="' + src + '" class="' + settings.classNames.coolPhotoImg + '">\n\t\t\t\t\t\t' + (settings.arrows ? '\n\t\t\t\t\t\t\t<ul class="' + settings.classNames.coolPhotoArrows + '">\n\t\t\t\t\t\t\t\t' + (index > 0 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowLeft + '" data-index="' + (index - 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t\t' + (index !== assets.length - 1 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowRight + '" data-index="' + (index + 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t';
-			element.insertAdjacentHTML('afterend', html);
-		}
-	}]);
+      var element = this.element.nextElementSibling;
+      var settings = this.settings;
+      var target = event.target;
+      var photoImg = element.querySelector('.' + settings.classNames.coolPhotoImg);
+      var nextIndex = this.index;
+      var move = false;
+      if (!this.isSwipable) {
+        return;
+      }
+      this.isSwipable = false;
+      if (this.pos.x < -this.settings.swipeOffset) {
+        photoImg.style.transition = 'all .3s';
+        setTimeout(function () {
+          dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgRight);
+        }, 1);
+        move = true;
+        nextIndex++;
+      } else if (this.pos.x > this.settings.swipeOffset) {
+        photoImg.style.transition = 'all .3s';
+        setTimeout(function () {
+          dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgLeft);
+        }, 1);
+        move = true;
+        nextIndex--;
+      } else if (this.pos.x === 0) {
+        console.log(photoImg.width);
+      } else {
+        photoImg.style.transition = 'all .3s';
+        setTimeout(function () {
+          photoImg.style.transform = 'translateX(0px)';
+        }, 1);
+        setTimeout(function () {
+          photoImg.style.transition = 'none';
+        });
+      }
+      if (!move) {
+        return;
+      }
+      setTimeout(function () {
+        _this2.removeComponent();
+        var event = new Event('click');
+        assets[nextIndex].element.dispatchEvent(event);
+      }, settings.animationSpeed);
+    }
+  }, {
+    key: 'getTouchPos',
+    value: function getTouchPos(e) {
+      var x = 0;
+      var y = 0;
+      if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches[0].pageX) {
+        x = event.originalEvent.touches[0].pageX;
+        y = event.originalEvent.touches[0].pageY;
+      } else if (event.pageX) {
+        x = event.pageX;
+        y = event.pageY;
+      }
+      return { x: x, y: y };
+    }
+  }, {
+    key: 'addNewAsset',
+    value: function addNewAsset() {
+      var element = this.element;
+      var src = element.getAttribute('href');
+      assets.push({
+        src: src,
+        element: element
+      });
+      return assets.length - 1;
+    }
+  }, {
+    key: 'getAsset',
+    value: function getAsset(index) {
+      return assets[index];
+    }
+  }, {
+    key: 'removeComponent',
+    value: function removeComponent() {
+      var element = this.element.nextElementSibling;
+      var settings = this.settings;
+      dom.addClass(element, settings.classNames.coolPhotoClose);
+      // element.removeEventListener('click');
+      setTimeout(function () {
+        dom.remove(element);
+      }, settings.animationSpeed);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var element = this.element;
+      var settings = this.settings;
+      var index = parseInt(element.getAttribute('data-index'));
+      var src = assets[index].src;
+      var html = '\n\t\t\t<div class="' + settings.classNames.coolPhoto + '">\n\t\t\t\t<div class="' + settings.classNames.coolPhotoBody + '">\n\t\t\t\t\t<div class="' + settings.classNames.coolPhotoInner + '">\n\t\t\t\t\t\t<img src="' + src + '" class="' + settings.classNames.coolPhotoImg + '">\n\t\t\t\t\t\t' + (settings.arrows ? '\n\t\t\t\t\t\t\t<ul class="' + settings.classNames.coolPhotoArrows + '">\n\t\t\t\t\t\t\t\t' + (index > 0 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowLeft + '" data-index="' + (index - 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t\t' + (index !== assets.length - 1 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowRight + '" data-index="' + (index + 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t';
+      element.insertAdjacentHTML('afterend', html);
+    }
+  }], [{
+    key: 'isSmartPhone',
+    value: function isSmartPhone() {
+      var agent = navigator.userAgent;
+      if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0 || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }]);
 
-	return coolPhoto;
+  return coolPhoto;
 }();
 
 module.exports = coolPhoto;
