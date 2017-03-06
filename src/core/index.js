@@ -26,9 +26,8 @@ class coolPhoto {
 		settings = extend({},defaults,settings);
 		this.element = element;
 		this.settings = settings;
-		const index = this.addNewAsset();
-    this.currentIndex = index;
-		element.setAttribute('data-index', index);
+		this.index = this.addNewAsset();
+		element.setAttribute('data-index', this.index);
 		element.addEventListener('click', (event) => {
 			this.render();
 			this.dispatchEvent();
@@ -39,19 +38,17 @@ class coolPhoto {
 	dispatchEvent () {
 		const element = this.element.nextElementSibling;
 		const settings = this.settings;
-
+    const index = this.index;
 		element.addEventListener('click', (event) => {
 			const target = event.target;
 			if (dom.hasClass(target,settings.classNames.coolPhotoArrowLeft)) {
 				const event = new Event('click');
-        this.currentIndex--;
 				this.removeComponent();
-				assets[index].element.dispatchEvent(event);
+				assets[index - 1].element.dispatchEvent(event);
 			} else if (dom.hasClass(target,settings.classNames.coolPhotoArrowRight)) {
 				const event = new Event('click');
-        this.currentIndex++;
 				this.removeComponent();
-				assets[index].element.dispatchEvent(event);
+				assets[index + 1].element.dispatchEvent(event);
 			} else if (!dom.hasClass(target,settings.classNames.coolPhotoImg)) {
 				this.removeComponent();
 			}
@@ -69,6 +66,7 @@ class coolPhoto {
 			}
 			event.preventDefault();
 		});
+
 		element.addEventListener('mousemove', (event) => {
 			const target = event.target;
 			if (dom.hasClass(target,settings.classNames.coolPhotoImg) && this.isSwipable){
@@ -80,21 +78,22 @@ class coolPhoto {
 			}
 			event.preventDefault();
 		});
+
 		element.addEventListener('mouseup', (event) => {
       const photoImg = element.querySelector(`.${settings.classNames.coolPhotoImg}`);
+      let nextIndex = index;
 			if(this.isSwipable) {
         if (this.pos.x < 0) {
           dom.addClass(photoImg,this.settings.classNames.coolPhotoImgRight);
-          this.currentIndex++;
+          nextIndex = index + 1;
         } else {
           dom.addClass(photoImg,this.settings.classNames.coolPhotoImgLeft);
-          this.currentIndex--;
+          nextIndex = index - 1;
         }
         setTimeout(()=>{
           this.removeComponent();
           const event = new Event('click');
-          console.log(this.currentIndex);
-          assets[this.currentIndex].element.dispatchEvent(event);
+          assets[nextIndex].element.dispatchEvent(event);
         },this.animationSpeed);
 				this.isSwipable = false;
 			}
