@@ -1,0 +1,24 @@
+# editorconfig.org
+root = true
+
+[*.js]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.html]
+# すべてのファイルに適用する
+charset = utf-8
+# 文字コードを統一
+indent_style = tab
+#インデントを統一する。「tab」か「 space」
+indent_size = 2
+# インデントの数を統一
+trim_trailing_whitespace = true
+# 行末のホワイトスペースを削除
+insert_final_newline = true
+# フォルダの最後の行に改行
+end_of_line = lf
