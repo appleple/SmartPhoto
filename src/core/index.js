@@ -11,7 +11,9 @@ const defaults = {
 		coolPhotoImg: 'cool-photo-img',
 		coolPhotoArrows: 'cool-photo-arrows',
 		coolPhotoArrowRight: 'cool-photo-arrow-right',
-		coolPhotoArrowLeft: 'cool-photo-arrow-left'
+		coolPhotoArrowLeft: 'cool-photo-arrow-left',
+    coolPhotoImgLeft: 'cool-photo-img-left',
+    coolPhotoImgRight: 'cool-photo-img-right'
 	},
 	arrows:true,
 	dots:true,
@@ -25,6 +27,7 @@ class coolPhoto {
 		this.element = element;
 		this.settings = settings;
 		const index = this.addNewAsset();
+    this.currentIndex = index;
 		element.setAttribute('data-index', index);
 		element.addEventListener('click', (event) => {
 			this.render();
@@ -40,13 +43,13 @@ class coolPhoto {
 		element.addEventListener('click', (event) => {
 			const target = event.target;
 			if (dom.hasClass(target,settings.classNames.coolPhotoArrowLeft)) {
-				const index = target.getAttribute('data-index');
 				const event = new Event('click');
+        this.currentIndex--;
 				this.removeComponent();
 				assets[index].element.dispatchEvent(event);
 			} else if (dom.hasClass(target,settings.classNames.coolPhotoArrowRight)) {
-				const index = target.getAttribute('data-index');
 				const event = new Event('click');
+        this.currentIndex++;
 				this.removeComponent();
 				assets[index].element.dispatchEvent(event);
 			} else if (!dom.hasClass(target,settings.classNames.coolPhotoImg)) {
@@ -78,9 +81,21 @@ class coolPhoto {
 			event.preventDefault();
 		});
 		element.addEventListener('mouseup', (event) => {
+      const photoImg = element.querySelector(`.${settings.classNames.coolPhotoImg}`);
 			if(this.isSwipable) {
-				this.removeComponent();
-				assets[index].element.dispatchEvent(event);
+        if (this.pos.x < 0) {
+          dom.addClass(photoImg,this.settings.classNames.coolPhotoImgRight);
+          this.currentIndex++;
+        } else {
+          dom.addClass(photoImg,this.settings.classNames.coolPhotoImgLeft);
+          this.currentIndex--;
+        }
+        setTimeout(()=>{
+          this.removeComponent();
+          const event = new Event('click');
+          console.log(this.currentIndex);
+          assets[this.currentIndex].element.dispatchEvent(event);
+        },this.animationSpeed);
 				this.isSwipable = false;
 			}
 		});

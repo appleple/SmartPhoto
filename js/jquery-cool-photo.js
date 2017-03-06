@@ -59,7 +59,9 @@ var defaults = {
 		coolPhotoImg: 'cool-photo-img',
 		coolPhotoArrows: 'cool-photo-arrows',
 		coolPhotoArrowRight: 'cool-photo-arrow-right',
-		coolPhotoArrowLeft: 'cool-photo-arrow-left'
+		coolPhotoArrowLeft: 'cool-photo-arrow-left',
+		coolPhotoImgLeft: 'cool-photo-img-left',
+		coolPhotoImgRight: 'cool-photo-img-right'
 	},
 	arrows: true,
 	dots: true,
@@ -76,6 +78,7 @@ var coolPhoto = function () {
 		this.element = element;
 		this.settings = settings;
 		var index = this.addNewAsset();
+		this.currentIndex = index;
 		element.setAttribute('data-index', index);
 		element.addEventListener('click', function (event) {
 			_this.render();
@@ -95,15 +98,15 @@ var coolPhoto = function () {
 			element.addEventListener('click', function (event) {
 				var target = event.target;
 				if (dom.hasClass(target, settings.classNames.coolPhotoArrowLeft)) {
-					var _index = target.getAttribute('data-index');
 					var _event = new Event('click');
+					_this2.currentIndex--;
 					_this2.removeComponent();
-					assets[_index].element.dispatchEvent(_event);
+					assets[index].element.dispatchEvent(_event);
 				} else if (dom.hasClass(target, settings.classNames.coolPhotoArrowRight)) {
-					var _index2 = target.getAttribute('data-index');
 					var _event2 = new Event('click');
+					_this2.currentIndex++;
 					_this2.removeComponent();
-					assets[_index2].element.dispatchEvent(_event2);
+					assets[index].element.dispatchEvent(_event2);
 				} else if (!dom.hasClass(target, settings.classNames.coolPhotoImg)) {
 					_this2.removeComponent();
 				}
@@ -133,9 +136,21 @@ var coolPhoto = function () {
 				event.preventDefault();
 			});
 			element.addEventListener('mouseup', function (event) {
+				var photoImg = element.querySelector('.' + settings.classNames.coolPhotoImg);
 				if (_this2.isSwipable) {
-					_this2.removeComponent();
-					assets[index].element.dispatchEvent(event);
+					if (_this2.pos.x < 0) {
+						dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgRight);
+						_this2.currentIndex++;
+					} else {
+						dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgLeft);
+						_this2.currentIndex--;
+					}
+					setTimeout(function () {
+						_this2.removeComponent();
+						var event = new Event('click');
+						console.log(_this2.currentIndex);
+						assets[_this2.currentIndex].element.dispatchEvent(event);
+					}, _this2.animationSpeed);
 					_this2.isSwipable = false;
 				}
 			});
