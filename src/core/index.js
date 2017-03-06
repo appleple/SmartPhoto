@@ -37,73 +37,84 @@ class coolPhoto {
 	}
 
 	dispatchEvent () {
-		const element = this.element.nextElementSibling;
+    const element = this.element.nextElementSibling;
+		element.addEventListener('click',this.onClick.bind(this));
+		element.addEventListener('mousedown', this.onTouchStart.bind(this));
+		element.addEventListener('mousemove', this.onTouchMove.bind(this));
+		element.addEventListener('mouseup', this.onTouchEnd.bind(this));
+	}
+  
+  onClick (event) {
+ 		const element = this.element.nextElementSibling;
 		const settings = this.settings;
     const index = this.index;
-		element.addEventListener('click', (event) => {
-			const target = event.target;
-			if (dom.hasClass(target,settings.classNames.coolPhotoArrowLeft)) {
-				const event = new Event('click');
-				this.removeComponent();
-				assets[index - 1].element.dispatchEvent(event);
-			} else if (dom.hasClass(target,settings.classNames.coolPhotoArrowRight)) {
-				const event = new Event('click');
-				this.removeComponent();
-				assets[index + 1].element.dispatchEvent(event);
-			} else if (!dom.hasClass(target,settings.classNames.coolPhotoImg)) {
-				this.removeComponent();
-			}
-		});
+		const target = event.target;
+    if (dom.hasClass(target,settings.classNames.coolPhotoArrowLeft)) {
+      const event = new Event('click');
+      this.removeComponent();
+      assets[index - 1].element.dispatchEvent(event);
+    } else if (dom.hasClass(target,settings.classNames.coolPhotoArrowRight)) {
+      const event = new Event('click');
+      this.removeComponent();
+      assets[index + 1].element.dispatchEvent(event);
+    } else if (!dom.hasClass(target,settings.classNames.coolPhotoImg)) {
+      this.removeComponent();
+    }
+  }
 
-		element.addEventListener('mousedown', (event) => {
-			const target = event.target;
-			if (dom.hasClass(target,settings.classNames.coolPhotoImg)){
-				const pos = this.getTouchPos(event);
-				this.isSwipable = true;
-				this.pos = { x: 0, y: 0 };
-				this.oldPos = pos;
-			}
-			event.preventDefault();
-		});
+  onTouchStart (event) {
+    const target = event.target;
+    const settings = this.settings;
+    if (dom.hasClass(target,settings.classNames.coolPhotoImg)){
+      const pos = this.getTouchPos(event);
+      this.isSwipable = true;
+      this.pos = { x: 0, y: 0 };
+      this.oldPos = pos;
+    }
+    event.preventDefault();
+  }
 
-		element.addEventListener('mousemove', (event) => {
-			const target = event.target;
-			if (dom.hasClass(target,settings.classNames.coolPhotoImg) && this.isSwipable){
-				const pos = this.getTouchPos(event);
-				const x = pos.x - this.oldPos.x;
-				this.pos.x += x;
-				target.style.transform = `translateX(${this.pos.x}px)`;
-				this.oldPos = pos;
-			}
-			event.preventDefault();
-		});
+  onTouchMove (event) {
+    const target = event.target;
+    const settings = this.settings;
+    if (dom.hasClass(target,settings.classNames.coolPhotoImg) && this.isSwipable){
+      const pos = this.getTouchPos(event);
+      const x = pos.x - this.oldPos.x;
+      this.pos.x += x;
+      target.style.transform = `translateX(${this.pos.x}px)`;
+      this.oldPos = pos;
+    }
+    event.preventDefault();
+  }
 
-		element.addEventListener('mouseup', (event) => {
-      const photoImg = element.querySelector(`.${settings.classNames.coolPhotoImg}`);
-      let nextIndex = index;
-			if(this.isSwipable) {
-        if (this.pos.x < - this.settings.swipeOffset) {
-          photoImg.style = 'transition: all .3s;';
-          setTimeout(()=>{
-            dom.addClass(photoImg,this.settings.classNames.coolPhotoImgRight);
-          },1);
-          nextIndex = index + 1;
-        } else if (this.pos.x > this.settings.swipeOffset){
-          photoImg.style = 'transition: all .3s;';
-          setTimeout(()=>{
-            dom.addClass(photoImg,this.settings.classNames.coolPhotoImgLeft);
-          },1);
-          nextIndex = index - 1;
-        }
+  onTouchEnd (event) {
+    const element = this.element.nextElementSibling;
+		const settings = this.settings;
+		const target = event.target;
+    const photoImg = element.querySelector(`.${settings.classNames.coolPhotoImg}`);
+    let nextIndex = this.index;
+    if(this.isSwipable) {
+      if (this.pos.x < - this.settings.swipeOffset) {
+        photoImg.style = 'transition: all .3s;';
         setTimeout(()=>{
-          this.removeComponent();
-          const event = new Event('click');
-          assets[nextIndex].element.dispatchEvent(event);
-        },this.settings.animationSpeed);
-				this.isSwipable = false;
-			}
-		});
-	}
+          dom.addClass(photoImg,this.settings.classNames.coolPhotoImgRight);
+        },1);
+        nextIndex++;
+      } else if (this.pos.x > this.settings.swipeOffset){
+        photoImg.style = 'transition: all .3s;';
+        setTimeout(()=>{
+          dom.addClass(photoImg,this.settings.classNames.coolPhotoImgLeft);
+        },1);
+        nextIndex--;
+      }
+      setTimeout(()=>{
+        this.removeComponent();
+        const event = new Event('click');
+        assets[nextIndex].element.dispatchEvent(event);
+      },settings.animationSpeed);
+      this.isSwipable = false;
+    }
+  }
 
 	getTouchPos (e) {
 		let x = 0;

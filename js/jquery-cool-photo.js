@@ -90,74 +90,89 @@ var coolPhoto = function () {
 	_createClass(coolPhoto, [{
 		key: 'dispatchEvent',
 		value: function dispatchEvent() {
+			var element = this.element.nextElementSibling;
+			element.addEventListener('click', this.onClick.bind(this));
+			element.addEventListener('mousedown', this.onTouchStart.bind(this));
+			element.addEventListener('mousemove', this.onTouchMove.bind(this));
+			element.addEventListener('mouseup', this.onTouchEnd.bind(this));
+		}
+	}, {
+		key: 'onClick',
+		value: function onClick(event) {
+			var element = this.element.nextElementSibling;
+			var settings = this.settings;
+			var index = this.index;
+			var target = event.target;
+			if (dom.hasClass(target, settings.classNames.coolPhotoArrowLeft)) {
+				var _event = new Event('click');
+				this.removeComponent();
+				assets[index - 1].element.dispatchEvent(_event);
+			} else if (dom.hasClass(target, settings.classNames.coolPhotoArrowRight)) {
+				var _event2 = new Event('click');
+				this.removeComponent();
+				assets[index + 1].element.dispatchEvent(_event2);
+			} else if (!dom.hasClass(target, settings.classNames.coolPhotoImg)) {
+				this.removeComponent();
+			}
+		}
+	}, {
+		key: 'onTouchStart',
+		value: function onTouchStart(event) {
+			var target = event.target;
+			var settings = this.settings;
+			if (dom.hasClass(target, settings.classNames.coolPhotoImg)) {
+				var pos = this.getTouchPos(event);
+				this.isSwipable = true;
+				this.pos = { x: 0, y: 0 };
+				this.oldPos = pos;
+			}
+			event.preventDefault();
+		}
+	}, {
+		key: 'onTouchMove',
+		value: function onTouchMove(event) {
+			var target = event.target;
+			var settings = this.settings;
+			if (dom.hasClass(target, settings.classNames.coolPhotoImg) && this.isSwipable) {
+				var pos = this.getTouchPos(event);
+				var x = pos.x - this.oldPos.x;
+				this.pos.x += x;
+				target.style.transform = 'translateX(' + this.pos.x + 'px)';
+				this.oldPos = pos;
+			}
+			event.preventDefault();
+		}
+	}, {
+		key: 'onTouchEnd',
+		value: function onTouchEnd(event) {
 			var _this2 = this;
 
 			var element = this.element.nextElementSibling;
 			var settings = this.settings;
-			var index = this.index;
-			element.addEventListener('click', function (event) {
-				var target = event.target;
-				if (dom.hasClass(target, settings.classNames.coolPhotoArrowLeft)) {
-					var _event = new Event('click');
-					_this2.removeComponent();
-					assets[index - 1].element.dispatchEvent(_event);
-				} else if (dom.hasClass(target, settings.classNames.coolPhotoArrowRight)) {
-					var _event2 = new Event('click');
-					_this2.removeComponent();
-					assets[index + 1].element.dispatchEvent(_event2);
-				} else if (!dom.hasClass(target, settings.classNames.coolPhotoImg)) {
-					_this2.removeComponent();
-				}
-			});
-
-			element.addEventListener('mousedown', function (event) {
-				var target = event.target;
-				if (dom.hasClass(target, settings.classNames.coolPhotoImg)) {
-					var pos = _this2.getTouchPos(event);
-					_this2.isSwipable = true;
-					_this2.pos = { x: 0, y: 0 };
-					_this2.oldPos = pos;
-				}
-				event.preventDefault();
-			});
-
-			element.addEventListener('mousemove', function (event) {
-				var target = event.target;
-				if (dom.hasClass(target, settings.classNames.coolPhotoImg) && _this2.isSwipable) {
-					var pos = _this2.getTouchPos(event);
-					var x = pos.x - _this2.oldPos.x;
-					_this2.pos.x += x;
-					target.style.transform = 'translateX(' + _this2.pos.x + 'px)';
-					_this2.oldPos = pos;
-				}
-				event.preventDefault();
-			});
-
-			element.addEventListener('mouseup', function (event) {
-				var photoImg = element.querySelector('.' + settings.classNames.coolPhotoImg);
-				var nextIndex = index;
-				if (_this2.isSwipable) {
-					if (_this2.pos.x < -_this2.settings.swipeOffset) {
-						photoImg.style = 'transition: all .3s;';
-						setTimeout(function () {
-							dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgRight);
-						}, 1);
-						nextIndex = index + 1;
-					} else if (_this2.pos.x > _this2.settings.swipeOffset) {
-						photoImg.style = 'transition: all .3s;';
-						setTimeout(function () {
-							dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgLeft);
-						}, 1);
-						nextIndex = index - 1;
-					}
+			var target = event.target;
+			var photoImg = element.querySelector('.' + settings.classNames.coolPhotoImg);
+			var nextIndex = this.index;
+			if (this.isSwipable) {
+				if (this.pos.x < -this.settings.swipeOffset) {
+					photoImg.style = 'transition: all .3s;';
 					setTimeout(function () {
-						_this2.removeComponent();
-						var event = new Event('click');
-						assets[nextIndex].element.dispatchEvent(event);
-					}, _this2.settings.animationSpeed);
-					_this2.isSwipable = false;
+						dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgRight);
+					}, 1);
+					nextIndex++;
+				} else if (this.pos.x > this.settings.swipeOffset) {
+					photoImg.style = 'transition: all .3s;';
+					setTimeout(function () {
+						dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgLeft);
+					}, 1);
+					nextIndex--;
 				}
-			});
+				setTimeout(function () {
+					_this2.removeComponent();
+					var event = new Event('click');
+					assets[nextIndex].element.dispatchEvent(event);
+				}, settings.animationSpeed);
+				this.isSwipable = false;
+			}
 		}
 	}, {
 		key: 'getTouchPos',
