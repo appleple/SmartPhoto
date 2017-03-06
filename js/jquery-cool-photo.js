@@ -104,14 +104,51 @@ var coolPhoto = function () {
 					var _event2 = new Event('click');
 					_this2.removeComponent();
 					assets[_index].element.dispatchEvent(_event2);
-				} else {
+				} else if (!dom.hasClass(target, settings.classNames.coolPhotoImg)) {
 					_this2.removeComponent();
 				}
 			});
 
 			element.addEventListener('mousedown', function (event) {
-				if (dom.hasClass(settings.classNames.coolPhotoImg)) {}
+				var target = event.target;
+				if (dom.hasClass(target, settings.classNames.coolPhotoImg)) {
+					var pos = _this2.getTouchPos(event);
+					_this2.isSwipable = true;
+					if (!_this2.pos) {
+						_this2.pos = { x: 0, y: 0 };
+					}
+					_this2.oldPos = pos;
+				}
+				event.preventDefault();
 			});
+			element.addEventListener('mousemove', function (event) {
+				var target = event.target;
+				if (dom.hasClass(target, settings.classNames.coolPhotoImg) && _this2.isSwipable) {
+					var pos = _this2.getTouchPos(event);
+					var x = pos.x - _this2.oldPos.x;
+					_this2.pos.x += x;
+					target.style.transform = 'translateX(' + _this2.pos.x + 'px)';
+					_this2.oldPos = pos;
+				}
+				event.preventDefault();
+			});
+			element.addEventListener('mouseup', function (event) {
+				_this2.isSwipable = false;
+			});
+		}
+	}, {
+		key: 'getTouchPos',
+		value: function getTouchPos(e) {
+			var x = 0;
+			var y = 0;
+			if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches[0].pageX) {
+				x = event.originalEvent.touches[0].pageX;
+				y = event.originalEvent.touches[0].pageY;
+			} else if (event.pageX) {
+				x = event.pageX;
+				y = event.pageY;
+			}
+			return { x: x, y: y };
 		}
 	}, {
 		key: 'addNewAsset',

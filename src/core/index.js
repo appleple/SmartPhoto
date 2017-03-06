@@ -49,18 +49,56 @@ class coolPhoto {
 				const event = new Event('click');
 				this.removeComponent();
 				assets[index].element.dispatchEvent(event);
-
-			} else {
+			} else if (!dom.hasClass(target,settings.classNames.coolPhotoImg)) {
 				this.removeComponent();
 			}
 		});
 
 		element.addEventListener('mousedown', (event) => {
-			if (dom.hasClass(settings.classNames.coolPhotoImg)){
-
+			const target = event.target;
+			if (dom.hasClass(target,settings.classNames.coolPhotoImg)){
+				const pos = this.getTouchPos(event);
+				this.isSwipable = true;
+				if(!this.pos){
+					this.pos = { x: 0, y: 0 };
+				}
+				this.oldPos = pos;
+			}
+			event.preventDefault();
+		});
+		element.addEventListener('mousemove', (event) => {
+			const target = event.target;
+			if (dom.hasClass(target,settings.classNames.coolPhotoImg) && this.isSwipable){
+				const pos = this.getTouchPos(event);
+				const x = pos.x - this.oldPos.x;
+				this.pos.x += x;
+				target.style.transform = `translateX(${this.pos.x}px)`;
+				this.oldPos = pos;
+			}
+			event.preventDefault();
+		});
+		element.addEventListener('mouseup', (event) => {
+			if(this.isSwipable) {
+				this.removeComponent();
+				assets[index].element.dispatchEvent(event);
+				this.isSwipable = false;
 			}
 		});
 	}
+
+	getTouchPos (e) {
+		let x = 0;
+		let y = 0;
+		if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches[0].pageX) {
+			x = event.originalEvent.touches[0].pageX;
+			y = event.originalEvent.touches[0].pageY;
+		} else if(event.pageX){
+			x = event.pageX;
+			y = event.pageY;
+		}
+		return { x: x, y: y };
+	}
+
 
 	addNewAsset () {
 		const element = this.element;
