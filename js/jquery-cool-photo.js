@@ -95,15 +95,15 @@ var coolPhoto = function () {
 			element.addEventListener('click', function (event) {
 				var target = event.target;
 				if (dom.hasClass(target, settings.classNames.coolPhotoArrowLeft)) {
-					var index = target.getAttribute('data-index');
+					var _index = target.getAttribute('data-index');
 					var _event = new Event('click');
 					_this2.removeComponent();
-					assets[index].element.dispatchEvent(_event);
+					assets[_index].element.dispatchEvent(_event);
 				} else if (dom.hasClass(target, settings.classNames.coolPhotoArrowRight)) {
-					var _index = target.getAttribute('data-index');
+					var _index2 = target.getAttribute('data-index');
 					var _event2 = new Event('click');
 					_this2.removeComponent();
-					assets[_index].element.dispatchEvent(_event2);
+					assets[_index2].element.dispatchEvent(_event2);
 				} else if (!dom.hasClass(target, settings.classNames.coolPhotoImg)) {
 					_this2.removeComponent();
 				}
@@ -133,7 +133,11 @@ var coolPhoto = function () {
 				event.preventDefault();
 			});
 			element.addEventListener('mouseup', function (event) {
-				_this2.isSwipable = false;
+				if (_this2.isSwipable) {
+					_this2.removeComponent();
+					assets[index].element.dispatchEvent(event);
+					_this2.isSwipable = false;
+				}
 			});
 		}
 	}, {
