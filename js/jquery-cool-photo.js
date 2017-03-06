@@ -152,27 +152,42 @@ var coolPhoto = function () {
 			var target = event.target;
 			var photoImg = element.querySelector('.' + settings.classNames.coolPhotoImg);
 			var nextIndex = this.index;
-			if (this.isSwipable) {
-				if (this.pos.x < -this.settings.swipeOffset) {
-					photoImg.style = 'transition: all .3s;';
-					setTimeout(function () {
-						dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgRight);
-					}, 1);
-					nextIndex++;
-				} else if (this.pos.x > this.settings.swipeOffset) {
-					photoImg.style = 'transition: all .3s;';
-					setTimeout(function () {
-						dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgLeft);
-					}, 1);
-					nextIndex--;
-				}
-				setTimeout(function () {
-					_this2.removeComponent();
-					var event = new Event('click');
-					assets[nextIndex].element.dispatchEvent(event);
-				}, settings.animationSpeed);
-				this.isSwipable = false;
+			var move = false;
+			if (!this.isSwipable) {
+				return;
 			}
+			this.isSwipable = false;
+			if (this.pos.x < -this.settings.swipeOffset) {
+				photoImg.style.transition = 'all .3s';
+				setTimeout(function () {
+					dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgRight);
+				}, 1);
+				move = true;
+				nextIndex++;
+			} else if (this.pos.x > this.settings.swipeOffset) {
+				photoImg.style.transition = 'all .3s';
+				setTimeout(function () {
+					dom.addClass(photoImg, _this2.settings.classNames.coolPhotoImgLeft);
+				}, 1);
+				move = true;
+				nextIndex--;
+			} else if (this.pos.x === 0) {} else {
+				photoImg.style.transition = 'all .3s';
+				setTimeout(function () {
+					photoImg.style.transform = 'translateX(0px)';
+				}, 1);
+				setTimeout(function () {
+					photoImg.style.transition = 'none';
+				});
+			}
+			if (!move) {
+				return;
+			}
+			setTimeout(function () {
+				_this2.removeComponent();
+				var event = new Event('click');
+				assets[nextIndex].element.dispatchEvent(event);
+			}, settings.animationSpeed);
 		}
 	}, {
 		key: 'getTouchPos',

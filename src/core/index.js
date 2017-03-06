@@ -93,27 +93,44 @@ class coolPhoto {
 		const target = event.target;
     const photoImg = element.querySelector(`.${settings.classNames.coolPhotoImg}`);
     let nextIndex = this.index;
-    if(this.isSwipable) {
-      if (this.pos.x < - this.settings.swipeOffset) {
-        photoImg.style = 'transition: all .3s;';
-        setTimeout(()=>{
-          dom.addClass(photoImg,this.settings.classNames.coolPhotoImgRight);
-        },1);
-        nextIndex++;
-      } else if (this.pos.x > this.settings.swipeOffset){
-        photoImg.style = 'transition: all .3s;';
-        setTimeout(()=>{
-          dom.addClass(photoImg,this.settings.classNames.coolPhotoImgLeft);
-        },1);
-        nextIndex--;
-      }
-      setTimeout(()=>{
-        this.removeComponent();
-        const event = new Event('click');
-        assets[nextIndex].element.dispatchEvent(event);
-      },settings.animationSpeed);
-      this.isSwipable = false;
+    let move = false;
+    if(!this.isSwipable) {
+      return;
     }
+    this.isSwipable = false;
+    if (this.pos.x < - this.settings.swipeOffset) {
+      photoImg.style.transition = 'all .3s';
+      setTimeout(()=>{
+        dom.addClass(photoImg,this.settings.classNames.coolPhotoImgRight);
+      },1);
+      move = true;
+      nextIndex++;
+    } else if (this.pos.x > this.settings.swipeOffset){
+      photoImg.style.transition = 'all .3s';
+      setTimeout(()=>{
+        dom.addClass(photoImg,this.settings.classNames.coolPhotoImgLeft);
+      },1);
+      move = true;
+      nextIndex--;
+    } else if (this.pos.x === 0) {
+      
+    } else {
+      photoImg.style.transition = 'all .3s';
+      setTimeout(()=>{
+        photoImg.style.transform = 'translateX(0px)';
+      },1);
+      setTimeout(()=>{
+        photoImg.style.transition = 'none';
+      })
+    }
+    if (!move) {
+      return;
+    }
+    setTimeout(()=>{
+      this.removeComponent();
+      const event = new Event('click');
+      assets[nextIndex].element.dispatchEvent(event);
+    },settings.animationSpeed);
   }
 
 	getTouchPos (e) {
