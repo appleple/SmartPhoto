@@ -18,13 +18,10 @@ console.log(coolPhoto);
 
 var applyJQuery = function applyJQuery(jQuery) {
 	jQuery.fn.coolPhoto = function (settings) {
-		return this.each(function () {
-			if (typeof settings === 'strings') {
-				if (settings === 'destroy') {}
-			} else {
-				new coolPhoto(this, settings);
-			}
-		});
+		if (typeof settings === 'strings') {} else {
+			new coolPhoto(this.selector, settings);
+		}
+		return this;
 	};
 };
 
@@ -46,9 +43,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var extend = require('../lib/extend');
 var dom = require('../lib/dom');
-var assets = [];
+var util = require('../lib/util');
 
 var defaults = {
   classNames: {
@@ -58,40 +54,46 @@ var defaults = {
     coolPhotoInner: 'cool-photo-inner',
     coolPhotoImg: 'cool-photo-img',
     coolPhotoArrows: 'cool-photo-arrows',
+    coolPhotoNav: 'cool-photo-nav',
     coolPhotoArrowRight: 'cool-photo-arrow-right',
     coolPhotoArrowLeft: 'cool-photo-arrow-left',
     coolPhotoImgLeft: 'cool-photo-img-left',
     coolPhotoImgRight: 'cool-photo-img-right'
   },
   arrows: true,
-  dots: true,
+  nav: true,
   animationSpeed: 300,
   swipeOffset: 100
 };
 
 var coolPhoto = function () {
-  function coolPhoto(element, settings) {
+  function coolPhoto(selector, settings) {
     var _this = this;
 
     _classCallCheck(this, coolPhoto);
 
-    settings = extend({}, defaults, settings);
-    this.element = element;
+    settings = util.extend({}, defaults, settings);
     this.settings = settings;
-    this.index = this.addNewAsset();
-    this.isSmartPhone = coolPhoto.isSmartPhone();
-    element.setAttribute('data-index', this.index);
-    element.addEventListener('click', function (event) {
-      event.preventDefault();
-      _this.render();
-      _this.dispatchEvent();
+    this.isSmartPhone = util.isSmartPhone();
+    this.currentIndex = 0;
+    var index = 0;
+    this.elements = document.querySelectorAll(selector);
+    [].forEach.call(this.elements, function (element) {
+      element.setAttribute('data-index', index);
+      index++;
+      element.addEventListener('click', function (event) {
+        event.preventDefault();
+        _this.currentIndex = element.getAttribute('data-index');
+        _this.render();
+        _this.dispatchEvent(element);
+      });
     });
   }
 
   _createClass(coolPhoto, [{
     key: 'dispatchEvent',
-    value: function dispatchEvent() {
-      var element = this.element.nextElementSibling;
+    value: function dispatchEvent(sibling) {
+      var element = sibling.nextElementSibling;
       element.addEventListener('click', this.onClick.bind(this));
       if (this.isSmartPhone) {
         element.addEventListener('touchstart', this.onTouchStart.bind(this));
@@ -154,7 +156,6 @@ var coolPhoto = function () {
     value: function onTouchEnd(event) {
       var _this2 = this;
 
-      var element = this.element.nextElementSibling;
       var settings = this.settings;
       var target = event.target;
       var photoImg = element.querySelector('.' + settings.classNames.coolPhotoImg);
@@ -213,22 +214,6 @@ var coolPhoto = function () {
       return { x: x, y: y };
     }
   }, {
-    key: 'addNewAsset',
-    value: function addNewAsset() {
-      var element = this.element;
-      var src = element.getAttribute('href');
-      assets.push({
-        src: src,
-        element: element
-      });
-      return assets.length - 1;
-    }
-  }, {
-    key: 'getAsset',
-    value: function getAsset(index) {
-      return assets[index];
-    }
-  }, {
     key: 'removeComponent',
     value: function removeComponent() {
       var element = this.element.nextElementSibling;
@@ -242,22 +227,15 @@ var coolPhoto = function () {
   }, {
     key: 'render',
     value: function render() {
-      var element = this.element;
       var settings = this.settings;
-      var index = parseInt(element.getAttribute('data-index'));
-      var src = assets[index].src;
-      var html = '\n\t\t\t<div class="' + settings.classNames.coolPhoto + '">\n\t\t\t\t<div class="' + settings.classNames.coolPhotoBody + '">\n\t\t\t\t\t<div class="' + settings.classNames.coolPhotoInner + '">\n\t\t\t\t\t\t<img src="' + src + '" class="' + settings.classNames.coolPhotoImg + '">\n\t\t\t\t\t\t' + (settings.arrows ? '\n\t\t\t\t\t\t\t<ul class="' + settings.classNames.coolPhotoArrows + '">\n\t\t\t\t\t\t\t\t' + (index > 0 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowLeft + '" data-index="' + (index - 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t\t' + (index !== assets.length - 1 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowRight + '" data-index="' + (index + 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t';
+      var index = this.currentIndex;
+      var elements = Array.prototype.slice.call(this.elements);
+      var element = elements[index];
+      var src = element.getAttribute('href');
+      var html = '\n\t\t\t<div class="' + settings.classNames.coolPhoto + '">\n\t\t\t\t<div class="' + settings.classNames.coolPhotoBody + '">\n\t\t\t\t\t<div class="' + settings.classNames.coolPhotoInner + '">\n\t\t\t\t\t\t<img src="' + src + '" class="' + settings.classNames.coolPhotoImg + '">\n\t\t\t\t\t\t' + (settings.arrows ? '\n\t\t\t\t\t\t\t<ul class="' + settings.classNames.coolPhotoArrows + '">\n\t\t\t\t\t\t\t\t' + (index > 0 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowLeft + '" data-index="' + (index - 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t\t' + (index !== elements.length - 1 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowRight + '" data-index="' + (index + 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t' : '') + '\n            ' + (settings.nav ? '\n              <ul class="' + settings.classNames.coolPhotoNav + '">\n                ' + elements.map(function (element) {
+        return '<li><img src="' + element.getAttribute('href') + '"></li>';
+      }).join('') + '\n              </ul>\n            ' : '') + '\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t';
       element.insertAdjacentHTML('afterend', html);
-    }
-  }], [{
-    key: 'isSmartPhone',
-    value: function isSmartPhone() {
-      var agent = navigator.userAgent;
-      if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0 || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
-        return true;
-      } else {
-        return false;
-      }
     }
   }]);
 
@@ -266,7 +244,7 @@ var coolPhoto = function () {
 
 module.exports = coolPhoto;
 
-},{"../lib/dom":4,"../lib/extend":5}],3:[function(require,module,exports){
+},{"../lib/dom":4,"../lib/util":5}],3:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./core/');
@@ -303,6 +281,15 @@ module.exports.remove = function (element) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+module.exports.isSmartPhone = function () {
+  var agent = navigator.userAgent;
+  if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0 || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 function deepExtend(out) {
   out = out || {};
 
@@ -323,6 +310,6 @@ function deepExtend(out) {
   return out;
 };
 
-module.exports = deepExtend;
+module.exports.extend = deepExtend;
 
 },{}]},{},[1]);

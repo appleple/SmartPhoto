@@ -1,6 +1,5 @@
-const extend = require('../lib/extend');
 const dom = require('../lib/dom');
-const assets = [];
+const util = require('../lib/util');
 
 const defaults = {
 	classNames: {
@@ -10,35 +9,41 @@ const defaults = {
 		coolPhotoInner: 'cool-photo-inner',
 		coolPhotoImg: 'cool-photo-img',
 		coolPhotoArrows: 'cool-photo-arrows',
+    coolPhotoNav: 'cool-photo-nav',
 		coolPhotoArrowRight: 'cool-photo-arrow-right',
 		coolPhotoArrowLeft: 'cool-photo-arrow-left',
     coolPhotoImgLeft: 'cool-photo-img-left',
     coolPhotoImgRight: 'cool-photo-img-right'
 	},
 	arrows:true,
-	dots:true,
+	nav:true,
 	animationSpeed: 300,
   swipeOffset: 100
 }
 
 class coolPhoto {
 
-	constructor (element, settings) {
-		settings = extend({},defaults,settings);
-		this.element = element;
+	constructor (selector, settings) {
+		settings = util.extend({},defaults,settings);
 		this.settings = settings;
-		this.index = this.addNewAsset();
-    this.isSmartPhone = coolPhoto.isSmartPhone();
-		element.setAttribute('data-index', this.index);
-		element.addEventListener('click', (event) => {
-      event.preventDefault();
-			this.render();
-			this.dispatchEvent();
-		});
+    this.isSmartPhone = util.isSmartPhone();
+    this.currentIndex = 0;
+    let index = 0;
+    this.elements = document.querySelectorAll(selector);
+    [].forEach.call(this.elements, (element) => {
+      element.setAttribute('data-index', index);
+      index++;
+      element.addEventListener('click', (event) => {
+        event.preventDefault();
+        this.currentIndex = element.getAttribute('data-index');
+        this.render();
+        this.dispatchEvent(element);
+      });
+    });
 	}
 
-	dispatchEvent () {
-    const element = this.element.nextElementSibling;
+	dispatchEvent (sibling) {
+    const element = sibling.nextElementSibling;
 		element.addEventListener('click',this.onClick.bind(this));
     if(this.isSmartPhone){
       element.addEventListener('touchstart', this.onTouchStart.bind(this));
@@ -95,7 +100,6 @@ class coolPhoto {
   }
 
   onTouchEnd (event) {
-    const element = this.element.nextElementSibling;
 		const settings = this.settings;
 		const target = event.target;
     const photoImg = element.querySelector(`.${settings.classNames.coolPhotoImg}`);
@@ -153,21 +157,6 @@ class coolPhoto {
 		return { x: x, y: y };
 	}
 
-
-	addNewAsset () {
-		const element = this.element;
-		const src = element.getAttribute('href');
-		assets.push({
-			src:src,
-			element:element
-		});
-		return assets.length - 1;
-	}
-
-	getAsset (index) {
-		return assets[index];
-	}
-
 	removeComponent () {
 		const element = this.element.nextElementSibling;
 		const settings = this.settings;
@@ -179,10 +168,11 @@ class coolPhoto {
 	}
 
 	render () {
-		const element = this.element;
 		const settings = this.settings;
-		const index = parseInt(element.getAttribute('data-index'));
-		const src = assets[index].src;
+		const index = this.currentIndex;
+    const elements = Array.prototype.slice.call(this.elements);
+    const element = elements[index];
+		const src = element.getAttribute('href');
 		const html =  `
 			<div class="${settings.classNames.coolPhoto}">
 				<div class="${settings.classNames.coolPhotoBody}">
@@ -193,27 +183,22 @@ class coolPhoto {
 								${index > 0 ? `
 									<li class="${settings.classNames.coolPhotoArrowLeft}" data-index="${index - 1}"></li>
 								` : ''}
-								${index !== assets.length - 1 ? `
+								${index !== elements.length - 1 ? `
 									<li class="${settings.classNames.coolPhotoArrowRight}" data-index="${index + 1}"></li>
 								` : ''}
 							</ul>
 						` : ''}
+            ${settings.nav ? `
+              <ul class="${settings.classNames.coolPhotoNav}">
+                ${elements.map(element => `<li><img src="${element.getAttribute('href')}"></li>`).join('')}
+              </ul>
+            `: ''}
 					</div>
 				</div>
 			</div>
 		`;
 		element.insertAdjacentHTML('afterend', html);
 	}
-
-  static isSmartPhone () {
-    const agent = navigator.userAgent
-    if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0
-        || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
-      return true
-    } else {
-      return false
-    }
-  }
 
 }
 

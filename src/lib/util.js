@@ -1,3 +1,13 @@
+module.exports.isSmartPhone = () => {
+    const agent = navigator.userAgent
+    if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0
+        || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
+      return true
+    } else {
+      return false
+    }
+}
+
 function deepExtend(out){
   out = out || {};
 
@@ -21,4 +31,4 @@ function deepExtend(out){
   return out;
 };
 
-module.exports = deepExtend;
+module.exports.extend = deepExtend;
