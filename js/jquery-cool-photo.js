@@ -58,7 +58,8 @@ var defaults = {
     coolPhotoArrowRight: 'cool-photo-arrow-right',
     coolPhotoArrowLeft: 'cool-photo-arrow-left',
     coolPhotoImgLeft: 'cool-photo-img-left',
-    coolPhotoImgRight: 'cool-photo-img-right'
+    coolPhotoImgRight: 'cool-photo-img-right',
+    coolPhotoList: 'cool-photo-list'
   },
   arrows: true,
   nav: true,
@@ -84,6 +85,7 @@ var coolPhoto = function () {
       element.addEventListener('click', function (event) {
         event.preventDefault();
         _this.currentIndex = element.getAttribute('data-index');
+        _this.selectedElement = element;
         _this.render();
         _this.dispatchEvent(element);
       });
@@ -108,7 +110,7 @@ var coolPhoto = function () {
   }, {
     key: 'onClick',
     value: function onClick(event) {
-      var element = this.element.nextElementSibling;
+      var element = this.selectedElement.nextElementSibling;
       var settings = this.settings;
       var index = this.index;
       var target = event.target;
@@ -156,6 +158,7 @@ var coolPhoto = function () {
     value: function onTouchEnd(event) {
       var _this2 = this;
 
+      var element = this.selectedElement.nextElementSibling;
       var settings = this.settings;
       var target = event.target;
       var photoImg = element.querySelector('.' + settings.classNames.coolPhotoImg);
@@ -179,9 +182,7 @@ var coolPhoto = function () {
         }, 1);
         move = true;
         nextIndex--;
-      } else if (this.pos.x === 0) {
-        console.log(photoImg.width);
-      } else {
+      } else if (this.pos.x === 0) {} else {
         photoImg.style.transition = 'all .3s';
         setTimeout(function () {
           photoImg.style.transform = 'translateX(0px)';
@@ -194,9 +195,7 @@ var coolPhoto = function () {
         return;
       }
       setTimeout(function () {
-        _this2.removeComponent();
-        var event = new Event('click');
-        assets[nextIndex].element.dispatchEvent(event);
+        // this.removeComponent();
       }, settings.animationSpeed);
     }
   }, {
@@ -216,7 +215,7 @@ var coolPhoto = function () {
   }, {
     key: 'removeComponent',
     value: function removeComponent() {
-      var element = this.element.nextElementSibling;
+      var element = this.selectedElement.nextElementSibling;
       var settings = this.settings;
       dom.addClass(element, settings.classNames.coolPhotoClose);
       // element.removeEventListener('click');
@@ -232,7 +231,9 @@ var coolPhoto = function () {
       var elements = Array.prototype.slice.call(this.elements);
       var element = elements[index];
       var src = element.getAttribute('href');
-      var html = '\n\t\t\t<div class="' + settings.classNames.coolPhoto + '">\n\t\t\t\t<div class="' + settings.classNames.coolPhotoBody + '">\n\t\t\t\t\t<div class="' + settings.classNames.coolPhotoInner + '">\n\t\t\t\t\t\t<img src="' + src + '" class="' + settings.classNames.coolPhotoImg + '">\n\t\t\t\t\t\t' + (settings.arrows ? '\n\t\t\t\t\t\t\t<ul class="' + settings.classNames.coolPhotoArrows + '">\n\t\t\t\t\t\t\t\t' + (index > 0 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowLeft + '" data-index="' + (index - 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t\t' + (index !== elements.length - 1 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowRight + '" data-index="' + (index + 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t' : '') + '\n            ' + (settings.nav ? '\n              <ul class="' + settings.classNames.coolPhotoNav + '">\n                ' + elements.map(function (element) {
+      var html = '\n\t\t\t<div class="' + settings.classNames.coolPhoto + '">\n\t\t\t\t<div class="' + settings.classNames.coolPhotoBody + '">\n\t\t\t\t\t<div class="' + settings.classNames.coolPhotoInner + '">\n            <ul class="' + settings.classNames.coolPhotoList + '">\n              ' + elements.map(function (element) {
+        return '<li><img src="' + element.getAttribute('href') + '" class="' + settings.classNames.coolPhotoImg + '"></li>';
+      }).join('') + '\n            </ul>\n\t\t\t\t\t\t' + (settings.arrows ? '\n\t\t\t\t\t\t\t<ul class="' + settings.classNames.coolPhotoArrows + '">\n\t\t\t\t\t\t\t\t' + (index > 0 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowLeft + '" data-index="' + (index - 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t\t' + (index !== elements.length - 1 ? '\n\t\t\t\t\t\t\t\t\t<li class="' + settings.classNames.coolPhotoArrowRight + '" data-index="' + (index + 1) + '"></li>\n\t\t\t\t\t\t\t\t' : '') + '\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t' : '') + '\n            ' + (settings.nav ? '\n              <ul class="' + settings.classNames.coolPhotoNav + '">\n                ' + elements.map(function (element) {
         return '<li><img src="' + element.getAttribute('href') + '"></li>';
       }).join('') + '\n              </ul>\n            ' : '') + '\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t';
       element.insertAdjacentHTML('afterend', html);

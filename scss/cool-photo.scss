@@ -154,3 +154,16 @@ $modal-bg-color: #333;
 	height: 100%;
 	width: auto;
 }
+
+.cool-photo-list{
+	list-style-type: none;
+	white-space: nowrap;
+	padding: 0;
+	margin: 0;
+	li {
+		display: inline-block;
+		width: 100%;
+		height: 100%;
+	}
+}
+

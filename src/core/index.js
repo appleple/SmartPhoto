@@ -13,7 +13,8 @@ const defaults = {
 		coolPhotoArrowRight: 'cool-photo-arrow-right',
 		coolPhotoArrowLeft: 'cool-photo-arrow-left',
     coolPhotoImgLeft: 'cool-photo-img-left',
-    coolPhotoImgRight: 'cool-photo-img-right'
+    coolPhotoImgRight: 'cool-photo-img-right',
+    coolPhotoList: 'cool-photo-list'
 	},
 	arrows:true,
 	nav:true,
@@ -36,6 +37,7 @@ class coolPhoto {
       element.addEventListener('click', (event) => {
         event.preventDefault();
         this.currentIndex = element.getAttribute('data-index');
+        this.selectedElement = element;
         this.render();
         this.dispatchEvent(element);
       });
@@ -55,9 +57,9 @@ class coolPhoto {
       element.addEventListener('mouseup', this.onTouchEnd.bind(this));
     }
 	}
-  
+
   onClick (event) {
- 		const element = this.element.nextElementSibling;
+ 		const element = this.selectedElement.nextElementSibling;
 		const settings = this.settings;
     const index = this.index;
 		const target = event.target;
@@ -100,6 +102,7 @@ class coolPhoto {
   }
 
   onTouchEnd (event) {
+    const element = this.selectedElement.nextElementSibling;
 		const settings = this.settings;
 		const target = event.target;
     const photoImg = element.querySelector(`.${settings.classNames.coolPhotoImg}`);
@@ -124,7 +127,6 @@ class coolPhoto {
       move = true;
       nextIndex--;
     } else if (this.pos.x === 0) {
-      console.log(photoImg.width);
     } else {
       photoImg.style.transition = 'all .3s';
       setTimeout(()=>{
@@ -138,9 +140,7 @@ class coolPhoto {
       return;
     }
     setTimeout(()=>{
-      this.removeComponent();
-      const event = new Event('click');
-      assets[nextIndex].element.dispatchEvent(event);
+      // this.removeComponent();
     },settings.animationSpeed);
   }
 
@@ -158,7 +158,7 @@ class coolPhoto {
 	}
 
 	removeComponent () {
-		const element = this.element.nextElementSibling;
+		const element = this.selectedElement.nextElementSibling;
 		const settings = this.settings;
 		dom.addClass(element,settings.classNames.coolPhotoClose);
 		// element.removeEventListener('click');
@@ -177,7 +177,9 @@ class coolPhoto {
 			<div class="${settings.classNames.coolPhoto}">
 				<div class="${settings.classNames.coolPhotoBody}">
 					<div class="${settings.classNames.coolPhotoInner}">
-						<img src="${src}" class="${settings.classNames.coolPhotoImg}">
+            <ul class="${settings.classNames.coolPhotoList}">
+              ${elements.map(element => `<li><img src="${element.getAttribute('href')}" class="${settings.classNames.coolPhotoImg}"></li>`).join('')}
+            </ul>
 						${settings.arrows ? `
 							<ul class="${settings.classNames.coolPhotoArrows}">
 								${index > 0 ? `

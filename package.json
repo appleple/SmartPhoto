@@ -11,7 +11,7 @@
 		"babel": "babel ./src/index.js --out-file ./js/cool-photo.js",
 		"uglify": "uglifyjs ./js/cool-photo.js > ./js/cool-photo.min.js",
 		"sass": "node-sass ./scss/cool-photo.scss ./css/cool-photo.min.css --output-style compressed",
-		"watch": "nodemon --ignore 'js/*.js' -x \"npm run js && npm run sass\"",
+		"watch": "nodemon --ignore 'js/*.js' -x \"npm run bundle:jquery && npm run sass\"",
 		"sync": "browser-sync start --server './' --files './'",
 		"start": "npm-run-all -p watch sync"
 	},
