@@ -6959,6 +6959,11 @@ var coolPhoto = function (_aTemplate) {
         this.beforePhotoDrag();
         return;
       }
+      var event = this.e;
+      if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
+        this.beforeGesture();
+        return;
+      }
       var pos = this.getTouchPos(this.e);
       this.isSwipable = true;
       this.firstPos = pos;
@@ -6972,7 +6977,9 @@ var coolPhoto = function (_aTemplate) {
         this.afterPhotoDrag();
         return;
       } else if (this.oldPos.x === this.firstPos.x) {
-        this.zoomPhoto();
+        if (!util.isSmartPhone()) {
+          this.zoomPhoto();
+        }
         return;
       }
       var swipeWidth = this.oldPos.x - this.firstPos.x;
@@ -6994,6 +7001,11 @@ var coolPhoto = function (_aTemplate) {
         return;
       }
       this.e.preventDefault();
+      var event = this.e;
+      if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
+        this.onGesture();
+        return;
+      }
       var pos = this.getTouchPos(this.e);
       var x = pos.x - this.oldPos.x;
       this.pos.x += x;
@@ -7050,6 +7062,12 @@ var coolPhoto = function (_aTemplate) {
       }
       this.photoSwipable = false;
     }
+  }, {
+    key: 'beforeGesture',
+    value: function beforeGesture() {}
+  }, {
+    key: 'onGesture',
+    value: function onGesture() {}
   }]);
   return coolPhoto;
 }(_aTemplate3.default);

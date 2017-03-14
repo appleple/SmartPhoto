@@ -162,6 +162,11 @@ class coolPhoto extends aTemplate {
       this.beforePhotoDrag();
       return;
     }
+    const event = this.e;
+    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1){
+      this.beforeGesture();
+      return;
+    }
     const pos = this.getTouchPos(this.e);
     this.isSwipable = true;
     this.firstPos = pos;
@@ -174,7 +179,9 @@ class coolPhoto extends aTemplate {
       this.afterPhotoDrag();
       return;
     } else if (this.oldPos.x === this.firstPos.x) {
-      this.zoomPhoto();
+      if(!util.isSmartPhone()) {
+        this.zoomPhoto();
+      }
       return;
     }
     const swipeWidth = this.oldPos.x - this.firstPos.x
@@ -195,6 +202,11 @@ class coolPhoto extends aTemplate {
       return;
     }
     this.e.preventDefault();
+    const event = this.e;
+    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1){
+      this.onGesture();
+      return;
+    }
     const pos = this.getTouchPos(this.e);
     const x = pos.x - this.oldPos.x;
     this.pos.x += x;
@@ -245,6 +257,14 @@ class coolPhoto extends aTemplate {
       this.zoomOutPhoto();
     }
     this.photoSwipable = false;
+  }
+
+  beforeGesture () {
+    
+  }
+
+  onGesture () {
+    
   }
 
 }
