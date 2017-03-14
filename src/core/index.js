@@ -102,10 +102,6 @@ class coolPhoto extends aTemplate {
     }
   }
 
-  zoomPhoto(){
-
-  }
-
 	getTouchPos (e) {
 		let x = 0;
 		let y = 0;
@@ -118,13 +114,6 @@ class coolPhoto extends aTemplate {
 		}
 		return { x: x, y: y };
 	}
-
-  beforeDrag () {
-    const pos = this.getTouchPos(this.e);
-    this.isSwipable = true;
-    this.firstPos = pos;
-    this.oldPos = pos;
-  }
 
   setPosByCurrentIndex () {
     this.pos.x = -1 * this.data.currentIndex * window.innerWidth;
@@ -168,16 +157,28 @@ class coolPhoto extends aTemplate {
     }
   }
 
+  beforeDrag () {
+    if(this.data.scale){
+      return;
+    }
+    const pos = this.getTouchPos(this.e);
+    this.isSwipable = true;
+    this.firstPos = pos;
+    this.oldPos = pos;
+  }
+
   afterDrag () {
     this.isSwipable = false;
-    this.update();
+    if(this.oldPos.x === this.firstPos.x) {
+      this.zoomPhoto();
+      return;
+    }
     const swipeWidth = this.oldPos.x - this.firstPos.x
     if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0 ) {
       this.data.currentIndex--;
     } else if (swipeWidth <= - this.data.swipeOffset && this.data.currentIndex != this.data.items.length -1 ) {
       this.data.currentIndex++;
     }
-    this.data.onMoveClass = true;
     this.slideList();
   }
 
@@ -191,6 +192,15 @@ class coolPhoto extends aTemplate {
     this.pos.x += x;
     this.data.translateX = this.pos.x;
     this.oldPos = pos;
+    this.update();
+  }
+
+  zoomPhoto(){
+    if(!this.data.scale){
+      this.data.scale = true;
+    }else{
+      this.data.scale = false;
+    }
     this.update();
   }
 
