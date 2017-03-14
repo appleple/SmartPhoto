@@ -1,0 +1,29 @@
+<div class="\{classNames.coolPhoto\}"<!-- BEGIN hide:exist --> style="display:none;"<!-- END hide:exist -->>
+	<div class="\{classNames.coolPhotoBody\}" data-action-click="hidePhoto">
+		<div class="\{classNames.coolPhotoInner\}">
+				<ul style="transform:translateX({translateX}px);" class="\{classNames.coolPhotoList\}<!-- BEGIN onMoveClass:exist --> \{classNames.coolPhotoListOnMove\}<!-- END onMoveClass:exist -->" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-mousemove="onDrag" data-action-click="zoomPhoto">
+					<!-- BEGIN items:loop -->
+					<li style="transform:translateX({translateX}px);"><img src="{src}" class="\\{classNames.coolPhotoImg\\}"></li>
+					<!-- END items:loop -->
+				</ul>
+				<!-- BEGIN arrows:exist -->
+					<ul class="\{classNames.coolPhotoArrows\}">
+							<!-- BEGIN itemPrev:exist -->
+							<li class="\{classNames.coolPhotoArrowLeft\}" data-index="{prevIndex}"></li>
+							<!-- END itemPrev:exist -->
+
+							<!-- BEGIN itemNext:exist -->
+							<li class="\{classNames.coolPhotoArrowRight\}" data-index="{nextIndex}"></li>
+							<!-- END itemNext:exist -->
+					</ul>
+				<!-- END arrows:exist -->
+				<!-- BEGIN nav:exist -->
+				<ul class="\{classNames.coolPhotoNav\}">
+					<!-- BEGIN items:loop -->
+					<li><img src="{src}"></li>
+					<!-- END items:loop -->
+				</ul>
+				<!-- END nav:exist -->
+		</div>
+	</div>
+</div>

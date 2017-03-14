@@ -160,10 +160,23 @@ $modal-bg-color: #333;
 	white-space: nowrap;
 	padding: 0;
 	margin: 0;
+	position: relative;
 	li {
-		display: inline-block;
+		display: block;
 		width: 100%;
 		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
 	}
+}
+
+.cool-photo-list-onmove{
+	transition: all .3s;
+}
+
+.cool-photo-img{
+	width: 100%;
+	height: auto;
 }
 

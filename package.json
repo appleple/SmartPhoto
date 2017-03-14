@@ -7,7 +7,7 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"js": "npm run babel && npm run uglify",
-		"bundle:jquery": "browserify ./src/adaptor/jquery.js -t [ babelify --presets [ es2015 ] ] -p licensify > ./js/jquery-cool-photo.js",
+		"bundle:jquery": "browserify ./src/adaptor/jquery.js -t babelify -t [ stringify --extensions [.html .css] ] -p licensify > ./js/jquery-cool-photo.js",
 		"babel": "babel ./src/index.js --out-file ./js/cool-photo.js",
 		"uglify": "uglifyjs ./js/cool-photo.js > ./js/cool-photo.min.js",
 		"sass": "node-sass ./scss/cool-photo.scss ./css/cool-photo.min.css --output-style compressed",
@@ -20,17 +20,21 @@
 	"devDependencies": {
 		"babel-cli": "^6.18.0",
 		"babel-preset-es2015": "^6.18.0",
+		"babel-plugin-transform-runtime": "^6.23.0",
 		"babelify": "^7.3.0",
+		"stringify": "^5.1.0",
 		"browser-sync": "^2.18.6",
 		"browserify": "^13.1.1",
 		"http-server": "^0.9.0",
 		"node-sass": "^4.3.0",
 		"nodemon": "^1.11.0",
+		"licensify": "^3.1.2",
+		"watchify": "^3.9.0",
 		"npm-run-all": "^4.0.1",
 		"uglify-js": "^2.7.5"
 	},
 	"dependencies": {
-		"licensify": "^3.1.2",
-		"watchify": "^3.9.0"
+		"a-template": "^0.1.2",
+		"zepto-browserify": "^1.1.6-1"
 	}
 }

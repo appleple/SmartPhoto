@@ -1,5 +1,8 @@
-const dom = require('../lib/dom');
+import aTemplate from 'a-template';
+import { $ } from 'zepto-browserify';
+
 const util = require('../lib/util');
+const template = require('./viwer.html');
 
 const defaults = {
 	classNames: {
@@ -14,7 +17,8 @@ const defaults = {
 		coolPhotoArrowLeft: 'cool-photo-arrow-left',
     coolPhotoImgLeft: 'cool-photo-img-left',
     coolPhotoImgRight: 'cool-photo-img-right',
-    coolPhotoList: 'cool-photo-list'
+    coolPhotoList: 'cool-photo-list',
+    coolPhotoListOnMove: 'cool-photo-list-onmove'
 	},
 	arrows:true,
 	nav:true,
@@ -22,126 +26,97 @@ const defaults = {
   swipeOffset: 100
 }
 
-class coolPhoto {
+function getRand (a, b) {
+  return ~~(Math.random() * (b - a + 1)) + a;
+}
 
-	constructor (selector, settings) {
-		settings = util.extend({},defaults,settings);
-		this.settings = settings;
-    this.isSmartPhone = util.isSmartPhone();
-    this.currentIndex = 0;
-    let index = 0;
-    this.elements = document.querySelectorAll(selector);
-    [].forEach.call(this.elements, (element) => {
-      element.setAttribute('data-index', index);
-      index++;
-      element.addEventListener('click', (event) => {
-        event.preventDefault();
-        this.currentIndex = element.getAttribute('data-index');
-        this.selectedElement = element;
-        this.render();
-        this.dispatchEvent(element);
-      });
-    });
-	}
-
-	dispatchEvent (sibling) {
-    const element = sibling.nextElementSibling;
-		element.addEventListener('click',this.onClick.bind(this));
-    if(this.isSmartPhone){
-      element.addEventListener('touchstart', this.onTouchStart.bind(this));
-      element.addEventListener('touchmove', this.onTouchMove.bind(this));
-      element.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }else{
-      element.addEventListener('mousedown', this.onTouchStart.bind(this));
-      element.addEventListener('mousemove', this.onTouchMove.bind(this));
-      element.addEventListener('mouseup', this.onTouchEnd.bind(this));
-    }
-	}
-
-  onClick (event) {
- 		const element = this.selectedElement.nextElementSibling;
-		const settings = this.settings;
-    const index = this.index;
-		const target = event.target;
-    if (dom.hasClass(target,settings.classNames.coolPhotoArrowLeft)) {
-      const event = new Event('click');
-      this.removeComponent();
-      assets[index - 1].element.dispatchEvent(event);
-    } else if (dom.hasClass(target,settings.classNames.coolPhotoArrowRight)) {
-      const event = new Event('click');
-      this.removeComponent();
-      assets[index + 1].element.dispatchEvent(event);
-    } else if (!dom.hasClass(target,settings.classNames.coolPhotoImg)) {
-      this.removeComponent();
-    }
+function getRandText (limit) {
+  let ret = "";
+  let strings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let length = strings.length;
+  for (let i = 0; i < limit; i++) {
+    ret += strings.charAt(Math.floor(getRand(0, length)));
   }
+  return ret;
+}
 
-  onTouchStart (event) {
-    const target = event.target;
-    const settings = this.settings;
-    if (dom.hasClass(target,settings.classNames.coolPhotoImg)){
-      const pos = this.getTouchPos(event);
-      this.isSwipable = true;
-      this.pos = { x: 0, y: 0 };
-      this.oldPos = pos;
-    }
-    event.preventDefault();
-  }
-
-  onTouchMove (event) {
-    const target = event.target;
-    const settings = this.settings;
-    if (dom.hasClass(target,settings.classNames.coolPhotoImg) && this.isSwipable){
-      const pos = this.getTouchPos(event);
-      const x = pos.x - this.oldPos.x;
-      this.pos.x += x;
-      target.style.transform = `translateX(${this.pos.x}px)`;
-      this.oldPos = pos;
-    }
-    event.preventDefault();
-  }
-
-  onTouchEnd (event) {
-    const element = this.selectedElement.nextElementSibling;
-		const settings = this.settings;
-		const target = event.target;
-    const photoImg = element.querySelector(`.${settings.classNames.coolPhotoImg}`);
-    let nextIndex = this.index;
-    let move = false;
-    if(!this.isSwipable) {
-      return;
-    }
-    this.isSwipable = false;
-    if (this.pos.x < - this.settings.swipeOffset) {
-      photoImg.style.transition = 'all .3s';
-      setTimeout(()=>{
-        dom.addClass(photoImg,this.settings.classNames.coolPhotoImgRight);
-      },1);
-      move = true;
-      nextIndex++;
-    } else if (this.pos.x > this.settings.swipeOffset){
-      photoImg.style.transition = 'all .3s';
-      setTimeout(()=>{
-        dom.addClass(photoImg,this.settings.classNames.coolPhotoImgLeft);
-      },1);
-      move = true;
-      nextIndex--;
-    } else if (this.pos.x === 0) {
-    } else {
-      photoImg.style.transition = 'all .3s';
-      setTimeout(()=>{
-        photoImg.style.transform = 'translateX(0px)';
-      },1);
-      setTimeout(()=>{
-        photoImg.style.transition = 'none';
+function * getUniqId (limit) {
+  const ids = []
+  while(true) {
+    let id = getRandText(limit)
+    while(true) {
+      let flag = true
+      ids.forEach((item) => {
+        if(item === id){
+          flag = false
+          id = getRandText(limit)
+        }
       })
+      if(flag === true) {
+        break
+      }
     }
-    if (!move) {
-      return;
+    ids.push(id)
+    yield id
+  }
+}
+
+function * getIndex (){
+  let i = 0;
+  while(true) {
+    yield i;
+    i++;
+  }
+}
+
+const idGen = getUniqId(10)
+const indexGen = getIndex()
+
+class coolPhoto extends aTemplate {
+
+  constructor (selector, settings) {
+    super();
+    this.data = util.extend({},defaults,settings);
+    this.data.currentIndex = 0;
+    this.data.hide = true;
+    this.data.items = [];
+    this.pos = { x: 0, y: 0};
+    this.elements = document.querySelectorAll(selector);
+    this.id = idGen.next().value;
+    this.addTemplate(this.id,template);
+    $('body').append(`<div data-id='${this.id}'></div>`);
+    this.update();
+    [].forEach.call(this.elements, (element,index) => {
+      this.addNewItem(element,index);
+    });
+    $(window).resize(() => {
+      this.data.translateY =
+      this.update();
+    });
+  }
+
+  addNewItem (element, index) {
+    const id = indexGen.next().value;
+    this.data.items.push({src: element.getAttribute('href'), translateX: window.innerWidth*index, id: id});
+    element.setAttribute('data-index',index);
+    element.addEventListener('click', (event) => {
+      event.preventDefault();
+      this.data.currentIndex = element.getAttribute('data-index');
+      this.setPosByCurrentIndex();
+      this.data.hide = false;
+      this.update();
+    });
+  }
+
+  hidePhoto () {
+    if($(this.e.target).hasClass(this.data.classNames.coolPhotoInner)){
+      this.data.hide = true;
+      this.update();
     }
-    setTimeout(()=>{
-      // this.removeComponent();
-    },settings.animationSpeed);
+  }
+
+  zoomPhoto(){
+
   }
 
 	getTouchPos (e) {
@@ -157,52 +132,56 @@ class coolPhoto {
 		return { x: x, y: y };
 	}
 
-	removeComponent () {
-		const element = this.selectedElement.nextElementSibling;
-		const settings = this.settings;
-		dom.addClass(element,settings.classNames.coolPhotoClose);
-		// element.removeEventListener('click');
-		setTimeout(() => {
-			dom.remove(element);
-		},settings.animationSpeed);
-	}
+  beforeDrag () {
+    const pos = this.getTouchPos(this.e);
+    this.isSwipable = true;
+    this.firstPos = pos;
+    this.oldPos = pos;
+  }
 
-	render () {
-		const settings = this.settings;
-		const index = this.currentIndex;
-    const elements = Array.prototype.slice.call(this.elements);
-    const element = elements[index];
-		const src = element.getAttribute('href');
-		const html =  `
-			<div class="${settings.classNames.coolPhoto}">
-				<div class="${settings.classNames.coolPhotoBody}">
-					<div class="${settings.classNames.coolPhotoInner}">
-            <ul class="${settings.classNames.coolPhotoList}">
-              ${elements.map(element => `<li><img src="${element.getAttribute('href')}" class="${settings.classNames.coolPhotoImg}"></li>`).join('')}
-            </ul>
-						${settings.arrows ? `
-							<ul class="${settings.classNames.coolPhotoArrows}">
-								${index > 0 ? `
-									<li class="${settings.classNames.coolPhotoArrowLeft}" data-index="${index - 1}"></li>
-								` : ''}
-								${index !== elements.length - 1 ? `
-									<li class="${settings.classNames.coolPhotoArrowRight}" data-index="${index + 1}"></li>
-								` : ''}
-							</ul>
-						` : ''}
-            ${settings.nav ? `
-              <ul class="${settings.classNames.coolPhotoNav}">
-                ${elements.map(element => `<li><img src="${element.getAttribute('href')}"></li>`).join('')}
-              </ul>
-            `: ''}
-					</div>
-				</div>
-			</div>
-		`;
-		element.insertAdjacentHTML('afterend', html);
-	}
+  setPosByCurrentIndex () {
+    this.pos.x = -1 * this.data.currentIndex * window.innerWidth;
+    setTimeout(()=> {
+      this.data.translateX = this.pos.x;
+      this.update();
+    },1);
+  }
+
+  slideList () {
+    this.data.onMoveClass = true;
+    this.setPosByCurrentIndex();
+    setTimeout(() => {
+      this.data.onMoveClass = false;
+      this.update();
+    },300);
+  }
+
+  afterDrag () {
+    this.isSwipable = false;
+    this.update();
+    const swipeWidth = this.oldPos.x - this.firstPos.x
+    if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0 ) {
+      this.data.currentIndex--;
+    } else if (swipeWidth <= - this.data.swipeOffset && this.data.currentIndex != this.data.items.length -1 ) {
+      this.data.currentIndex++;
+    }
+    this.data.onMoveClass = true;
+    this.slideList();
+  }
+
+  onDrag () {
+    if(!this.isSwipable){
+      return;
+    }
+    this.e.preventDefault();
+    const pos = this.getTouchPos(this.e);
+    const x = pos.x - this.oldPos.x;
+    this.pos.x += x;
+    this.data.translateX = this.pos.x;
+    this.oldPos = pos;
+    this.update();
+  }
 
 }
 
 module.exports = coolPhoto;
-
