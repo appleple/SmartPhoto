@@ -115,6 +115,14 @@ class coolPhoto extends aTemplate {
 		return { x: x, y: y };
 	}
 
+  getGesturePos (e) {
+    const touches = event.originalEvent.touches;
+ 		return [
+      { x: touches[0].pageX, y: touches[0].pageY},
+      { x: touches[1].pageX, y: touches[1].pageY}
+    ]
+  }
+
   setPosByCurrentIndex () {
     this.pos.x = -1 * this.data.currentIndex * window.innerWidth;
     setTimeout(()=> {
@@ -203,8 +211,8 @@ class coolPhoto extends aTemplate {
     }
     this.e.preventDefault();
     const event = this.e;
-    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1){
-      this.onGesture();
+    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
+      this.beforeGesture();
       return;
     }
     const pos = this.getTouchPos(this.e);
@@ -260,10 +268,12 @@ class coolPhoto extends aTemplate {
   }
 
   beforeGesture () {
-    
+    const pos = getGesturePos(this.e);
+    this.gesturePos = pos;
   }
 
   onGesture () {
+    const pos = getGesturePos(this.e);
     
   }
 
