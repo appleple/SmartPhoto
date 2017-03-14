@@ -66,10 +66,6 @@ $modal-bg-color: #333;
 
 .cool-photo-arrows{
 	list-style-type: none;
-	position: absolute;
-	top: 50%;
-	left: 0;
-	width: 100%;
 	padding: 0;
 	margin: 0;
 }
@@ -90,13 +86,15 @@ $modal-bg-color: #333;
 .cool-photo-arrows li {
 	width: 50px;
 	height: 50px;
+	position: absolute;
+	top: 50%;
 	border-radius: 50%;
 	background-color: #000;
 	display: block;
 }
 
 .cool-photo-arrow-right{
-	float: right;
+	right: 0;
 	position: relative;
 	&:after{
 		content:"";
@@ -115,7 +113,7 @@ $modal-bg-color: #333;
 }
 
 .cool-photo-arrow-left{
-	float: left;
+	left: 0;
 	position: relative;
 	&:after{
 		content:"";

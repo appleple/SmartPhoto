@@ -200,6 +200,8 @@ class coolPhoto extends aTemplate {
       this.data.scale = true;
     }else{
       this.data.scale = false;
+      this.data.photoPosX = 0;
+      this.data.photoPosY = 0;
     }
     this.update();
   }
@@ -209,19 +211,20 @@ class coolPhoto extends aTemplate {
       return;
     }
     const pos = this.getTouchPos(this.e);
+    this.photoSwipable = true;
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
     this.oldPhotoPos = pos;
   }
 
   onPhotoDrag () {
-    if (!this.data.scale) {
+    if (!this.data.scale || !this.photoSwipable) {
       return;
     }
     this.e.preventDefault();
     const pos = this.getTouchPos(this.e);
     const x = pos.x - this.oldPhotoPos.x;
-    const y = pos.x - this.oldPhotoPos.y;
+    const y = pos.y - this.oldPhotoPos.y;
     this.data.photoPosX += x;
     this.data.photoPosY += y;
     this.oldPhotoPos = pos;
@@ -229,6 +232,7 @@ class coolPhoto extends aTemplate {
   }
 
   afterPhotoDrag () {
+    this.photoSwipable = false;
     if (!this.data.scale) {
       return;
     }
