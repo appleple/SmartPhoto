@@ -6873,8 +6873,9 @@ var coolPhoto = function (_aTemplate) {
       element.setAttribute('data-index', index);
       element.addEventListener('click', function (event) {
         event.preventDefault();
-        _this3.data.currentIndex = element.getAttribute('data-index');
+        _this3.data.currentIndex = parseInt(element.getAttribute('data-index'));
         _this3.setPosByCurrentIndex();
+        _this3.setArrow();
         _this3.data.hide = false;
         _this3.update();
       });
@@ -6882,7 +6883,7 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'hidePhoto',
     value: function hidePhoto() {
-      if ((0, _zeptoBrowserify.$)(this.e.target).hasClass(this.data.classNames.coolPhotoInner)) {
+      if ((0, _zeptoBrowserify.$)(this.e.target).hasClass(this.data.classNames.coolPhotoInner) || (0, _zeptoBrowserify.$)(this.e.target).hasClass(this.data.classNames.coolPhotoBody)) {
         this.data.hide = true;
         this.update();
       }
@@ -6932,6 +6933,7 @@ var coolPhoto = function (_aTemplate) {
       this.setPosByCurrentIndex();
       setTimeout(function () {
         _this5.data.onMoveClass = false;
+        _this5.setArrow();
         _this5.update();
       }, 300);
     }
@@ -6943,6 +6945,23 @@ var coolPhoto = function (_aTemplate) {
         this.data.currentIndex = 0;
       }
       this.slideList();
+    }
+  }, {
+    key: 'setArrow',
+    value: function setArrow() {
+      var length = this.data.items.length;
+      var next = this.data.currentIndex + 1;
+      var prev = this.data.currentIndex - 1;
+      this.data.showNextArrow = false;
+      this.data.showPrevArrow = false;
+      if (next !== length) {
+        this.data.next = next;
+        this.data.showNextArrow = true;
+      }
+      if (prev !== -1) {
+        this.data.prev = prev;
+        this.data.showPrevArrow = true;
+      }
     }
   }, {
     key: 'afterDrag',
@@ -6979,7 +6998,7 @@ var coolPhoto = function (_aTemplate) {
 module.exports = coolPhoto;
 
 },{"../lib/util":99,"./viwer.html":97,"a-template":1,"babel-runtime/core-js/object/get-prototype-of":5,"babel-runtime/helpers/classCallCheck":9,"babel-runtime/helpers/createClass":10,"babel-runtime/helpers/inherits":11,"babel-runtime/helpers/possibleConstructorReturn":12,"babel-runtime/regenerator":14,"zepto-browserify":94}],97:[function(require,module,exports){
-module.exports = "<div class=\"\\{classNames.coolPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.coolPhotoBody\\}\" data-action-click=\"hidePhoto\">\n\t\t<div class=\"\\{classNames.coolPhotoInner\\}\">\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.coolPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.coolPhotoListOnMove\\}<!-- END onMoveClass:exist -->\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-mousemove=\"onDrag\" data-action-click=\"zoomPhoto\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li style=\"transform:translateX({translateX}px);\"><img src=\"{src}\" class=\"\\\\{classNames.coolPhotoImg\\\\}\"></li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t\t<ul class=\"\\{classNames.coolPhotoArrows\\}\">\n\t\t\t\t\t\t\t<!-- BEGIN itemPrev:exist -->\n\t\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowLeft\\}\" data-index=\"{prevIndex}\"></li>\n\t\t\t\t\t\t\t<!-- END itemPrev:exist -->\n\n\t\t\t\t\t\t\t<!-- BEGIN itemNext:exist -->\n\t\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowRight\\}\" data-index=\"{nextIndex}\"></li>\n\t\t\t\t\t\t\t<!-- END itemNext:exist -->\n\t\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<ul class=\"\\{classNames.coolPhotoNav\\}\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li data-action-click=\"gotoSlide({index})\"><img src=\"{src}\"></li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t</div>\n</div>\n";
+module.exports = "<div class=\"\\{classNames.coolPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.coolPhotoBody\\}\" data-action-click=\"hidePhoto\">\n\t\t<div class=\"\\{classNames.coolPhotoInner\\}\">\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.coolPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.coolPhotoListOnMove\\}<!-- END onMoveClass:exist -->\" data-action-click=\"zoomPhoto\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li style=\"transform:translateX({translateX}px);\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-mousemove=\"onDrag\"><img src=\"{src}\" class=\"\\\\{classNames.coolPhotoImg\\\\}\"></li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t\t<ul class=\"\\{classNames.coolPhotoArrows\\}\">\n\t\t\t\t\t\t\t<!-- BEGIN showPrevArrow:exist -->\n\t\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowLeft\\}\" data-action-click=\"gotoSlide({prev})\"></li>\n\t\t\t\t\t\t\t<!-- END showPrevArrow:exist -->\n\n\t\t\t\t\t\t\t<!-- BEGIN showNextArrow:exist -->\n\t\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowRight\\}\" data-action-click=\"gotoSlide({next})\"></li>\n\t\t\t\t\t\t\t<!-- END showNextArrow:exist -->\n\t\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<ul class=\"\\{classNames.coolPhotoNav\\}\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li data-action-click=\"gotoSlide({index})\"><img src=\"{src}\"></li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t</div>\n</div>\n";
 
 },{}],98:[function(require,module,exports){
 'use strict';

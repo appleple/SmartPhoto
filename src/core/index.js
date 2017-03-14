@@ -87,15 +87,16 @@ class coolPhoto extends aTemplate {
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       event.preventDefault();
-      this.data.currentIndex = element.getAttribute('data-index');
+      this.data.currentIndex = parseInt(element.getAttribute('data-index'));
       this.setPosByCurrentIndex();
+      this.setArrow();
       this.data.hide = false;
       this.update();
     });
   }
 
   hidePhoto () {
-    if($(this.e.target).hasClass(this.data.classNames.coolPhotoInner)){
+    if($(this.e.target).hasClass(this.data.classNames.coolPhotoInner) || $(this.e.target).hasClass(this.data.classNames.coolPhotoBody)){
       this.data.hide = true;
       this.update();
     }
@@ -138,6 +139,7 @@ class coolPhoto extends aTemplate {
     this.setPosByCurrentIndex();
     setTimeout(() => {
       this.data.onMoveClass = false;
+      this.setArrow();
       this.update();
     },300);
   }
@@ -148,6 +150,22 @@ class coolPhoto extends aTemplate {
       this.data.currentIndex = 0;
     }
     this.slideList();
+  }
+
+  setArrow(){
+    const length = this.data.items.length;
+    const next = this.data.currentIndex + 1;
+    const prev = this.data.currentIndex - 1;
+    this.data.showNextArrow = false;
+    this.data.showPrevArrow = false;
+    if(next !== length) {
+      this.data.next = next;
+      this.data.showNextArrow = true;
+    }
+    if(prev !== -1) {
+      this.data.prev = prev;
+      this.data.showPrevArrow = true;
+    }
   }
 
   afterDrag () {

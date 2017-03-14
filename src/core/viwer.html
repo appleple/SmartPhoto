@@ -1,20 +1,20 @@
 <div class="\{classNames.coolPhoto\}"<!-- BEGIN hide:exist --> style="display:none;"<!-- END hide:exist -->>
 	<div class="\{classNames.coolPhotoBody\}" data-action-click="hidePhoto">
 		<div class="\{classNames.coolPhotoInner\}">
-				<ul style="transform:translateX({translateX}px);" class="\{classNames.coolPhotoList\}<!-- BEGIN onMoveClass:exist --> \{classNames.coolPhotoListOnMove\}<!-- END onMoveClass:exist -->" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-mousemove="onDrag" data-action-click="zoomPhoto">
+				<ul style="transform:translateX({translateX}px);" class="\{classNames.coolPhotoList\}<!-- BEGIN onMoveClass:exist --> \{classNames.coolPhotoListOnMove\}<!-- END onMoveClass:exist -->" data-action-click="zoomPhoto">
 					<!-- BEGIN items:loop -->
-					<li style="transform:translateX({translateX}px);"><img src="{src}" class="\\{classNames.coolPhotoImg\\}"></li>
+					<li style="transform:translateX({translateX}px);" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-mousemove="onDrag"><img src="{src}" class="\\{classNames.coolPhotoImg\\}"></li>
 					<!-- END items:loop -->
 				</ul>
 				<!-- BEGIN arrows:exist -->
 					<ul class="\{classNames.coolPhotoArrows\}">
-							<!-- BEGIN itemPrev:exist -->
-							<li class="\{classNames.coolPhotoArrowLeft\}" data-index="{prevIndex}"></li>
-							<!-- END itemPrev:exist -->
+							<!-- BEGIN showPrevArrow:exist -->
+							<li class="\{classNames.coolPhotoArrowLeft\}" data-action-click="gotoSlide({prev})"></li>
+							<!-- END showPrevArrow:exist -->
 
-							<!-- BEGIN itemNext:exist -->
-							<li class="\{classNames.coolPhotoArrowRight\}" data-index="{nextIndex}"></li>
-							<!-- END itemNext:exist -->
+							<!-- BEGIN showNextArrow:exist -->
+							<li class="\{classNames.coolPhotoArrowRight\}" data-action-click="gotoSlide({next})"></li>
+							<!-- END showNextArrow:exist -->
 					</ul>
 				<!-- END arrows:exist -->
 				<!-- BEGIN nav:exist -->
