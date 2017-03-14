@@ -6967,12 +6967,11 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'afterDrag',
     value: function afterDrag() {
+      this.isSwipable = false;
       if (this.data.scale) {
         this.afterPhotoDrag();
         return;
-      }
-      this.isSwipable = false;
-      if (this.oldPos.x === this.firstPos.x) {
+      } else if (this.oldPos.x === this.firstPos.x) {
         this.zoomPhoto();
         return;
       }
@@ -7005,13 +7004,17 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'zoomPhoto',
     value: function zoomPhoto() {
-      if (!this.data.scale) {
-        this.data.scale = true;
-      } else {
-        this.data.scale = false;
-        this.data.photoPosX = 0;
-        this.data.photoPosY = 0;
-      }
+      this.data.scale = true;
+      this.data.photoPosX = 0;
+      this.data.photoPosY = 0;
+      this.update();
+    }
+  }, {
+    key: 'zoomOutPhoto',
+    value: function zoomOutPhoto() {
+      this.data.scale = false;
+      this.data.photoPosX = 0;
+      this.data.photoPosY = 0;
       this.update();
     }
   }, {
@@ -7022,6 +7025,7 @@ var coolPhoto = function (_aTemplate) {
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
       this.oldPhotoPos = pos;
+      this.firstPhotoPos = pos;
     }
   }, {
     key: 'onPhotoDrag',
@@ -7041,6 +7045,9 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'afterPhotoDrag',
     value: function afterPhotoDrag() {
+      if (this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
+        this.zoomOutPhoto();
+      }
       this.photoSwipable = false;
     }
   }]);
