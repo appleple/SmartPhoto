@@ -61,16 +61,7 @@ function * getUniqId (limit) {
   }
 }
 
-function * getIndex (){
-  let i = 0;
-  while(true) {
-    yield i;
-    i++;
-  }
-}
-
 const idGen = getUniqId(10)
-const indexGen = getIndex()
 
 class coolPhoto extends aTemplate {
 
@@ -89,15 +80,10 @@ class coolPhoto extends aTemplate {
     [].forEach.call(this.elements, (element,index) => {
       this.addNewItem(element,index);
     });
-    $(window).resize(() => {
-      this.data.translateY =
-      this.update();
-    });
   }
 
   addNewItem (element, index) {
-    const id = indexGen.next().value;
-    this.data.items.push({src: element.getAttribute('href'), translateX: window.innerWidth*index, id: id});
+    this.data.items.push({src: element.getAttribute('href'), translateX: window.innerWidth*index, index: index});
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       event.preventDefault();
@@ -154,6 +140,14 @@ class coolPhoto extends aTemplate {
       this.data.onMoveClass = false;
       this.update();
     },300);
+  }
+
+  gotoSlide(index) {
+    this.data.currentIndex = parseInt(index);
+    if(!this.data.currentIndex) {
+      this.data.currentIndex = 0;
+    }
+    this.slideList();
   }
 
   afterDrag () {

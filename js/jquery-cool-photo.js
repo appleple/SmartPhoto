@@ -6720,7 +6720,7 @@ var _zeptoBrowserify = require('zepto-browserify');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _marked = [getUniqId, getIndex].map(_regenerator2.default.mark);
+var _marked = [getUniqId].map(_regenerator2.default.mark);
 
 var util = require('../lib/util');
 var template = require('./viwer.html');
@@ -6838,38 +6838,7 @@ function getUniqId(limit) {
   }, _marked[0], this);
 }
 
-function getIndex() {
-  var i;
-  return _regenerator2.default.wrap(function getIndex$(_context3) {
-    while (1) {
-      switch (_context3.prev = _context3.next) {
-        case 0:
-          i = 0;
-
-        case 1:
-          if (!true) {
-            _context3.next = 7;
-            break;
-          }
-
-          _context3.next = 4;
-          return i;
-
-        case 4:
-          i++;
-          _context3.next = 1;
-          break;
-
-        case 7:
-        case 'end':
-          return _context3.stop();
-      }
-    }
-  }, _marked[1], this);
-}
-
 var idGen = getUniqId(10);
-var indexGen = getIndex();
 
 var coolPhoto = function (_aTemplate) {
   (0, _inherits3.default)(coolPhoto, _aTemplate);
@@ -6892,9 +6861,6 @@ var coolPhoto = function (_aTemplate) {
     [].forEach.call(_this2.elements, function (element, index) {
       _this2.addNewItem(element, index);
     });
-    (0, _zeptoBrowserify.$)(window).resize(function () {
-      _this2.data.translateY = _this2.update();
-    });
     return _this2;
   }
 
@@ -6903,8 +6869,7 @@ var coolPhoto = function (_aTemplate) {
     value: function addNewItem(element, index) {
       var _this3 = this;
 
-      var id = indexGen.next().value;
-      this.data.items.push({ src: element.getAttribute('href'), translateX: window.innerWidth * index, id: id });
+      this.data.items.push({ src: element.getAttribute('href'), translateX: window.innerWidth * index, index: index });
       element.setAttribute('data-index', index);
       element.addEventListener('click', function (event) {
         event.preventDefault();
@@ -6971,6 +6936,15 @@ var coolPhoto = function (_aTemplate) {
       }, 300);
     }
   }, {
+    key: 'gotoSlide',
+    value: function gotoSlide(index) {
+      this.data.currentIndex = parseInt(index);
+      if (!this.data.currentIndex) {
+        this.data.currentIndex = 0;
+      }
+      this.slideList();
+    }
+  }, {
     key: 'afterDrag',
     value: function afterDrag() {
       this.isSwipable = false;
@@ -7005,7 +6979,7 @@ var coolPhoto = function (_aTemplate) {
 module.exports = coolPhoto;
 
 },{"../lib/util":99,"./viwer.html":97,"a-template":1,"babel-runtime/core-js/object/get-prototype-of":5,"babel-runtime/helpers/classCallCheck":9,"babel-runtime/helpers/createClass":10,"babel-runtime/helpers/inherits":11,"babel-runtime/helpers/possibleConstructorReturn":12,"babel-runtime/regenerator":14,"zepto-browserify":94}],97:[function(require,module,exports){
-module.exports = "<div class=\"\\{classNames.coolPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.coolPhotoBody\\}\" data-action-click=\"hidePhoto\">\n\t\t<div class=\"\\{classNames.coolPhotoInner\\}\">\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.coolPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.coolPhotoListOnMove\\}<!-- END onMoveClass:exist -->\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-mousemove=\"onDrag\" data-action-click=\"zoomPhoto\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li style=\"transform:translateX({translateX}px);\"><img src=\"{src}\" class=\"\\\\{classNames.coolPhotoImg\\\\}\"></li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t\t<ul class=\"\\{classNames.coolPhotoArrows\\}\">\n\t\t\t\t\t\t\t<!-- BEGIN itemPrev:exist -->\n\t\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowLeft\\}\" data-index=\"{prevIndex}\"></li>\n\t\t\t\t\t\t\t<!-- END itemPrev:exist -->\n\n\t\t\t\t\t\t\t<!-- BEGIN itemNext:exist -->\n\t\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowRight\\}\" data-index=\"{nextIndex}\"></li>\n\t\t\t\t\t\t\t<!-- END itemNext:exist -->\n\t\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<ul class=\"\\{classNames.coolPhotoNav\\}\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li><img src=\"{src}\"></li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t</div>\n</div>\n";
+module.exports = "<div class=\"\\{classNames.coolPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.coolPhotoBody\\}\" data-action-click=\"hidePhoto\">\n\t\t<div class=\"\\{classNames.coolPhotoInner\\}\">\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.coolPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.coolPhotoListOnMove\\}<!-- END onMoveClass:exist -->\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-mousemove=\"onDrag\" data-action-click=\"zoomPhoto\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li style=\"transform:translateX({translateX}px);\"><img src=\"{src}\" class=\"\\\\{classNames.coolPhotoImg\\\\}\"></li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t\t<ul class=\"\\{classNames.coolPhotoArrows\\}\">\n\t\t\t\t\t\t\t<!-- BEGIN itemPrev:exist -->\n\t\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowLeft\\}\" data-index=\"{prevIndex}\"></li>\n\t\t\t\t\t\t\t<!-- END itemPrev:exist -->\n\n\t\t\t\t\t\t\t<!-- BEGIN itemNext:exist -->\n\t\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowRight\\}\" data-index=\"{nextIndex}\"></li>\n\t\t\t\t\t\t\t<!-- END itemNext:exist -->\n\t\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<ul class=\"\\{classNames.coolPhotoNav\\}\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li data-action-click=\"gotoSlide({index})\"><img src=\"{src}\"></li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t</div>\n</div>\n";
 
 },{}],98:[function(require,module,exports){
 'use strict';
