@@ -83,6 +83,7 @@ class coolPhoto extends aTemplate {
   }
 
   addNewItem (element, index) {
+    console.log(window.innerWidth*index);
     this.data.items.push({src: element.getAttribute('href'), translateX: window.innerWidth*index, index: index});
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
