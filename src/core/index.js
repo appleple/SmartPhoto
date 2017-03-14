@@ -80,6 +80,14 @@ class coolPhoto extends aTemplate {
     [].forEach.call(this.elements, (element,index) => {
       this.addNewItem(element,index);
     });
+    $(window).resize(() => {
+      this.data.items.forEach((item)=>{
+        let index = item.index;
+        item.translateX = window.innerWidth*index;
+        this.setPosByCurrentIndex();
+        this.update();
+      });
+    });
   }
 
   addNewItem (element, index) {
@@ -240,8 +248,12 @@ class coolPhoto extends aTemplate {
   beforePhotoDrag (){
     const pos = this.getTouchPos(this.e);
     this.photoSwipable = true;
-    this.data.photoPosX = 0;
-    this.data.photoPosY = 0;
+    if(!this.data.photoPosX) {
+      this.data.photoPosX = 0;
+    }
+    if(!this.data.photoPosY) {
+      this.data.photoPosY = 0;
+    }
     this.oldPhotoPos = pos;
     this.firstPhotoPos = pos;
   }
@@ -274,7 +286,7 @@ class coolPhoto extends aTemplate {
 
   onGesture () {
     const pos = getGesturePos(this.e);
-    
+
   }
 
 }
