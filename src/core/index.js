@@ -83,7 +83,6 @@ class coolPhoto extends aTemplate {
   }
 
   addNewItem (element, index) {
-    console.log(window.innerWidth*index);
     this.data.items.push({src: element.getAttribute('href'), translateX: window.innerWidth*index, index: index});
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
@@ -203,6 +202,36 @@ class coolPhoto extends aTemplate {
       this.data.scale = false;
     }
     this.update();
+  }
+
+  beforePhotoDrag (){
+    if (!this.data.scale) {
+      return;
+    }
+    const pos = this.getTouchPos(this.e);
+    this.data.photoPosX = 0;
+    this.data.photoPosY = 0;
+    this.oldPhotoPos = pos;
+  }
+
+  onPhotoDrag () {
+    if (!this.data.scale) {
+      return;
+    }
+    this.e.preventDefault();
+    const pos = this.getTouchPos(this.e);
+    const x = pos.x - this.oldPhotoPos.x;
+    const y = pos.x - this.oldPhotoPos.y;
+    this.data.photoPosX += x;
+    this.data.photoPosY += y;
+    this.oldPhotoPos = pos;
+    this.update();
+  }
+
+  afterPhotoDrag () {
+    if (!this.data.scale) {
+      return;
+    }
   }
 
 }
