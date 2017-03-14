@@ -6956,6 +6956,7 @@ var coolPhoto = function (_aTemplate) {
     key: 'beforeDrag',
     value: function beforeDrag() {
       if (this.data.scale) {
+        this.beforePhotoDrag();
         return;
       }
       var pos = this.getTouchPos(this.e);
@@ -6966,6 +6967,10 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'afterDrag',
     value: function afterDrag() {
+      if (this.data.scale) {
+        this.afterPhotoDrag();
+        return;
+      }
       this.isSwipable = false;
       if (this.oldPos.x === this.firstPos.x) {
         this.zoomPhoto();
@@ -6982,6 +6987,10 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'onDrag',
     value: function onDrag() {
+      if (this.data.scale) {
+        this.onPhotoDrag();
+        return;
+      }
       if (!this.isSwipable) {
         return;
       }
@@ -7008,9 +7017,6 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'beforePhotoDrag',
     value: function beforePhotoDrag() {
-      if (!this.data.scale) {
-        return;
-      }
       var pos = this.getTouchPos(this.e);
       this.photoSwipable = true;
       this.data.photoPosX = 0;
@@ -7020,7 +7026,7 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'onPhotoDrag',
     value: function onPhotoDrag() {
-      if (!this.data.scale || !this.photoSwipable) {
+      if (!this.photoSwipable) {
         return;
       }
       this.e.preventDefault();
@@ -7036,9 +7042,6 @@ var coolPhoto = function (_aTemplate) {
     key: 'afterPhotoDrag',
     value: function afterPhotoDrag() {
       this.photoSwipable = false;
-      if (!this.data.scale) {
-        return;
-      }
     }
   }]);
   return coolPhoto;
@@ -7047,7 +7050,7 @@ var coolPhoto = function (_aTemplate) {
 module.exports = coolPhoto;
 
 },{"../lib/util":99,"./viwer.html":97,"a-template":1,"babel-runtime/core-js/object/get-prototype-of":5,"babel-runtime/helpers/classCallCheck":9,"babel-runtime/helpers/createClass":10,"babel-runtime/helpers/inherits":11,"babel-runtime/helpers/possibleConstructorReturn":12,"babel-runtime/regenerator":14,"zepto-browserify":94}],97:[function(require,module,exports){
-module.exports = "<div class=\"\\{classNames.coolPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.coolPhotoBody\\}\" data-action-click=\"hidePhoto\">\n\t\t<div class=\"\\{classNames.coolPhotoInner\\}\">\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.coolPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.coolPhotoListOnMove\\}<!-- END onMoveClass:exist -->\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li style=\"transform:translateX({translateX}px)<!-- \\BEGIN scale:exist --><!-- \\BEGIN currentIndex:touch#{index} --> scale(2)<!-- \\END currentIndex:touch#{index} --><!-- \\END scale:exist -->;\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-mousemove=\"onDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"ondrag\" data-action-touchend=\"afterDrag\">\n\t\t\t\t\t\t<img style=\"<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}px,\\{photoPosY\\}px);<!-- \\END currentIndex:touch#{index} -->\" src=\"{src}\" class=\"\\\\{classNames.coolPhotoImg\\\\}\" data-action-mousemove=\"onPhotoDrag\" data-action-mousedown=\"beforePhotoDrag\" data-action-mouseup=\"afterPhotoDrag\">\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t\t<ul class=\"\\{classNames.coolPhotoArrows\\}\">\n\t\t\t\t\t\t\t<!-- BEGIN showPrevArrow:exist -->\n\t\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowLeft\\}\" data-action-click=\"gotoSlide({prev})\"></li>\n\t\t\t\t\t\t\t<!-- END showPrevArrow:exist -->\n\n\t\t\t\t\t\t\t<!-- BEGIN showNextArrow:exist -->\n\t\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowRight\\}\" data-action-click=\"gotoSlide({next})\"></li>\n\t\t\t\t\t\t\t<!-- END showNextArrow:exist -->\n\t\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<ul class=\"\\{classNames.coolPhotoNav\\}\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li data-action-click=\"gotoSlide({index})\"><img src=\"{src}\"></li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t</div>\n</div>\n";
+module.exports = "<div class=\"\\{classNames.coolPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.coolPhotoBody\\}\" data-action-click=\"hidePhoto\">\n\t\t<div class=\"\\{classNames.coolPhotoInner\\}\">\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.coolPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.coolPhotoListOnMove\\}<!-- END onMoveClass:exist -->\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li style=\"transform:translateX({translateX}px)<!-- \\BEGIN scale:exist --><!-- \\BEGIN currentIndex:touch#{index} --> scale(2)<!-- \\END currentIndex:touch#{index} --><!-- \\END scale:exist -->;\">\n\t\t\t\t\t\t<img style=\"<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}px,\\{photoPosY\\}px);<!-- \\END currentIndex:touch#{index} -->\" src=\"{src}\" class=\"\\\\{classNames.coolPhotoImg\\\\}\" data-action-mousemove=\"onDrag\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"onDrag\" data-action-touchend=\"afterDrag\">\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t<ul class=\"\\{classNames.coolPhotoArrows\\}\">\n\t\t\t\t\t\t<!-- BEGIN showPrevArrow:exist -->\n\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowLeft\\}\" data-action-click=\"gotoSlide({prev})\"></li>\n\t\t\t\t\t\t<!-- END showPrevArrow:exist -->\n\n\t\t\t\t\t\t<!-- BEGIN showNextArrow:exist -->\n\t\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowRight\\}\" data-action-click=\"gotoSlide({next})\"></li>\n\t\t\t\t\t\t<!-- END showNextArrow:exist -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<ul class=\"\\{classNames.coolPhotoNav\\}\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li data-action-click=\"gotoSlide({index})\"><img src=\"{src}\"></li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t</div>\n</div>\n";
 
 },{}],98:[function(require,module,exports){
 'use strict';

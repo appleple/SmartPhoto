@@ -159,6 +159,7 @@ class coolPhoto extends aTemplate {
 
   beforeDrag () {
     if(this.data.scale){
+      this.beforePhotoDrag();
       return;
     }
     const pos = this.getTouchPos(this.e);
@@ -168,6 +169,10 @@ class coolPhoto extends aTemplate {
   }
 
   afterDrag () {
+    if(this.data.scale){
+      this.afterPhotoDrag();
+      return;
+    }
     this.isSwipable = false;
     if(this.oldPos.x === this.firstPos.x) {
       this.zoomPhoto();
@@ -183,6 +188,10 @@ class coolPhoto extends aTemplate {
   }
 
   onDrag () {
+    if(this.data.scale){
+      this.onPhotoDrag();
+      return;
+    }
     if(!this.isSwipable){
       return;
     }
@@ -207,9 +216,6 @@ class coolPhoto extends aTemplate {
   }
 
   beforePhotoDrag (){
-    if (!this.data.scale) {
-      return;
-    }
     const pos = this.getTouchPos(this.e);
     this.photoSwipable = true;
     this.data.photoPosX = 0;
@@ -218,7 +224,7 @@ class coolPhoto extends aTemplate {
   }
 
   onPhotoDrag () {
-    if (!this.data.scale || !this.photoSwipable) {
+    if (!this.photoSwipable) {
       return;
     }
     this.e.preventDefault();
@@ -233,9 +239,6 @@ class coolPhoto extends aTemplate {
 
   afterPhotoDrag () {
     this.photoSwipable = false;
-    if (!this.data.scale) {
-      return;
-    }
   }
 
 }
