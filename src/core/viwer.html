@@ -3,7 +3,7 @@
 		<div class="\{classNames.coolPhotoInner\}">
 				<ul style="transform:translateX({translateX}px);" class="\{classNames.coolPhotoList\}<!-- BEGIN onMoveClass:exist --> \{classNames.coolPhotoListOnMove\}<!-- END onMoveClass:exist -->">
 					<!-- BEGIN items:loop -->
-					<li style="transform:translateX({translateX}px)<!-- \BEGIN scale:exist --><!-- \BEGIN currentIndex:touch#{index} --> scale(2)<!-- \END currentIndex:touch#{index} --><!-- \END scale:exist -->;">
+					<li style="transform:translateX({translateX}px)<!-- \BEGIN scale:exist --><!-- \BEGIN currentIndex:touch#{index} --> scale(\{scaleSize\})<!-- \END currentIndex:touch#{index} --><!-- \END scale:exist -->;">
 						<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}px,\{photoPosY\}px);<!-- \END currentIndex:touch#{index} -->" src="{src}" class="\\{classNames.coolPhotoImg\\}" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
 					</li>
 					<!-- END items:loop -->

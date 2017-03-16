@@ -26,43 +26,6 @@ const defaults = {
   swipeOffset: 100
 }
 
-function getRand (a, b) {
-  return ~~(Math.random() * (b - a + 1)) + a;
-}
-
-function getRandText (limit) {
-  let ret = "";
-  let strings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let length = strings.length;
-  for (let i = 0; i < limit; i++) {
-    ret += strings.charAt(Math.floor(getRand(0, length)));
-  }
-  return ret;
-}
-
-function * getUniqId (limit) {
-  const ids = []
-  while(true) {
-    let id = getRandText(limit)
-    while(true) {
-      let flag = true
-      ids.forEach((item) => {
-        if(item === id){
-          flag = false
-          id = getRandText(limit)
-        }
-      })
-      if(flag === true) {
-        break
-      }
-    }
-    ids.push(id)
-    yield id
-  }
-}
-
-const idGen = getUniqId(10)
-
 class coolPhoto extends aTemplate {
 
   constructor (selector, settings) {
@@ -71,9 +34,11 @@ class coolPhoto extends aTemplate {
     this.data.currentIndex = 0;
     this.data.hide = true;
     this.data.items = [];
+    this.data.scaleSize = 1;
+    this.data.scale = false;
     this.pos = { x: 0, y: 0};
     this.elements = document.querySelectorAll(selector);
-    this.id = idGen.next().value;
+    this.id = this._getUniqId();
     this.addTemplate(this.id,template);
     $('body').append(`<div data-id='${this.id}'></div>`);
     this.update();
@@ -110,7 +75,7 @@ class coolPhoto extends aTemplate {
     }
   }
 
-	getTouchPos (e) {
+	_getTouchPos (e) {
 		let x = 0;
 		let y = 0;
 		if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches[0].pageX) {
@@ -123,8 +88,8 @@ class coolPhoto extends aTemplate {
 		return { x: x, y: y };
 	}
 
-  getGesturePos (e) {
-    const touches = event.originalEvent.touches;
+  _getGesturePos (e) {
+    const touches = e.originalEvent.touches;
  		return [
       { x: touches[0].pageX, y: touches[0].pageY},
       { x: touches[1].pageX, y: touches[1].pageY}
@@ -183,7 +148,7 @@ class coolPhoto extends aTemplate {
       this.beforeGesture();
       return;
     }
-    const pos = this.getTouchPos(this.e);
+    const pos = this._getTouchPos(this.e);
     this.isSwipable = true;
     this.firstPos = pos;
     this.oldPos = pos;
@@ -220,10 +185,10 @@ class coolPhoto extends aTemplate {
     this.e.preventDefault();
     const event = this.e;
     if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
-      this.beforeGesture();
+      this.onGesture();
       return;
     }
-    const pos = this.getTouchPos(this.e);
+    const pos = this._getTouchPos(this.e);
     const x = pos.x - this.oldPos.x;
     this.pos.x += x;
     this.data.translateX = this.pos.x;
@@ -233,6 +198,7 @@ class coolPhoto extends aTemplate {
 
   zoomPhoto(){
     this.data.scale = true;
+    this.data.scaleSize = 2;
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
     this.update();
@@ -242,11 +208,11 @@ class coolPhoto extends aTemplate {
     this.data.scale = false;
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
-    this.update();   
+    this.update();
   }
 
   beforePhotoDrag (){
-    const pos = this.getTouchPos(this.e);
+    const pos = this._getTouchPos(this.e);
     this.photoSwipable = true;
     if(!this.data.photoPosX) {
       this.data.photoPosX = 0;
@@ -263,7 +229,7 @@ class coolPhoto extends aTemplate {
       return;
     }
     this.e.preventDefault();
-    const pos = this.getTouchPos(this.e);
+    const pos = this._getTouchPos(this.e);
     const x = pos.x - this.oldPhotoPos.x;
     const y = pos.y - this.oldPhotoPos.y;
     this.data.photoPosX += x;
@@ -280,13 +246,26 @@ class coolPhoto extends aTemplate {
   }
 
   beforeGesture () {
-    const pos = getGesturePos(this.e);
-    this.gesturePos = pos;
+    const pos = this._getGesturePos(this.e);
+    const distance = this._getDistance(pos[0],pos[1]);
+    this.firstDistance = distance;
+    this.e.preventDefault();
   }
 
   onGesture () {
-    const pos = getGesturePos(this.e);
+    const pos = this._getGesturePos(this.e);
+    this.distance = this._getDistance(pos[0],pos[1]);
+    this.e.preventDefault();
+  }
 
+  _getUniqId () {
+    return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+  }
+
+  _getDistance (point1, point2) {
+    const x = point1.x - point2.x;
+    const y = point1.y - point2.y;
+    return Math.sqrt(x*x+y*y);
   }
 
 }

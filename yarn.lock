@@ -9,9 +9,9 @@ JSONStream@^1.0.3:
     jsonparse "^1.2.0"
     through ">=2.2.7 <3"
 
-a-template@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/a-template/-/a-template-0.1.2.tgz#b9d8956930df395d88d5e3410fe08e2661e281ef"
+a-template@0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/a-template/-/a-template-0.1.4.tgz#1dc1403d22b359bf410edfc57586dfbf9a97b7ae"
   dependencies:
     morphdom "^2.3.1"
     zepto-browserify "*"
