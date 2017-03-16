@@ -83,6 +83,15 @@ $modal-bg-color: #333;
 	transform: translateX(-150%) !important;
 }
 
+.cool-photo-arrows {
+	opacity: 1;
+	transition: all .3s;
+}
+
+.cool-photo-arrows.hide{
+	opacity: 0;
+}
+
 .cool-photo-arrows li {
 	width: 50px;
 	height: 50px;
@@ -91,6 +100,12 @@ $modal-bg-color: #333;
 	border-radius: 50%;
 	background-color: #000;
 	display: block;
+	transition: all .3s;
+	opacity: 0;
+}
+
+.cool-photo-arrows .show{
+	opacity: 1;
 }
 
 .cool-photo-arrow-right{
@@ -139,6 +154,12 @@ $modal-bg-color: #333;
 	text-align: center;
 	padding: 0;
 	margin: 0;
+	opacity: 1;
+	transition: all .3s;
+}
+
+.cool-photo-nav.hide{
+	opacity: 0;
 }
 
 .cool-photo-nav li{

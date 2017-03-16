@@ -9,18 +9,13 @@
 					<!-- END items:loop -->
 				</ul>
 				<!-- BEGIN arrows:exist -->
-				<ul class="\{classNames.coolPhotoArrows\}">
-						<!-- BEGIN showPrevArrow:exist -->
-						<li class="\{classNames.coolPhotoArrowLeft\}" data-action-click="gotoSlide({prev})"></li>
-						<!-- END showPrevArrow:exist -->
-
-						<!-- BEGIN showNextArrow:exist -->
-						<li class="\{classNames.coolPhotoArrowRight\}" data-action-click="gotoSlide({next})"></li>
-						<!-- END showNextArrow:exist -->
+				<ul class="\{classNames.coolPhotoArrows\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">
+					<li class="\{classNames.coolPhotoArrowLeft\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->" data-action-click="gotoSlide({prev})"></li>
+					<li class="\{classNames.coolPhotoArrowRight\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->" data-action-click="gotoSlide({next})"></li>	
 				</ul>
 				<!-- END arrows:exist -->
 				<!-- BEGIN nav:exist -->
-				<ul class="\{classNames.coolPhotoNav\}">
+				<ul class="\{classNames.coolPhotoNav\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">
 					<!-- BEGIN items:loop -->
 					<li data-action-click="gotoSlide({index})"><img src="{src}"></li>
 					<!-- END items:loop -->

@@ -263,16 +263,23 @@ class coolPhoto extends aTemplate {
     this.distance = this._getDistance(pos[0],pos[1]);
     const size = 1 + (this.distance - this.firstDistance) / this.firstDistance;
     this.data.scaleSize = size;
+    if(this.data.scaleSize < 1 || this.data.scaleSize > 1.8){
+      this.data.hideUi = true;
+    }else{
+      this.data.hideUi = false;
+    }
     this.e.preventDefault();
     this.update();
   }
 
   afterGesture () {
-    this.isBeingZoomed = false;
-    if(this.data.scaleSize <= 1){
-      this.data.scaleSize = 1;
-      this.data.scale = false;
+    if(this.data.scaleSize > 1.8) {
+      return;
     }
+    this.data.scaleSize = 1;
+    this.data.hideUi = false;
+    this.isBeingZoomed = false;
+    this.data.scale = false;
     this.update();
   }
 
