@@ -5976,7 +5976,7 @@ var coolPhoto = function (_aTemplate) {
       }
       var pos = this._getTouchPos(this.e);
       var x = pos.x - this.oldPos.x;
-      this.pos.x += x / this.data.scaleSize;
+      this.pos.x += x;
       this.data.translateX = this.pos.x;
       this.oldPos = pos;
       this.update();
@@ -6025,8 +6025,8 @@ var coolPhoto = function (_aTemplate) {
       var pos = this._getTouchPos(this.e);
       var x = pos.x - this.oldPhotoPos.x;
       var y = pos.y - this.oldPhotoPos.y;
-      this.data.photoPosX += x;
-      this.data.photoPosY += y;
+      this.data.photoPosX += x / this.data.scaleSize;
+      this.data.photoPosY += y / this.data.scaleSize;
       this.oldPhotoPos = pos;
       this.update();
     }
