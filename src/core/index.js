@@ -273,13 +273,13 @@ class coolPhoto extends aTemplate {
   }
 
   afterGesture () {
+    this.isBeingZoomed = false;
     if(this.data.scaleSize > 1.8) {
       return;
     }
+    this.data.scale = false;
     this.data.scaleSize = 1;
     this.data.hideUi = false;
-    this.isBeingZoomed = false;
-    this.data.scale = false;
     this.update();
   }
 
