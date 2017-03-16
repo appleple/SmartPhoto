@@ -156,6 +156,10 @@ class coolPhoto extends aTemplate {
 
   afterDrag () {
     this.isSwipable = false;
+    if (this.isBeingZoomed) {
+      this.afterGesture();
+      return;
+    }
     if(this.data.scale){
       this.afterPhotoDrag();
       return;
@@ -248,19 +252,32 @@ class coolPhoto extends aTemplate {
   beforeGesture () {
     const pos = this._getGesturePos(this.e);
     const distance = this._getDistance(pos[0],pos[1]);
+    this.isBeingZoomed = true;
     this.firstDistance = distance;
     this.data.scale = true;
     this.e.preventDefault();
   }
 
   onGesture () {
-    console.log('ongGesture');
     const pos = this._getGesturePos(this.e);
     this.distance = this._getDistance(pos[0],pos[1]);
-    const size = (this.distance - this.firstDistance) / this.firstDistance;
+    const size = 1 + (this.distance - this.firstDistance) / this.firstDistance;
     this.data.scaleSize = size;
     this.e.preventDefault();
     this.update();
+  }
+
+  afterGesture () {
+    this.isBeingZoomed = false;
+    if(this.data.scaleSize <= 1){
+      this.data.scaleSize = 1;
+      this.data.scale = false;
+    }
+    this.update();
+  }
+
+  preventBrowserAction () {
+    this.e.preventDefault();
   }
 
   _getUniqId () {
