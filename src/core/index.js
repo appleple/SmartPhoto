@@ -175,17 +175,17 @@ class coolPhoto extends aTemplate {
   }
 
   onDrag () {
+    this.e.preventDefault();
+    const event = this.e;
+    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
+      this.onGesture();
+      return;
+    }
     if(this.data.scale){
       this.onPhotoDrag();
       return;
     }
     if(!this.isSwipable){
-      return;
-    }
-    this.e.preventDefault();
-    const event = this.e;
-    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
-      this.onGesture();
       return;
     }
     const pos = this._getTouchPos(this.e);
@@ -249,13 +249,18 @@ class coolPhoto extends aTemplate {
     const pos = this._getGesturePos(this.e);
     const distance = this._getDistance(pos[0],pos[1]);
     this.firstDistance = distance;
+    this.data.scale = true;
     this.e.preventDefault();
   }
 
   onGesture () {
+    console.log('ongGesture');
     const pos = this._getGesturePos(this.e);
     this.distance = this._getDistance(pos[0],pos[1]);
+    const size = (this.distance - this.firstDistance) / this.firstDistance;
+    this.data.scaleSize = size;
     this.e.preventDefault();
+    this.update();
   }
 
   _getUniqId () {
