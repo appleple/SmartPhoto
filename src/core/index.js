@@ -37,7 +37,6 @@ class coolPhoto extends aTemplate {
     this.data.scaleSize = 1;
     this.data.scale = false;
     this.pos = { x: 0, y: 0};
-    this.firstScale = 1;
     this.elements = document.querySelectorAll(selector);
     this.id = this._getUniqId();
     this.addTemplate(this.id,template);
@@ -140,13 +139,13 @@ class coolPhoto extends aTemplate {
   }
 
   beforeDrag () {
-    if(this.data.scale){
-      this.beforePhotoDrag();
-      return;
-    }
     const event = this.e;
     if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1){
       this.beforeGesture();
+      return;
+    }
+    if(this.data.scale){
+      this.beforePhotoDrag();
       return;
     }
     const pos = this._getTouchPos(this.e);
@@ -161,6 +160,7 @@ class coolPhoto extends aTemplate {
       this.afterGesture();
       return;
     }
+    this.isBeingZoomed = false;
     if(this.data.scale){
       this.afterPhotoDrag();
       return;
@@ -186,6 +186,9 @@ class coolPhoto extends aTemplate {
       this.onGesture();
       return;
     }
+    if (this.isBeingZoomed) {
+      return;
+    }
     if(this.data.scale){
       this.onPhotoDrag();
       return;
@@ -195,7 +198,7 @@ class coolPhoto extends aTemplate {
     }
     const pos = this._getTouchPos(this.e);
     const x = pos.x - this.oldPos.x;
-    this.pos.x += x;
+    this.pos.x += x / this.data.scaleSize;
     this.data.translateX = this.pos.x;
     this.oldPos = pos;
     this.update();
@@ -210,7 +213,8 @@ class coolPhoto extends aTemplate {
   }
 
   zoomOutPhoto(){
-    this.firstScale = 1;
+    this.data.scaleSize = 1;
+    this.isBeingZoomed = false;
     this.data.hideUi = false;
     this.data.scale = false;
     this.data.photoPosX = 0;
@@ -256,21 +260,22 @@ class coolPhoto extends aTemplate {
     const pos = this._getGesturePos(this.e);
     const distance = this._getDistance(pos[0],pos[1]);
     this.isBeingZoomed = true;
-    this.firstDistance = distance;
+    this.oldDistance = distance;
     this.data.scale = true;
     this.e.preventDefault();
   }
 
   onGesture () {
     const pos = this._getGesturePos(this.e);
-    this.distance = this._getDistance(pos[0],pos[1]);
-    const size = this.firstScale + (this.distance - this.firstDistance) / this.firstDistance;
-    this.data.scaleSize = size;
+    const distance = this._getDistance(pos[0],pos[1]);
+    const size = (distance - this.oldDistance) / 100;
+    this.data.scaleSize += size;
     if(this.data.scaleSize < 1 || this.data.scaleSize > 1.8){
       this.data.hideUi = true;
     }else{
       this.data.hideUi = false;
     }
+    this.oldDistance = distance;
     this.e.preventDefault();
     this.update();
   }
@@ -278,11 +283,10 @@ class coolPhoto extends aTemplate {
   afterGesture () {
     this.isBeingZoomed = false;
     if(this.data.scaleSize > 1.8) {
-      this.firstDistance = this.distance;
-      this.firstScale = this.data.scaleSize;
       return;
     }
-    this.firstScale = 1;
+    this.data.photoPosX = 0;
+    this.data.photoPosY = 0;
     this.data.scale = false;
     this.data.scaleSize = 1;
     this.data.hideUi = false;
