@@ -209,6 +209,7 @@ class coolPhoto extends aTemplate {
   }
 
   zoomOutPhoto(){
+    this.data.hideUi = false;
     this.data.scale = false;
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;

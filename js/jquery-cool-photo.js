@@ -5989,6 +5989,7 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'zoomOutPhoto',
     value: function zoomOutPhoto() {
+      this.data.hideUi = false;
       this.data.scale = false;
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
