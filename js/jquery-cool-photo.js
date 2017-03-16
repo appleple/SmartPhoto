@@ -5799,6 +5799,7 @@ var coolPhoto = function (_aTemplate) {
     _this.data.scaleSize = 1;
     _this.data.scale = false;
     _this.pos = { x: 0, y: 0 };
+    _this.firstScale = 1;
     _this.elements = document.querySelectorAll(selector);
     _this.id = _this._getUniqId();
     _this.addTemplate(_this.id, template);
@@ -5989,6 +5990,7 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'zoomOutPhoto',
     value: function zoomOutPhoto() {
+      this.firstScale = 1;
       this.data.hideUi = false;
       this.data.scale = false;
       this.data.photoPosX = 0;
@@ -6047,7 +6049,7 @@ var coolPhoto = function (_aTemplate) {
     value: function onGesture() {
       var pos = this._getGesturePos(this.e);
       this.distance = this._getDistance(pos[0], pos[1]);
-      var size = 1 + (this.distance - this.firstDistance) / this.firstDistance;
+      var size = this.firstScale + (this.distance - this.firstDistance) / this.firstDistance;
       this.data.scaleSize = size;
       if (this.data.scaleSize < 1 || this.data.scaleSize > 1.8) {
         this.data.hideUi = true;
@@ -6062,8 +6064,11 @@ var coolPhoto = function (_aTemplate) {
     value: function afterGesture() {
       this.isBeingZoomed = false;
       if (this.data.scaleSize > 1.8) {
+        this.firstDistance = this.distance;
+        this.firstScale = this.data.scaleSize;
         return;
       }
+      this.firstScale = 1;
       this.data.scale = false;
       this.data.scaleSize = 1;
       this.data.hideUi = false;

@@ -37,6 +37,7 @@ class coolPhoto extends aTemplate {
     this.data.scaleSize = 1;
     this.data.scale = false;
     this.pos = { x: 0, y: 0};
+    this.firstScale = 1;
     this.elements = document.querySelectorAll(selector);
     this.id = this._getUniqId();
     this.addTemplate(this.id,template);
@@ -209,6 +210,7 @@ class coolPhoto extends aTemplate {
   }
 
   zoomOutPhoto(){
+    this.firstScale = 1;
     this.data.hideUi = false;
     this.data.scale = false;
     this.data.photoPosX = 0;
@@ -262,7 +264,7 @@ class coolPhoto extends aTemplate {
   onGesture () {
     const pos = this._getGesturePos(this.e);
     this.distance = this._getDistance(pos[0],pos[1]);
-    const size = 1 + (this.distance - this.firstDistance) / this.firstDistance;
+    const size = this.firstScale + (this.distance - this.firstDistance) / this.firstDistance;
     this.data.scaleSize = size;
     if(this.data.scaleSize < 1 || this.data.scaleSize > 1.8){
       this.data.hideUi = true;
@@ -276,8 +278,11 @@ class coolPhoto extends aTemplate {
   afterGesture () {
     this.isBeingZoomed = false;
     if(this.data.scaleSize > 1.8) {
+      this.firstDistance = this.distance;
+      this.firstScale = this.data.scaleSize;
       return;
     }
+    this.firstScale = 1;
     this.data.scale = false;
     this.data.scaleSize = 1;
     this.data.hideUi = false;
