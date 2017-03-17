@@ -243,8 +243,8 @@ class coolPhoto extends aTemplate {
     const pos = this._getTouchPos(this.e);
     const x = pos.x - this.oldPhotoPos.x;
     const y = pos.y - this.oldPhotoPos.y;
-    this.data.photoPosX += x / this.data.scaleSize;
-    this.data.photoPosY += y / this.data.scaleSize;
+    this.data.photoPosX += this._round(x / this.data.scaleSize,6);
+    this.data.photoPosY += this._round(y / this.data.scaleSize,6);
     this.oldPhotoPos = pos;
     this.update();
   }
@@ -269,7 +269,7 @@ class coolPhoto extends aTemplate {
     const pos = this._getGesturePos(this.e);
     const distance = this._getDistance(pos[0],pos[1]);
     const size = (distance - this.oldDistance) / 100;
-    this.data.scaleSize += size;
+    this.data.scaleSize += this._round(size,6);
     if(this.data.scaleSize < 1 || this.data.scaleSize > 1.8){
       this.data.hideUi = true;
     }else{
@@ -305,6 +305,14 @@ class coolPhoto extends aTemplate {
     const x = point1.x - point2.x;
     const y = point1.y - point2.y;
     return Math.sqrt(x*x+y*y);
+  }
+
+  _round (val, precision) {
+    const digit = Math.pow(10,precision);
+    val = val * digit;
+    val = Math.round(val);
+    val = val / digit;
+    return val;
   }
 
 }

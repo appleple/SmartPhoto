@@ -6025,8 +6025,8 @@ var coolPhoto = function (_aTemplate) {
       var pos = this._getTouchPos(this.e);
       var x = pos.x - this.oldPhotoPos.x;
       var y = pos.y - this.oldPhotoPos.y;
-      this.data.photoPosX += x / this.data.scaleSize;
-      this.data.photoPosY += y / this.data.scaleSize;
+      this.data.photoPosX += this._round(x / this.data.scaleSize, 6);
+      this.data.photoPosY += this._round(y / this.data.scaleSize, 6);
       this.oldPhotoPos = pos;
       this.update();
     }
@@ -6054,7 +6054,7 @@ var coolPhoto = function (_aTemplate) {
       var pos = this._getGesturePos(this.e);
       var distance = this._getDistance(pos[0], pos[1]);
       var size = (distance - this.oldDistance) / 100;
-      this.data.scaleSize += size;
+      this.data.scaleSize += this._round(size, 6);
       if (this.data.scaleSize < 1 || this.data.scaleSize > 1.8) {
         this.data.hideUi = true;
       } else {
@@ -6094,6 +6094,15 @@ var coolPhoto = function (_aTemplate) {
       var x = point1.x - point2.x;
       var y = point1.y - point2.y;
       return Math.sqrt(x * x + y * y);
+    }
+  }, {
+    key: '_round',
+    value: function _round(val, precision) {
+      var digit = Math.pow(10, precision);
+      val = val * digit;
+      val = Math.round(val);
+      val = val / digit;
+      return val;
     }
   }]);
   return coolPhoto;
