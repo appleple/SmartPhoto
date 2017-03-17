@@ -23,7 +23,8 @@ const defaults = {
 	arrows:true,
 	nav:true,
 	animationSpeed: 300,
-  swipeOffset: 100
+  swipeOffset: 100,
+  maxWidth: 940
 }
 
 class coolPhoto extends aTemplate {
@@ -75,10 +76,10 @@ class coolPhoto extends aTemplate {
     }
   }
 
-	_getTouchPos (e) {
+	_getTouchPos () {
 		let x = 0;
 		let y = 0;
-		if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches[0].pageX) {
+		if (this._isTouched(event)) {
 			x = event.originalEvent.touches[0].pageX;
 			y = event.originalEvent.touches[0].pageY;
 		} else if(event.pageX){
@@ -139,8 +140,7 @@ class coolPhoto extends aTemplate {
   }
 
   beforeDrag () {
-    const event = this.e;
-    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1){
+    if (this._isTouched(this.e)) {
       this.beforeGesture();
       return;
     }
@@ -181,8 +181,7 @@ class coolPhoto extends aTemplate {
 
   onDrag () {
     this.e.preventDefault();
-    const event = this.e;
-    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
+    if (this._isTouched(this.e)) {
       this.onGesture();
       return;
     }
@@ -313,6 +312,14 @@ class coolPhoto extends aTemplate {
     val = Math.round(val);
     val = val / digit;
     return val;
+  }
+
+  _isTouched (event) {
+    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

@@ -59,7 +59,7 @@ $modal-bg-color: #333;
 .cool-photo-inner{
 	position: relative;
 	display: table-cell;
-	vertical-align: middle;
+	vertical-align: top;
 	width: 100%;
 	height: 100%;
 }
@@ -201,6 +201,5 @@ $modal-bg-color: #333;
 .cool-photo-img{
 	width: 100%;
 	height: auto;
-	margin-top: -30%;
 }
 

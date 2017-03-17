@@ -3,15 +3,17 @@
 		<div class="\{classNames.coolPhotoInner\}">
 				<ul style="transform:translateX({translateX}px);" class="\{classNames.coolPhotoList\}<!-- BEGIN onMoveClass:exist --> \{classNames.coolPhotoListOnMove\}<!-- END onMoveClass:exist -->">
 					<!-- BEGIN items:loop -->
-					<li<!-- \BEGIN scale:exist --> class="onzoom"<!-- \END scale:exist --> style="transform:translateX({translateX}px)<!-- \BEGIN scale:exist --><!-- \BEGIN currentIndex:touch#{index} --> scale(\{scaleSize\})<!-- \END currentIndex:touch#{index} --><!-- \END scale:exist -->;">
-						<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}px,\{photoPosY\}px);<!-- \END currentIndex:touch#{index} -->" src="{src}" class="\\{classNames.coolPhotoImg\\}" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+					<li<!-- \BEGIN scale:exist --> class="onzoom"<!-- \END scale:exist --> style="transform:translate({translateX}px,{translateY}px)<!-- \BEGIN scale:exist --><!-- \BEGIN currentIndex:touch#{index} --> scale(\{scaleSize\})<!-- \END currentIndex:touch#{index} --><!-- \END scale:exist -->;">
+						<div style="transform:translate(\{boxX\}px,\{boxY\}px) scale(\{boxScale\})">
+							<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}px,\{photoPosY\}px);<!-- \END currentIndex:touch#{index} -->" src="{src}" class="\\{classNames.coolPhotoImg\\}" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+						</div>
 					</li>
 					<!-- END items:loop -->
 				</ul>
 				<!-- BEGIN arrows:exist -->
 				<ul class="\{classNames.coolPhotoArrows\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">
 					<li class="\{classNames.coolPhotoArrowLeft\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->" data-action-click="gotoSlide({prev})"></li>
-					<li class="\{classNames.coolPhotoArrowRight\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->" data-action-click="gotoSlide({next})"></li>	
+					<li class="\{classNames.coolPhotoArrowRight\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->" data-action-click="gotoSlide({next})"></li>
 				</ul>
 				<!-- END arrows:exist -->
 				<!-- BEGIN nav:exist -->
