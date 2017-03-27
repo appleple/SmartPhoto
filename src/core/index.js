@@ -3,6 +3,8 @@ import { $ } from 'zepto-browserify';
 
 const util = require('../lib/util');
 const template = require('./viwer.html');
+const COOLPHOTO_HEADER_HEIGHT = 44;
+const COOLPHOTO_FOOTER_HEIGHT = 56;
 
 const defaults = {
 	classNames: {
@@ -57,7 +59,7 @@ class coolPhoto extends aTemplate {
   }
 
   addNewItem (element, index) {
-    this.data.items.push({src: element.getAttribute('href'), translateX: window.innerWidth*index, index: index});
+    this.data.items.push({src: element.getAttribute('href'), translateX: window.innerWidth*index, index: index, translateY:0});
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       event.preventDefault();

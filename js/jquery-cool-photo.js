@@ -5761,6 +5761,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var util = require('../lib/util');
 var template = require('./viwer.html');
+var COOLPHOTO_HEADER_HEIGHT = 44;
+var COOLPHOTO_FOOTER_HEIGHT = 56;
 
 var defaults = {
   classNames: {
@@ -5824,7 +5826,7 @@ var coolPhoto = function (_aTemplate) {
     value: function addNewItem(element, index) {
       var _this2 = this;
 
-      this.data.items.push({ src: element.getAttribute('href'), translateX: window.innerWidth * index, index: index });
+      this.data.items.push({ src: element.getAttribute('href'), translateX: window.innerWidth * index, index: index, translateY: 0 });
       element.setAttribute('data-index', index);
       element.addEventListener('click', function (event) {
         event.preventDefault();

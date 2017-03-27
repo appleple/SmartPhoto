@@ -1,0 +1,1 @@
+(window.height - (headerHeight + footerHeight))*imgX/imgY
