@@ -11,6 +11,7 @@ const defaults = {
 		coolPhotoBody: 'cool-photo-body',
 		coolPhotoInner: 'cool-photo-inner',
 		coolPhotoImg: 'cool-photo-img',
+    coolPhotoImgWrap: 'cool-photo-img-wrap',
 		coolPhotoArrows: 'cool-photo-arrows',
     coolPhotoNav: 'cool-photo-nav',
 		coolPhotoArrowRight: 'cool-photo-arrow-right',
@@ -135,6 +136,8 @@ class coolPhoto extends aTemplate {
     const screenY = windowY - (headerHeight + footerHeight);
     this.data.items.forEach((item) => {
       item.scale = screenY / item.height;
+      item.x = (item.scale - 1) / 2 * item.width + (windowX - (item.width *item.scale)) / 2;
+      item.y = (item.scale - 1) / 2 * item.height+ (windowY - (item.height *item.scale)) / 2;
     });
   }
 

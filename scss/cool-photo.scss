@@ -74,6 +74,11 @@ $modal-bg-color: #333;
 	// width: 100%;
 	width: auto;
 	height: auto;
+	display: block;
+}
+
+.cool-photo-img-wrap{
+	display: inline-block;
 }
 
 .cool-photo-img-left{
