@@ -53,12 +53,12 @@ $modal-bg-color: #333;
 	width: 100%;
 	height: 100%;
 	margin: 0 auto;
-	display: table;
+	// display: table;
 }
 
 .cool-photo-inner{
 	position: relative;
-	display: table-cell;
+	// display: table-cell;
 	vertical-align: top;
 	width: 100%;
 	height: 100%;
@@ -71,7 +71,8 @@ $modal-bg-color: #333;
 }
 
 .cool-photo-img{
-	width: 100%;
+	// width: 100%;
+	width: auto;
 	height: auto;
 }
 
@@ -197,9 +198,3 @@ $modal-bg-color: #333;
 .cool-photo-list-onmove{
 	transition: all .3s;
 }
-
-.cool-photo-img{
-	width: 100%;
-	height: auto;
-}
-

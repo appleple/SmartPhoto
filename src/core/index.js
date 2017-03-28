@@ -3,8 +3,6 @@ import { $ } from 'zepto-browserify';
 
 const util = require('../lib/util');
 const template = require('./viwer.html');
-const COOLPHOTO_HEADER_HEIGHT = 44;
-const COOLPHOTO_FOOTER_HEIGHT = 56;
 
 const defaults = {
 	classNames: {
@@ -26,7 +24,9 @@ const defaults = {
 	nav:true,
 	animationSpeed: 300,
   swipeOffset: 100,
-  maxWidth: 940
+  maxWidth: 940,
+  headerHeight:44,
+  footerHeight:56
 }
 
 class coolPhoto extends aTemplate {
@@ -44,18 +44,37 @@ class coolPhoto extends aTemplate {
     this.id = this._getUniqId();
     this.addTemplate(this.id,template);
     $('body').append(`<div data-id='${this.id}'></div>`);
-    this.update();
     [].forEach.call(this.elements, (element,index) => {
       this.addNewItem(element,index);
+    });
+    this._getEachImageSize().then(() => {
+      this.update();
     });
     $(window).resize(() => {
       this.data.items.forEach((item)=>{
         let index = item.index;
         item.translateX = window.innerWidth*index;
-        this.setPosByCurrentIndex();
-        this.update();
       });
+      this.setPosByCurrentIndex();
+      this.update();
     });
+  }
+
+  _getEachImageSize () {
+    const arr = [];
+    this.data.items.forEach((item) => {
+      const promise = new Promise((resolve,reject) => {
+        const img = new Image();
+        img.onload = () => {
+          item.width = img.width;
+          item.height = img.height;
+          resolve();
+        }
+        img.src = item.src;
+      });
+      arr.push(promise);
+    });
+    return Promise.all(arr);
   }
 
   addNewItem (element, index) {
@@ -65,6 +84,7 @@ class coolPhoto extends aTemplate {
       event.preventDefault();
       this.data.currentIndex = parseInt(element.getAttribute('data-index'));
       this.setPosByCurrentIndex();
+      this.setSizeByScreen();
       this.setArrow();
       this.data.hide = false;
       this.update();
@@ -101,15 +121,27 @@ class coolPhoto extends aTemplate {
 
   setPosByCurrentIndex () {
     this.pos.x = -1 * this.data.currentIndex * window.innerWidth;
-    setTimeout(()=> {
+    setTimeout(() => {
       this.data.translateX = this.pos.x;
       this.update();
     },1);
   }
 
+  setSizeByScreen () {
+    const windowX = window.innerWidth;
+    const windowY = window.innerHeight;
+    const headerHeight = this.data.headerHeight;
+    const footerHeight = this.data.footerHeight;
+    const screenY = windowY - (headerHeight + footerHeight);
+    this.data.items.forEach((item) => {
+      item.scale = screenY / item.height;
+    });
+  }
+
   slideList () {
     this.data.onMoveClass = true;
     this.setPosByCurrentIndex();
+    this.setSizeByScreen();
     setTimeout(() => {
       this.data.onMoveClass = false;
       this.setArrow();
