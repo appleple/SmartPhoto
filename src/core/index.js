@@ -21,6 +21,7 @@ const defaults = {
     coolPhotoImgRight: 'cool-photo-img-right',
     coolPhotoList: 'cool-photo-list',
     coolPhotoListOnMove: 'cool-photo-list-onmove',
+    coolPhotoHeader: 'cool-photo-header',
     coolPhotoCount: 'cool-photo-count'
 	},
 	arrows:true,

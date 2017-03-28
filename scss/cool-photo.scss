@@ -1,6 +1,7 @@
 $animation-speed: .3s;
 $animation-function: ease-out;
 $backdrop-color: rgba(0, 0, 0, .9);
+$header-color: rgba(0, 0, 0, .2);	
 $modal-bg-color: #333;
 
 @keyframes cool-photo {
@@ -48,13 +49,21 @@ $modal-bg-color: #333;
 }
 
 .cool-photo-count {
+	display: inline-block;
+	color: #FFF;
+	font-size: 16px;
+}
+
+.cool-photo-header {
+	background-color: $header-color;
+	box-sizing: border-box;
 	position: absolute;
 	top: 0;
 	left: 0;
 	display: block;
-	color: #FFF;
-	font-size: 14px;
-	padding: 10px;
+	width: 100%;
+	height: 50px;
+	padding: 15px;
 }
 
 

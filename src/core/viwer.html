@@ -1,7 +1,9 @@
 <div class="\{classNames.coolPhoto\}"<!-- BEGIN hide:exist --> style="display:none;"<!-- END hide:exist --> data-action-touchmove="preventBrowserAction">
 	<div class="\{classNames.coolPhotoBody\}" data-action-click="hidePhoto">
 		<div class="\{classNames.coolPhotoInner\}">
-				<span class="\{classNames.coolPhotoCount\}">{currentIndex}[increment]/{total}</span>
+				<div class="\{classNames.coolPhotoHeader\}">
+					<span class="\{classNames.coolPhotoCount\}">{currentIndex}[increment]/{total}</span>
+				</div>
 				<ul style="transform:translateX({translateX}px);" class="\{classNames.coolPhotoList\}<!-- BEGIN onMoveClass:exist --> \{classNames.coolPhotoListOnMove\}<!-- END onMoveClass:exist -->">
 					<!-- BEGIN items:loop -->
 					<li style="transform:translate({translateX}px,{translateY}px);">
