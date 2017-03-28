@@ -42,6 +42,8 @@ class coolPhoto extends aTemplate {
     this.data.scaleSize = 1;
     this.data.scale = false;
     this.pos = { x: 0, y: 0};
+    this.data.photoPosX = 0;
+    this.data.photoPosY = 0;
     this.elements = document.querySelectorAll(selector);
     this.id = this._getUniqId();
     this.addTemplate(this.id,template);

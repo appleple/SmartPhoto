@@ -6419,6 +6419,8 @@ var coolPhoto = function (_aTemplate) {
     _this.data.scaleSize = 1;
     _this.data.scale = false;
     _this.pos = { x: 0, y: 0 };
+    _this.data.photoPosX = 0;
+    _this.data.photoPosY = 0;
     _this.elements = document.querySelectorAll(selector);
     _this.id = _this._getUniqId();
     _this.addTemplate(_this.id, template);
