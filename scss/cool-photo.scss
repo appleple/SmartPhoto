@@ -75,6 +75,11 @@ $modal-bg-color: #333;
 	width: auto;
 	height: auto;
 	display: block;
+	transition: transform .3s;
+}
+
+.cool-photo-img-onmove{
+	transition: none;
 }
 
 .cool-photo-img-wrap{
@@ -194,9 +199,6 @@ $modal-bg-color: #333;
 		position: absolute;
 		top: 0;
 		left: 0;
-	}
-	.onzoom{
-		transition: none;
 	}
 }
 

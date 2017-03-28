@@ -11,6 +11,7 @@ const defaults = {
 		coolPhotoBody: 'cool-photo-body',
 		coolPhotoInner: 'cool-photo-inner',
 		coolPhotoImg: 'cool-photo-img',
+    coolPhotoImgOnMove: 'cool-photo-img-onmove',
     coolPhotoImgWrap: 'cool-photo-img-wrap',
 		coolPhotoArrows: 'cool-photo-arrows',
     coolPhotoNav: 'cool-photo-nav',
@@ -191,13 +192,13 @@ class coolPhoto extends aTemplate {
       return;
     }
     const pos = this._getTouchPos(this.e);
-    this.isSwipable = true;
+    this.data.isSwipable = true;
     this.firstPos = pos;
     this.oldPos = pos;
   }
 
   afterDrag () {
-    this.isSwipable = false;
+    this.data.isSwipable = false;
     if (this.isBeingZoomed) {
       this.afterGesture();
       return;
@@ -234,7 +235,7 @@ class coolPhoto extends aTemplate {
       this.onPhotoDrag();
       return;
     }
-    if(!this.isSwipable){
+    if(!this.data.isSwipable){
       return;
     }
     const pos = this._getTouchPos(this.e);

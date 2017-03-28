@@ -3,9 +3,9 @@
 		<div class="\{classNames.coolPhotoInner\}">
 				<ul style="transform:translateX({translateX}px);" class="\{classNames.coolPhotoList\}<!-- BEGIN onMoveClass:exist --> \{classNames.coolPhotoListOnMove\}<!-- END onMoveClass:exist -->">
 					<!-- BEGIN items:loop -->
-					<li<!-- \BEGIN scale:exist --> class="onzoom"<!-- \END scale:exist --> style="transform:translate({translateX}px,{translateY}px)<!-- \BEGIN scale:exist --><!-- \BEGIN currentIndex:touch#{index} --> scale(\{scaleSize\})<!-- \END currentIndex:touch#{index} --><!-- \END scale:exist -->;">
+					<li style="transform:translate({translateX}px,{translateY}px);">
 						<div style="transform:translate({x}px,{y}px) scale({scale});" class="\\{classNames.coolPhotoImgWrap\\}">
-							<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}px,\{photoPosY\}px);<!-- \END currentIndex:touch#{index} -->" src="{src}" class="\\{classNames.coolPhotoImg\\}" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+							<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}px,\{photoPosY\}px) scale(\{scaleSize\});<!-- \END currentIndex:touch#{index} -->" src="{src}" class="\\{classNames.coolPhotoImg\\}<!-- \BEGIN isSwipable:exist --> \\{classNames.coolPhotoImgOnMove\\}<!-- \END isSwipable:exist -->" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
 						</div>
 					</li>
 					<!-- END items:loop -->
