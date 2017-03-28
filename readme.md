@@ -1,1 +1,1 @@
-# coolPhoto
+# CoolPhoto
