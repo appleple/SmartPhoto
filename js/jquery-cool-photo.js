@@ -6400,8 +6400,8 @@ var defaults = {
   animationSpeed: 300,
   swipeOffset: 100,
   maxWidth: 940,
-  headerHeight: 44,
-  footerHeight: 56
+  headerHeight: 60,
+  footerHeight: 60
 };
 
 var coolPhoto = function (_aTemplate) {
