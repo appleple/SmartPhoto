@@ -22,7 +22,8 @@ const defaults = {
     coolPhotoList: 'cool-photo-list',
     coolPhotoListOnMove: 'cool-photo-list-onmove',
     coolPhotoHeader: 'cool-photo-header',
-    coolPhotoCount: 'cool-photo-count'
+    coolPhotoCount: 'cool-photo-count',
+    coolPhotoDismiss: 'cool-photo-dismiss'
 	},
 	arrows:true,
 	nav:true,
@@ -107,10 +108,8 @@ class coolPhoto extends aTemplate {
   }
 
   hidePhoto () {
-    if($(this.e.target).hasClass(this.data.classNames.coolPhotoInner) || $(this.e.target).hasClass(this.data.classNames.coolPhotoBody)){
-      this.data.hide = true;
-      this.update();
-    }
+    this.data.hide = true;
+    this.update();
   }
 
 	_getTouchPos () {
