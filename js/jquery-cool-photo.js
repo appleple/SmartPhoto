@@ -6526,6 +6526,10 @@ var coolPhoto = function (_aTemplate) {
         item.scale = screenY / item.height;
         item.x = (item.scale - 1) / 2 * item.width + (windowX - item.width * item.scale) / 2;
         item.y = (item.scale - 1) / 2 * item.height + (windowY - item.height * item.scale) / 2;
+        if (item.width * item.scale > windowX) {
+          item.scale = windowX / item.width;
+          item.x = (item.scale - 1) / 2 * item.width;
+        }
       });
     }
   }, {
