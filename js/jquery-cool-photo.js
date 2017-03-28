@@ -6434,6 +6434,7 @@ var coolPhoto = function (_aTemplate) {
         item.translateX = window.innerWidth * index;
       });
       _this.setPosByCurrentIndex();
+      _this.setSizeByScreen();
       _this.update();
     });
     return _this;

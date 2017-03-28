@@ -57,6 +57,7 @@ class coolPhoto extends aTemplate {
         item.translateX = window.innerWidth*index;
       });
       this.setPosByCurrentIndex();
+      this.setSizeByScreen();
       this.update();
     });
   }
