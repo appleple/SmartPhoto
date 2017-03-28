@@ -45,6 +45,9 @@ class coolPhoto extends aTemplate {
     this.pos = { x: 0, y: 0};
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
+    this.convert = {
+      increment:this.increment
+    };
     this.elements = document.querySelectorAll(selector);
     this.data.total = this.elements.length;
     this.id = this._getUniqId();
@@ -65,6 +68,10 @@ class coolPhoto extends aTemplate {
       this.setSizeByScreen();
       this.update();
     });
+  }
+
+  increment (item) {
+    return item+1;
   }
 
   _getEachImageSize () {
