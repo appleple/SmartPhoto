@@ -20,7 +20,8 @@ const defaults = {
     coolPhotoImgLeft: 'cool-photo-img-left',
     coolPhotoImgRight: 'cool-photo-img-right',
     coolPhotoList: 'cool-photo-list',
-    coolPhotoListOnMove: 'cool-photo-list-onmove'
+    coolPhotoListOnMove: 'cool-photo-list-onmove',
+    coolPhotoCount: 'cool-photo-count'
 	},
 	arrows:true,
 	nav:true,
@@ -45,6 +46,7 @@ class coolPhoto extends aTemplate {
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
     this.elements = document.querySelectorAll(selector);
+    this.data.total = this.elements.length;
     this.id = this._getUniqId();
     this.addTemplate(this.id,template);
     $('body').append(`<div data-id='${this.id}'></div>`);
