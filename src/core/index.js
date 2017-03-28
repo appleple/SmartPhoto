@@ -11,6 +11,7 @@ const defaults = {
 		coolPhotoBody: 'cool-photo-body',
 		coolPhotoInner: 'cool-photo-inner',
 		coolPhotoImg: 'cool-photo-img',
+    coolPhotoImgWrap: 'cool-photo-img-wrap',
 		coolPhotoArrows: 'cool-photo-arrows',
     coolPhotoNav: 'cool-photo-nav',
 		coolPhotoArrowRight: 'cool-photo-arrow-right',
@@ -23,7 +24,10 @@ const defaults = {
 	arrows:true,
 	nav:true,
 	animationSpeed: 300,
-  swipeOffset: 100
+  swipeOffset: 100,
+  maxWidth: 940,
+  headerHeight:44,
+  footerHeight:56
 }
 
 class coolPhoto extends aTemplate {
@@ -41,27 +45,48 @@ class coolPhoto extends aTemplate {
     this.id = this._getUniqId();
     this.addTemplate(this.id,template);
     $('body').append(`<div data-id='${this.id}'></div>`);
-    this.update();
     [].forEach.call(this.elements, (element,index) => {
       this.addNewItem(element,index);
+    });
+    this._getEachImageSize().then(() => {
+      this.update();
     });
     $(window).resize(() => {
       this.data.items.forEach((item)=>{
         let index = item.index;
         item.translateX = window.innerWidth*index;
-        this.setPosByCurrentIndex();
-        this.update();
       });
+      this.setPosByCurrentIndex();
+      this.setSizeByScreen();
+      this.update();
     });
   }
 
+  _getEachImageSize () {
+    const arr = [];
+    this.data.items.forEach((item) => {
+      const promise = new Promise((resolve,reject) => {
+        const img = new Image();
+        img.onload = () => {
+          item.width = img.width;
+          item.height = img.height;
+          resolve();
+        }
+        img.src = item.src;
+      });
+      arr.push(promise);
+    });
+    return Promise.all(arr);
+  }
+
   addNewItem (element, index) {
-    this.data.items.push({src: element.getAttribute('href'), translateX: window.innerWidth*index, index: index});
+    this.data.items.push({src: element.getAttribute('href'), translateX: window.innerWidth*index, index: index, translateY:0});
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       event.preventDefault();
       this.data.currentIndex = parseInt(element.getAttribute('data-index'));
       this.setPosByCurrentIndex();
+      this.setSizeByScreen();
       this.setArrow();
       this.data.hide = false;
       this.update();
@@ -75,10 +100,10 @@ class coolPhoto extends aTemplate {
     }
   }
 
-	_getTouchPos (e) {
+	_getTouchPos () {
 		let x = 0;
 		let y = 0;
-		if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches[0].pageX) {
+		if (this._isTouched(event)) {
 			x = event.originalEvent.touches[0].pageX;
 			y = event.originalEvent.touches[0].pageY;
 		} else if(event.pageX){
@@ -98,15 +123,29 @@ class coolPhoto extends aTemplate {
 
   setPosByCurrentIndex () {
     this.pos.x = -1 * this.data.currentIndex * window.innerWidth;
-    setTimeout(()=> {
+    setTimeout(() => {
       this.data.translateX = this.pos.x;
       this.update();
     },1);
   }
 
+  setSizeByScreen () {
+    const windowX = window.innerWidth;
+    const windowY = window.innerHeight;
+    const headerHeight = this.data.headerHeight;
+    const footerHeight = this.data.footerHeight;
+    const screenY = windowY - (headerHeight + footerHeight);
+    this.data.items.forEach((item) => {
+      item.scale = screenY / item.height;
+      item.x = (item.scale - 1) / 2 * item.width + (windowX - (item.width *item.scale)) / 2;
+      item.y = (item.scale - 1) / 2 * item.height+ (windowY - (item.height *item.scale)) / 2;
+    });
+  }
+
   slideList () {
     this.data.onMoveClass = true;
     this.setPosByCurrentIndex();
+    this.setSizeByScreen();
     setTimeout(() => {
       this.data.onMoveClass = false;
       this.setArrow();
@@ -139,8 +178,7 @@ class coolPhoto extends aTemplate {
   }
 
   beforeDrag () {
-    const event = this.e;
-    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1){
+    if (this._isTouched(this.e)) {
       this.beforeGesture();
       return;
     }
@@ -181,8 +219,7 @@ class coolPhoto extends aTemplate {
 
   onDrag () {
     this.e.preventDefault();
-    const event = this.e;
-    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
+    if (this._isTouched(this.e)) {
       this.onGesture();
       return;
     }
@@ -243,8 +280,8 @@ class coolPhoto extends aTemplate {
     const pos = this._getTouchPos(this.e);
     const x = pos.x - this.oldPhotoPos.x;
     const y = pos.y - this.oldPhotoPos.y;
-    this.data.photoPosX += x / this.data.scaleSize;
-    this.data.photoPosY += y / this.data.scaleSize;
+    this.data.photoPosX += this._round(x / this.data.scaleSize,6);
+    this.data.photoPosY += this._round(y / this.data.scaleSize,6);
     this.oldPhotoPos = pos;
     this.update();
   }
@@ -269,7 +306,7 @@ class coolPhoto extends aTemplate {
     const pos = this._getGesturePos(this.e);
     const distance = this._getDistance(pos[0],pos[1]);
     const size = (distance - this.oldDistance) / 100;
-    this.data.scaleSize += size;
+    this.data.scaleSize += this._round(size,6);
     if(this.data.scaleSize < 1 || this.data.scaleSize > 1.8){
       this.data.hideUi = true;
     }else{
@@ -305,6 +342,22 @@ class coolPhoto extends aTemplate {
     const x = point1.x - point2.x;
     const y = point1.y - point2.y;
     return Math.sqrt(x*x+y*y);
+  }
+
+  _round (val, precision) {
+    const digit = Math.pow(10,precision);
+    val = val * digit;
+    val = Math.round(val);
+    val = val / digit;
+    return val;
+  }
+
+  _isTouched (event) {
+    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }
