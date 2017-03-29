@@ -33,7 +33,7 @@ const defaults = {
   headerHeight:60,
   footerHeight:60,
   forceInterval:10,
-  registance:0.5
+  registance:0.01
 }
 
 class coolPhoto extends aTemplate {
@@ -363,6 +363,8 @@ class coolPhoto extends aTemplate {
   }
 
   _registerForce () {
+    this.photoVX = this.photoVX / 10;
+    this.photoVY = this.photoVY / 10;
     const id = setInterval(() => {
       if(!this.data.scale){
         clearInterval(id);

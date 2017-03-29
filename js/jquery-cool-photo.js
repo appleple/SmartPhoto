@@ -6406,7 +6406,7 @@ var defaults = {
   headerHeight: 60,
   footerHeight: 60,
   forceInterval: 10,
-  registance: 0.5
+  registance: 0.01
 };
 
 var coolPhoto = function (_aTemplate) {
@@ -6771,6 +6771,8 @@ var coolPhoto = function (_aTemplate) {
     value: function _registerForce() {
       var _this5 = this;
 
+      this.photoVX = this.photoVX / 10;
+      this.photoVY = this.photoVY / 10;
       var id = setInterval(function () {
         if (!_this5.data.scale) {
           clearInterval(id);
