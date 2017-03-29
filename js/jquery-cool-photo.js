@@ -6696,8 +6696,9 @@ var coolPhoto = function (_aTemplate) {
       var pos = this._getTouchPos(this.e);
       var x = pos.x - this.oldPhotoPos.x;
       var y = pos.y - this.oldPhotoPos.y;
-      this.data.photoPosX += this._round(x, 6);
-      this.data.photoPosY += this._round(y, 6);
+      var item = this._getSelectedItem();
+      this.data.photoPosX += this._round(item.scale * this.data.scaleSize * x, 6);
+      this.data.photoPosY += this._round(item.scale * this.data.scaleSize * y, 6);
       this.oldPhotoPos = pos;
       this.update();
     }
@@ -6753,6 +6754,12 @@ var coolPhoto = function (_aTemplate) {
     key: 'preventBrowserAction',
     value: function preventBrowserAction() {
       this.e.preventDefault();
+    }
+  }, {
+    key: '_getSelectedItem',
+    value: function _getSelectedItem() {
+      var index = this.data.currentIndex;
+      return this.data.items[index];
     }
   }, {
     key: '_getUniqId',

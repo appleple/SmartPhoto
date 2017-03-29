@@ -296,8 +296,9 @@ class coolPhoto extends aTemplate {
     const pos = this._getTouchPos(this.e);
     const x = pos.x - this.oldPhotoPos.x;
     const y = pos.y - this.oldPhotoPos.y;
-    this.data.photoPosX += this._round(x,6);
-    this.data.photoPosY += this._round(y,6);
+    const item = this._getSelectedItem();
+    this.data.photoPosX += this._round(item.scale*this.data.scaleSize*x,6);
+    this.data.photoPosY += this._round(item.scale*this.data.scaleSize*y,6);
     this.oldPhotoPos = pos;
     this.update();
   }
@@ -348,6 +349,11 @@ class coolPhoto extends aTemplate {
 
   preventBrowserAction () {
     this.e.preventDefault();
+  }
+
+  _getSelectedItem () {
+    const index = this.data.currentIndex;
+    return this.data.items[index];
   }
 
   _getUniqId () {
