@@ -6404,7 +6404,9 @@ var defaults = {
   swipeOffset: 100,
   maxWidth: 940,
   headerHeight: 60,
-  footerHeight: 60
+  footerHeight: 60,
+  forceInterval: 10,
+  registance: 0.5
 };
 
 var coolPhoto = function (_aTemplate) {
@@ -6714,6 +6716,8 @@ var coolPhoto = function (_aTemplate) {
     value: function afterPhotoDrag() {
       if (this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
         this.zoomOutPhoto();
+      } else {
+        this._registerForce();
       }
       this.photoSwipable = false;
     }
@@ -6761,6 +6765,40 @@ var coolPhoto = function (_aTemplate) {
     key: 'preventBrowserAction',
     value: function preventBrowserAction() {
       this.e.preventDefault();
+    }
+  }, {
+    key: '_registerForce',
+    value: function _registerForce() {
+      var _this5 = this;
+
+      var id = setInterval(function () {
+        if (!_this5.data.scale) {
+          clearInterval(id);
+        }
+        var count = 0;
+        _this5.data.photoPosX += _this5.photoVX;
+        _this5.data.photoPosY += _this5.photoVY;
+        if (_this5.photoVX > 0) {
+          _this5.photoVX -= _this5.data.registance;
+        } else {
+          _this5.photoVX += _this5.data.registance;
+        }
+        if (_this5.photoVY > 0) {
+          _this5.photoVY -= _this5.data.registance;
+        } else {
+          _this5.photoVY += _this5.data.registance;
+        }
+        if (Math.abs(_this5.photoVX) < 0.1) {
+          count++;
+        }
+        if (Math.abs(_this5.photoVY) < 0.1) {
+          count++;
+        }
+        if (count === 2) {
+          clearInterval(id);
+        }
+        _this5.update();
+      }, this.data.forceInterval);
     }
   }, {
     key: '_getSelectedItem',

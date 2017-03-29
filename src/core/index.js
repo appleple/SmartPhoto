@@ -31,7 +31,9 @@ const defaults = {
   swipeOffset: 100,
   maxWidth: 940,
   headerHeight:60,
-  footerHeight:60
+  footerHeight:60,
+  forceInterval:10,
+  registance:0.5
 }
 
 class coolPhoto extends aTemplate {
@@ -313,6 +315,8 @@ class coolPhoto extends aTemplate {
   afterPhotoDrag () {
     if(this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
       this.zoomOutPhoto();
+    }else{
+      this._registerForce();
     }
     this.photoSwipable = false;
   }
@@ -356,6 +360,37 @@ class coolPhoto extends aTemplate {
 
   preventBrowserAction () {
     this.e.preventDefault();
+  }
+
+  _registerForce () {
+    const id = setInterval(() => {
+      if(!this.data.scale){
+        clearInterval(id);
+      }
+      let count = 0;
+      this.data.photoPosX += this.photoVX;
+      this.data.photoPosY += this.photoVY;
+      if (this.photoVX > 0) {
+        this.photoVX -= this.data.registance;
+      } else {
+        this.photoVX += this.data.registance;
+      }
+      if (this.photoVY > 0) {
+        this.photoVY -= this.data.registance;
+      } else {
+        this.photoVY += this.data.registance;
+      }
+      if (Math.abs(this.photoVX) < 0.1){
+        count++;
+      }
+      if (Math.abs(this.photoVY) < 0.1){
+        count++;
+      }
+      if(count === 2){
+        clearInterval(id);
+      }
+      this.update();
+    },this.data.forceInterval);
   }
 
   _getSelectedItem () {
