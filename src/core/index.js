@@ -296,8 +296,16 @@ class coolPhoto extends aTemplate {
     const pos = this._getTouchPos(this.e);
     const x = pos.x - this.oldPhotoPos.x;
     const y = pos.y - this.oldPhotoPos.y;
-    this.data.photoPosX += this._round(this.data.scaleSize*x,6);
-    this.data.photoPosY += this._round(this.data.scaleSize*y,6);
+    const moveX = this._round(this.data.scaleSize*x,6);
+    const moveY = this._round(this.data.scaleSize*y,6);
+    if(moveX) {
+      this.data.photoPosX += moveX;
+      this.photoVX = moveX;
+    }
+    if(moveY){
+      this.data.photoPosY += moveY;
+      this.photoVY = moveY;
+    }
     this.oldPhotoPos = pos;
     this.update();
   }

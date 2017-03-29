@@ -6696,8 +6696,16 @@ var coolPhoto = function (_aTemplate) {
       var pos = this._getTouchPos(this.e);
       var x = pos.x - this.oldPhotoPos.x;
       var y = pos.y - this.oldPhotoPos.y;
-      this.data.photoPosX += this._round(this.data.scaleSize * x, 6);
-      this.data.photoPosY += this._round(this.data.scaleSize * y, 6);
+      var moveX = this._round(this.data.scaleSize * x, 6);
+      var moveY = this._round(this.data.scaleSize * y, 6);
+      if (moveX) {
+        this.data.photoPosX += moveX;
+        this.photoVX = moveX;
+      }
+      if (moveY) {
+        this.data.photoPosY += moveY;
+        this.photoVY = moveY;
+      }
       this.oldPhotoPos = pos;
       this.update();
     }
