@@ -6698,11 +6698,11 @@ var coolPhoto = function (_aTemplate) {
       var y = pos.y - this.oldPhotoPos.y;
       var moveX = this._round(this.data.scaleSize * x, 6);
       var moveY = this._round(this.data.scaleSize * y, 6);
-      if (moveX) {
+      if (typeof moveX === "number") {
         this.data.photoPosX += moveX;
         this.photoVX = moveX;
       }
-      if (moveY) {
+      if (typeof moveY === "number") {
         this.data.photoPosY += moveY;
         this.photoVY = moveY;
       }

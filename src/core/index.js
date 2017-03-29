@@ -298,11 +298,11 @@ class coolPhoto extends aTemplate {
     const y = pos.y - this.oldPhotoPos.y;
     const moveX = this._round(this.data.scaleSize*x,6);
     const moveY = this._round(this.data.scaleSize*y,6);
-    if(moveX) {
+    if(typeof moveX === "number") {
       this.data.photoPosX += moveX;
       this.photoVX = moveX;
     }
-    if(moveY){
+    if(typeof moveY === "number"){
       this.data.photoPosY += moveY;
       this.photoVY = moveY;
     }
