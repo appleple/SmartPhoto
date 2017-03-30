@@ -6775,7 +6775,7 @@ var coolPhoto = function (_aTemplate) {
     value: function _registerForce(force, theta) {
       var _this5 = this;
 
-      force = force / 7;
+      force = force / 5;
       var id = setInterval(function () {
         if (!_this5.data.scale || _this5.photoSwipable) {
           clearInterval(id);
