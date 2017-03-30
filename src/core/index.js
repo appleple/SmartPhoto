@@ -316,7 +316,12 @@ class coolPhoto extends aTemplate {
     if(this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
       this.zoomOutPhoto();
     }else{
-      this._registerForce();
+      const vx = this.photoVX;
+      const vy = this.photoVY;
+      const force = Math.sqrt(vx*vx + vy*vy);
+      const theta = Math.atan2(vy,vx);
+      console.log(theta);
+      this._registerForce(force,theta);
     }
     this.photoSwipable = false;
   }
@@ -362,33 +367,16 @@ class coolPhoto extends aTemplate {
     this.e.preventDefault();
   }
 
-  _registerForce () {
-    this.photoVX = this.photoVX / 10;
-    this.photoVY = this.photoVY / 10;
+  _registerForce (force, theta) {
+    force = force / 10;
     const id = setInterval(() => {
-      if(!this.data.scale){
+      if (!this.data.scale) {
         clearInterval(id);
       }
-      let count = 0;
-      this.data.photoPosX += this.photoVX;
-      this.data.photoPosY += this.photoVY;
-      if (this.photoVX > 0) {
-        this.photoVX -= this.data.registance;
-      } else {
-        this.photoVX += this.data.registance;
-      }
-      if (this.photoVY > 0) {
-        this.photoVY -= this.data.registance;
-      } else {
-        this.photoVY += this.data.registance;
-      }
-      if (Math.abs(this.photoVX) < 0.1){
-        count++;
-      }
-      if (Math.abs(this.photoVY) < 0.1){
-        count++;
-      }
-      if(count === 2){
+      this.data.photoPosX += force * Math.cos(theta);
+      this.data.photoPosY += force * Math.sin(theta);
+      force -= 0.1;
+      if (force < 0.1) {
         clearInterval(id);
       }
       this.update();

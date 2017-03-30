@@ -6717,7 +6717,12 @@ var coolPhoto = function (_aTemplate) {
       if (this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
         this.zoomOutPhoto();
       } else {
-        this._registerForce();
+        var vx = this.photoVX;
+        var vy = this.photoVY;
+        var force = Math.sqrt(vx * vx + vy * vy);
+        var theta = Math.atan2(vy, vx);
+        console.log(theta);
+        this._registerForce(force, theta);
       }
       this.photoSwipable = false;
     }
@@ -6768,35 +6773,18 @@ var coolPhoto = function (_aTemplate) {
     }
   }, {
     key: '_registerForce',
-    value: function _registerForce() {
+    value: function _registerForce(force, theta) {
       var _this5 = this;
 
-      this.photoVX = this.photoVX / 10;
-      this.photoVY = this.photoVY / 10;
+      force = force / 10;
       var id = setInterval(function () {
         if (!_this5.data.scale) {
           clearInterval(id);
         }
-        var count = 0;
-        _this5.data.photoPosX += _this5.photoVX;
-        _this5.data.photoPosY += _this5.photoVY;
-        if (_this5.photoVX > 0) {
-          _this5.photoVX -= _this5.data.registance;
-        } else {
-          _this5.photoVX += _this5.data.registance;
-        }
-        if (_this5.photoVY > 0) {
-          _this5.photoVY -= _this5.data.registance;
-        } else {
-          _this5.photoVY += _this5.data.registance;
-        }
-        if (Math.abs(_this5.photoVX) < 0.1) {
-          count++;
-        }
-        if (Math.abs(_this5.photoVY) < 0.1) {
-          count++;
-        }
-        if (count === 2) {
+        _this5.data.photoPosX += force * Math.cos(theta);
+        _this5.data.photoPosY += force * Math.sin(theta);
+        force -= 0.1;
+        if (force < 0.1) {
           clearInterval(id);
         }
         _this5.update();
