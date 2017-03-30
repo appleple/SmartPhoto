@@ -320,7 +320,6 @@ class coolPhoto extends aTemplate {
       const vy = this.photoVY;
       const force = Math.sqrt(vx*vx + vy*vy);
       const theta = Math.atan2(vy,vx);
-      console.log(theta);
       this._registerForce(force,theta);
     }
     this.photoSwipable = false;
@@ -370,7 +369,7 @@ class coolPhoto extends aTemplate {
   _registerForce (force, theta) {
     force = force / 10;
     const id = setInterval(() => {
-      if (!this.data.scale) {
+      if (!this.data.scale || this.photoSwipable) {
         clearInterval(id);
       }
       this.data.photoPosX += force * Math.cos(theta);

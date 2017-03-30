@@ -6721,7 +6721,6 @@ var coolPhoto = function (_aTemplate) {
         var vy = this.photoVY;
         var force = Math.sqrt(vx * vx + vy * vy);
         var theta = Math.atan2(vy, vx);
-        console.log(theta);
         this._registerForce(force, theta);
       }
       this.photoSwipable = false;
@@ -6778,7 +6777,7 @@ var coolPhoto = function (_aTemplate) {
 
       force = force / 10;
       var id = setInterval(function () {
-        if (!_this5.data.scale) {
+        if (!_this5.data.scale || _this5.photoSwipable) {
           clearInterval(id);
         }
         _this5.data.photoPosX += force * Math.cos(theta);
