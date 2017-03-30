@@ -6782,7 +6782,7 @@ var coolPhoto = function (_aTemplate) {
         }
         _this5.data.photoPosX += force * Math.cos(theta);
         _this5.data.photoPosY += force * Math.sin(theta);
-        force -= 0.1;
+        force -= 0.05;
         if (force < 0.1) {
           clearInterval(id);
         }
