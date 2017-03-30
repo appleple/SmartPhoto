@@ -367,14 +367,14 @@ class coolPhoto extends aTemplate {
   }
 
   _registerForce (force, theta) {
-    force = force / 10;
+    force = force / 7;
     const id = setInterval(() => {
       if (!this.data.scale || this.photoSwipable) {
         clearInterval(id);
       }
       this.data.photoPosX += force * Math.cos(theta);
       this.data.photoPosY += force * Math.sin(theta);
-      force -= 0.02;
+      force -= 0.05;
       if (force < 0.1) {
         clearInterval(id);
       }

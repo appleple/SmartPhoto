@@ -6775,14 +6775,14 @@ var coolPhoto = function (_aTemplate) {
     value: function _registerForce(force, theta) {
       var _this5 = this;
 
-      force = force / 10;
+      force = force / 7;
       var id = setInterval(function () {
         if (!_this5.data.scale || _this5.photoSwipable) {
           clearInterval(id);
         }
         _this5.data.photoPosX += force * Math.cos(theta);
         _this5.data.photoPosY += force * Math.sin(theta);
-        force -= 0.02;
+        force -= 0.05;
         if (force < 0.1) {
           clearInterval(id);
         }
