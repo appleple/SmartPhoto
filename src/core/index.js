@@ -374,7 +374,7 @@ class coolPhoto extends aTemplate {
       }
       this.data.photoPosX += force * Math.cos(theta);
       this.data.photoPosY += force * Math.sin(theta);
-      force -= 0.05;
+      force -= 0.02;
       if (force < 0.1) {
         clearInterval(id);
       }
