@@ -366,8 +366,27 @@ class coolPhoto extends aTemplate {
     this.e.preventDefault();
   }
 
+  _makeBound (item) {
+    let width = item.width * item.scale * this.data.scaleSize;
+    let height = item.height * item.scale * this.data.scaleSize;
+    if(window.innerWidth > width){
+      width = window.innerWidth;
+    }
+    if(window.innerHeight > height){
+      height = window.innerHeight;
+    }
+    return {
+      width:width,
+      height:height
+    }
+  }
+
   _registerForce (force, theta) {
     force = force / 5;
+    const item = this._getSelectedItem();
+    const bound = this._makeBound(item);
+    console.log(bound,this.data.photoPosX,this.data.photoPosY);
+
     const id = setInterval(() => {
       if (!this.data.scale || this.photoSwipable) {
         clearInterval(id);

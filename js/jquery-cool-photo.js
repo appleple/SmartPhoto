@@ -6771,11 +6771,31 @@ var coolPhoto = function (_aTemplate) {
       this.e.preventDefault();
     }
   }, {
+    key: '_makeBound',
+    value: function _makeBound(item) {
+      var width = item.width * item.scale * this.data.scaleSize;
+      var height = item.height * item.scale * this.data.scaleSize;
+      if (window.innerWidth > width) {
+        width = window.innerWidth;
+      }
+      if (window.innerHeight > height) {
+        height = window.innerHeight;
+      }
+      return {
+        width: width,
+        height: height
+      };
+    }
+  }, {
     key: '_registerForce',
     value: function _registerForce(force, theta) {
       var _this5 = this;
 
       force = force / 5;
+      var item = this._getSelectedItem();
+      var bound = this._makeBound(item);
+      console.log(bound, this.data.photoPosX, this.data.photoPosY);
+
       var id = setInterval(function () {
         if (!_this5.data.scale || _this5.photoSwipable) {
           clearInterval(id);
