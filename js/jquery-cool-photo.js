@@ -6821,23 +6821,23 @@ var coolPhoto = function (_aTemplate) {
         if (_this5.data.photoPosX > bound.maxX) {
           if (vx > 0) {
             vx *= -1;
-            force *= 0.8;
+            force *= 0.5;
           }
         } else if (_this5.data.photoPosX < bound.minX) {
           if (vx < 0) {
             vx *= -1;
-            force *= 0.8;
+            force *= 0.5;
           }
         }
         if (_this5.data.photoPosY > bound.maxY) {
           if (vy > 0) {
             vy *= -1;
-            force *= 0.8;
+            force *= 0.5;
           }
         } else if (_this5.data.photoPosY < bound.minY) {
           if (vy < 0) {
             vy *= -1;
-            force *= 0.8;
+            force *= 0.5;
           }
         }
 
