@@ -369,15 +369,26 @@ class coolPhoto extends aTemplate {
   _makeBound (item) {
     let width = item.width * item.scale * this.data.scaleSize;
     let height = item.height * item.scale * this.data.scaleSize;
+    let minX,minY,maxX,maxY;
     if(window.innerWidth > width){
-      width = window.innerWidth;
+      maxX = (window.innerWidth - width) / 2;
+      minX = -1 * maxX;
+    }else{
+      maxX = (width - window.innerWidth) / 2;
+      minX = -1 * maxX;
     }
     if(window.innerHeight > height){
-      height = window.innerHeight;
+      maxY = (window.innerHeight - height) / 2;
+      minY = -1 * maxY;
+    }else{
+      maxY = (height - window.innerHeight) / 2;
+      minY = -1 * maxY;
     }
     return {
-      width:width,
-      height:height
+      minX: minX,
+      minY: minY,
+      maxX: maxX,
+      maxY: maxY
     }
   }
 
@@ -385,14 +396,35 @@ class coolPhoto extends aTemplate {
     force = force / 5;
     const item = this._getSelectedItem();
     const bound = this._makeBound(item);
-    console.log(bound,this.data.photoPosX,this.data.photoPosY);
+    let vx = Math.cos(theta);
+    let vy = Math.sin(theta);
 
     const id = setInterval(() => {
       if (!this.data.scale || this.photoSwipable) {
         clearInterval(id);
       }
-      this.data.photoPosX += force * Math.cos(theta);
-      this.data.photoPosY += force * Math.sin(theta);
+      this.data.photoPosX += force * vx;
+      this.data.photoPosY += force * vy;
+
+      if (this.data.photoPosX > bound.maxX) {
+        this.data.photoPosX = bound.maxX;
+        vx *= -1;
+        force *= 0.8;
+      } else if (this.data.photoPosX < bound.minX) {
+        this.data.photoPosX = bound.minX;
+        vx *= -1;
+        force *= 0.8;
+      }
+      if (this.data.photoPosY > bound.maxY) {
+        this.data.photoPosY = bound.maxY;
+        vy *= -1;
+        force *= 0.8;
+      } else if (this.data.photoPosY < bound.minY) {
+        this.data.photoPosY = bound.minY;
+        vy *= -1;
+        force *= 0.8;
+      }
+
       force -= 0.05;
       if (force < 0.1) {
         clearInterval(id);

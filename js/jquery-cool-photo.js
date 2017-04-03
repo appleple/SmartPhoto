@@ -6775,15 +6775,29 @@ var coolPhoto = function (_aTemplate) {
     value: function _makeBound(item) {
       var width = item.width * item.scale * this.data.scaleSize;
       var height = item.height * item.scale * this.data.scaleSize;
+      var minX = void 0,
+          minY = void 0,
+          maxX = void 0,
+          maxY = void 0;
       if (window.innerWidth > width) {
-        width = window.innerWidth;
+        maxX = (window.innerWidth - width) / 2;
+        minX = -1 * maxX;
+      } else {
+        maxX = (width - window.innerWidth) / 2;
+        minX = -1 * maxX;
       }
       if (window.innerHeight > height) {
-        height = window.innerHeight;
+        maxY = (window.innerHeight - height) / 2;
+        minY = -1 * maxY;
+      } else {
+        maxY = (height - window.innerHeight) / 2;
+        minY = -1 * maxY;
       }
       return {
-        width: width,
-        height: height
+        minX: minX,
+        minY: minY,
+        maxX: maxX,
+        maxY: maxY
       };
     }
   }, {
@@ -6794,14 +6808,35 @@ var coolPhoto = function (_aTemplate) {
       force = force / 5;
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
-      console.log(bound, this.data.photoPosX, this.data.photoPosY);
+      var vx = Math.cos(theta);
+      var vy = Math.sin(theta);
 
       var id = setInterval(function () {
         if (!_this5.data.scale || _this5.photoSwipable) {
           clearInterval(id);
         }
-        _this5.data.photoPosX += force * Math.cos(theta);
-        _this5.data.photoPosY += force * Math.sin(theta);
+        _this5.data.photoPosX += force * vx;
+        _this5.data.photoPosY += force * vy;
+
+        if (_this5.data.photoPosX > bound.maxX) {
+          _this5.data.photoPosX = bound.maxX;
+          vx *= -1;
+          force *= 0.8;
+        } else if (_this5.data.photoPosX < bound.minX) {
+          _this5.data.photoPosX = bound.minX;
+          vx *= -1;
+          force *= 0.8;
+        }
+        if (_this5.data.photoPosY > bound.maxY) {
+          _this5.data.photoPosY = bound.maxY;
+          vy *= -1;
+          force *= 0.8;
+        } else if (_this5.data.photoPosY < bound.minY) {
+          _this5.data.photoPosY = bound.minY;
+          vy *= -1;
+          force *= 0.8;
+        }
+
         force -= 0.05;
         if (force < 0.1) {
           clearInterval(id);
