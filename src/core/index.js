@@ -261,7 +261,7 @@ class coolPhoto extends aTemplate {
 
   zoomPhoto(){
     this.data.scale = true;
-    this.data.scaleSize = 2;
+    this.data.scaleSize =  this._getHeightBoarder();
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
     this.update();
@@ -339,7 +339,8 @@ class coolPhoto extends aTemplate {
     const distance = this._getDistance(pos[0],pos[1]);
     const size = (distance - this.oldDistance) / 100;
     this.data.scaleSize += this._round(size,6);
-    if(this.data.scaleSize < 1 || this.data.scaleSize > 1.8){
+
+    if(this.data.scaleSize < 1 || this.data.scaleSize > this._getHeightBoarder()){
       this.data.hideUi = true;
     }else{
       this.data.hideUi = false;
@@ -351,7 +352,7 @@ class coolPhoto extends aTemplate {
 
   afterGesture () {
     this.isBeingZoomed = false;
-    if(this.data.scaleSize > 1.8) {
+    if(this.data.scaleSize > this._getHeightBoarder()) {
       return;
     }
     this.data.photoPosX = 0;
@@ -364,6 +365,11 @@ class coolPhoto extends aTemplate {
 
   preventBrowserAction () {
     this.e.preventDefault();
+  }
+
+  _getHeightBoarder () {
+    const item = this._getSelectedItem();
+    return window.innerHeight / (item.height*item.scale)
   }
 
   _makeBound (item) {

@@ -6658,7 +6658,7 @@ var coolPhoto = function (_aTemplate) {
     key: 'zoomPhoto',
     value: function zoomPhoto() {
       this.data.scale = true;
-      this.data.scaleSize = 2;
+      this.data.scaleSize = this._getHeightBoarder();
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
       this.update();
@@ -6742,7 +6742,8 @@ var coolPhoto = function (_aTemplate) {
       var distance = this._getDistance(pos[0], pos[1]);
       var size = (distance - this.oldDistance) / 100;
       this.data.scaleSize += this._round(size, 6);
-      if (this.data.scaleSize < 1 || this.data.scaleSize > 1.8) {
+
+      if (this.data.scaleSize < 1 || this.data.scaleSize > this._getHeightBoarder()) {
         this.data.hideUi = true;
       } else {
         this.data.hideUi = false;
@@ -6755,7 +6756,7 @@ var coolPhoto = function (_aTemplate) {
     key: 'afterGesture',
     value: function afterGesture() {
       this.isBeingZoomed = false;
-      if (this.data.scaleSize > 1.8) {
+      if (this.data.scaleSize > this._getHeightBoarder()) {
         return;
       }
       this.data.photoPosX = 0;
@@ -6769,6 +6770,12 @@ var coolPhoto = function (_aTemplate) {
     key: 'preventBrowserAction',
     value: function preventBrowserAction() {
       this.e.preventDefault();
+    }
+  }, {
+    key: '_getHeightBoarder',
+    value: function _getHeightBoarder() {
+      var item = this._getSelectedItem();
+      return window.innerHeight / (item.height * item.scale);
     }
   }, {
     key: '_makeBound',
