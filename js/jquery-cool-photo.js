@@ -6440,15 +6440,15 @@ var coolPhoto = function (_aTemplate) {
     });
     _this._getEachImageSize().then(function () {
       _this.update();
-    });
-    (0, _zeptoBrowserify.$)(window).resize(function () {
-      _this.data.items.forEach(function (item) {
-        var index = item.index;
-        item.translateX = window.innerWidth * index;
+      (0, _zeptoBrowserify.$)(window).resize(function () {
+        _this.data.items.forEach(function (item) {
+          var index = item.index;
+          item.translateX = window.innerWidth * index;
+        });
+        _this.setPosByCurrentIndex();
+        _this.setSizeByScreen();
+        _this.update();
       });
-      _this.setPosByCurrentIndex();
-      _this.setSizeByScreen();
-      _this.update();
     });
     return _this;
   }

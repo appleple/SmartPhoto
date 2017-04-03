@@ -63,15 +63,15 @@ class coolPhoto extends aTemplate {
     });
     this._getEachImageSize().then(() => {
       this.update();
-    });
-    $(window).resize(() => {
-      this.data.items.forEach((item)=>{
-        let index = item.index;
-        item.translateX = window.innerWidth*index;
+      $(window).resize(() => {
+        this.data.items.forEach((item)=>{
+          let index = item.index;
+          item.translateX = window.innerWidth*index;
+        });
+        this.setPosByCurrentIndex();
+        this.setSizeByScreen();
+        this.update();
       });
-      this.setPosByCurrentIndex();
-      this.setSizeByScreen();
-      this.update();
     });
   }
 
