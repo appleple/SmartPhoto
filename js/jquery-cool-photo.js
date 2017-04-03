@@ -6406,7 +6406,8 @@ var defaults = {
   headerHeight: 60,
   footerHeight: 60,
   forceInterval: 10,
-  registance: 0.01
+  registance: 0.01,
+  scaleOnClick: true
 };
 
 var coolPhoto = function (_aTemplate) {
@@ -6489,6 +6490,13 @@ var coolPhoto = function (_aTemplate) {
         _this2.setSizeByScreen();
         _this2.setArrow();
         _this2.data.hide = false;
+        _this2.data.photoPosX = 0;
+        _this2.data.photoPosY = 0;
+        if (_this2.data.scaleOnClick === true) {
+          _this2.data.scale = true;
+          _this2.data.hideUi = true;
+          _this2.data.scaleSize = _this2._getScaleBoarder();
+        }
         _this2.update();
       });
     }
@@ -6658,7 +6666,7 @@ var coolPhoto = function (_aTemplate) {
     key: 'zoomPhoto',
     value: function zoomPhoto() {
       this.data.scale = true;
-      this.data.scaleSize = this._getHeightBoarder();
+      this.data.scaleSize = this._getScaleBoarder();
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
       this.update();
@@ -6743,7 +6751,7 @@ var coolPhoto = function (_aTemplate) {
       var size = (distance - this.oldDistance) / 100;
       this.data.scaleSize += this._round(size, 6);
 
-      if (this.data.scaleSize < 1 || this.data.scaleSize > this._getHeightBoarder()) {
+      if (this.data.scaleSize < 1 || this.data.scaleSize > this._getScaleBoarder()) {
         this.data.hideUi = true;
       } else {
         this.data.hideUi = false;
@@ -6756,7 +6764,7 @@ var coolPhoto = function (_aTemplate) {
     key: 'afterGesture',
     value: function afterGesture() {
       this.isBeingZoomed = false;
-      if (this.data.scaleSize > this._getHeightBoarder()) {
+      if (this.data.scaleSize > this._getScaleBoarder()) {
         return;
       }
       this.data.photoPosX = 0;
@@ -6772,8 +6780,8 @@ var coolPhoto = function (_aTemplate) {
       this.e.preventDefault();
     }
   }, {
-    key: '_getHeightBoarder',
-    value: function _getHeightBoarder() {
+    key: '_getScaleBoarder',
+    value: function _getScaleBoarder() {
       var item = this._getSelectedItem();
       return window.innerHeight / (item.height * item.scale);
     }

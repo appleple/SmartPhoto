@@ -33,7 +33,8 @@ const defaults = {
   headerHeight:60,
   footerHeight:60,
   forceInterval:10,
-  registance:0.01
+  registance:0.01,
+  scaleOnClick:true
 }
 
 class coolPhoto extends aTemplate {
@@ -105,6 +106,13 @@ class coolPhoto extends aTemplate {
       this.setSizeByScreen();
       this.setArrow();
       this.data.hide = false;
+      this.data.photoPosX = 0;
+      this.data.photoPosY = 0;
+      if(this.data.scaleOnClick === true){
+        this.data.scale = true;
+        this.data.hideUi = true;
+        this.data.scaleSize = this._getScaleBoarder();
+      }
       this.update();
     });
   }
@@ -261,7 +269,7 @@ class coolPhoto extends aTemplate {
 
   zoomPhoto(){
     this.data.scale = true;
-    this.data.scaleSize =  this._getHeightBoarder();
+    this.data.scaleSize =  this._getScaleBoarder();
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
     this.update();
@@ -340,7 +348,7 @@ class coolPhoto extends aTemplate {
     const size = (distance - this.oldDistance) / 100;
     this.data.scaleSize += this._round(size,6);
 
-    if(this.data.scaleSize < 1 || this.data.scaleSize > this._getHeightBoarder()){
+    if(this.data.scaleSize < 1 || this.data.scaleSize > this._getScaleBoarder()){
       this.data.hideUi = true;
     }else{
       this.data.hideUi = false;
@@ -352,7 +360,7 @@ class coolPhoto extends aTemplate {
 
   afterGesture () {
     this.isBeingZoomed = false;
-    if(this.data.scaleSize > this._getHeightBoarder()) {
+    if(this.data.scaleSize > this._getScaleBoarder()) {
       return;
     }
     this.data.photoPosX = 0;
@@ -367,7 +375,7 @@ class coolPhoto extends aTemplate {
     this.e.preventDefault();
   }
 
-  _getHeightBoarder () {
+  _getScaleBoarder () {
     const item = this._getSelectedItem();
     return window.innerHeight / (item.height*item.scale)
   }
