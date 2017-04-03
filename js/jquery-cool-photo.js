@@ -6819,22 +6819,26 @@ var coolPhoto = function (_aTemplate) {
         _this5.data.photoPosY += force * vy;
 
         if (_this5.data.photoPosX > bound.maxX) {
-          _this5.data.photoPosX = bound.maxX;
-          vx *= -1;
-          force *= 0.8;
+          if (vx > 0) {
+            vx *= -1;
+            force *= 0.8;
+          }
         } else if (_this5.data.photoPosX < bound.minX) {
-          _this5.data.photoPosX = bound.minX;
-          vx *= -1;
-          force *= 0.8;
+          if (vx < 0) {
+            vx *= -1;
+            force *= 0.8;
+          }
         }
         if (_this5.data.photoPosY > bound.maxY) {
-          _this5.data.photoPosY = bound.maxY;
-          vy *= -1;
-          force *= 0.8;
+          if (vy > 0) {
+            vy *= -1;
+            force *= 0.8;
+          }
         } else if (_this5.data.photoPosY < bound.minY) {
-          _this5.data.photoPosY = bound.minY;
-          vy *= -1;
-          force *= 0.8;
+          if (vy < 0) {
+            vy *= -1;
+            force *= 0.8;
+          }
         }
 
         force -= 0.05;

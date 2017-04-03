@@ -407,22 +407,26 @@ class coolPhoto extends aTemplate {
       this.data.photoPosY += force * vy;
 
       if (this.data.photoPosX > bound.maxX) {
-        this.data.photoPosX = bound.maxX;
-        vx *= -1;
-        force *= 0.8;
+        if (vx > 0) {
+          vx *= -1;
+          force *= 0.8;
+        }
       } else if (this.data.photoPosX < bound.minX) {
-        this.data.photoPosX = bound.minX;
-        vx *= -1;
-        force *= 0.8;
+        if (vx < 0) {
+          vx *= -1;
+          force *= 0.8;
+        }
       }
       if (this.data.photoPosY > bound.maxY) {
-        this.data.photoPosY = bound.maxY;
-        vy *= -1;
-        force *= 0.8;
+        if (vy > 0) {
+          vy *= -1;
+          force *= 0.8;
+        }
       } else if (this.data.photoPosY < bound.minY) {
-        this.data.photoPosY = bound.minY;
-        vy *= -1;
-        force *= 0.8;
+        if (vy < 0) {
+          vy *= -1;
+          force *= 0.8;
+        }
       }
 
       force -= 0.05;
