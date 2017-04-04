@@ -6892,23 +6892,23 @@ var coolPhoto = function (_aTemplate) {
         if (_this5.data.photoPosX > bound.maxX) {
           if (vx > 0) {
             vx *= -1;
-            force *= 0.5;
+            force *= 0.2;
           }
         } else if (_this5.data.photoPosX < bound.minX) {
           if (vx < 0) {
             vx *= -1;
-            force *= 0.5;
+            force *= 0.2;
           }
         }
         if (_this5.data.photoPosY > bound.maxY) {
           if (vy > 0) {
             vy *= -1;
-            force *= 0.5;
+            force *= 0.2;
           }
         } else if (_this5.data.photoPosY < bound.minY) {
           if (vy < 0) {
             vy *= -1;
-            force *= 0.5;
+            force *= 0.2;
           }
         }
 
