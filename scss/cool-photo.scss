@@ -119,6 +119,10 @@ $modal-bg-color: #333;
 	transition: none;
 }
 
+.cool-photo-img-elasticmove{
+	transition: transform .3s;
+}
+
 .cool-photo-img-wrap{
 	display: inline-block;
 }

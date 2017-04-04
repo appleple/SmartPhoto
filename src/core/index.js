@@ -12,6 +12,7 @@ const defaults = {
 		coolPhotoInner: 'cool-photo-inner',
 		coolPhotoImg: 'cool-photo-img',
     coolPhotoImgOnMove: 'cool-photo-img-onmove',
+    coolPhotoImgElasticMove: 'cool-photo-img-elasticmove',
     coolPhotoImgWrap: 'cool-photo-img-wrap',
 		coolPhotoArrows: 'cool-photo-arrows',
     coolPhotoNav: 'cool-photo-nav',
@@ -331,18 +332,24 @@ class coolPhoto extends aTemplate {
       const theta = power.theta;
       const item = this._getSelectedItem();
       const bound = this._makeBound(item);
+      let flagX = 0;
+      let flagY = 0;
       /* todo */
       if (this.data.photoPosX > bound.maxX) {
-
+        flagX = 1;
       } else if (this.data.photoPosX < bound.minX) {
-
+        flagX = 1;
       }
       if (this.data.photoPosY > bound.maxY) {
-
+        flagY = 1;
       } else if (this.data.photoPosY < bound.minY) {
-
+        flagY = 1;
       }
-      this._registerForce(force,theta);
+      if (flagX === 0 && flagY === 0) {
+        this._registerForce(force,theta);
+      } else {
+        this._registerElasticForce(flagX,flagY);
+      }
     }
     this.photoSwipable = false;
   }
@@ -470,6 +477,24 @@ class coolPhoto extends aTemplate {
       }
       this.update();
     },this.data.forceInterval);
+  }
+
+  _registerElasticForce (x, y) {
+    this.data.elastic = true;
+    this.update();
+    setTimeout(()=>{
+      if(x){
+        this.data.photoPosX = 0;
+      }
+      if(y){
+        this.data.photoPosY = 0;
+      }
+      this.update();
+    },1);
+    setTimeout(() => {
+      this.data.elastic = false;
+      this.update();
+    },300);
   }
 
   _getSelectedItem () {
