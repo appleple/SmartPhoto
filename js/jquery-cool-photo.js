@@ -6846,10 +6846,10 @@ var coolPhoto = function (_aTemplate) {
         minY = -1 * maxY;
       }
       return {
-        minX: this._round(minX, 6) / item.scale,
-        minY: this._round(minY, 6) / item.scale,
-        maxX: this._round(maxX, 6) / item.scale,
-        maxY: this._round(maxY, 6) / item.scale
+        minX: this._round(minX, 6) * this.data.scaleSize,
+        minY: this._round(minY, 6) * this.data.scaleSize,
+        maxX: this._round(maxX, 6) * this.data.scaleSize,
+        maxY: this._round(maxY, 6) * this.data.scaleSize
       };
     }
   }, {
