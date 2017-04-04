@@ -79,7 +79,7 @@ class coolPhoto extends aTemplate {
         return;
       }
       $(window).on("deviceorientation", (e) => {
-        if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && !this.isForced){
+        if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && !this.isForced && !this.data.scale){
           e.preventDefault();
           this._calcGravity(e.originalEvent.gamma,e.originalEvent.beta);
         }
