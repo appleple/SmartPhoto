@@ -562,8 +562,8 @@ class coolPhoto extends aTemplate {
   }
 
   _calcGravity (gamma,beta) {
-    this.data.photoPosX += gamma / 2;
-    this.data.photoPosY += beta / 2;
+    this.data.photoPosX += gamma;
+    this.data.photoPosY += beta;
     const item = this._getSelectedItem();
     const bound = this._makeBound(item);
     if(this.data.photoPosX < bound.minX){
