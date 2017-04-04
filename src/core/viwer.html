@@ -9,7 +9,7 @@
 					<!-- BEGIN items:loop -->
 					<li style="transform:translate({translateX}px,{translateY}px);">
 						<div style="transform:translate({x}px,{y}px) scale({scale});" class="\\{classNames.coolPhotoImgWrap\\}">
-							<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}px,\{photoPosY\}px) scale(\{scaleSize\});<!-- \END currentIndex:touch#{index} -->" src="{src}" class="\\{classNames.coolPhotoImg\\}<!-- \BEGIN scale:exist -->  \\{classNames.coolPhotoImgOnMove\\}<!-- \END scale:exist --><!-- \BEGIN elastic:exist --> \\{classNames.coolPhotoImgElasticMove\\}<!-- \END elastic:exist -->" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+							<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}[virtualPos]px,\{photoPosY\}[virtualPos]px) scale(\{scaleSize\});<!-- \END currentIndex:touch#{index} -->" src="{src}" class="\\{classNames.coolPhotoImg\\}<!-- \BEGIN scale:exist -->  \\{classNames.coolPhotoImgOnMove\\}<!-- \END scale:exist --><!-- \BEGIN elastic:exist --> \\{classNames.coolPhotoImgElasticMove\\}<!-- \END elastic:exist -->" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
 						</div>
 					</li>
 					<!-- END items:loop -->

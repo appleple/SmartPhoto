@@ -52,7 +52,8 @@ class coolPhoto extends aTemplate {
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
     this.convert = {
-      increment:this.increment
+      increment:this.increment,
+      virtualPos:this.virtualPos
     };
     this.elements = document.querySelectorAll(selector);
     this.data.total = this.elements.length;
@@ -78,6 +79,12 @@ class coolPhoto extends aTemplate {
 
   increment (item) {
     return item+1;
+  }
+
+  virtualPos (pos) {
+    pos = parseInt(pos);
+    const item = this._getSelectedItem();
+    return pos/item.scale/this.data.scaleSize;
   }
 
   _getEachImageSize () {
@@ -427,10 +434,10 @@ class coolPhoto extends aTemplate {
       minY = -1 * maxY;
     }
     return {
-      minX: minX,
-      minY: minY,
-      maxX: maxX,
-      maxY: maxY
+      minX: this._round(minX,6),
+      minY: this._round(minY,6),
+      maxX: this._round(maxX,6),
+      maxY: this._round(maxY,6)
     }
   }
 
