@@ -6408,7 +6408,8 @@ var defaults = {
   footerHeight: 60,
   forceInterval: 10,
   registance: 0.01,
-  scaleOnClick: true
+  scaleOnClick: true,
+  useOrientationApi: true
 };
 
 var coolPhoto = function (_aTemplate) {
@@ -6450,6 +6451,15 @@ var coolPhoto = function (_aTemplate) {
         _this.setPosByCurrentIndex();
         _this.setSizeByScreen();
         _this.update();
+      });
+      if (!_this.data.useOrientationApi) {
+        return;
+      }
+      (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
+        if (!_this.isBeingZoomed && !_this.isSwipable && !_this.photoSwipable && !_this.data.elastic && !_this.isForced) {
+          e.preventDefault();
+          _this._calcGravity(e.originalEvent.gamma, e.originalEvent.beta);
+        }
       });
     });
     return _this;
@@ -6493,6 +6503,10 @@ var coolPhoto = function (_aTemplate) {
       this.data.items.push({ src: element.getAttribute('href'), translateX: window.innerWidth * index, index: index, translateY: 0 });
       element.setAttribute('data-index', index);
       element.addEventListener('click', function (event) {
+        var lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
+        if (lockOrientation) {
+          lockOrientation("portrait");
+        }
         event.preventDefault();
         _this2.data.currentIndex = parseInt(element.getAttribute('data-index'));
         _this2.setPosByCurrentIndex();
@@ -6513,6 +6527,10 @@ var coolPhoto = function (_aTemplate) {
     key: 'hidePhoto',
     value: function hidePhoto() {
       this.data.hide = true;
+      var unlockOrientation = screen.unlockOrientation || screen.mozUnlockOrientation || screen.msUnlockOrientation;
+      if (unlockOrientation) {
+        unlockOrientation();
+      }
       this.update();
     }
   }, {
@@ -6862,6 +6880,7 @@ var coolPhoto = function (_aTemplate) {
       var bound = this._makeBound(item);
       var vx = Math.cos(theta);
       var vy = Math.sin(theta);
+      this.isForced = true;
 
       var id = setInterval(function () {
         if (!_this5.data.scale || _this5.photoSwipable) {
@@ -6895,6 +6914,7 @@ var coolPhoto = function (_aTemplate) {
 
         force -= 0.05;
         if (force < 0.1) {
+          _this5.isForced = false;
           clearInterval(id);
         }
         _this5.update();
@@ -6962,6 +6982,25 @@ var coolPhoto = function (_aTemplate) {
       } else {
         return false;
       }
+    }
+  }, {
+    key: '_calcGravity',
+    value: function _calcGravity(gamma, beta) {
+      this.data.photoPosX += gamma / 2;
+      this.data.photoPosY += beta / 2;
+      var item = this._getSelectedItem();
+      var bound = this._makeBound(item);
+      if (this.data.photoPosX < bound.minX) {
+        this.data.photoPosX = bound.minX;
+      } else if (this.data.photoPosX > bound.maxX) {
+        this.data.photoPosX = bound.maxX;
+      }
+      if (this.data.photoPosY < bound.minY) {
+        this.data.photoPosY = bound.minY;
+      } else if (this.data.photoPosY > bound.maxY) {
+        this.data.photoPosY = bound.maxY;
+      }
+      this.update();
     }
   }]);
   return coolPhoto;

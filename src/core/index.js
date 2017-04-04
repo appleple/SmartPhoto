@@ -35,7 +35,8 @@ const defaults = {
   footerHeight:60,
   forceInterval:10,
   registance:0.01,
-  scaleOnClick:true
+  scaleOnClick:true,
+  useOrientationApi:true
 }
 
 class coolPhoto extends aTemplate {
@@ -74,6 +75,15 @@ class coolPhoto extends aTemplate {
         this.setSizeByScreen();
         this.update();
       });
+      if(!this.data.useOrientationApi){
+        return;
+      }
+      $(window).on("deviceorientation", (e) => {
+        if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && !this.isForced){
+          e.preventDefault();
+          this._calcGravity(e.originalEvent.gamma,e.originalEvent.beta);
+        }
+      });
     });
   }
 
@@ -108,6 +118,10 @@ class coolPhoto extends aTemplate {
     this.data.items.push({src: element.getAttribute('href'), translateX: window.innerWidth*index, index: index, translateY:0});
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
+      let lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
+      if (lockOrientation) {
+        lockOrientation("portrait");
+      }
       event.preventDefault();
       this.data.currentIndex = parseInt(element.getAttribute('data-index'));
       this.setPosByCurrentIndex();
@@ -127,6 +141,10 @@ class coolPhoto extends aTemplate {
 
   hidePhoto () {
     this.data.hide = true;
+    let unlockOrientation = screen.unlockOrientation || screen.mozUnlockOrientation || screen.msUnlockOrientation;
+    if(unlockOrientation){
+      unlockOrientation();
+    }
     this.update();
   }
 
@@ -447,6 +465,7 @@ class coolPhoto extends aTemplate {
     const bound = this._makeBound(item);
     let vx = Math.cos(theta);
     let vy = Math.sin(theta);
+    this.isForced = true;
 
     const id = setInterval(() => {
       if (!this.data.scale || this.photoSwipable) {
@@ -480,6 +499,7 @@ class coolPhoto extends aTemplate {
 
       force -= 0.05;
       if (force < 0.1) {
+        this.isForced = false;
         clearInterval(id);
       }
       this.update();
@@ -539,6 +559,24 @@ class coolPhoto extends aTemplate {
     } else {
       return false;
     }
+  }
+
+  _calcGravity (gamma,beta) {
+    this.data.photoPosX += gamma / 2;
+    this.data.photoPosY += beta / 2;
+    const item = this._getSelectedItem();
+    const bound = this._makeBound(item);
+    if(this.data.photoPosX < bound.minX){
+      this.data.photoPosX = bound.minX;
+    }else if(this.data.photoPosX > bound.maxX){
+      this.data.photoPosX = bound.maxX;
+    }
+    if(this.data.photoPosY < bound.minY){
+      this.data.photoPosY = bound.minY;
+    }else if (this.data.photoPosY > bound.maxY){
+      this.data.photoPosY = bound.maxY;
+    }
+    this.update();
   }
 
 }
