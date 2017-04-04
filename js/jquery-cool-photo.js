@@ -6650,7 +6650,7 @@ var coolPhoto = function (_aTemplate) {
     key: 'onDrag',
     value: function onDrag() {
       this.e.preventDefault();
-      if (this._isTouched(this.e) && !this.isSwipable) {
+      if (this._isTouched(this.e)) {
         this.onGesture();
         return;
       }

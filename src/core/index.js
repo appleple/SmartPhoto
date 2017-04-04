@@ -253,7 +253,7 @@ class coolPhoto extends aTemplate {
 
   onDrag () {
     this.e.preventDefault();
-    if (this._isTouched(this.e) && !this.isSwipable) {
+    if (this._isTouched(this.e)) {
       this.onGesture();
       return;
     }
