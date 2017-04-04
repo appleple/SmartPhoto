@@ -6737,12 +6737,12 @@ var coolPhoto = function (_aTemplate) {
         var flagY = 0;
         /* todo */
         if (this.data.photoPosX > bound.maxX) {
-          flagX = 1;
+          flagX = -1;
         } else if (this.data.photoPosX < bound.minX) {
           flagX = 1;
         }
         if (this.data.photoPosY > bound.maxY) {
-          flagY = 1;
+          flagY = -1;
         } else if (this.data.photoPosY < bound.minY) {
           flagY = 1;
         }
@@ -6897,14 +6897,20 @@ var coolPhoto = function (_aTemplate) {
     value: function _registerElasticForce(x, y) {
       var _this6 = this;
 
+      var item = this._getSelectedItem();
+      var bound = this._makeBound(item);
       this.data.elastic = true;
       this.update();
       setTimeout(function () {
-        if (x) {
-          _this6.data.photoPosX = 0;
+        if (x === 1) {
+          _this6.data.photoPosX = bound.minX;
+        } else if (x === -1) {
+          _this6.data.photoPosX = bound.maxX;
         }
-        if (y) {
-          _this6.data.photoPosY = 0;
+        if (y === 1) {
+          _this6.data.photoPosY = bound.minY;
+        } else if (y === -1) {
+          _this6.data.photoPosY = bound.maxY;
         }
         _this6.update();
       }, 1);

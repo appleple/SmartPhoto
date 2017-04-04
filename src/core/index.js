@@ -336,12 +336,12 @@ class coolPhoto extends aTemplate {
       let flagY = 0;
       /* todo */
       if (this.data.photoPosX > bound.maxX) {
-        flagX = 1;
+        flagX = -1;
       } else if (this.data.photoPosX < bound.minX) {
         flagX = 1;
       }
       if (this.data.photoPosY > bound.maxY) {
-        flagY = 1;
+        flagY = -1;
       } else if (this.data.photoPosY < bound.minY) {
         flagY = 1;
       }
@@ -480,14 +480,20 @@ class coolPhoto extends aTemplate {
   }
 
   _registerElasticForce (x, y) {
+    const item = this._getSelectedItem();
+    const bound = this._makeBound(item);
     this.data.elastic = true;
     this.update();
     setTimeout(()=>{
-      if(x){
-        this.data.photoPosX = 0;
+      if(x === 1){
+        this.data.photoPosX = bound.minX;
+      }else if(x === -1){
+        this.data.photoPosX = bound.maxX;
       }
-      if(y){
-        this.data.photoPosY = 0;
+      if(y === 1){
+        this.data.photoPosY = bound.minY;
+      }else if (y === -1){
+        this.data.photoPosY = bound.maxY;
       }
       this.update();
     },1);
