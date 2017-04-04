@@ -6727,8 +6727,14 @@ var coolPhoto = function (_aTemplate) {
       } else {
         var vx = this.photoVX;
         var vy = this.photoVY;
-        var force = Math.sqrt(vx * vx + vy * vy);
-        var theta = Math.atan2(vy, vx);
+        var power = this._getForceAndTheta(vx, vy);
+        var force = power.force;
+        var theta = power.theta;
+        var item = this._getSelectedItem();
+        var bound = this._makeBound(item);
+        /* todo */
+        if (this.data.photoPosX > bound.maxX) {} else if (this.data.photoPosX < bound.minX) {}
+        if (this.data.photoPosY > bound.maxY) {} else if (this.data.photoPosY < bound.minY) {}
         this._registerForce(force, theta);
       }
       this.photoSwipable = false;
@@ -6778,6 +6784,14 @@ var coolPhoto = function (_aTemplate) {
     key: 'preventBrowserAction',
     value: function preventBrowserAction() {
       this.e.preventDefault();
+    }
+  }, {
+    key: '_getForceAndTheta',
+    value: function _getForceAndTheta(vx, vy) {
+      return {
+        force: Math.sqrt(vx * vx + vy * vy),
+        theta: Math.atan2(vy, vx)
+      };
     }
   }, {
     key: '_getScaleBoarder',

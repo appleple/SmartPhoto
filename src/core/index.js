@@ -306,8 +306,8 @@ class coolPhoto extends aTemplate {
     const pos = this._getTouchPos(this.e);
     const x = pos.x - this.oldPhotoPos.x;
     const y = pos.y - this.oldPhotoPos.y;
-    const moveX = this._round(this.data.scaleSize*x,6);
-    const moveY = this._round(this.data.scaleSize*y,6);
+    let moveX = this._round(this.data.scaleSize*x,6);
+    let moveY = this._round(this.data.scaleSize*y,6);
     if(typeof moveX === "number") {
       this.data.photoPosX += moveX;
       this.photoVX = moveX;
@@ -326,8 +326,22 @@ class coolPhoto extends aTemplate {
     }else{
       const vx = this.photoVX;
       const vy = this.photoVY;
-      const force = Math.sqrt(vx*vx + vy*vy);
-      const theta = Math.atan2(vy,vx);
+      const power = this._getForceAndTheta(vx,vy);
+      const force = power.force;
+      const theta = power.theta;
+      const item = this._getSelectedItem();
+      const bound = this._makeBound(item);
+      /* todo */
+      if (this.data.photoPosX > bound.maxX) {
+
+      } else if (this.data.photoPosX < bound.minX) {
+
+      }
+      if (this.data.photoPosY > bound.maxY) {
+
+      } else if (this.data.photoPosY < bound.minY) {
+
+      }
       this._registerForce(force,theta);
     }
     this.photoSwipable = false;
@@ -373,6 +387,13 @@ class coolPhoto extends aTemplate {
 
   preventBrowserAction () {
     this.e.preventDefault();
+  }
+
+  _getForceAndTheta (vx,vy) {
+    return {
+      force: Math.sqrt(vx*vx + vy*vy),
+      theta: Math.atan2(vy,vx)
+    }
   }
 
   _getScaleBoarder () {
