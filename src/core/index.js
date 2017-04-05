@@ -392,7 +392,15 @@ class coolPhoto extends aTemplate {
     const pos = this._getGesturePos(this.e);
     const distance = this._getDistance(pos[0],pos[1]);
     const size = (distance - this.oldDistance) / 100;
+    const oldScaleSize = this.data.scaleSize;
+    const posX = this.data.photoPosX;
+    const posY = this.data.photoPosY;
+    const item = this._getSelectedItem();
+    let translate = 1;
     this.data.scaleSize += this._round(size,6);
+    //todo
+    this.data.photoPosX = 0;
+    this.data.photoPosY = 0;
 
     if(this.data.scaleSize < 1 || this.data.scaleSize > this._getScaleBoarder()){
       this.data.hideUi = true;

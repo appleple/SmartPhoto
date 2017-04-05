@@ -6796,7 +6796,15 @@ var coolPhoto = function (_aTemplate) {
       var pos = this._getGesturePos(this.e);
       var distance = this._getDistance(pos[0], pos[1]);
       var size = (distance - this.oldDistance) / 100;
+      var oldScaleSize = this.data.scaleSize;
+      var posX = this.data.photoPosX;
+      var posY = this.data.photoPosY;
+      var item = this._getSelectedItem();
+      var translate = 1;
       this.data.scaleSize += this._round(size, 6);
+      //todo
+      this.data.photoPosX = 0;
+      this.data.photoPosY = 0;
 
       if (this.data.scaleSize < 1 || this.data.scaleSize > this._getScaleBoarder()) {
         this.data.hideUi = true;
@@ -6986,8 +6994,8 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: '_calcGravity',
     value: function _calcGravity(gamma, beta) {
-      this.data.photoPosX += gamma / 2;
-      this.data.photoPosY += beta / 2;
+      this.data.photoPosX += gamma;
+      this.data.photoPosY += beta;
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
       if (this.data.photoPosX < bound.minX) {
