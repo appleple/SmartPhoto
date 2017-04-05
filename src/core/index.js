@@ -399,8 +399,8 @@ class coolPhoto extends aTemplate {
     let translate = 1;
     this.data.scaleSize += this._round(size,6);
     //todo
-    this.data.photoPosX = posX + (this.data.scaleSize - oldScaleSize) * posX;
-    this.data.photoPosY = posY + (this.data.scaleSize - oldScaleSize) * posY;
+    this.data.photoPosX = (1 + this.data.scaleSize - oldScaleSize) * posX;
+    this.data.photoPosY = (1 + this.data.scaleSize - oldScaleSize) * posY;
 
     if(this.data.scaleSize < 1 || this.data.scaleSize > this._getScaleBoarder()){
       this.data.hideUi = true;
