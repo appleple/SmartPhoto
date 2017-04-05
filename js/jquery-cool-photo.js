@@ -6436,6 +6436,8 @@ var coolPhoto = function (_aTemplate) {
     _this.elements = document.querySelectorAll(selector);
     _this.data.total = _this.elements.length;
     _this.id = _this._getUniqId();
+    _this.vx = 0;
+    _this.vy = 0;
     _this.addTemplate(_this.id, template);
     (0, _zeptoBrowserify.$)('body').append('<div data-id=\'' + _this.id + '\'></div>');
     [].forEach.call(_this.elements, function (element, index) {
@@ -6456,11 +6458,13 @@ var coolPhoto = function (_aTemplate) {
         return;
       }
       (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
-        if (!_this.isBeingZoomed && !_this.isSwipable && !_this.photoSwipable && !_this.data.elastic && !_this.isForced && _this.data.scale) {
-          e.preventDefault();
+        if (!_this.isBeingZoomed && !_this.isSwipable && !_this.photoSwipable && !_this.data.elastic && _this.data.scale) {
           _this._calcGravity(e.originalEvent.gamma, e.originalEvent.beta);
         }
       });
+      setInterval(function () {
+        _this._doAnim();
+      }, _this.data.forceInterval);
     });
     return _this;
   }
@@ -6752,16 +6756,10 @@ var coolPhoto = function (_aTemplate) {
       if (this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
         this.zoomOutPhoto();
       } else {
-        var vx = this.photoVX;
-        var vy = this.photoVY;
-        var power = this._getForceAndTheta(vx, vy);
-        var force = power.force;
-        var theta = power.theta;
         var item = this._getSelectedItem();
         var bound = this._makeBound(item);
         var flagX = 0;
         var flagY = 0;
-        /* todo */
         if (this.data.photoPosX > bound.maxX) {
           flagX = -1;
         } else if (this.data.photoPosX < bound.minX) {
@@ -6773,7 +6771,8 @@ var coolPhoto = function (_aTemplate) {
           flagY = 1;
         }
         if (flagX === 0 && flagY === 0) {
-          this._registerForce(force, theta);
+          this.vx = this.photoVX / 5;
+          this.vy = this.photoVY / 5;
         } else {
           this._registerElasticForce(flagX, flagY);
         }
@@ -6881,59 +6880,9 @@ var coolPhoto = function (_aTemplate) {
       };
     }
   }, {
-    key: '_registerForce',
-    value: function _registerForce(force, theta) {
-      var _this5 = this;
-
-      force = force / 5;
-      var item = this._getSelectedItem();
-      var bound = this._makeBound(item);
-      var vx = Math.cos(theta);
-      var vy = Math.sin(theta);
-      this.isForced = true;
-
-      var id = setInterval(function () {
-        if (!_this5.data.scale || _this5.photoSwipable) {
-          clearInterval(id);
-        }
-        _this5.data.photoPosX += force * vx;
-        _this5.data.photoPosY += force * vy;
-
-        if (_this5.data.photoPosX > bound.maxX) {
-          if (vx > 0) {
-            vx *= -1;
-            force *= 0.2;
-          }
-        } else if (_this5.data.photoPosX < bound.minX) {
-          if (vx < 0) {
-            vx *= -1;
-            force *= 0.2;
-          }
-        }
-        if (_this5.data.photoPosY > bound.maxY) {
-          if (vy > 0) {
-            vy *= -1;
-            force *= 0.2;
-          }
-        } else if (_this5.data.photoPosY < bound.minY) {
-          if (vy < 0) {
-            vy *= -1;
-            force *= 0.2;
-          }
-        }
-
-        force -= 0.05;
-        if (force < 0.1) {
-          _this5.isForced = false;
-          clearInterval(id);
-        }
-        _this5.update();
-      }, this.data.forceInterval);
-    }
-  }, {
     key: '_registerElasticForce',
     value: function _registerElasticForce(x, y) {
-      var _this6 = this;
+      var _this5 = this;
 
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
@@ -6941,20 +6890,20 @@ var coolPhoto = function (_aTemplate) {
       this.update();
       setTimeout(function () {
         if (x === 1) {
-          _this6.data.photoPosX = bound.minX;
+          _this5.data.photoPosX = bound.minX;
         } else if (x === -1) {
-          _this6.data.photoPosX = bound.maxX;
+          _this5.data.photoPosX = bound.maxX;
         }
         if (y === 1) {
-          _this6.data.photoPosY = bound.minY;
+          _this5.data.photoPosY = bound.minY;
         } else if (y === -1) {
-          _this6.data.photoPosY = bound.maxY;
+          _this5.data.photoPosY = bound.maxY;
         }
-        _this6.update();
+        _this5.update();
       }, 1);
       setTimeout(function () {
-        _this6.data.elastic = false;
-        _this6.update();
+        _this5.data.elastic = false;
+        _this5.update();
       }, 300);
     }
   }, {
@@ -6996,20 +6945,43 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: '_calcGravity',
     value: function _calcGravity(gamma, beta) {
-      this.data.photoPosX += gamma;
-      this.data.photoPosY += beta;
+      if (gamma > 10 || gamma < -10) {
+        this.vx += gamma * 0.02;
+      }
+      if (beta > 10 || beta < -10) {
+        this.vy += beta * 0.02;
+      }
+    }
+  }, {
+    key: '_doAnim',
+    value: function _doAnim() {
+      if (this.isBeingZoomed || this.isSwipable || this.photoSwipable || this.data.elastic || !this.data.scale) {
+        return;
+      }
+      this.data.photoPosX += this.vx;
+      this.data.photoPosY += this.vy;
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
       if (this.data.photoPosX < bound.minX) {
         this.data.photoPosX = bound.minX;
+        this.vx *= -0.2;
       } else if (this.data.photoPosX > bound.maxX) {
         this.data.photoPosX = bound.maxX;
+        this.vx *= -0.2;
       }
       if (this.data.photoPosY < bound.minY) {
         this.data.photoPosY = bound.minY;
+        this.vy *= -0.2;
       } else if (this.data.photoPosY > bound.maxY) {
         this.data.photoPosY = bound.maxY;
+        this.vy *= -0.2;
       }
+      var power = this._getForceAndTheta(this.vx, this.vy);
+      var force = power.force;
+      var theta = power.theta;
+      force -= 0.1;
+      this.vx = Math.cos(theta) * force;
+      this.vy = Math.sin(theta) * force;
       this.update();
     }
   }]);

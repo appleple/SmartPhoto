@@ -59,6 +59,8 @@ class coolPhoto extends aTemplate {
     this.elements = document.querySelectorAll(selector);
     this.data.total = this.elements.length;
     this.id = this._getUniqId();
+    this.vx = 0;
+    this.vy = 0;
     this.addTemplate(this.id,template);
     $('body').append(`<div data-id='${this.id}'></div>`);
     [].forEach.call(this.elements, (element,index) => {
@@ -79,11 +81,13 @@ class coolPhoto extends aTemplate {
         return;
       }
       $(window).on("deviceorientation", (e) => {
-        if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && !this.isForced && this.data.scale){
-          e.preventDefault();
+        if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && this.data.scale){
           this._calcGravity(e.originalEvent.gamma,e.originalEvent.beta);
         }
       });
+      setInterval(()=>{
+        this._doAnim();
+      },this.data.forceInterval);
     });
   }
 
@@ -350,16 +354,10 @@ class coolPhoto extends aTemplate {
     if(this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
       this.zoomOutPhoto();
     }else{
-      const vx = this.photoVX;
-      const vy = this.photoVY;
-      const power = this._getForceAndTheta(vx,vy);
-      const force = power.force;
-      const theta = power.theta;
       const item = this._getSelectedItem();
       const bound = this._makeBound(item);
       let flagX = 0;
       let flagY = 0;
-      /* todo */
       if (this.data.photoPosX > bound.maxX) {
         flagX = -1;
       } else if (this.data.photoPosX < bound.minX) {
@@ -371,7 +369,8 @@ class coolPhoto extends aTemplate {
         flagY = 1;
       }
       if (flagX === 0 && flagY === 0) {
-        this._registerForce(force,theta);
+        this.vx = this.photoVX / 5;
+        this.vy = this.photoVY / 5;
       } else {
         this._registerElasticForce(flagX,flagY);
       }
@@ -469,53 +468,6 @@ class coolPhoto extends aTemplate {
     }
   }
 
-  _registerForce (force, theta) {
-    force = force / 5;
-    const item = this._getSelectedItem();
-    const bound = this._makeBound(item);
-    let vx = Math.cos(theta);
-    let vy = Math.sin(theta);
-    this.isForced = true;
-
-    const id = setInterval(() => {
-      if (!this.data.scale || this.photoSwipable) {
-        clearInterval(id);
-      }
-      this.data.photoPosX += force * vx;
-      this.data.photoPosY += force * vy;
-
-      if (this.data.photoPosX > bound.maxX) {
-        if (vx > 0) {
-          vx *= -1;
-          force *= 0.2;
-        }
-      } else if (this.data.photoPosX < bound.minX) {
-        if (vx < 0) {
-          vx *= -1;
-          force *= 0.2;
-        }
-      }
-      if (this.data.photoPosY > bound.maxY) {
-        if (vy > 0) {
-          vy *= -1;
-          force *= 0.2;
-        }
-      } else if (this.data.photoPosY < bound.minY) {
-        if (vy < 0) {
-          vy *= -1;
-          force *= 0.2;
-        }
-      }
-
-      force -= 0.05;
-      if (force < 0.1) {
-        this.isForced = false;
-        clearInterval(id);
-      }
-      this.update();
-    },this.data.forceInterval);
-  }
-
   _registerElasticForce (x, y) {
     const item = this._getSelectedItem();
     const bound = this._makeBound(item);
@@ -572,20 +524,42 @@ class coolPhoto extends aTemplate {
   }
 
   _calcGravity (gamma,beta) {
-    this.data.photoPosX += gamma;
-    this.data.photoPosY += beta;
+    if(gamma > 10 || gamma < -10) {
+      this.vx += gamma * 0.02;
+    }
+    if(beta > 10 || beta < -10){
+      this.vy += beta * 0.02;
+    }
+  }
+
+  _doAnim () {
+    if (this.isBeingZoomed || this.isSwipable || this.photoSwipable || this.data.elastic || !this.data.scale ){
+      return;
+    }
+    this.data.photoPosX += this.vx;
+    this.data.photoPosY += this.vy;
     const item = this._getSelectedItem();
     const bound = this._makeBound(item);
     if(this.data.photoPosX < bound.minX){
       this.data.photoPosX = bound.minX;
+      this.vx *= -0.2;
     }else if(this.data.photoPosX > bound.maxX){
       this.data.photoPosX = bound.maxX;
+      this.vx *= -0.2;
     }
     if(this.data.photoPosY < bound.minY){
       this.data.photoPosY = bound.minY;
+      this.vy *= -0.2;
     }else if (this.data.photoPosY > bound.maxY){
       this.data.photoPosY = bound.maxY;
+      this.vy *= -0.2;
     }
+    const power = this._getForceAndTheta(this.vx, this.vy);
+    let force = power.force;
+    const theta = power.theta;
+    force -= 0.1;
+    this.vx = Math.cos(theta)*force;
+    this.vy = Math.sin(theta)*force;
     this.update();
   }
 
