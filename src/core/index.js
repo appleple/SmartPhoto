@@ -82,7 +82,7 @@ class coolPhoto extends aTemplate {
       this.setPosByCurrentIndex();
       this.setSizeByScreen();
       this.update();
-    });
+    }).resize();
 
     setInterval(()=>{
       this._doAnim();

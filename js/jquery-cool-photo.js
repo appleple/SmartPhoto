@@ -6464,7 +6464,7 @@ var coolPhoto = function (_aTemplate) {
         _this2.setPosByCurrentIndex();
         _this2.setSizeByScreen();
         _this2.update();
-      });
+      }).resize();
 
       setInterval(function () {
         _this2._doAnim();
