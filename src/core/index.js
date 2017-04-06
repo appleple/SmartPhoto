@@ -64,10 +64,10 @@ class coolPhoto extends aTemplate {
     this.vy = 0;
     this.addTemplate(this.id,template);
     $('body').append(`<div data-id='${this.id}'></div>`);
-    [].forEach.call(this.elements, (element,index) => {
-      this.addNewItem(element,index);
-    });
     this._getEachImageSize().then(() => {
+      [].forEach.call(this.elements, (element,index) => {
+        this.addNewItem(element,index);
+      });
       this._setup();
     });
   }
@@ -112,6 +112,9 @@ class coolPhoto extends aTemplate {
 
   _getEachImageSize () {
     const arr = [];
+    [].forEach.call(this.elements, (element,index) => {
+      this.data.items.push({src: element.getAttribute('href'),caption: element.getAttribute('data-caption'), translateX: window.innerWidth*index, index: index, translateY:0});
+    });
     this.data.items.forEach((item) => {
       const promise = new Promise((resolve,reject) => {
         const img = new Image();
@@ -128,7 +131,6 @@ class coolPhoto extends aTemplate {
   }
 
   addNewItem (element, index) {
-    this.data.items.push({src: element.getAttribute('href'),caption: element.getAttribute('data-caption'), translateX: window.innerWidth*index, index: index, translateY:0});
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       let lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;

@@ -6441,10 +6441,10 @@ var coolPhoto = function (_aTemplate) {
     _this.vy = 0;
     _this.addTemplate(_this.id, template);
     (0, _zeptoBrowserify.$)('body').append('<div data-id=\'' + _this.id + '\'></div>');
-    [].forEach.call(_this.elements, function (element, index) {
-      _this.addNewItem(element, index);
-    });
     _this._getEachImageSize().then(function () {
+      [].forEach.call(_this.elements, function (element, index) {
+        _this.addNewItem(element, index);
+      });
       _this._setup();
     });
     return _this;
@@ -6496,7 +6496,12 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: '_getEachImageSize',
     value: function _getEachImageSize() {
+      var _this3 = this;
+
       var arr = [];
+      [].forEach.call(this.elements, function (element, index) {
+        _this3.data.items.push({ src: element.getAttribute('href'), caption: element.getAttribute('data-caption'), translateX: window.innerWidth * index, index: index, translateY: 0 });
+      });
       this.data.items.forEach(function (item) {
         var promise = new _promise2.default(function (resolve, reject) {
           var img = new Image();
@@ -6514,9 +6519,8 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'addNewItem',
     value: function addNewItem(element, index) {
-      var _this3 = this;
+      var _this4 = this;
 
-      this.data.items.push({ src: element.getAttribute('href'), caption: element.getAttribute('data-caption'), translateX: window.innerWidth * index, index: index, translateY: 0 });
       element.setAttribute('data-index', index);
       element.addEventListener('click', function (event) {
         var lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
@@ -6524,19 +6528,19 @@ var coolPhoto = function (_aTemplate) {
           lockOrientation("portrait");
         }
         event.preventDefault();
-        _this3.data.currentIndex = parseInt(element.getAttribute('data-index'));
-        _this3.setPosByCurrentIndex();
-        _this3.setSizeByScreen();
-        _this3.setArrow();
-        _this3.data.hide = false;
-        _this3.data.photoPosX = 0;
-        _this3.data.photoPosY = 0;
-        if (_this3.data.scaleOnClick === true) {
-          _this3.data.scale = true;
-          _this3.data.hideUi = true;
-          _this3.data.scaleSize = _this3._getScaleBoarder();
+        _this4.data.currentIndex = parseInt(element.getAttribute('data-index'));
+        _this4.setPosByCurrentIndex();
+        _this4.setSizeByScreen();
+        _this4.setArrow();
+        _this4.data.hide = false;
+        _this4.data.photoPosX = 0;
+        _this4.data.photoPosY = 0;
+        if (_this4.data.scaleOnClick === true) {
+          _this4.data.scale = true;
+          _this4.data.hideUi = true;
+          _this4.data.scaleSize = _this4._getScaleBoarder();
         }
-        _this3.update();
+        _this4.update();
       });
     }
   }, {
@@ -6572,12 +6576,12 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'setPosByCurrentIndex',
     value: function setPosByCurrentIndex() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.pos.x = -1 * this.data.currentIndex * window.innerWidth;
       setTimeout(function () {
-        _this4.data.translateX = _this4.pos.x;
-        _this4.update();
+        _this5.data.translateX = _this5.pos.x;
+        _this5.update();
       }, 1);
     }
   }, {
@@ -6601,15 +6605,15 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'slideList',
     value: function slideList() {
-      var _this5 = this;
+      var _this6 = this;
 
       this.data.onMoveClass = true;
       this.setPosByCurrentIndex();
       this.setSizeByScreen();
       setTimeout(function () {
-        _this5.data.onMoveClass = false;
-        _this5.setArrow();
-        _this5.update();
+        _this6.data.onMoveClass = false;
+        _this6.setArrow();
+        _this6.update();
       }, 300);
     }
   }, {
@@ -6894,7 +6898,7 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: '_registerElasticForce',
     value: function _registerElasticForce(x, y) {
-      var _this6 = this;
+      var _this7 = this;
 
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
@@ -6902,20 +6906,20 @@ var coolPhoto = function (_aTemplate) {
       this.update();
       setTimeout(function () {
         if (x === 1) {
-          _this6.data.photoPosX = bound.minX;
+          _this7.data.photoPosX = bound.minX;
         } else if (x === -1) {
-          _this6.data.photoPosX = bound.maxX;
+          _this7.data.photoPosX = bound.maxX;
         }
         if (y === 1) {
-          _this6.data.photoPosY = bound.minY;
+          _this7.data.photoPosY = bound.minY;
         } else if (y === -1) {
-          _this6.data.photoPosY = bound.maxY;
+          _this7.data.photoPosY = bound.maxY;
         }
-        _this6.update();
+        _this7.update();
       }, 1);
       setTimeout(function () {
-        _this6.data.elastic = false;
-        _this6.update();
+        _this7.data.elastic = false;
+        _this7.update();
       }, 300);
     }
   }, {
