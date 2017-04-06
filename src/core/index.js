@@ -82,7 +82,11 @@ class coolPhoto extends aTemplate {
       }
       $(window).on("deviceorientation", (e) => {
         if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && this.data.scale){
-          this._calcGravity(e.originalEvent.gamma,e.originalEvent.beta);
+          if(!this.gamma){
+            this.gamma = e.originalEvent.gamma;
+            this.beta = e.originalEvent.beta;
+          }
+          this._calcGravity(e.originalEvent.gamma - this.gamma,e.originalEvent.beta - this.beta);
         }
       });
       setInterval(()=>{
@@ -524,10 +528,10 @@ class coolPhoto extends aTemplate {
   }
 
   _calcGravity (gamma,beta) {
-    if(gamma > 10 || gamma < -10) {
+    if(gamma > 5 || gamma < -5) {
       this.vx += gamma * 0.02;
     }
-    if(beta > 10 || beta < -10){
+    if(beta > 5 || beta < -5){
       this.vy += beta * 0.02;
     }
   }

@@ -6459,7 +6459,11 @@ var coolPhoto = function (_aTemplate) {
       }
       (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
         if (!_this.isBeingZoomed && !_this.isSwipable && !_this.photoSwipable && !_this.data.elastic && _this.data.scale) {
-          _this._calcGravity(e.originalEvent.gamma, e.originalEvent.beta);
+          if (!_this.gamma) {
+            _this.gamma = e.originalEvent.gamma;
+            _this.beta = e.originalEvent.beta;
+          }
+          _this._calcGravity(e.originalEvent.gamma - _this.gamma, e.originalEvent.beta - _this.beta);
         }
       });
       setInterval(function () {
@@ -6945,10 +6949,10 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: '_calcGravity',
     value: function _calcGravity(gamma, beta) {
-      if (gamma > 10 || gamma < -10) {
+      if (gamma > 5 || gamma < -5) {
         this.vx += gamma * 0.02;
       }
-      if (beta > 10 || beta < -10) {
+      if (beta > 5 || beta < -5) {
         this.vy += beta * 0.02;
       }
     }
