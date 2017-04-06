@@ -6445,36 +6445,43 @@ var coolPhoto = function (_aTemplate) {
       _this.addNewItem(element, index);
     });
     _this._getEachImageSize().then(function () {
-      _this.update();
-      (0, _zeptoBrowserify.$)(window).resize(function () {
-        _this.data.items.forEach(function (item) {
-          var index = item.index;
-          item.translateX = window.innerWidth * index;
-        });
-        _this.setPosByCurrentIndex();
-        _this.setSizeByScreen();
-        _this.update();
-      });
-      if (!_this.data.useOrientationApi) {
-        return;
-      }
-      (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
-        if (!_this.isBeingZoomed && !_this.isSwipable && !_this.photoSwipable && !_this.data.elastic && _this.data.scale) {
-          if (!_this.gamma) {
-            _this.gamma = e.originalEvent.gamma;
-            _this.beta = e.originalEvent.beta;
-          }
-          _this._calcGravity(e.originalEvent.gamma - _this.gamma, e.originalEvent.beta - _this.beta);
-        }
-      });
-      setInterval(function () {
-        _this._doAnim();
-      }, _this.data.forceInterval);
+      _this._setup();
     });
     return _this;
   }
 
   (0, _createClass3.default)(coolPhoto, [{
+    key: '_setup',
+    value: function _setup() {
+      var _this2 = this;
+
+      this.update();
+      (0, _zeptoBrowserify.$)(window).resize(function () {
+        _this2.data.items.forEach(function (item) {
+          var index = item.index;
+          item.translateX = window.innerWidth * index;
+        });
+        _this2.setPosByCurrentIndex();
+        _this2.setSizeByScreen();
+        _this2.update();
+      });
+      if (!this.data.useOrientationApi) {
+        return;
+      }
+      (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
+        if (!_this2.isBeingZoomed && !_this2.isSwipable && !_this2.photoSwipable && !_this2.data.elastic && _this2.data.scale) {
+          if (!_this2.gamma) {
+            _this2.gamma = e.originalEvent.gamma;
+            _this2.beta = e.originalEvent.beta;
+          }
+          _this2._calcGravity(e.originalEvent.gamma - _this2.gamma, e.originalEvent.beta - _this2.beta);
+        }
+      });
+      setInterval(function () {
+        _this2._doAnim();
+      }, this.data.forceInterval);
+    }
+  }, {
     key: 'increment',
     value: function increment(item) {
       return item + 1;
@@ -6507,7 +6514,7 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'addNewItem',
     value: function addNewItem(element, index) {
-      var _this2 = this;
+      var _this3 = this;
 
       this.data.items.push({ src: element.getAttribute('href'), caption: element.getAttribute('data-caption'), translateX: window.innerWidth * index, index: index, translateY: 0 });
       element.setAttribute('data-index', index);
@@ -6517,19 +6524,19 @@ var coolPhoto = function (_aTemplate) {
           lockOrientation("portrait");
         }
         event.preventDefault();
-        _this2.data.currentIndex = parseInt(element.getAttribute('data-index'));
-        _this2.setPosByCurrentIndex();
-        _this2.setSizeByScreen();
-        _this2.setArrow();
-        _this2.data.hide = false;
-        _this2.data.photoPosX = 0;
-        _this2.data.photoPosY = 0;
-        if (_this2.data.scaleOnClick === true) {
-          _this2.data.scale = true;
-          _this2.data.hideUi = true;
-          _this2.data.scaleSize = _this2._getScaleBoarder();
+        _this3.data.currentIndex = parseInt(element.getAttribute('data-index'));
+        _this3.setPosByCurrentIndex();
+        _this3.setSizeByScreen();
+        _this3.setArrow();
+        _this3.data.hide = false;
+        _this3.data.photoPosX = 0;
+        _this3.data.photoPosY = 0;
+        if (_this3.data.scaleOnClick === true) {
+          _this3.data.scale = true;
+          _this3.data.hideUi = true;
+          _this3.data.scaleSize = _this3._getScaleBoarder();
         }
-        _this2.update();
+        _this3.update();
       });
     }
   }, {
@@ -6565,12 +6572,12 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'setPosByCurrentIndex',
     value: function setPosByCurrentIndex() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.pos.x = -1 * this.data.currentIndex * window.innerWidth;
       setTimeout(function () {
-        _this3.data.translateX = _this3.pos.x;
-        _this3.update();
+        _this4.data.translateX = _this4.pos.x;
+        _this4.update();
       }, 1);
     }
   }, {
@@ -6594,15 +6601,15 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'slideList',
     value: function slideList() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.data.onMoveClass = true;
       this.setPosByCurrentIndex();
       this.setSizeByScreen();
       setTimeout(function () {
-        _this4.data.onMoveClass = false;
-        _this4.setArrow();
-        _this4.update();
+        _this5.data.onMoveClass = false;
+        _this5.setArrow();
+        _this5.update();
       }, 300);
     }
   }, {
@@ -6887,7 +6894,7 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: '_registerElasticForce',
     value: function _registerElasticForce(x, y) {
-      var _this5 = this;
+      var _this6 = this;
 
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
@@ -6895,20 +6902,20 @@ var coolPhoto = function (_aTemplate) {
       this.update();
       setTimeout(function () {
         if (x === 1) {
-          _this5.data.photoPosX = bound.minX;
+          _this6.data.photoPosX = bound.minX;
         } else if (x === -1) {
-          _this5.data.photoPosX = bound.maxX;
+          _this6.data.photoPosX = bound.maxX;
         }
         if (y === 1) {
-          _this5.data.photoPosY = bound.minY;
+          _this6.data.photoPosY = bound.minY;
         } else if (y === -1) {
-          _this5.data.photoPosY = bound.maxY;
+          _this6.data.photoPosY = bound.maxY;
         }
-        _this5.update();
+        _this6.update();
       }, 1);
       setTimeout(function () {
-        _this5.data.elastic = false;
-        _this5.update();
+        _this6.data.elastic = false;
+        _this6.update();
       }, 300);
     }
   }, {

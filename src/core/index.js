@@ -68,32 +68,36 @@ class coolPhoto extends aTemplate {
       this.addNewItem(element,index);
     });
     this._getEachImageSize().then(() => {
-      this.update();
-      $(window).resize(() => {
-        this.data.items.forEach((item)=>{
-          let index = item.index;
-          item.translateX = window.innerWidth*index;
-        });
-        this.setPosByCurrentIndex();
-        this.setSizeByScreen();
-        this.update();
-      });
-      if(!this.data.useOrientationApi){
-        return;
-      }
-      $(window).on("deviceorientation", (e) => {
-        if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && this.data.scale){
-          if(!this.gamma){
-            this.gamma = e.originalEvent.gamma;
-            this.beta = e.originalEvent.beta;
-          }
-          this._calcGravity(e.originalEvent.gamma - this.gamma,e.originalEvent.beta - this.beta);
-        }
-      });
-      setInterval(()=>{
-        this._doAnim();
-      },this.data.forceInterval);
+      this._setup();
     });
+  }
+
+  _setup () {
+    this.update();
+    $(window).resize(() => {
+      this.data.items.forEach((item)=>{
+        let index = item.index;
+        item.translateX = window.innerWidth*index;
+      });
+      this.setPosByCurrentIndex();
+      this.setSizeByScreen();
+      this.update();
+    });
+    if(!this.data.useOrientationApi){
+      return;
+    }
+    $(window).on("deviceorientation", (e) => {
+      if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && this.data.scale){
+        if(!this.gamma){
+          this.gamma = e.originalEvent.gamma;
+          this.beta = e.originalEvent.beta;
+        }
+        this._calcGravity(e.originalEvent.gamma - this.gamma,e.originalEvent.beta - this.beta);
+      }
+    });
+    setInterval(()=>{
+      this._doAnim();
+    },this.data.forceInterval);
   }
 
   increment (item) {
