@@ -208,6 +208,8 @@ $modal-bg-color: #333;
 	margin: 0;
 	opacity: 1;
 	transition: all .3s;
+	white-space: nowrap;
+    overflow-x: auto;
 }
 
 .cool-photo-nav.hide{
