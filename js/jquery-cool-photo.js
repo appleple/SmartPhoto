@@ -6465,9 +6465,15 @@ var coolPhoto = function (_aTemplate) {
         _this2.setSizeByScreen();
         _this2.update();
       });
+
+      setInterval(function () {
+        _this2._doAnim();
+      }, this.data.forceInterval);
+
       if (!this.data.useOrientationApi) {
         return;
       }
+
       (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
         if (!_this2.isBeingZoomed && !_this2.isSwipable && !_this2.photoSwipable && !_this2.data.elastic && _this2.data.scale) {
           if (!_this2.gamma) {
@@ -6477,9 +6483,6 @@ var coolPhoto = function (_aTemplate) {
           _this2._calcGravity(e.originalEvent.gamma - _this2.gamma, e.originalEvent.beta - _this2.beta);
         }
       });
-      setInterval(function () {
-        _this2._doAnim();
-      }, this.data.forceInterval);
     }
   }, {
     key: 'increment',

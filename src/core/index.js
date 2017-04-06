@@ -83,9 +83,15 @@ class coolPhoto extends aTemplate {
       this.setSizeByScreen();
       this.update();
     });
+
+    setInterval(()=>{
+      this._doAnim();
+    },this.data.forceInterval);
+
     if(!this.data.useOrientationApi){
       return;
     }
+
     $(window).on("deviceorientation", (e) => {
       if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && this.data.scale){
         if(!this.gamma){
@@ -95,9 +101,6 @@ class coolPhoto extends aTemplate {
         this._calcGravity(e.originalEvent.gamma - this.gamma,e.originalEvent.beta - this.beta);
       }
     });
-    setInterval(()=>{
-      this._doAnim();
-    },this.data.forceInterval);
   }
 
   increment (item) {
