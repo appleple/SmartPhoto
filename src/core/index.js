@@ -84,9 +84,7 @@ class coolPhoto extends aTemplate {
       this.update();
     }).resize();
 
-    setInterval(()=>{
-      this._doAnim();
-    },this.data.forceInterval);
+    setInterval(this._doAnim,this.data.forceInterval);
 
     if(!this.data.useOrientationApi){
       return;

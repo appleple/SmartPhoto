@@ -6466,9 +6466,7 @@ var coolPhoto = function (_aTemplate) {
         _this2.update();
       }).resize();
 
-      setInterval(function () {
-        _this2._doAnim();
-      }, this.data.forceInterval);
+      setInterval(this._doAnim, this.data.forceInterval);
 
       if (!this.data.useOrientationApi) {
         return;
