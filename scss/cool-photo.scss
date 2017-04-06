@@ -246,3 +246,20 @@ $modal-bg-color: #333;
 .cool-photo-list-onmove{
 	transition: all .3s;
 }
+
+.cool-photo-caption{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	padding: 0 50px;
+	font-size: 12px;
+	box-sizing: border-box;
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: #FFF;
+}

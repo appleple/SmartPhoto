@@ -3,6 +3,7 @@
 		<div class="\{classNames.coolPhotoInner\}">
 				<div class="\{classNames.coolPhotoHeader\}">
 					<span class="\{classNames.coolPhotoCount\}">{currentIndex}[increment]/{total}</span>
+					<span class="\{classNames.coolPhotoCaption\}"><!-- BEGIN items:loop --><!-- \BEGIN currentIndex:touch#{index} -->{caption}<!-- \END currentIndex:touch#{index} --><!-- END items:loop --></span>
 					<button class="\{classNames.coolPhotoDismiss\}" data-action-click="hidePhoto()"></button>
 				</div>
 				<ul style="transform:translateX({translateX}px);" class="\{classNames.coolPhotoList\}<!-- BEGIN onMoveClass:exist --> \{classNames.coolPhotoListOnMove\}<!-- END onMoveClass:exist -->">

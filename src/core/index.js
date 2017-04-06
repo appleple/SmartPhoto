@@ -24,6 +24,7 @@ const defaults = {
     coolPhotoListOnMove: 'cool-photo-list-onmove',
     coolPhotoHeader: 'cool-photo-header',
     coolPhotoCount: 'cool-photo-count',
+    coolPhotoCaption: 'cool-photo-caption',
     coolPhotoDismiss: 'cool-photo-dismiss'
 	},
 	arrows:true,
@@ -123,7 +124,7 @@ class coolPhoto extends aTemplate {
   }
 
   addNewItem (element, index) {
-    this.data.items.push({src: element.getAttribute('href'), translateX: window.innerWidth*index, index: index, translateY:0});
+    this.data.items.push({src: element.getAttribute('href'),caption: element.getAttribute('data-caption'), translateX: window.innerWidth*index, index: index, translateY:0});
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       let lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
