@@ -6457,10 +6457,6 @@ var coolPhoto = function (_aTemplate) {
 
       this.update();
       (0, _zeptoBrowserify.$)(window).resize(function () {
-        _this2.data.items.forEach(function (item) {
-          var index = item.index;
-          item.translateX = window.innerWidth * index;
-        });
         _this2.setPosByCurrentIndex();
         _this2.setSizeByScreen();
         _this2.update();
@@ -6581,9 +6577,10 @@ var coolPhoto = function (_aTemplate) {
     value: function setPosByCurrentIndex() {
       var _this5 = this;
 
-      this.pos.x = -1 * this.data.currentIndex * window.innerWidth;
+      var moveX = -1 * this.data.items[this.data.currentIndex].translateX;
+      this.pos.x = moveX;
       setTimeout(function () {
-        _this5.data.translateX = -1 * _this5.data.currentIndex * window.innerWidth;
+        _this5.data.translateX = moveX;
         _this5.update();
       }, 1);
     }

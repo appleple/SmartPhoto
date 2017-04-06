@@ -75,10 +75,6 @@ class coolPhoto extends aTemplate {
   _setup () {
     this.update();
     $(window).resize(() => {
-      this.data.items.forEach((item)=>{
-        let index = item.index;
-        item.translateX = window.innerWidth*index;
-      });
       this.setPosByCurrentIndex();
       this.setSizeByScreen();
       this.update();
@@ -188,9 +184,10 @@ class coolPhoto extends aTemplate {
   }
 
   setPosByCurrentIndex () {
-    this.pos.x = -1 * this.data.currentIndex * window.innerWidth;
+    const moveX = -1 * this.data.items[this.data.currentIndex].translateX;
+    this.pos.x = moveX;
     setTimeout(() => {
-      this.data.translateX = -1 * this.data.currentIndex * window.innerWidth;
+      this.data.translateX = moveX;
       this.update();
     },1);
   }
