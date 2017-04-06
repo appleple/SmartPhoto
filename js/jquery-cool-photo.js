@@ -6583,7 +6583,7 @@ var coolPhoto = function (_aTemplate) {
 
       this.pos.x = -1 * this.data.currentIndex * window.innerWidth;
       setTimeout(function () {
-        _this5.data.translateX = _this5.pos.x;
+        _this5.data.translateX = -1 * _this5.data.currentIndex * window.innerWidth;
         _this5.update();
       }, 1);
     }

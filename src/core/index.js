@@ -190,7 +190,7 @@ class coolPhoto extends aTemplate {
   setPosByCurrentIndex () {
     this.pos.x = -1 * this.data.currentIndex * window.innerWidth;
     setTimeout(() => {
-      this.data.translateX = this.pos.x;
+      this.data.translateX = -1 * this.data.currentIndex * window.innerWidth;
       this.update();
     },1);
   }
