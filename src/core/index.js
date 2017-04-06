@@ -5,19 +5,19 @@ const util = require('../lib/util');
 const template = require('./viwer.html');
 
 const defaults = {
-	classNames: {
-		coolPhoto: 'cool-photo',
-		coolPhotoClose: 'cool-photo-close',
-		coolPhotoBody: 'cool-photo-body',
-		coolPhotoInner: 'cool-photo-inner',
-		coolPhotoImg: 'cool-photo-img',
+  classNames: {
+    coolPhoto: 'cool-photo',
+    coolPhotoClose: 'cool-photo-close',
+    coolPhotoBody: 'cool-photo-body',
+    coolPhotoInner: 'cool-photo-inner',
+    coolPhotoImg: 'cool-photo-img',
     coolPhotoImgOnMove: 'cool-photo-img-onmove',
     coolPhotoImgElasticMove: 'cool-photo-img-elasticmove',
     coolPhotoImgWrap: 'cool-photo-img-wrap',
-		coolPhotoArrows: 'cool-photo-arrows',
+    coolPhotoArrows: 'cool-photo-arrows',
     coolPhotoNav: 'cool-photo-nav',
-		coolPhotoArrowRight: 'cool-photo-arrow-right',
-		coolPhotoArrowLeft: 'cool-photo-arrow-left',
+    coolPhotoArrowRight: 'cool-photo-arrow-right',
+    coolPhotoArrowLeft: 'cool-photo-arrow-left',
     coolPhotoImgLeft: 'cool-photo-img-left',
     coolPhotoImgRight: 'cool-photo-img-right',
     coolPhotoList: 'cool-photo-list',
@@ -26,10 +26,10 @@ const defaults = {
     coolPhotoCount: 'cool-photo-count',
     coolPhotoCaption: 'cool-photo-caption',
     coolPhotoDismiss: 'cool-photo-dismiss'
-	},
-	arrows:true,
-	nav:true,
-	animationSpeed: 300,
+  },
+  arrows:true,
+  nav:true,
+  animationSpeed: 300,
   swipeOffset: 100,
   maxWidth: 940,
   headerHeight:60,
@@ -161,22 +161,22 @@ class coolPhoto extends aTemplate {
     this.update();
   }
 
-	_getTouchPos () {
-		let x = 0;
-		let y = 0;
-		if (this._isTouched(event)) {
-			x = event.originalEvent.touches[0].pageX;
-			y = event.originalEvent.touches[0].pageY;
-		} else if(event.pageX){
-			x = event.pageX;
-			y = event.pageY;
-		}
-		return { x: x, y: y };
-	}
+  _getTouchPos () {
+    let x = 0;
+    let y = 0;
+    if (this._isTouched(event)) {
+      x = event.originalEvent.touches[0].pageX;
+      y = event.originalEvent.touches[0].pageY;
+    } else if(event.pageX){
+      x = event.pageX;
+      y = event.pageY;
+    }
+    return { x: x, y: y };
+  }
 
   _getGesturePos (e) {
     const touches = e.originalEvent.touches;
- 		return [
+     return [
       { x: touches[0].pageX, y: touches[0].pageY},
       { x: touches[1].pageX, y: touches[1].pageY}
     ]
