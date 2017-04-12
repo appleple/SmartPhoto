@@ -7030,6 +7030,9 @@ var coolPhoto = function (_aTemplate) {
       var force = power.force;
       var theta = power.theta;
       force -= this.data.registance;
+      if (Math.abs(force) < 0.5) {
+        return;
+      }
       this.vx = Math.cos(theta) * force;
       this.vy = Math.sin(theta) * force;
       this.update();
