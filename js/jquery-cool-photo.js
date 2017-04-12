@@ -6408,7 +6408,7 @@ var defaults = {
   headerHeight: 60,
   footerHeight: 60,
   forceInterval: 10,
-  registance: 0.01,
+  registance: 0.5,
   scaleOnClick: true,
   useOrientationApi: true
 };
@@ -7029,7 +7029,7 @@ var coolPhoto = function (_aTemplate) {
       var power = this._getForceAndTheta(this.vx, this.vy);
       var force = power.force;
       var theta = power.theta;
-      force -= 0.1;
+      force -= this.data.registance;
       this.vx = Math.cos(theta) * force;
       this.vy = Math.sin(theta) * force;
       this.update();

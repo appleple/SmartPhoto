@@ -35,7 +35,7 @@ const defaults = {
   headerHeight:60,
   footerHeight:60,
   forceInterval:10,
-  registance:0.01,
+  registance:0.5,
   scaleOnClick:true,
   useOrientationApi:true
 }
@@ -600,7 +600,7 @@ class coolPhoto extends aTemplate {
     const power = this._getForceAndTheta(this.vx, this.vy);
     let force = power.force;
     const theta = power.theta;
-    force -= 0.1;
+    force -= this.data.registance;
     this.vx = Math.cos(theta)*force;
     this.vy = Math.sin(theta)*force;
     this.update();
