@@ -6600,7 +6600,7 @@ var coolPhoto = function (_aTemplate) {
       this.pos.x = moveX;
       setTimeout(function () {
         _this5.data.translateX = moveX;
-        _this5.update();
+        _this5._listUpdate();
       }, 1);
     }
   }, {

@@ -206,7 +206,7 @@ class coolPhoto extends aTemplate {
     this.pos.x = moveX;
     setTimeout(() => {
       this.data.translateX = moveX;
-      this.update();
+      this._listUpdate();
     },1);
   }
 
