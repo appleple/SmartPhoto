@@ -6934,11 +6934,11 @@ var coolPhoto = function (_aTemplate) {
         } else if (y === -1) {
           _this7.data.photoPosY = bound.maxY;
         }
-        _this7.update();
+        _this7._photoUpdate();
       }, 1);
       setTimeout(function () {
         _this7.data.elastic = false;
-        _this7.update();
+        _this7._photoUpdate();
       }, 300);
     }
   }, {
@@ -7014,6 +7014,11 @@ var coolPhoto = function (_aTemplate) {
         $this.addClass(classNames.coolPhotoImgOnMove);
       } else {
         $this.removeClass(classNames.coolPhotoImgOnMove);
+      }
+      if (this.data.elastic) {
+        $this.addClass(classNames.coolPhotoImgElasticMove);
+      } else {
+        $this.removeClass(classNames.coolPhotoImgElasticMove);
       }
       if (this.data.hideUi) {
         $nav.addClass('hide');

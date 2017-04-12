@@ -513,11 +513,11 @@ class coolPhoto extends aTemplate {
       }else if (y === -1){
         this.data.photoPosY = bound.maxY;
       }
-      this.update();
+      this._photoUpdate();
     },1);
     setTimeout(() => {
       this.data.elastic = false;
-      this.update();
+      this._photoUpdate();
     },300);
   }
 
@@ -586,6 +586,11 @@ class coolPhoto extends aTemplate {
       $this.addClass(classNames.coolPhotoImgOnMove);
     } else {
       $this.removeClass(classNames.coolPhotoImgOnMove);
+    }
+    if (this.data.elastic) {
+      $this.addClass(classNames.coolPhotoImgElasticMove);
+    } else {
+      $this.removeClass(classNames.coolPhotoImgElasticMove);
     }
     if (this.data.hideUi) {
       $nav.addClass('hide');
