@@ -210,6 +210,7 @@ $modal-bg-color: #333;
 	transition: all .3s;
 	white-space: nowrap;
     overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
 }
 
 .cool-photo-nav.hide{
