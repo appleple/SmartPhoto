@@ -6991,10 +6991,10 @@ var coolPhoto = function (_aTemplate) {
     key: '_calcGravity',
     value: function _calcGravity(gamma, beta) {
       if (gamma > 5 || gamma < -5) {
-        this.vx += gamma * 0.02;
+        this.vx += gamma * 0.05;
       }
       if (beta > 5 || beta < -5) {
-        this.vy += beta * 0.02;
+        this.vy += beta * 0.05;
       }
     }
   }, {
@@ -7026,8 +7026,8 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: '_listUpdate',
     value: function _listUpdate() {
-      var $current = (0, _zeptoBrowserify.$)('.current', '[data-id="' + this.id + '"]');
-      // const $parent = $current.
+      var $list = (0, _zeptoBrowserify.$)('.' + classNames.coolPhotoList, '[data-id="' + this.id + '"]');
+      // $list
     }
   }, {
     key: '_doAnim',

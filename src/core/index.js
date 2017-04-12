@@ -564,10 +564,10 @@ class coolPhoto extends aTemplate {
 
   _calcGravity (gamma,beta) {
     if(gamma > 5 || gamma < -5) {
-      this.vx += gamma * 0.02;
+      this.vx += gamma * 0.05;
     }
     if(beta > 5 || beta < -5){
-      this.vy += beta * 0.02;
+      this.vy += beta * 0.05;
     }
   }
 
@@ -597,8 +597,8 @@ class coolPhoto extends aTemplate {
   }
 
   _listUpdate () {
-    const $current = $('.current',`[data-id="${this.id}"]`);
-    // const $parent = $current.
+    const $list = $(`.${classNames.coolPhotoList}`,`[data-id="${this.id}"]`);
+    // $list
 
   }
 
