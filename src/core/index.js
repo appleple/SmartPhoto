@@ -75,6 +75,7 @@ class coolPhoto extends aTemplate {
   _setup () {
     this.update();
     $(window).resize(() => {
+      this._resetTranslate();
       this.setPosByCurrentIndex();
       this.setSizeByScreen();
       this.update();
@@ -87,6 +88,17 @@ class coolPhoto extends aTemplate {
     if(!this.data.useOrientationApi){
       return;
     }
+
+    if(!this._isSmartPhone()){
+      return;
+    }
+
+    $(window).on("orientationchange", (e) => {
+      this._resetTranslate();
+      this.setPosByCurrentIndex();
+      this.setSizeByScreen();
+      this.update();
+    });
 
     $(window).on("deviceorientation", (e) => {
       if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && this.data.scale){
@@ -127,6 +139,12 @@ class coolPhoto extends aTemplate {
       arr.push(promise);
     });
     return Promise.all(arr);
+  }
+
+  _resetTranslate () {
+    this.data.items.forEach((item,index) => {
+      item.translateX = window.innerWidth * index;
+    });
   }
 
   addNewItem (element, index) {
@@ -534,6 +552,16 @@ class coolPhoto extends aTemplate {
     }
   }
 
+  _isSmartPhone () {
+    const agent = navigator.userAgent
+    if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0
+        || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   _calcGravity (gamma,beta) {
     if(gamma > 5 || gamma < -5) {
       this.vx += gamma * 0.02;
@@ -541,6 +569,10 @@ class coolPhoto extends aTemplate {
     if(beta > 5 || beta < -5){
       this.vy += beta * 0.02;
     }
+  }
+
+  _photoUpdate () {
+    const $current = $('.current',`[data-id="${this.id}"]`);
   }
 
   _doAnim () {
