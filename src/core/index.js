@@ -439,7 +439,7 @@ class coolPhoto extends aTemplate {
     }
     this.oldDistance = distance;
     this.e.preventDefault();
-    this.update();
+    this._photoUpdate();
   }
 
   afterGesture () {
@@ -452,7 +452,7 @@ class coolPhoto extends aTemplate {
     this.data.scale = false;
     this.data.scaleSize = 1;
     this.data.hideUi = false;
-    this.update();
+    this._photoUpdate();
   }
 
   preventBrowserAction () {
@@ -572,12 +572,34 @@ class coolPhoto extends aTemplate {
   }
 
   _photoUpdate () {
+    const classNames = this.data.classNames;
     const $current = $('.current',`[data-id="${this.id}"]`);
+    const $this = $(`.${classNames.coolPhotoImg}`,$current);
     const photoPosX = this.virtualPos(this.data.photoPosX);
     const photoPosY = this.virtualPos(this.data.photoPosY);
     const scaleSize = this.data.scaleSize;
     const transform = `translate(${photoPosX}px,${photoPosY}px) scale(${scaleSize})`;
-    $current.css('transform',transform);
+    const $nav = $(`.${classNames.coolPhotoNav}`,`[data-id="${this.id}"]`);
+    const $arrows = $(`.${classNames.coolPhotoArrows}`,`[data-id="${this.id}"]`);
+    $this.css('transform',transform);
+    if (this.data.scale) {
+      $this.addClass(classNames.coolPhotoImgOnMove);
+    } else {
+      $this.removeClass(classNames.coolPhotoImgOnMove);
+    }
+    if (this.data.hideUi) {
+      $nav.addClass('hide');
+      $arrows.addClass('hide');
+    } else {
+      $nav.removeClass('hide');
+      $arrows.removeClass('hide');
+    }
+  }
+
+  _listUpdate () {
+    const $current = $('.current',`[data-id="${this.id}"]`);
+    // const $parent = $current.
+
   }
 
   _doAnim () {
