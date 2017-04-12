@@ -6726,7 +6726,7 @@ var coolPhoto = function (_aTemplate) {
       this.pos.x += x;
       this.data.translateX = this.pos.x;
       this.oldPos = pos;
-      this.update();
+      this._listUpdate();
     }
   }, {
     key: 'zoomPhoto',
@@ -7026,8 +7026,16 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: '_listUpdate',
     value: function _listUpdate() {
+      var classNames = this.data.classNames;
       var $list = (0, _zeptoBrowserify.$)('.' + classNames.coolPhotoList, '[data-id="' + this.id + '"]');
+      var transform = 'translateX(' + this.data.translateX + 'px)';
+      $list.css('transform', transform);
       // $list
+      if (this.data.onMoveClass) {
+        $list.addClass(classNames.coolPhotoListOnMove);
+      } else {
+        $list.removeClass(classNames.coolPhotoListOnMove);
+      }
     }
   }, {
     key: '_doAnim',

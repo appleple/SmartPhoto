@@ -323,7 +323,7 @@ class coolPhoto extends aTemplate {
     this.pos.x += x;
     this.data.translateX = this.pos.x;
     this.oldPos = pos;
-    this.update();
+    this._listUpdate();
   }
 
   zoomPhoto(){
@@ -597,9 +597,16 @@ class coolPhoto extends aTemplate {
   }
 
   _listUpdate () {
+    const classNames = this.data.classNames;
     const $list = $(`.${classNames.coolPhotoList}`,`[data-id="${this.id}"]`);
+    const transform = `translateX(${this.data.translateX}px)`;
+    $list.css('transform',transform);
     // $list
-
+    if(this.data.onMoveClass) {
+      $list.addClass(classNames.coolPhotoListOnMove);
+    }else{
+      $list.removeClass(classNames.coolPhotoListOnMove);
+    }
   }
 
   _doAnim () {
