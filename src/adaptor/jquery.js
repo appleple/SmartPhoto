@@ -1,7 +1,6 @@
 'use strict';
 
 const coolPhoto = require('../index');
-console.log(coolPhoto);
 
 const applyJQuery = (jQuery) => {
 	jQuery.fn.coolPhoto = function(settings) {

@@ -6317,7 +6317,6 @@ exports.$ = window.$
 'use strict';
 
 var coolPhoto = require('../index');
-console.log(coolPhoto);
 
 var applyJQuery = function applyJQuery(jQuery) {
 	jQuery.fn.coolPhoto = function (settings) {
