@@ -376,7 +376,7 @@ class coolPhoto extends aTemplate {
       this.photoVY = moveY;
     }
     this.oldPhotoPos = pos;
-    this.update();
+    this._photoUpdate();
   }
 
   afterPhotoDrag () {
@@ -573,6 +573,11 @@ class coolPhoto extends aTemplate {
 
   _photoUpdate () {
     const $current = $('.current',`[data-id="${this.id}"]`);
+    const photoPosX = this.virtualPos(this.data.photoPosX);
+    const photoPosY = this.virtualPos(this.data.photoPosY);
+    const scaleSize = this.data.scaleSize;
+    const transform = `translate(${photoPosX}px,${photoPosY}px) scale(${scaleSize})`;
+    $current.css('transform',transform);
   }
 
   _doAnim () {
@@ -606,7 +611,7 @@ class coolPhoto extends aTemplate {
     }
     this.vx = Math.cos(theta)*force;
     this.vy = Math.sin(theta)*force;
-    this.update();
+    this._photoUpdate();
   }
 
 }
