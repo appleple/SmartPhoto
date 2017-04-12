@@ -24,7 +24,7 @@
 				<!-- BEGIN nav:exist -->
 				<ul class="\{classNames.coolPhotoNav\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">
 					<!-- BEGIN items:loop -->
-					<li data-action-click="gotoSlide({index})"><img src="{src}"></li>
+					<li data-action-click="gotoSlide({index})" class="<!-- \BEGIN currentIndex:touch#{index} -->current<!-- \END currentIndex:touch#{index} -->" style="background-image:url({src});"></li>
 					<!-- END items:loop -->
 				</ul>
 				<!-- END nav:exist -->

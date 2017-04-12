@@ -217,10 +217,16 @@ $modal-bg-color: #333;
 }
 
 .cool-photo-nav li{
+	background-size: cover;
+	background-position: center center;
 	display: inline-block;
 	width: 50px;
 	height: 50px;
 	overflow: hidden;
+}
+
+.cool-photo-nav .current{
+	opacity: .5;
 }
 
 .cool-photo-nav img{
