@@ -337,12 +337,14 @@ class smartPhoto extends aTemplate {
   }
 
   zoomPhoto(){
-    this.data.scale = true;
     this.data.hideUi = true;
     this.data.scaleSize =  this._getScaleBoarder();
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
     this._photoUpdate();
+    setTimeout(()=>{
+      this.data.scale = true;
+    },300)
   }
 
   zoomOutPhoto(){

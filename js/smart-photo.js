@@ -6715,12 +6715,16 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'zoomPhoto',
     value: function zoomPhoto() {
-      this.data.scale = true;
+      var _this7 = this;
+
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
       this._photoUpdate();
+      setTimeout(function () {
+        _this7.data.scale = true;
+      }, 300);
     }
   }, {
     key: 'zoomOutPhoto',
@@ -6904,7 +6908,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_registerElasticForce',
     value: function _registerElasticForce(x, y) {
-      var _this7 = this;
+      var _this8 = this;
 
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
@@ -6921,8 +6925,8 @@ var smartPhoto = function (_aTemplate) {
       }
       this._photoUpdate();
       setTimeout(function () {
-        _this7.data.elastic = false;
-        _this7._photoUpdate();
+        _this8.data.elastic = false;
+        _this8._photoUpdate();
       }, 300);
     }
   }, {
