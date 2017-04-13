@@ -6434,6 +6434,8 @@ var coolPhoto = function (_aTemplate) {
       virtualPos: _this.virtualPos
     };
     _this.elements = document.querySelectorAll(selector);
+    var date = new Date();
+    _this.tapSecond = date.getTime();
     _this.data.total = _this.elements.length;
     _this.id = _this._getUniqId();
     _this.vx = 0;
@@ -6688,12 +6690,18 @@ var coolPhoto = function (_aTemplate) {
       if (this.data.scale) {
         this.afterPhotoDrag();
         return;
-      } else if (this.oldPos.x === this.firstPos.x) {
-        if (!util.isSmartPhone()) {
-          this.zoomPhoto();
-        }
+      } else if (!util.isSmartPhone() && this.oldPos.x === this.firstPos.x) {
+        this.zoomPhoto();
         return;
       }
+      var date = new Date();
+      var tapSecond = date.getTime();
+      if (Math.abs(this.tapSecond - tapSecond) < 200) {
+        this.e.preventDefault();
+        this.zoomPhoto();
+        return;
+      }
+      this.tapSecond = tapSecond;
       var swipeWidth = this.oldPos.x - this.firstPos.x;
       if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
         this.data.currentIndex--;
@@ -6731,6 +6739,7 @@ var coolPhoto = function (_aTemplate) {
     key: 'zoomPhoto',
     value: function zoomPhoto() {
       this.data.scale = true;
+      this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;

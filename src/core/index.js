@@ -58,6 +58,8 @@ class coolPhoto extends aTemplate {
       virtualPos:this.virtualPos
     };
     this.elements = document.querySelectorAll(selector);
+    const date = new Date();
+    this.tapSecond = date.getTime();
     this.data.total = this.elements.length;
     this.id = this._getUniqId();
     this.vx = 0;
@@ -287,12 +289,18 @@ class coolPhoto extends aTemplate {
     if(this.data.scale){
       this.afterPhotoDrag();
       return;
-    } else if (this.oldPos.x === this.firstPos.x) {
-      if(!util.isSmartPhone()) {
-        this.zoomPhoto();
-      }
+    } else if (!util.isSmartPhone() && this.oldPos.x === this.firstPos.x) {
+      this.zoomPhoto();
       return;
     }
+    const date = new Date();
+    const tapSecond = date.getTime();
+    if(Math.abs(this.tapSecond - tapSecond) < 200) {
+      this.e.preventDefault();
+      this.zoomPhoto();
+      return;
+    }
+    this.tapSecond = tapSecond;
     const swipeWidth = this.oldPos.x - this.firstPos.x
     if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0 ) {
       this.data.currentIndex--;
@@ -328,6 +336,7 @@ class coolPhoto extends aTemplate {
 
   zoomPhoto(){
     this.data.scale = true;
+    this.data.hideUi = true;
     this.data.scaleSize =  this._getScaleBoarder();
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
