@@ -10,7 +10,7 @@
 					<!-- BEGIN items:loop -->
 					<li style="transform:translate({translateX}px,{translateY}px);" class="<!-- \BEGIN currentIndex:touch#{index} -->current<!-- \END currentIndex:touch#{index} -->">
 						<div style="transform:translate({x}px,{y}px) scale({scale});" class="\\{classNames.smartPhotoImgWrap\\}">
-							<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}[virtualPos]px,\{photoPosY\}[virtualPos]px) scale(\{scaleSize\});<!-- \END currentIndex:touch#{index} -->" src="{src}" class="\\{classNames.smartPhotoImg\\}<!-- \BEGIN scale:exist -->  \\{classNames.smartPhotoImgOnMove\\}<!-- \END scale:exist --><!-- \BEGIN elastic:exist --> \\{classNames.smartPhotoImgElasticMove\\}<!-- \END elastic:exist -->" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+							<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}[virtualPos]px,\{photoPosY\}[virtualPos]px) scale(\{scaleSize\});<!-- \END currentIndex:touch#{index} -->" src="{src}" class="\\{classNames.smartPhotoImg\\}<!-- \BEGIN scale:exist -->  \\{classNames.smartPhotoImgOnMove\\}<!-- \END scale:exist --><!-- \BEGIN elastic:exist --> \\{classNames.smartPhotoImgElasticMove\\}<!-- \END elastic:exist -->" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag" ondragstart="return false;">
 						</div>
 					</li>
 					<!-- END items:loop -->

@@ -154,10 +154,6 @@ class smartPhoto extends aTemplate {
   addNewItem (element, index) {
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
-      let lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
-      if (lockOrientation) {
-        lockOrientation("portrait");
-      }
       event.preventDefault();
       this.data.currentIndex = parseInt(element.getAttribute('data-index'));
       this.setPosByCurrentIndex();
@@ -177,16 +173,15 @@ class smartPhoto extends aTemplate {
 
   hidePhoto () {
     this.data.hide = true;
-    let unlockOrientation = screen.unlockOrientation || screen.mozUnlockOrientation || screen.msUnlockOrientation;
-    if(unlockOrientation){
-      unlockOrientation();
-    }
     this.update();
   }
 
   _getTouchPos (e) {
     let x = 0;
     let y = 0;
+    if (typeof event === 'undefined'){
+      var event = this.e;
+    }
     if (this._isTouched(event)) {
       x = event.originalEvent.touches[0].pageX;
       y = event.originalEvent.touches[0].pageY;
