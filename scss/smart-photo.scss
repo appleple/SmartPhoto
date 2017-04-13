@@ -67,6 +67,15 @@ $modal-bg-color: #333;
 	z-index: 3;
 }
 
+.smart-photo-content{
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
 
 .smart-photo-dismiss{
   background-color: transparent;
@@ -112,7 +121,7 @@ $modal-bg-color: #333;
 	width: auto;
 	height: auto;
 	display: block;
-	transition: transform .3s;
+	transition: transform .3s cubic-bezier(0.4, 0, 0.22, 1);
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-drag: none;
@@ -125,7 +134,7 @@ $modal-bg-color: #333;
 }
 
 .smart-photo-img-elasticmove{
-	transition: transform .3s;
+	transition: transform .3s cubic-bezier(0.4, 0, 0.22, 1);
 }
 
 .smart-photo-img-wrap{
