@@ -239,7 +239,7 @@ class coolPhoto extends aTemplate {
       this.data.onMoveClass = false;
       this.setArrow();
       this.update();
-    },100);
+    },200);
   }
 
   gotoSlide(index) {

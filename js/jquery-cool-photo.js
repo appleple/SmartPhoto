@@ -6636,7 +6636,7 @@ var coolPhoto = function (_aTemplate) {
         _this6.data.onMoveClass = false;
         _this6.setArrow();
         _this6.update();
-      }, 100);
+      }, 200);
     }
   }, {
     key: 'gotoSlide',
