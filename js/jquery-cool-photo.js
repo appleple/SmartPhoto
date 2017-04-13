@@ -6576,12 +6576,15 @@ var coolPhoto = function (_aTemplate) {
     }
   }, {
     key: '_getTouchPos',
-    value: function _getTouchPos() {
+    value: function _getTouchPos(e) {
       var x = 0;
       var y = 0;
       if (this._isTouched(event)) {
         x = event.originalEvent.touches[0].pageX;
         y = event.originalEvent.touches[0].pageY;
+      } else if (this._isTouched(this.e)) {
+        x = this.e.originalEvent.touches[0].pageX;
+        y = this.e.originalEvent.touches[0].pageY;
       } else if (event.pageX) {
         x = event.pageX;
         y = event.pageY;
@@ -6667,7 +6670,7 @@ var coolPhoto = function (_aTemplate) {
   }, {
     key: 'beforeDrag',
     value: function beforeDrag() {
-      if (this._isTouched(this.e)) {
+      if (this._isGestured(this.e)) {
         this.beforeGesture();
         return;
       }
@@ -6717,7 +6720,7 @@ var coolPhoto = function (_aTemplate) {
     key: 'onDrag',
     value: function onDrag() {
       this.e.preventDefault();
-      if (this._isTouched(this.e) && this.onListMove === false) {
+      if (this._isGestured(this.e) && this.onListMove === false) {
         this.onGesture();
         return;
       }
@@ -6978,8 +6981,17 @@ var coolPhoto = function (_aTemplate) {
     }
   }, {
     key: '_isTouched',
-    value: function _isTouched(event) {
-      if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
+    value: function _isTouched(e) {
+      if (e && e.originalEvent && e.originalEvent.touches) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }, {
+    key: '_isGestured',
+    value: function _isGestured(e) {
+      if (e && e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length > 1) {
         return true;
       } else {
         return false;

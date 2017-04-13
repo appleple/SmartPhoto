@@ -184,12 +184,15 @@ class coolPhoto extends aTemplate {
     this.update();
   }
 
-  _getTouchPos () {
+  _getTouchPos (e) {
     let x = 0;
     let y = 0;
     if (this._isTouched(event)) {
       x = event.originalEvent.touches[0].pageX;
       y = event.originalEvent.touches[0].pageY;
+    } else if (this._isTouched(this.e)) {
+      x = this.e.originalEvent.touches[0].pageX;
+      y = this.e.originalEvent.touches[0].pageY;
     } else if(event.pageX){
       x = event.pageX;
       y = event.pageY;
@@ -267,7 +270,7 @@ class coolPhoto extends aTemplate {
   }
 
   beforeDrag () {
-    if (this._isTouched(this.e)) {
+    if (this._isGestured(this.e)) {
       this.beforeGesture();
       return;
     }
@@ -315,7 +318,7 @@ class coolPhoto extends aTemplate {
 
   onDrag () {
     this.e.preventDefault();
-    if (this._isTouched(this.e) && this.onListMove === false) {
+    if (this._isGestured(this.e) && this.onListMove === false) {
       this.onGesture();
       return;
     }
@@ -554,8 +557,16 @@ class coolPhoto extends aTemplate {
     return val;
   }
 
-  _isTouched (event) {
-    if (event && event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length > 1) {
+  _isTouched (e) {
+    if (e && e.originalEvent && e.originalEvent.touches) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  _isGestured (e) {
+    if (e && e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length > 1) {
       return true;
     } else {
       return false;
