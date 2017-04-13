@@ -149,12 +149,11 @@ $modal-bg-color: #333;
 }
 
 .cool-photo-arrows li {
-	width: 50px;
+	width: 30px;
 	height: 50px;
 	position: absolute;
 	top: 50%;
-	border-radius: 50%;
-	background-color: #000;
+	background-color: rgba(0, 0, 0, .5);
 	display: block;
 	transition: all .3s;
 	opacity: 0;
