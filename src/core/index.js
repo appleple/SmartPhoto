@@ -62,6 +62,7 @@ class coolPhoto extends aTemplate {
     const date = new Date();
     this.tapSecond = date.getTime();
     this.data.total = this.elements.length;
+    this.onListMove = false;
     this.id = this._getUniqId();
     this.vx = 0;
     this.vy = 0;
@@ -238,7 +239,7 @@ class coolPhoto extends aTemplate {
       this.data.onMoveClass = false;
       this.setArrow();
       this.update();
-    },300);
+    },100);
   }
 
   gotoSlide(index) {
@@ -282,6 +283,7 @@ class coolPhoto extends aTemplate {
 
   afterDrag () {
     this.isSwipable = false;
+    this.onListMove = false;
     if (this.isBeingZoomed) {
       this.afterGesture();
       return;
@@ -313,7 +315,7 @@ class coolPhoto extends aTemplate {
 
   onDrag () {
     this.e.preventDefault();
-    if (this._isTouched(this.e)) {
+    if (this._isTouched(this.e) && this.onListMove === false) {
       this.onGesture();
       return;
     }
@@ -330,6 +332,7 @@ class coolPhoto extends aTemplate {
     const pos = this._getTouchPos(this.e);
     const x = pos.x - this.oldPos.x;
     this.pos.x += x;
+    this.onListMove = true;
     this.data.translateX = this.pos.x;
     this.oldPos = pos;
     this._listUpdate();
@@ -341,7 +344,7 @@ class coolPhoto extends aTemplate {
     this.data.scaleSize =  this._getScaleBoarder();
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
-    this.update();
+    this._photoUpdate();
   }
 
   zoomOutPhoto(){
@@ -351,7 +354,7 @@ class coolPhoto extends aTemplate {
     this.data.scale = false;
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
-    this.update();
+    this._photoUpdate();
   }
 
   beforePhotoDrag (){
@@ -608,9 +611,17 @@ class coolPhoto extends aTemplate {
     if (this.data.hideUi) {
       $nav.addClass('hide');
       $arrows.addClass('hide');
+      setTimeout(() =>{
+        $nav.addClass('none');
+        $arrows.addClass('none');
+      },100)
     } else {
-      $nav.removeClass('hide');
-      $arrows.removeClass('hide');
+      $nav.removeClass('none');
+      $arrows.removeClass('none');
+      setTimeout(() =>{
+        $nav.removeClass('hide');
+        $arrows.removeClass('hide');
+      },10)
     }
   }
 

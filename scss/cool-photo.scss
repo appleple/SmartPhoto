@@ -144,6 +144,10 @@ $modal-bg-color: #333;
 	opacity: 0;
 }
 
+.cool-photo-arrows.hide.none{
+	display: none;
+}
+
 .cool-photo-arrows li {
 	width: 50px;
 	height: 50px;
@@ -209,6 +213,10 @@ $modal-bg-color: #333;
 
 .cool-photo-nav.hide{
 	opacity: 0;
+}
+
+.cool-photo-nav.hide.none{
+	display: none;
 }
 
 .cool-photo-nav ul {

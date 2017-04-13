@@ -6438,6 +6438,7 @@ var coolPhoto = function (_aTemplate) {
     var date = new Date();
     _this.tapSecond = date.getTime();
     _this.data.total = _this.elements.length;
+    _this.onListMove = false;
     _this.id = _this._getUniqId();
     _this.vx = 0;
     _this.vy = 0;
@@ -6635,7 +6636,7 @@ var coolPhoto = function (_aTemplate) {
         _this6.data.onMoveClass = false;
         _this6.setArrow();
         _this6.update();
-      }, 300);
+      }, 100);
     }
   }, {
     key: 'gotoSlide',
@@ -6683,6 +6684,7 @@ var coolPhoto = function (_aTemplate) {
     key: 'afterDrag',
     value: function afterDrag() {
       this.isSwipable = false;
+      this.onListMove = false;
       if (this.isBeingZoomed) {
         this.afterGesture();
         return;
@@ -6715,7 +6717,7 @@ var coolPhoto = function (_aTemplate) {
     key: 'onDrag',
     value: function onDrag() {
       this.e.preventDefault();
-      if (this._isTouched(this.e)) {
+      if (this._isTouched(this.e) && this.onListMove === false) {
         this.onGesture();
         return;
       }
@@ -6732,6 +6734,7 @@ var coolPhoto = function (_aTemplate) {
       var pos = this._getTouchPos(this.e);
       var x = pos.x - this.oldPos.x;
       this.pos.x += x;
+      this.onListMove = true;
       this.data.translateX = this.pos.x;
       this.oldPos = pos;
       this._listUpdate();
@@ -6744,7 +6747,7 @@ var coolPhoto = function (_aTemplate) {
       this.data.scaleSize = this._getScaleBoarder();
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
-      this.update();
+      this._photoUpdate();
     }
   }, {
     key: 'zoomOutPhoto',
@@ -6755,7 +6758,7 @@ var coolPhoto = function (_aTemplate) {
       this.data.scale = false;
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
-      this.update();
+      this._photoUpdate();
     }
   }, {
     key: 'beforePhotoDrag',
@@ -7034,9 +7037,17 @@ var coolPhoto = function (_aTemplate) {
       if (this.data.hideUi) {
         $nav.addClass('hide');
         $arrows.addClass('hide');
+        setTimeout(function () {
+          $nav.addClass('none');
+          $arrows.addClass('none');
+        }, 100);
       } else {
-        $nav.removeClass('hide');
-        $arrows.removeClass('hide');
+        $nav.removeClass('none');
+        $arrows.removeClass('none');
+        setTimeout(function () {
+          $nav.removeClass('hide');
+          $arrows.removeClass('hide');
+        }, 10);
       }
     }
   }, {
