@@ -6933,20 +6933,17 @@ var coolPhoto = function (_aTemplate) {
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
       this.data.elastic = true;
-      this.update();
-      setTimeout(function () {
-        if (x === 1) {
-          _this7.data.photoPosX = bound.minX;
-        } else if (x === -1) {
-          _this7.data.photoPosX = bound.maxX;
-        }
-        if (y === 1) {
-          _this7.data.photoPosY = bound.minY;
-        } else if (y === -1) {
-          _this7.data.photoPosY = bound.maxY;
-        }
-        _this7._photoUpdate();
-      }, 1);
+      if (x === 1) {
+        this.data.photoPosX = bound.minX;
+      } else if (x === -1) {
+        this.data.photoPosX = bound.maxX;
+      }
+      if (y === 1) {
+        this.data.photoPosY = bound.minY;
+      } else if (y === -1) {
+        this.data.photoPosY = bound.maxY;
+      }
+      this._photoUpdate();
       setTimeout(function () {
         _this7.data.elastic = false;
         _this7._photoUpdate();

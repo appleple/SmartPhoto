@@ -514,20 +514,17 @@ class coolPhoto extends aTemplate {
     const item = this._getSelectedItem();
     const bound = this._makeBound(item);
     this.data.elastic = true;
-    this.update();
-    setTimeout(()=>{
-      if(x === 1){
-        this.data.photoPosX = bound.minX;
-      }else if(x === -1){
-        this.data.photoPosX = bound.maxX;
-      }
-      if(y === 1){
-        this.data.photoPosY = bound.minY;
-      }else if (y === -1){
-        this.data.photoPosY = bound.maxY;
-      }
-      this._photoUpdate();
-    },1);
+    if(x === 1){
+      this.data.photoPosX = bound.minX;
+    }else if(x === -1){
+      this.data.photoPosX = bound.maxX;
+    }
+    if(y === 1){
+      this.data.photoPosY = bound.minY;
+    }else if (y === -1){
+      this.data.photoPosY = bound.maxY;
+    }
+    this._photoUpdate();
     setTimeout(() => {
       this.data.elastic = false;
       this._photoUpdate();
