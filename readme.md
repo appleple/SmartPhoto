@@ -1,1 +1,1 @@
-# PhotoCool
+# smartPhoto
