@@ -8,21 +8,71 @@
 	<title>image-viewer.js</title>
 </head>
 <body>
-<div class="cool-photo">
+<div class="cool-photo" data-action-touchmove="preventBrowserAction">
 	<div class="cool-photo-body">
 		<div class="cool-photo-inner">
-			<ul class="cool-photo-list">
-				<li><img src="./assets/zoo_kuma.jpg" class="cool-photo-img"></li>
-				<li><img src="./assets/castle.jpg" class="cool-photo-img"></li>
-			</ul>
+				<div class="cool-photo-header">
+					<span class="cool-photo-count">2/8</span>
+					<span class="cool-photo-caption">ラクダ</span>
+					<button class="cool-photo-dismiss" data-action-click="hidePhoto()"></button>
+				</div>
+				<ul style="transform: translateX(-1697px);" class="cool-photo-list">
+					<li style="transform:translate(0px,0px);" class="">
+						<div style="transform:translate(-9.500000000000114px,-288px) scale(0.3894736842105263);" class="cool-photo-img-wrap">
+							<img style="" src="./assets/large-kuma.jpg" class="cool-photo-img" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+						</div>
+					</li>
+					<li style="transform:translate(1697px,0px);" class="current">
+						<div style="transform:translate(-9.500000000000114px,-288px) scale(0.3894736842105263);" class="cool-photo-img-wrap">
+							<img style="transform:translate(0px,0px) scale(1);" src="./assets/large-rakuda.jpg" class="cool-photo-img" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+						</div>
+					</li>
+					<li style="transform:translate(3394px,0px);" class="">
+						<div style="transform:translate(-9.500000000000114px,-288px) scale(0.3894736842105263);" class="cool-photo-img-wrap">
+							<img style="" src="./assets/large-sai.jpg" class="cool-photo-img" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+						</div>
+					</li>
+					<li style="transform:translate(5091px,0px);" class="">
+						<div style="transform:translate(207.5px,-682px) scale(0.23029045643153526);" class="cool-photo-img-wrap">
+							<img style="" src="./assets/large-kaba.jpg" class="cool-photo-img" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+						</div>
+					</li>
+					<li style="transform:translate(6788px,0px);" class="">
+						<div style="transform:translate(-9.5px,-288.5px) scale(0.38913234005258546);" class="cool-photo-img-wrap">
+							<img style="" src="./assets/large-koara.jpg" class="cool-photo-img" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+						</div>
+					</li>
+					<li style="transform:translate(8485px,0px);" class="">
+						<div style="transform:translate(415px,-716.5px) scale(0.22233350025037557);" class="cool-photo-img-wrap">
+							<img style="" src="./assets/large-lion.jpg" class="cool-photo-img" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+						</div>
+					</li>
+					<li style="transform:translate(10182px,0px);" class="">
+						<div style="transform:translate(-9.500000000000114px,-288px) scale(0.3894736842105263);" class="cool-photo-img-wrap">
+							<img style="" src="./assets/large-kuma.jpg" class="cool-photo-img" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+						</div>
+					</li>
+					<li style="transform:translate(11879px,0px);" class="">
+						<div style="transform:translate(-9.500000000000114px,-288px) scale(0.3894736842105263);" class="cool-photo-img-wrap">
+							<img style="" src="./assets/large-rakuda.jpg" class="cool-photo-img" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
+						</div>
+					</li>
+				</ul>
 				<ul class="cool-photo-arrows">
-					<li class="cool-photo-arrow-right" data-index="01"></li>
+					<li class="cool-photo-arrow-left show" data-action-click="gotoSlide(0)"></li>
+					<li class="cool-photo-arrow-right show" data-action-click="gotoSlide(2)"></li>
 				</ul>
 				<ul class="cool-photo-nav">
-					<li><img src="./assets/zoo_kuma.jpg"></li><li><img src="./assets/castle.jpg"></li>
+					<li data-action-click="gotoSlide(0)" class="" style="background-image:url(./assets/large-kuma.jpg);"></li>
+					<li data-action-click="gotoSlide(1)" class="current" style="background-image:url(./assets/large-rakuda.jpg);"></li>
+					<li data-action-click="gotoSlide(2)" class="" style="background-image:url(./assets/large-sai.jpg);"></li>
+					<li data-action-click="gotoSlide(3)" class="" style="background-image:url(./assets/large-kaba.jpg);"></li>
+					<li data-action-click="gotoSlide(4)" class="" style="background-image:url(./assets/large-koara.jpg);"></li>
+					<li data-action-click="gotoSlide(5)" class="" style="background-image:url(./assets/large-lion.jpg);"></li>
+					<li data-action-click="gotoSlide(6)" class="" style="background-image:url(./assets/large-kuma.jpg);"></li>
+					<li data-action-click="gotoSlide(7)" class="" style="background-image:url(./assets/large-rakuda.jpg);"></li>
 				</ul>
 		</div>
 	</div>
 </div>
 </body>
-</html>

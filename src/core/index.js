@@ -455,10 +455,6 @@ class coolPhoto extends aTemplate {
     this._photoUpdate();
   }
 
-  preventBrowserAction () {
-    this.e.preventDefault();
-  }
-
   _getForceAndTheta (vx,vy) {
     return {
       force: Math.sqrt(vx*vx + vy*vy),
@@ -468,7 +464,11 @@ class coolPhoto extends aTemplate {
 
   _getScaleBoarder () {
     const item = this._getSelectedItem();
-    return window.innerHeight / (item.height*item.scale)
+    if(item.width > item.height){
+      return window.innerHeight / (item.height*item.scale);
+    }else{
+      return window.innerWidth / (item.width*item.scale);
+    }
   }
 
   _makeBound (item) {
