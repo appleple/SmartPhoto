@@ -37,6 +37,7 @@ const defaults = {
   forceInterval:10,
   registance:0.5,
   scaleOnClick:true,
+  allowVerticalGravity:false,
   useOrientationApi:true
 }
 
@@ -574,6 +575,9 @@ class coolPhoto extends aTemplate {
   _calcGravity (gamma,beta) {
     if(gamma > 5 || gamma < -5) {
       this.vx += gamma * 0.05;
+    }
+    if(this.data.allowVerticalGravity === false){
+      return;
     }
     if(beta > 5 || beta < -5){
       this.vy += beta * 0.05;
