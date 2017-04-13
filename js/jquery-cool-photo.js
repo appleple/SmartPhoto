@@ -6554,7 +6554,7 @@ var coolPhoto = function (_aTemplate) {
         _this4.data.hide = false;
         _this4.data.photoPosX = 0;
         _this4.data.photoPosY = 0;
-        if (_this4.data.scaleOnClick === true) {
+        if (_this4.data.scaleOnClick === true && util.isSmartPhone()) {
           _this4.data.scale = true;
           _this4.data.hideUi = true;
           _this4.data.scaleSize = _this4._getScaleBoarder();

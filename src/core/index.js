@@ -164,7 +164,7 @@ class coolPhoto extends aTemplate {
       this.data.hide = false;
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
-      if(this.data.scaleOnClick === true){
+      if(this.data.scaleOnClick === true && util.isSmartPhone()){
         this.data.scale = true;
         this.data.hideUi = true;
         this.data.scaleSize = this._getScaleBoarder();
