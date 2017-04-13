@@ -475,6 +475,9 @@ class smartPhoto extends aTemplate {
 
   _getScaleBoarder () {
     const item = this._getSelectedItem();
+    if(!util.isSmartPhone()){
+      return 1 / item.scale;
+    }
     if(item.width > item.height){
       return window.innerHeight / (item.height*item.scale);
     }else{

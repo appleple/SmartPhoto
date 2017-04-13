@@ -6862,6 +6862,9 @@ var smartPhoto = function (_aTemplate) {
     key: '_getScaleBoarder',
     value: function _getScaleBoarder() {
       var item = this._getSelectedItem();
+      if (!util.isSmartPhone()) {
+        return 1 / item.scale;
+      }
       if (item.width > item.height) {
         return window.innerHeight / (item.height * item.scale);
       } else {
