@@ -4,7 +4,7 @@ $backdrop-color: rgba(0, 0, 0, .9);
 $header-color: rgba(0, 0, 0, .2);	
 $modal-bg-color: #333;
 
-@keyframes cool-photo {
+@keyframes smart-photo {
 	from {
 		opacity: 0;
 	}
@@ -14,7 +14,7 @@ $modal-bg-color: #333;
 	}
 }
 
-@keyframes cool-photo-inner {
+@keyframes smart-photo-inner {
 	from {
 		transform: translate(0, 100px);
 	}
@@ -24,7 +24,7 @@ $modal-bg-color: #333;
 	}
 }
 
-.cool-photo {
+.smart-photo {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -36,7 +36,7 @@ $modal-bg-color: #333;
 	opacity: 1;
 	animation-timing-function: $animation-function;
 	animation-duration: $animation-speed;
-	animation-name: cool-photo;
+	animation-name: smart-photo;
 	-webkit-transition: opacity $animation-speed $animation-function;
 	-moz-transition: opacity $animation-speed $animation-function;
 	-ms-transition: opacity $animation-speed $animation-function;
@@ -44,17 +44,17 @@ $modal-bg-color: #333;
 	transition: opacity $animation-speed $animation-function;
 }
 
-.cool-photo-close {
+.smart-photo-close {
 	opacity: 0;
 }
 
-.cool-photo-count {
+.smart-photo-count {
 	display: inline-block;
 	color: #FFF;
 	font-size: 16px;
 }
 
-.cool-photo-header {
+.smart-photo-header {
 	background-color: $header-color;
 	box-sizing: border-box;
 	position: absolute;
@@ -68,7 +68,7 @@ $modal-bg-color: #333;
 }
 
 
-.cool-photo-dismiss{
+.smart-photo-dismiss{
   background-color: transparent;
   color: #FFF;
   font-size: 30px;
@@ -80,12 +80,12 @@ $modal-bg-color: #333;
   top: 5px;
 }
 
-.cool-photo-dismiss:after {
+.smart-photo-dismiss:after {
 	content: '×';
 }
 
 
-.cool-photo-body {
+.smart-photo-body {
 	// max-width: 940px;
 	width: 100%;
 	height: 100%;
@@ -93,7 +93,7 @@ $modal-bg-color: #333;
 	// display: table;
 }
 
-.cool-photo-inner{
+.smart-photo-inner{
 	position: relative;
 	// display: table-cell;
 	vertical-align: top;
@@ -101,13 +101,13 @@ $modal-bg-color: #333;
 	height: 100%;
 }
 
-.cool-photo-arrows{
+.smart-photo-arrows{
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
 }
 
-.cool-photo-img{
+.smart-photo-img{
 	// width: 100%;
 	width: auto;
 	height: auto;
@@ -115,40 +115,40 @@ $modal-bg-color: #333;
 	transition: transform .3s;
 }
 
-.cool-photo-img-onmove{
+.smart-photo-img-onmove{
 	transition: none;
 }
 
-.cool-photo-img-elasticmove{
+.smart-photo-img-elasticmove{
 	transition: transform .3s;
 }
 
-.cool-photo-img-wrap{
+.smart-photo-img-wrap{
 	display: inline-block;
 }
 
-.cool-photo-img-left{
+.smart-photo-img-left{
 	transform: translateX(150%) !important;
 }
 
-.cool-photo-img-right{
+.smart-photo-img-right{
 	transform: translateX(-150%) !important;
 }
 
-.cool-photo-arrows {
+.smart-photo-arrows {
 	opacity: 1;
 	transition: all .3s;
 }
 
-.cool-photo-arrows.hide{
+.smart-photo-arrows.hide{
 	opacity: 0;
 }
 
-.cool-photo-arrows.hide.none{
+.smart-photo-arrows.hide.none{
 	display: none;
 }
 
-.cool-photo-arrows li {
+.smart-photo-arrows li {
 	width: 30px;
 	height: 50px;
 	position: absolute;
@@ -159,11 +159,11 @@ $modal-bg-color: #333;
 	opacity: 0;
 }
 
-.cool-photo-arrows .show{
+.smart-photo-arrows .show{
 	opacity: 1;
 }
 
-.cool-photo-arrow-right{
+.smart-photo-arrow-right{
 	right: 0;
 	position: relative;
 	&:after{
@@ -182,7 +182,7 @@ $modal-bg-color: #333;
 	}
 }
 
-.cool-photo-arrow-left{
+.smart-photo-arrow-left{
 	left: 0;
 	position: relative;
 	&:after{
@@ -201,7 +201,7 @@ $modal-bg-color: #333;
 	}
 }
 
-.cool-photo-nav{
+.smart-photo-nav{
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -210,15 +210,15 @@ $modal-bg-color: #333;
 	transition: all .3s;
 }
 
-.cool-photo-nav.hide{
+.smart-photo-nav.hide{
 	opacity: 0;
 }
 
-.cool-photo-nav.hide.none{
+.smart-photo-nav.hide.none{
 	display: none;
 }
 
-.cool-photo-nav ul {
+.smart-photo-nav ul {
 	white-space: nowrap;
     overflow-x: scroll;
 	-webkit-overflow-scrolling: touch;
@@ -229,7 +229,7 @@ $modal-bg-color: #333;
 	list-style: none;
 }
 
-.cool-photo-nav li{
+.smart-photo-nav li{
 	background-size: cover;
 	background-position: center center;
 	display: inline-block;
@@ -238,16 +238,16 @@ $modal-bg-color: #333;
 	overflow: hidden;
 }
 
-.cool-photo-nav .current{
+.smart-photo-nav .current{
 	opacity: .5;
 }
 
-.cool-photo-nav img{
+.smart-photo-nav img{
 	height: 100%;
 	width: auto;
 }
 
-.cool-photo-list{
+.smart-photo-list{
 	list-style-type: none;
 	white-space: nowrap;
 	padding: 0;
@@ -264,11 +264,11 @@ $modal-bg-color: #333;
 	}
 }
 
-.cool-photo-list-onmove{
+.smart-photo-list-onmove{
 	transition: all .3s;
 }
 
-.cool-photo-caption{
+.smart-photo-caption{
 	position: absolute;
 	top: 0;
 	left: 0;

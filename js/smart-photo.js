@@ -2,7 +2,7 @@
  * Modules in this bundle
  * @license
  *
- * cool-photo.js:
+ * smart-photo.js:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
@@ -6316,31 +6316,6 @@ exports.$ = window.$
 },{}],107:[function(require,module,exports){
 'use strict';
 
-var coolPhoto = require('../index');
-
-var applyJQuery = function applyJQuery(jQuery) {
-	jQuery.fn.coolPhoto = function (settings) {
-		if (typeof settings === 'strings') {} else {
-			new coolPhoto(this.selector, settings);
-		}
-		return this;
-	};
-};
-
-if (typeof define === 'function' && define.amd) {
-	define(['jquery'], applyJQuery);
-} else {
-	var jq = window.jQuery ? window.jQuery : window.$;
-	if (typeof jq !== 'undefined') {
-		applyJQuery(jq);
-	}
-}
-
-module.exports = applyJQuery;
-
-},{"../index":110}],108:[function(require,module,exports){
-'use strict';
-
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
@@ -6378,26 +6353,26 @@ var template = require('./viwer.html');
 
 var defaults = {
   classNames: {
-    coolPhoto: 'cool-photo',
-    coolPhotoClose: 'cool-photo-close',
-    coolPhotoBody: 'cool-photo-body',
-    coolPhotoInner: 'cool-photo-inner',
-    coolPhotoImg: 'cool-photo-img',
-    coolPhotoImgOnMove: 'cool-photo-img-onmove',
-    coolPhotoImgElasticMove: 'cool-photo-img-elasticmove',
-    coolPhotoImgWrap: 'cool-photo-img-wrap',
-    coolPhotoArrows: 'cool-photo-arrows',
-    coolPhotoNav: 'cool-photo-nav',
-    coolPhotoArrowRight: 'cool-photo-arrow-right',
-    coolPhotoArrowLeft: 'cool-photo-arrow-left',
-    coolPhotoImgLeft: 'cool-photo-img-left',
-    coolPhotoImgRight: 'cool-photo-img-right',
-    coolPhotoList: 'cool-photo-list',
-    coolPhotoListOnMove: 'cool-photo-list-onmove',
-    coolPhotoHeader: 'cool-photo-header',
-    coolPhotoCount: 'cool-photo-count',
-    coolPhotoCaption: 'cool-photo-caption',
-    coolPhotoDismiss: 'cool-photo-dismiss'
+    smartPhoto: 'smart-photo',
+    smartPhotoClose: 'smart-photo-close',
+    smartPhotoBody: 'smart-photo-body',
+    smartPhotoInner: 'smart-photo-inner',
+    smartPhotoImg: 'smart-photo-img',
+    smartPhotoImgOnMove: 'smart-photo-img-onmove',
+    smartPhotoImgElasticMove: 'smart-photo-img-elasticmove',
+    smartPhotoImgWrap: 'smart-photo-img-wrap',
+    smartPhotoArrows: 'smart-photo-arrows',
+    smartPhotoNav: 'smart-photo-nav',
+    smartPhotoArrowRight: 'smart-photo-arrow-right',
+    smartPhotoArrowLeft: 'smart-photo-arrow-left',
+    smartPhotoImgLeft: 'smart-photo-img-left',
+    smartPhotoImgRight: 'smart-photo-img-right',
+    smartPhotoList: 'smart-photo-list',
+    smartPhotoListOnMove: 'smart-photo-list-onmove',
+    smartPhotoHeader: 'smart-photo-header',
+    smartPhotoCount: 'smart-photo-count',
+    smartPhotoCaption: 'smart-photo-caption',
+    smartPhotoDismiss: 'smart-photo-dismiss'
   },
   arrows: true,
   nav: true,
@@ -6413,13 +6388,13 @@ var defaults = {
   useOrientationApi: true
 };
 
-var coolPhoto = function (_aTemplate) {
-  (0, _inherits3.default)(coolPhoto, _aTemplate);
+var smartPhoto = function (_aTemplate) {
+  (0, _inherits3.default)(smartPhoto, _aTemplate);
 
-  function coolPhoto(selector, settings) {
-    (0, _classCallCheck3.default)(this, coolPhoto);
+  function smartPhoto(selector, settings) {
+    (0, _classCallCheck3.default)(this, smartPhoto);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (coolPhoto.__proto__ || (0, _getPrototypeOf2.default)(coolPhoto)).call(this));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (smartPhoto.__proto__ || (0, _getPrototypeOf2.default)(smartPhoto)).call(this));
 
     _this.data = util.extend({}, defaults, settings);
     _this.data.currentIndex = 0;
@@ -6453,7 +6428,7 @@ var coolPhoto = function (_aTemplate) {
     return _this;
   }
 
-  (0, _createClass3.default)(coolPhoto, [{
+  (0, _createClass3.default)(smartPhoto, [{
     key: '_setup',
     value: function _setup() {
       var _this2 = this;
@@ -7025,23 +7000,23 @@ var coolPhoto = function (_aTemplate) {
     value: function _photoUpdate() {
       var classNames = this.data.classNames;
       var $current = (0, _zeptoBrowserify.$)('.current', '[data-id="' + this.id + '"]');
-      var $this = (0, _zeptoBrowserify.$)('.' + classNames.coolPhotoImg, $current);
+      var $this = (0, _zeptoBrowserify.$)('.' + classNames.smartPhotoImg, $current);
       var photoPosX = this.virtualPos(this.data.photoPosX);
       var photoPosY = this.virtualPos(this.data.photoPosY);
       var scaleSize = this.data.scaleSize;
       var transform = 'translate(' + photoPosX + 'px,' + photoPosY + 'px) scale(' + scaleSize + ')';
-      var $nav = (0, _zeptoBrowserify.$)('.' + classNames.coolPhotoNav, '[data-id="' + this.id + '"]');
-      var $arrows = (0, _zeptoBrowserify.$)('.' + classNames.coolPhotoArrows, '[data-id="' + this.id + '"]');
+      var $nav = (0, _zeptoBrowserify.$)('.' + classNames.smartPhotoNav, '[data-id="' + this.id + '"]');
+      var $arrows = (0, _zeptoBrowserify.$)('.' + classNames.smartPhotoArrows, '[data-id="' + this.id + '"]');
       $this.css('transform', transform);
       if (this.data.scale) {
-        $this.addClass(classNames.coolPhotoImgOnMove);
+        $this.addClass(classNames.smartPhotoImgOnMove);
       } else {
-        $this.removeClass(classNames.coolPhotoImgOnMove);
+        $this.removeClass(classNames.smartPhotoImgOnMove);
       }
       if (this.data.elastic) {
-        $this.addClass(classNames.coolPhotoImgElasticMove);
+        $this.addClass(classNames.smartPhotoImgElasticMove);
       } else {
-        $this.removeClass(classNames.coolPhotoImgElasticMove);
+        $this.removeClass(classNames.smartPhotoImgElasticMove);
       }
       if (this.data.hideUi) {
         $nav.addClass('hide');
@@ -7063,14 +7038,14 @@ var coolPhoto = function (_aTemplate) {
     key: '_listUpdate',
     value: function _listUpdate() {
       var classNames = this.data.classNames;
-      var $list = (0, _zeptoBrowserify.$)('.' + classNames.coolPhotoList, '[data-id="' + this.id + '"]');
+      var $list = (0, _zeptoBrowserify.$)('.' + classNames.smartPhotoList, '[data-id="' + this.id + '"]');
       var transform = 'translateX(' + this.data.translateX + 'px)';
       $list.css('transform', transform);
       // $list
       if (this.data.onMoveClass) {
-        $list.addClass(classNames.coolPhotoListOnMove);
+        $list.addClass(classNames.smartPhotoListOnMove);
       } else {
-        $list.removeClass(classNames.coolPhotoListOnMove);
+        $list.removeClass(classNames.smartPhotoListOnMove);
       }
     }
   }, {
@@ -7109,20 +7084,20 @@ var coolPhoto = function (_aTemplate) {
       this._photoUpdate();
     }
   }]);
-  return coolPhoto;
+  return smartPhoto;
 }(_aTemplate3.default);
 
-module.exports = coolPhoto;
+module.exports = smartPhoto;
 
-},{"../lib/util":111,"./viwer.html":109,"a-template":1,"babel-runtime/core-js/object/get-prototype-of":5,"babel-runtime/core-js/promise":7,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/helpers/inherits":12,"babel-runtime/helpers/possibleConstructorReturn":13,"zepto-browserify":106}],109:[function(require,module,exports){
-module.exports = "<div class=\"\\{classNames.coolPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.coolPhotoBody\\}\">\n\t\t<div class=\"\\{classNames.coolPhotoInner\\}\">\n\t\t\t\t<div class=\"\\{classNames.coolPhotoHeader\\}\">\n\t\t\t\t\t<span class=\"\\{classNames.coolPhotoCount\\}\">{currentIndex}[increment]/{total}</span>\n\t\t\t\t\t<span class=\"\\{classNames.coolPhotoCaption\\}\"><!-- BEGIN items:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END items:loop --></span>\n\t\t\t\t\t<button class=\"\\{classNames.coolPhotoDismiss\\}\" data-action-click=\"hidePhoto()\"></button>\n\t\t\t\t</div>\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.coolPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.coolPhotoListOnMove\\}<!-- END onMoveClass:exist -->\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li style=\"transform:translate({translateX}px,{translateY}px);\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\">\n\t\t\t\t\t\t<div style=\"transform:translate({x}px,{y}px) scale({scale});\" class=\"\\\\{classNames.coolPhotoImgWrap\\\\}\">\n\t\t\t\t\t\t\t<img style=\"<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->\" src=\"{src}\" class=\"\\\\{classNames.coolPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.coolPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.coolPhotoImgElasticMove\\\\}<!-- \\END elastic:exist -->\" data-action-mousemove=\"onDrag\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"onDrag\" data-action-touchend=\"afterDrag\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t<ul class=\"\\{classNames.coolPhotoArrows\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowLeft\\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->\" data-action-click=\"gotoSlide({prev})\"></li>\n\t\t\t\t\t<li class=\"\\{classNames.coolPhotoArrowRight\\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->\" data-action-click=\"gotoSlide({next})\"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<nav class=\"\\{classNames.coolPhotoNav\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<ul >\n\t\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t\t<li data-action-click=\"gotoSlide({index})\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\" style=\"background-image:url({src});\"></li>\n\t\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t</div>\n</div>\n";
+},{"../lib/util":110,"./viwer.html":108,"a-template":1,"babel-runtime/core-js/object/get-prototype-of":5,"babel-runtime/core-js/promise":7,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/helpers/inherits":12,"babel-runtime/helpers/possibleConstructorReturn":13,"zepto-browserify":106}],108:[function(require,module,exports){
+module.exports = "<div class=\"\\{classNames.smartPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.smartPhotoBody\\}\">\n\t\t<div class=\"\\{classNames.smartPhotoInner\\}\">\n\t\t\t\t<div class=\"\\{classNames.smartPhotoHeader\\}\">\n\t\t\t\t\t<span class=\"\\{classNames.smartPhotoCount\\}\">{currentIndex}[increment]/{total}</span>\n\t\t\t\t\t<span class=\"\\{classNames.smartPhotoCaption\\}\"><!-- BEGIN items:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END items:loop --></span>\n\t\t\t\t\t<button class=\"\\{classNames.smartPhotoDismiss\\}\" data-action-click=\"hidePhoto()\"></button>\n\t\t\t\t</div>\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.smartPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.smartPhotoListOnMove\\}<!-- END onMoveClass:exist -->\">\n\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t<li style=\"transform:translate({translateX}px,{translateY}px);\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\">\n\t\t\t\t\t\t<div style=\"transform:translate({x}px,{y}px) scale({scale});\" class=\"\\\\{classNames.smartPhotoImgWrap\\\\}\">\n\t\t\t\t\t\t\t<img style=\"<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->\" src=\"{src}\" class=\"\\\\{classNames.smartPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.smartPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.smartPhotoImgElasticMove\\\\}<!-- \\END elastic:exist -->\" data-action-mousemove=\"onDrag\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"onDrag\" data-action-touchend=\"afterDrag\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t<ul class=\"\\{classNames.smartPhotoArrows\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<li class=\"\\{classNames.smartPhotoArrowLeft\\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->\" data-action-click=\"gotoSlide({prev})\"></li>\n\t\t\t\t\t<li class=\"\\{classNames.smartPhotoArrowRight\\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->\" data-action-click=\"gotoSlide({next})\"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<nav class=\"\\{classNames.smartPhotoNav\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<ul >\n\t\t\t\t\t\t<!-- BEGIN items:loop -->\n\t\t\t\t\t\t<li data-action-click=\"gotoSlide({index})\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\" style=\"background-image:url({src});\"></li>\n\t\t\t\t\t\t<!-- END items:loop -->\n\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t</div>\n</div>\n";
 
-},{}],110:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./core/');
 
-},{"./core/":108}],111:[function(require,module,exports){
+},{"./core/":107}],110:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = require('babel-runtime/helpers/typeof');
@@ -7162,4 +7137,4 @@ function deepExtend(out) {
 
 module.exports.extend = deepExtend;
 
-},{"babel-runtime/helpers/typeof":14}]},{},[107]);
+},{"babel-runtime/helpers/typeof":14}]},{},[109]);

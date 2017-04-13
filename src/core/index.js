@@ -6,26 +6,26 @@ const template = require('./viwer.html');
 
 const defaults = {
   classNames: {
-    coolPhoto: 'cool-photo',
-    coolPhotoClose: 'cool-photo-close',
-    coolPhotoBody: 'cool-photo-body',
-    coolPhotoInner: 'cool-photo-inner',
-    coolPhotoImg: 'cool-photo-img',
-    coolPhotoImgOnMove: 'cool-photo-img-onmove',
-    coolPhotoImgElasticMove: 'cool-photo-img-elasticmove',
-    coolPhotoImgWrap: 'cool-photo-img-wrap',
-    coolPhotoArrows: 'cool-photo-arrows',
-    coolPhotoNav: 'cool-photo-nav',
-    coolPhotoArrowRight: 'cool-photo-arrow-right',
-    coolPhotoArrowLeft: 'cool-photo-arrow-left',
-    coolPhotoImgLeft: 'cool-photo-img-left',
-    coolPhotoImgRight: 'cool-photo-img-right',
-    coolPhotoList: 'cool-photo-list',
-    coolPhotoListOnMove: 'cool-photo-list-onmove',
-    coolPhotoHeader: 'cool-photo-header',
-    coolPhotoCount: 'cool-photo-count',
-    coolPhotoCaption: 'cool-photo-caption',
-    coolPhotoDismiss: 'cool-photo-dismiss'
+    smartPhoto: 'smart-photo',
+    smartPhotoClose: 'smart-photo-close',
+    smartPhotoBody: 'smart-photo-body',
+    smartPhotoInner: 'smart-photo-inner',
+    smartPhotoImg: 'smart-photo-img',
+    smartPhotoImgOnMove: 'smart-photo-img-onmove',
+    smartPhotoImgElasticMove: 'smart-photo-img-elasticmove',
+    smartPhotoImgWrap: 'smart-photo-img-wrap',
+    smartPhotoArrows: 'smart-photo-arrows',
+    smartPhotoNav: 'smart-photo-nav',
+    smartPhotoArrowRight: 'smart-photo-arrow-right',
+    smartPhotoArrowLeft: 'smart-photo-arrow-left',
+    smartPhotoImgLeft: 'smart-photo-img-left',
+    smartPhotoImgRight: 'smart-photo-img-right',
+    smartPhotoList: 'smart-photo-list',
+    smartPhotoListOnMove: 'smart-photo-list-onmove',
+    smartPhotoHeader: 'smart-photo-header',
+    smartPhotoCount: 'smart-photo-count',
+    smartPhotoCaption: 'smart-photo-caption',
+    smartPhotoDismiss: 'smart-photo-dismiss'
   },
   arrows:true,
   nav:true,
@@ -41,7 +41,7 @@ const defaults = {
   useOrientationApi:true
 }
 
-class coolPhoto extends aTemplate {
+class smartPhoto extends aTemplate {
 
   constructor (selector, settings) {
     super();
@@ -598,23 +598,23 @@ class coolPhoto extends aTemplate {
   _photoUpdate () {
     const classNames = this.data.classNames;
     const $current = $('.current',`[data-id="${this.id}"]`);
-    const $this = $(`.${classNames.coolPhotoImg}`,$current);
+    const $this = $(`.${classNames.smartPhotoImg}`,$current);
     const photoPosX = this.virtualPos(this.data.photoPosX);
     const photoPosY = this.virtualPos(this.data.photoPosY);
     const scaleSize = this.data.scaleSize;
     const transform = `translate(${photoPosX}px,${photoPosY}px) scale(${scaleSize})`;
-    const $nav = $(`.${classNames.coolPhotoNav}`,`[data-id="${this.id}"]`);
-    const $arrows = $(`.${classNames.coolPhotoArrows}`,`[data-id="${this.id}"]`);
+    const $nav = $(`.${classNames.smartPhotoNav}`,`[data-id="${this.id}"]`);
+    const $arrows = $(`.${classNames.smartPhotoArrows}`,`[data-id="${this.id}"]`);
     $this.css('transform',transform);
     if (this.data.scale) {
-      $this.addClass(classNames.coolPhotoImgOnMove);
+      $this.addClass(classNames.smartPhotoImgOnMove);
     } else {
-      $this.removeClass(classNames.coolPhotoImgOnMove);
+      $this.removeClass(classNames.smartPhotoImgOnMove);
     }
     if (this.data.elastic) {
-      $this.addClass(classNames.coolPhotoImgElasticMove);
+      $this.addClass(classNames.smartPhotoImgElasticMove);
     } else {
-      $this.removeClass(classNames.coolPhotoImgElasticMove);
+      $this.removeClass(classNames.smartPhotoImgElasticMove);
     }
     if (this.data.hideUi) {
       $nav.addClass('hide');
@@ -635,14 +635,14 @@ class coolPhoto extends aTemplate {
 
   _listUpdate () {
     const classNames = this.data.classNames;
-    const $list = $(`.${classNames.coolPhotoList}`,`[data-id="${this.id}"]`);
+    const $list = $(`.${classNames.smartPhotoList}`,`[data-id="${this.id}"]`);
     const transform = `translateX(${this.data.translateX}px)`;
     $list.css('transform',transform);
     // $list
     if(this.data.onMoveClass) {
-      $list.addClass(classNames.coolPhotoListOnMove);
+      $list.addClass(classNames.smartPhotoListOnMove);
     }else{
-      $list.removeClass(classNames.coolPhotoListOnMove);
+      $list.removeClass(classNames.smartPhotoListOnMove);
     }
   }
 
@@ -682,4 +682,4 @@ class coolPhoto extends aTemplate {
 
 }
 
-module.exports = coolPhoto;
+module.exports = smartPhoto;
