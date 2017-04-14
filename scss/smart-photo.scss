@@ -77,7 +77,6 @@ $modal-bg-color: #333;
 	height: 100%;
 }
 
-
 .smart-photo-dismiss{
   background-color: transparent;
   color: #FFF;
@@ -88,6 +87,8 @@ $modal-bg-color: #333;
   text-decoration: none;
   text-shadow: 0 1px 0 #fff;
   top: 5px;
+  padding: 0;
+  line-height: 1;
 }
 
 .smart-photo-dismiss:after {
