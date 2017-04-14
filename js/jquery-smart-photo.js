@@ -6444,62 +6444,61 @@ var smartPhoto = function (_aTemplate) {
     _this.vx = 0;
     _this.vy = 0;
     _this.addTemplate(_this.id, template);
+
     if (_this._isSmartPhone()) {
       _this.data.isSmartPhone = true;
     }
+
     (0, _zeptoBrowserify.$)('body').append('<div data-id=\'' + _this.id + '\'></div>');
+    [].forEach.call(_this.elements, function (element, index) {
+      _this.addNewItem(element);
+    });
+
     _this._getEachImageSize().then(function () {
-      [].forEach.call(_this.elements, function (element, index) {
-        _this.addNewItem(element, index);
-      });
-      _this._setup();
+      _this.setSizeByScreen();
+      _this.update();
     });
     _this.update();
+
+    (0, _zeptoBrowserify.$)(window).resize(function () {
+      _this._resetTranslate();
+      _this.setPosByCurrentIndex();
+      _this.setSizeByScreen();
+      _this.update();
+    });
+
+    setInterval(function () {
+      _this._doAnim();
+    }, _this.data.forceInterval);
+
+    if (!_this.data.useOrientationApi) {
+      return (0, _possibleConstructorReturn3.default)(_this);
+    }
+
+    if (!_this.data.isSmartPhone) {
+      return (0, _possibleConstructorReturn3.default)(_this);
+    }
+
+    (0, _zeptoBrowserify.$)(window).on("orientationchange", function (e) {
+      _this._resetTranslate();
+      _this.setPosByCurrentIndex();
+      _this.setSizeByScreen();
+      _this.update();
+    });
+
+    (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
+      if (!_this.isBeingZoomed && !_this.isSwipable && !_this.photoSwipable && !_this.data.elastic && _this.data.scale) {
+        if (!_this.gamma) {
+          _this.gamma = e.originalEvent.gamma;
+          _this.beta = e.originalEvent.beta;
+        }
+        _this._calcGravity(e.originalEvent.gamma - _this.gamma, e.originalEvent.beta - _this.beta);
+      }
+    });
     return _this;
   }
 
   (0, _createClass3.default)(smartPhoto, [{
-    key: '_setup',
-    value: function _setup() {
-      var _this2 = this;
-
-      (0, _zeptoBrowserify.$)(window).resize(function () {
-        _this2._resetTranslate();
-        _this2.setPosByCurrentIndex();
-        _this2.setSizeByScreen();
-        _this2.update();
-      });
-
-      setInterval(function () {
-        _this2._doAnim();
-      }, this.data.forceInterval);
-
-      if (!this.data.useOrientationApi) {
-        return;
-      }
-
-      if (!this.data.isSmartPhone) {
-        return;
-      }
-
-      (0, _zeptoBrowserify.$)(window).on("orientationchange", function (e) {
-        _this2._resetTranslate();
-        _this2.setPosByCurrentIndex();
-        _this2.setSizeByScreen();
-        _this2.update();
-      });
-
-      (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
-        if (!_this2.isBeingZoomed && !_this2.isSwipable && !_this2.photoSwipable && !_this2.data.elastic && _this2.data.scale) {
-          if (!_this2.gamma) {
-            _this2.gamma = e.originalEvent.gamma;
-            _this2.beta = e.originalEvent.beta;
-          }
-          _this2._calcGravity(e.originalEvent.gamma - _this2.gamma, e.originalEvent.beta - _this2.beta);
-        }
-      });
-    }
-  }, {
     key: 'increment',
     value: function increment(item) {
       return item + 1;
@@ -6514,19 +6513,15 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_getEachImageSize',
     value: function _getEachImageSize() {
-      var _this3 = this;
-
       var arr = [];
-      [].forEach.call(this.elements, function (element, index) {
-        _this3.data.items.push({ src: element.getAttribute('href'), caption: element.getAttribute('data-caption'), translateX: window.innerWidth * index, index: index, translateY: 0 });
-      });
       this.data.items.forEach(function (item) {
         var promise = new _promise2.default(function (resolve, reject) {
           var img = new Image();
           img.onload = function () {
             item.width = img.width;
             item.height = img.height;
-            resolve();
+            item.loaded = true;
+            promise.resolve();
           };
           img.src = item.src;
         });
@@ -6543,25 +6538,37 @@ var smartPhoto = function (_aTemplate) {
     }
   }, {
     key: 'addNewItem',
-    value: function addNewItem(element, index) {
-      var _this4 = this;
+    value: function addNewItem(element) {
+      var _this2 = this;
 
+      var index = this.data.items.length;
+      var item = {
+        src: element.getAttribute('href'),
+        caption: element.getAttribute('data-caption'),
+        translateX: window.innerWidth * index,
+        index: index,
+        translateY: 0,
+        width: 50,
+        height: 50,
+        loaded: false
+      };
+      this.data.items.push(item);
       element.setAttribute('data-index', index);
       element.addEventListener('click', function (event) {
         event.preventDefault();
-        _this4.data.currentIndex = parseInt(element.getAttribute('data-index'));
-        _this4.setPosByCurrentIndex();
-        _this4.setSizeByScreen();
-        _this4.setArrow();
-        _this4.data.hide = false;
-        _this4.data.photoPosX = 0;
-        _this4.data.photoPosY = 0;
-        if (_this4.data.scaleOnClick === true && util.isSmartPhone()) {
-          _this4.data.scale = true;
-          _this4.data.hideUi = true;
-          _this4.data.scaleSize = _this4._getScaleBoarder();
+        _this2.data.currentIndex = parseInt(element.getAttribute('data-index'));
+        _this2.setPosByCurrentIndex();
+        _this2.setSizeByScreen();
+        _this2.setArrow();
+        _this2.data.hide = false;
+        _this2.data.photoPosX = 0;
+        _this2.data.photoPosY = 0;
+        if (_this2.data.scaleOnClick === true && util.isSmartPhone()) {
+          _this2.data.scale = true;
+          _this2.data.hideUi = true;
+          _this2.data.scaleSize = _this2._getScaleBoarder();
         }
-        _this4.update();
+        _this2.update();
       });
     }
   }, {
@@ -6599,13 +6606,13 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'setPosByCurrentIndex',
     value: function setPosByCurrentIndex() {
-      var _this5 = this;
+      var _this3 = this;
 
       var moveX = -1 * this.data.items[this.data.currentIndex].translateX;
       this.pos.x = moveX;
       setTimeout(function () {
-        _this5.data.translateX = moveX;
-        _this5._listUpdate();
+        _this3.data.translateX = moveX;
+        _this3._listUpdate();
       }, 1);
     }
   }, {
@@ -6629,15 +6636,15 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'slideList',
     value: function slideList() {
-      var _this6 = this;
+      var _this4 = this;
 
       this.data.onMoveClass = true;
       this.setPosByCurrentIndex();
       this.setSizeByScreen();
       setTimeout(function () {
-        _this6.data.onMoveClass = false;
-        _this6.setArrow();
-        _this6.update();
+        _this4.data.onMoveClass = false;
+        _this4.setArrow();
+        _this4.update();
       }, 200);
     }
   }, {
@@ -6744,7 +6751,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'zoomPhoto',
     value: function zoomPhoto() {
-      var _this7 = this;
+      var _this5 = this;
 
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
@@ -6752,8 +6759,8 @@ var smartPhoto = function (_aTemplate) {
       this.data.photoPosY = 0;
       this._photoUpdate();
       setTimeout(function () {
-        _this7.data.scale = true;
-        _this7._photoUpdate();
+        _this5.data.scale = true;
+        _this5._photoUpdate();
       }, 300);
     }
   }, {
@@ -6938,7 +6945,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_registerElasticForce',
     value: function _registerElasticForce(x, y) {
-      var _this8 = this;
+      var _this6 = this;
 
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
@@ -6955,8 +6962,8 @@ var smartPhoto = function (_aTemplate) {
       }
       this._photoUpdate();
       setTimeout(function () {
-        _this8.data.elastic = false;
-        _this8._photoUpdate();
+        _this6.data.elastic = false;
+        _this6._photoUpdate();
       }, 300);
     }
   }, {

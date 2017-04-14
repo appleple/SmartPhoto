@@ -68,20 +68,22 @@ class smartPhoto extends aTemplate {
     this.vx = 0;
     this.vy = 0;
     this.addTemplate(this.id,template);
+
     if(this._isSmartPhone()){
       this.data.isSmartPhone = true;
     }
+
     $('body').append(`<div data-id='${this.id}'></div>`);
-    this._getEachImageSize().then(() => {
-      [].forEach.call(this.elements, (element,index) => {
-        this.addNewItem(element,index);
-      });
-      this._setup();
+    [].forEach.call(this.elements, (element,index) => {
+      this.addNewItem(element);
+    });
+
+    this._getEachImageSize().then(()=>{
+      this.setSizeByScreen();
+      this.update();
     });
     this.update();
-  }
 
-  _setup () {
     $(window).resize(() => {
       this._resetTranslate();
       this.setPosByCurrentIndex();
@@ -131,16 +133,14 @@ class smartPhoto extends aTemplate {
 
   _getEachImageSize () {
     const arr = [];
-    [].forEach.call(this.elements, (element,index) => {
-      this.data.items.push({src: element.getAttribute('href'),caption: element.getAttribute('data-caption'), translateX: window.innerWidth*index, index: index, translateY:0});
-    });
     this.data.items.forEach((item) => {
       const promise = new Promise((resolve,reject) => {
         const img = new Image();
         img.onload = () => {
           item.width = img.width;
           item.height = img.height;
-          resolve();
+          item.loaded = true;
+          promise.resolve();
         }
         img.src = item.src;
       });
@@ -155,7 +155,19 @@ class smartPhoto extends aTemplate {
     });
   }
 
-  addNewItem (element, index) {
+  addNewItem (element) {
+    const index = this.data.items.length;
+    const item = {
+      src: element.getAttribute('href'),
+      caption: element.getAttribute('data-caption'),
+      translateX: window.innerWidth * index,
+      index: index,
+      translateY:0,
+      width:50,
+      height:50,
+      loaded:false
+    };
+    this.data.items.push(item);
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       event.preventDefault();
