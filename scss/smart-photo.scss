@@ -127,10 +127,12 @@ $modal-bg-color: #333;
 	-webkit-user-drag: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;
+	cursor: zoom-in;
 }
 
 .smart-photo-img-onmove{
 	transition: none;
+	cursor: zoom-out;
 }
 
 .smart-photo-img-elasticmove{

@@ -68,6 +68,9 @@ class smartPhoto extends aTemplate {
     this.vx = 0;
     this.vy = 0;
     this.addTemplate(this.id,template);
+    if(this._isSmartPhone()){
+      this.data.isSmartPhone = true;
+    }
     $('body').append(`<div data-id='${this.id}'></div>`);
     this._getEachImageSize().then(() => {
       [].forEach.call(this.elements, (element,index) => {
@@ -345,6 +348,7 @@ class smartPhoto extends aTemplate {
     this._photoUpdate();
     setTimeout(()=>{
       this.data.scale = true;
+      this._photoUpdate();
     },300)
   }
 
