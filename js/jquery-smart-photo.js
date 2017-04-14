@@ -6316,12 +6316,12 @@ exports.$ = window.$
 },{}],107:[function(require,module,exports){
 'use strict';
 
-var coolPhoto = require('../index');
+var smartPhoto = require('../index');
 
 var applyJQuery = function applyJQuery(jQuery) {
-	jQuery.fn.coolPhoto = function (settings) {
+	jQuery.fn.smartPhoto = function (settings) {
 		if (typeof settings === 'strings') {} else {
-			new coolPhoto(this.selector, settings);
+			new smartPhoto(this.selector, settings);
 		}
 		return this;
 	};

@@ -9,7 +9,7 @@
 		"build:js": "npm-run-all -p build:lib build:jquery build:global",
 		"build:lib": "npm run babel",
 		"build:jquery": "browserify ./src/adaptor/jquery.js -t babelify -t [ stringify --extensions [.html .css] ] -p licensify -o ./js/jquery-smart-photo.js",
-		"build:global": "browserify ./src/index.js -t babelify -t [stringify --extensions [.html .css] ] -p licensify -o ./js/smart-photo.js",
+		"build:global": "browserify ./src/index.js -t babelify -t [stringify --extensions [.html .css] ] -p licensify --standalone smartPhoto -o ./js/smart-photo.js",
 		"babel": "babel ./src/core/index.js --out-file ./lib/index.js",
 		"sass": "node-sass ./scss/smart-photo.scss ./css/smart-photo.min.css --output-style compressed",
 		"watch:js": "onchange \"src/\" -- npm run build:js",
