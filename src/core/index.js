@@ -95,11 +95,8 @@ class smartPhoto extends aTemplate {
       this._doAnim();
     },this.data.forceInterval);
 
-    if(!this.data.useOrientationApi){
-      return;
-    }
 
-    if(!this.data.isSmartPhone){
+    if(!this.data.isSmartPhone || !this.data.useOrientationApi){
       return;
     }
 
@@ -112,11 +109,11 @@ class smartPhoto extends aTemplate {
 
     $(window).on("deviceorientation", (e) => {
       if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && this.data.scale){
-        if(!this.gamma){
-          this.gamma = e.originalEvent.gamma;
-          this.beta = e.originalEvent.beta;
+        if (window.innerHeight > window.innerWidth) {
+          this._calcGravity(e.originalEvent.gamma, e.originalEvent.beta);
+        } else {
+          this._calcGravity(e.originalEvent.beta, e.originalEvent.gamma);
         }
-        this._calcGravity(e.originalEvent.gamma - this.gamma,e.originalEvent.beta - this.beta);
       }
     });
   }
@@ -140,7 +137,7 @@ class smartPhoto extends aTemplate {
           item.width = img.width;
           item.height = img.height;
           item.loaded = true;
-          promise.resolve();
+          resolve();
         }
         img.src = item.src;
       });

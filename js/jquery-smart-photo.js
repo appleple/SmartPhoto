@@ -6471,11 +6471,7 @@ var smartPhoto = function (_aTemplate) {
       _this._doAnim();
     }, _this.data.forceInterval);
 
-    if (!_this.data.useOrientationApi) {
-      return (0, _possibleConstructorReturn3.default)(_this);
-    }
-
-    if (!_this.data.isSmartPhone) {
+    if (!_this.data.isSmartPhone || !_this.data.useOrientationApi) {
       return (0, _possibleConstructorReturn3.default)(_this);
     }
 
@@ -6488,11 +6484,11 @@ var smartPhoto = function (_aTemplate) {
 
     (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
       if (!_this.isBeingZoomed && !_this.isSwipable && !_this.photoSwipable && !_this.data.elastic && _this.data.scale) {
-        if (!_this.gamma) {
-          _this.gamma = e.originalEvent.gamma;
-          _this.beta = e.originalEvent.beta;
+        if (window.innerHeight > window.innerWidth) {
+          _this._calcGravity(e.originalEvent.gamma, e.originalEvent.beta);
+        } else {
+          _this._calcGravity(e.originalEvent.beta, e.originalEvent.gamma);
         }
-        _this._calcGravity(e.originalEvent.gamma - _this.gamma, e.originalEvent.beta - _this.beta);
       }
     });
     return _this;
@@ -6521,7 +6517,7 @@ var smartPhoto = function (_aTemplate) {
             item.width = img.width;
             item.height = img.height;
             item.loaded = true;
-            promise.resolve();
+            resolve();
           };
           img.src = item.src;
         });
