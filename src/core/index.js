@@ -78,16 +78,16 @@ class smartPhoto extends aTemplate {
       });
       this._setup();
     });
+    this.update();
   }
 
   _setup () {
-    this.update();
     $(window).resize(() => {
       this._resetTranslate();
       this.setPosByCurrentIndex();
       this.setSizeByScreen();
       this.update();
-    }).resize();
+    });
 
     setInterval(()=>{
       this._doAnim();
@@ -97,7 +97,7 @@ class smartPhoto extends aTemplate {
       return;
     }
 
-    if(!this._isSmartPhone()){
+    if(!this.data.isSmartPhone){
       return;
     }
 

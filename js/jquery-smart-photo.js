@@ -6454,6 +6454,7 @@ var smartPhoto = function (_aTemplate) {
       });
       _this._setup();
     });
+    _this.update();
     return _this;
   }
 
@@ -6462,13 +6463,12 @@ var smartPhoto = function (_aTemplate) {
     value: function _setup() {
       var _this2 = this;
 
-      this.update();
       (0, _zeptoBrowserify.$)(window).resize(function () {
         _this2._resetTranslate();
         _this2.setPosByCurrentIndex();
         _this2.setSizeByScreen();
         _this2.update();
-      }).resize();
+      });
 
       setInterval(function () {
         _this2._doAnim();
@@ -6478,7 +6478,7 @@ var smartPhoto = function (_aTemplate) {
         return;
       }
 
-      if (!this._isSmartPhone()) {
+      if (!this.data.isSmartPhone) {
         return;
       }
 

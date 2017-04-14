@@ -133,7 +133,8 @@ $modal-bg-color: #333;
 
 .smart-photo-img-onmove{
 	transition: none;
-	cursor: zoom-out;
+	cursor: grab;
+	cursor: -webkit-grab;
 }
 
 .smart-photo-img-elasticmove{
