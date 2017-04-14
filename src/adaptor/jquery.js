@@ -3,13 +3,13 @@
 const smartPhoto = require('../index');
 
 const applyJQuery = (jQuery) => {
-	jQuery.fn.smartPhoto = function(settings) {
-		if (typeof settings === 'strings'){
-		} else {
-			new smartPhoto(this.selector,settings);
-		}
-		return this;
-	}
+  jQuery.fn.smartPhoto = function(settings) {
+    if (typeof settings === 'strings'){
+    } else {
+      new smartPhoto(this.selector,settings);
+    }
+    return this;
+  }
 }
 
 if (typeof define === 'function' && define.amd) {
