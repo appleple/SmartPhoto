@@ -31,3 +31,14 @@ function deepExtend(out){
 };
 
 module.exports.extend = deepExtend;
+
+module.exports.triggerEvent = (el, eventName, options) => {
+  let event;
+  if (window.CustomEvent) {
+    event = new CustomEvent(eventName, options);
+  } else {
+    event = document.createEvent('CustomEvent');
+    event.initCustomEvent(eventName, true, true, options);
+  }
+  el.dispatchEvent(event);
+}

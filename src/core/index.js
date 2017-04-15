@@ -87,6 +87,7 @@ class smartPhoto extends aTemplate {
     $(window).resize(() => {
       this._resetTranslate();
       this.setPosByCurrentIndex();
+      this.setHashByCurrentIndex();
       this.setSizeByScreen();
       this.update();
     });
@@ -103,6 +104,7 @@ class smartPhoto extends aTemplate {
     $(window).on("orientationchange", (e) => {
       this._resetTranslate();
       this.setPosByCurrentIndex();
+      this.setHashByCurrentIndex();
       this.setSizeByScreen();
       this.update();
     });
@@ -162,14 +164,20 @@ class smartPhoto extends aTemplate {
       translateY:0,
       width:50,
       height:50,
+      id: element.getAttribute('data-id') || index,
       loaded:false
     };
     this.data.items.push(item);
+    let id = element.getAttribute('data-id');
+    if(!id){
+      element.setAttribute('data-id',index);
+    }
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       event.preventDefault();
       this.data.currentIndex = parseInt(element.getAttribute('data-index'));
       this.setPosByCurrentIndex();
+      this.setHashByCurrentIndex();
       this.setSizeByScreen();
       this.setArrow();
       this.data.hide = false;
@@ -182,6 +190,11 @@ class smartPhoto extends aTemplate {
       }
       this.update();
     });
+
+    if (location.hash && location.hash.substr(1) === element.getAttribute('data-id')) {
+      util.triggerEvent(element,"click");
+    }
+
   }
 
   hidePhoto () {
@@ -225,6 +238,11 @@ class smartPhoto extends aTemplate {
     },1);
   }
 
+  setHashByCurrentIndex () {
+    const id = this.data.items[this.data.currentIndex].id;
+    location.hash = id;
+  }
+
   setSizeByScreen () {
     const windowX = window.innerWidth;
     const windowY = window.innerHeight;
@@ -245,6 +263,7 @@ class smartPhoto extends aTemplate {
   slideList () {
     this.data.onMoveClass = true;
     this.setPosByCurrentIndex();
+    this.setHashByCurrentIndex();
     this.setSizeByScreen();
     setTimeout(() => {
       this.data.onMoveClass = false;

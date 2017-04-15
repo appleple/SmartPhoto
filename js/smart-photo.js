@@ -6438,6 +6438,7 @@ var smartPhoto = function (_aTemplate) {
     (0, _zeptoBrowserify.$)(window).resize(function () {
       _this._resetTranslate();
       _this.setPosByCurrentIndex();
+      _this.setHashByCurrentIndex();
       _this.setSizeByScreen();
       _this.update();
     });
@@ -6453,6 +6454,7 @@ var smartPhoto = function (_aTemplate) {
     (0, _zeptoBrowserify.$)(window).on("orientationchange", function (e) {
       _this._resetTranslate();
       _this.setPosByCurrentIndex();
+      _this.setHashByCurrentIndex();
       _this.setSizeByScreen();
       _this.update();
     });
@@ -6521,14 +6523,20 @@ var smartPhoto = function (_aTemplate) {
         translateY: 0,
         width: 50,
         height: 50,
+        id: element.getAttribute('data-id') || index,
         loaded: false
       };
       this.data.items.push(item);
+      var id = element.getAttribute('data-id');
+      if (!id) {
+        element.setAttribute('data-id', index);
+      }
       element.setAttribute('data-index', index);
       element.addEventListener('click', function (event) {
         event.preventDefault();
         _this2.data.currentIndex = parseInt(element.getAttribute('data-index'));
         _this2.setPosByCurrentIndex();
+        _this2.setHashByCurrentIndex();
         _this2.setSizeByScreen();
         _this2.setArrow();
         _this2.data.hide = false;
@@ -6541,6 +6549,10 @@ var smartPhoto = function (_aTemplate) {
         }
         _this2.update();
       });
+
+      if (location.hash && location.hash.substr(1) === element.getAttribute('data-id')) {
+        util.triggerEvent(element, "click");
+      }
     }
   }, {
     key: 'hidePhoto',
@@ -6587,6 +6599,12 @@ var smartPhoto = function (_aTemplate) {
       }, 1);
     }
   }, {
+    key: 'setHashByCurrentIndex',
+    value: function setHashByCurrentIndex() {
+      var id = this.data.items[this.data.currentIndex].id;
+      location.hash = id;
+    }
+  }, {
     key: 'setSizeByScreen',
     value: function setSizeByScreen() {
       var windowX = window.innerWidth;
@@ -6611,6 +6629,7 @@ var smartPhoto = function (_aTemplate) {
 
       this.data.onMoveClass = true;
       this.setPosByCurrentIndex();
+      this.setHashByCurrentIndex();
       this.setSizeByScreen();
       setTimeout(function () {
         _this4.data.onMoveClass = false;
@@ -7145,6 +7164,17 @@ function deepExtend(out) {
 };
 
 module.exports.extend = deepExtend;
+
+module.exports.triggerEvent = function (el, eventName, options) {
+  var event = void 0;
+  if (window.CustomEvent) {
+    event = new CustomEvent(eventName, options);
+  } else {
+    event = document.createEvent('CustomEvent');
+    event.initCustomEvent(eventName, true, true, options);
+  }
+  el.dispatchEvent(event);
+};
 
 },{"babel-runtime/helpers/typeof":14}]},{},[109])(109)
 });
