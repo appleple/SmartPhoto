@@ -1,7 +1,7 @@
 $animation-speed: .3s;
 $animation-function: ease-out;
 $backdrop-color: rgba(0, 0, 0, .9);
-$header-color: rgba(0, 0, 0, .2);	
+$header-color: rgba(0, 0, 0, .2);
 $modal-bg-color: #333;
 
 @keyframes smart-photo {
@@ -25,24 +25,24 @@ $modal-bg-color: #333;
 }
 
 .smart-photo {
-	font-family: sans-serif;
 	position: fixed;
+	z-index: 1000000;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
 	background-color: $backdrop-color;
-	z-index: 1000000;
-	cursor: pointer;
 	opacity: 1;
-	animation-timing-function: $animation-function;
-	animation-duration: $animation-speed;
-	animation-name: smart-photo;
+	font-family: sans-serif;
+	cursor: pointer;
 	-webkit-transition: opacity $animation-speed $animation-function;
-	-moz-transition: opacity $animation-speed $animation-function;
-	-ms-transition: opacity $animation-speed $animation-function;
-	-o-transition: opacity $animation-speed $animation-function;
-	transition: opacity $animation-speed $animation-function;
+	   -moz-transition: opacity $animation-speed $animation-function;
+	    -ms-transition: opacity $animation-speed $animation-function;
+	     -o-transition: opacity $animation-speed $animation-function;
+	        transition: opacity $animation-speed $animation-function;
+	animation-name: smart-photo;
+	animation-duration: $animation-speed;
+	animation-timing-function: $animation-function;
 }
 
 .smart-photo-close {
@@ -56,43 +56,43 @@ $modal-bg-color: #333;
 }
 
 .smart-photo-header {
-	background-color: $header-color;
+	display: block;
 	box-sizing: border-box;
 	position: absolute;
+	z-index: 3;
 	top: 0;
 	left: 0;
-	display: block;
 	width: 100%;
 	height: 50px;
 	padding: 15px;
-	z-index: 3;
+	background-color: $header-color;
 }
 
-.smart-photo-content{
+.smart-photo-content {
+	display: block;
 	position: absolute;
 	top: 0;
 	left: 0;
-	display: block;
 	width: 100%;
 	height: 100%;
 }
 
-.smart-photo-dismiss{
-  background-color: transparent;
-  color: #FFF;
-  font-size: 30px;
-  border: none;
-  position: absolute;
-  right: 5px;
-  text-decoration: none;
-  text-shadow: 0 1px 0 #fff;
-  top: 5px;
-  padding: 0;
-  line-height: 1;
+.smart-photo-dismiss {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	padding: 0;
+	border: none;
+	background-color: transparent;
+	text-shadow: 0 1px 0 #FFF;
+	color: #FFF;
+	font-size: 30px;
+	text-decoration: none;
+	line-height: 1;
 }
 
 .smart-photo-dismiss:after {
-	content: '×';
+	content: "×";
 }
 
 
@@ -104,53 +104,54 @@ $modal-bg-color: #333;
 	// display: table;
 }
 
-.smart-photo-inner{
+.smart-photo-inner {
 	position: relative;
-	// display: table-cell;
-	vertical-align: top;
 	width: 100%;
 	height: 100%;
+	// display: table-cell;
+	vertical-align: top;
 }
 
-.smart-photo-arrows{
+.smart-photo-arrows {
 	list-style-type: none;
-	padding: 0;
 	margin: 0;
+	padding: 0;
 }
 
-.smart-photo-img{
+.smart-photo-img {
+	display: block;
 	// width: 100%;
 	width: auto;
 	height: auto;
-	display: block;
-	transition: transform .3s cubic-bezier(0.4, 0, 0.22, 1);
-	user-select: none;
-	-moz-user-select: none;
-	-webkit-user-drag: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
 	cursor: zoom-in;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	    -ms-user-select: none;
+	        user-select: none;
+	transition: transform .3s cubic-bezier(.4, 0, .22, 1);
+
+	-webkit-user-drag: none;
 }
 
-.smart-photo-img-onmove{
-	transition: none;
-	cursor: grab;
+.smart-photo-img-onmove {
+	cursor:         grab;
 	cursor: -webkit-grab;
+	transition: none;
 }
 
-.smart-photo-img-elasticmove{
-	transition: transform .3s cubic-bezier(0.4, 0, 0.22, 1);
+.smart-photo-img-elasticmove {
+	transition: transform .3s cubic-bezier(.4, 0, .22, 1);
 }
 
-.smart-photo-img-wrap{
+.smart-photo-img-wrap {
 	display: inline-block;
 }
 
-.smart-photo-img-left{
+.smart-photo-img-left {
 	transform: translateX(150%) !important;
 }
 
-.smart-photo-img-right{
+.smart-photo-img-right {
 	transform: translateX(-150%) !important;
 }
 
@@ -159,68 +160,68 @@ $modal-bg-color: #333;
 	transition: all .3s;
 }
 
-.smart-photo-arrows.hide{
+.smart-photo-arrows.hide {
 	opacity: 0;
 }
 
-.smart-photo-arrows.hide.none{
+.smart-photo-arrows.hide.none {
 	display: none;
 }
 
 .smart-photo-arrows li {
-	width: 30px;
-	height: 50px;
+	display: block;
 	position: absolute;
 	top: 50%;
+	width: 30px;
+	height: 50px;
 	background-color: rgba(0, 0, 0, .5);
-	display: block;
-	transition: all .3s;
 	opacity: 0;
+	transition: all .3s;
 }
 
-.smart-photo-arrows .show{
+.smart-photo-arrows .show {
 	opacity: 1;
 }
 
-.smart-photo-arrow-right{
+.smart-photo-arrow-right {
+	position: relative;
 	right: 0;
-	position: relative;
-	&:after{
-		content:"";
+	&:after {
+		display: inline-block;
 		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -1.5px;
+		margin-left: -1.5px;
+		padding: 3px;
 		border: solid #FFF;
-		transform: rotate(-45deg);
+		border-width: 0 3px 3px 0;
+		content: "";
 		-webkit-transform: rotate(-45deg);
-		border-width: 0 3px 3px 0;
-		display: inline-block;
-		padding: 3px;
-		margin-top: -1.5px;
-		margin-left: -1.5px;
-		top: 50%;
-		left: 50%;
+		        transform: rotate(-45deg);
 	}
 }
 
-.smart-photo-arrow-left{
-	left: 0;
+.smart-photo-arrow-left {
 	position: relative;
-	&:after{
-		content:"";
-		position: absolute;
-		border: solid #FFF;
-    	transform: rotate(135deg);
-    	-webkit-transform: rotate(135deg);
-		border-width: 0 3px 3px 0;
+	left: 0;
+	&:after {
 		display: inline-block;
-		padding: 3px;
-		margin-top: -1.5px;
-		margin-left: -1.5px;
+		position: absolute;
 		top: 50%;
 		left: 50%;
+		margin-top: -1.5px;
+		margin-left: -1.5px;
+		padding: 3px;
+		border: solid #FFF;
+		border-width: 0 3px 3px 0;
+		content: "";
+		-webkit-transform: rotate(135deg);
+		        transform: rotate(135deg);
 	}
 }
 
-.smart-photo-nav{
+.smart-photo-nav {
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -229,77 +230,78 @@ $modal-bg-color: #333;
 	transition: all .3s;
 }
 
-.smart-photo-nav.hide{
+.smart-photo-nav.hide {
 	opacity: 0;
 }
 
-.smart-photo-nav.hide.none{
+.smart-photo-nav.hide.none {
 	display: none;
 }
 
 .smart-photo-nav ul {
-	white-space: nowrap;
-    overflow-x: scroll;
-	-webkit-overflow-scrolling: touch;
 	display: block;
-	text-align: center;
-	padding: 0;
-	margin: 0;
+	overflow-x: scroll;
 	list-style: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	white-space: nowrap;
+
+	-webkit-overflow-scrolling: touch;
 }
 
-.smart-photo-nav li{
-	background-size: cover;
-	background-position: center center;
+.smart-photo-nav li {
 	display: inline-block;
+	overflow: hidden;
 	width: 50px;
 	height: 50px;
-	overflow: hidden;
+	background-position: center center;
+	background-size: cover;
 }
 
-.smart-photo-nav .current{
+.smart-photo-nav .current {
 	opacity: .5;
 }
 
-.smart-photo-nav img{
-	height: 100%;
+.smart-photo-nav img {
 	width: auto;
+	height: 100%;
 }
 
-.smart-photo-list{
+.smart-photo-list {
 	list-style-type: none;
-	white-space: nowrap;
-	padding: 0;
-	margin: 0;
 	position: relative;
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
 	li {
-		transition: all .3s;
 		display: block;
-		width: 100%;
-		height: 100%;
 		position: absolute;
 		top: 0;
 		left: 0;
+		width: 100%;
+		height: 100%;
+		transition: all .3s;
 	}
 }
 
-.smart-photo-list-onmove{
+.smart-photo-list-onmove {
 	transition: all .3s;
 }
 
-.smart-photo-caption{
+.smart-photo-caption {
+	overflow: hidden;
+	box-sizing: border-box;
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 50px;
-	line-height: 50px;
 	padding: 0 50px;
-	font-size: 12px;
-	box-sizing: border-box;
-	text-align: center;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 	color: #FFF;
+	font-size: 12px;
+	text-align: center;
+	line-height: 50px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
