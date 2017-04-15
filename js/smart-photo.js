@@ -6558,6 +6558,7 @@ var smartPhoto = function (_aTemplate) {
     key: 'hidePhoto',
     value: function hidePhoto() {
       this.data.hide = true;
+      location.hash = "";
       this.update();
     }
   }, {

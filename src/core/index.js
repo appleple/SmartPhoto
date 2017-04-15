@@ -199,6 +199,9 @@ class smartPhoto extends aTemplate {
 
   hidePhoto () {
     this.data.hide = true;
+    if (location.hash) {
+      location.hash = "";
+    }
     this.update();
   }
 
