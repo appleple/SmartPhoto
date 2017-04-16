@@ -4,6 +4,8 @@ import { $ } from 'zepto-browserify';
 const util = require('../lib/util');
 const template = require('./viwer.html');
 
+const Keyboard = require('keyboard-js').Keyboard;
+
 const defaults = {
   classNames: {
     smartPhoto: 'smart-photo',
@@ -46,6 +48,7 @@ class smartPhoto extends aTemplate {
 
   constructor (selector, settings) {
     super();
+    
     this.data = util.extend({},defaults,settings);
     this.data.currentIndex = 0;
     this.data.hide = true;
@@ -83,6 +86,27 @@ class smartPhoto extends aTemplate {
       this.update();
     });
     this.update();
+
+    const keyboard = new Keyboard();
+    keyboard.register('slideRight', () => {
+      if(this.data.hide === true) {
+        return;
+      }
+      this.gotoSlide(this.data.next);
+    },['ArrowRight']);
+    keyboard.register('slideLeft', () => {
+      if(this.data.hide === true) {
+        return;
+      }
+      this.gotoSlide(this.data.prev);
+    },['ArrowLeft']);
+    keyboard.register('hidePhoto', () => {
+      if(this.data.hide === true) {
+        return;
+      }
+      this.hidePhoto();
+    },['Escape'])
+    keyboard.start();
 
     $(window).resize(() => {
       this._resetTranslate();
