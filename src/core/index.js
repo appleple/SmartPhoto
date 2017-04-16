@@ -3,7 +3,6 @@ import { $ } from 'zepto-browserify';
 
 const util = require('../lib/util');
 const template = require('./viwer.html');
-
 const Keyboard = require('keyboard-js').Keyboard;
 
 const defaults = {
