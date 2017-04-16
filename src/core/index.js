@@ -61,6 +61,7 @@ class smartPhoto extends aTemplate {
       increment:this.increment,
       virtualPos:this.virtualPos
     };
+    this.data.groupItems = this.groupItems;
     this.elements = document.querySelectorAll(selector);
     const date = new Date();
     this.tapSecond = date.getTime();
@@ -70,10 +71,7 @@ class smartPhoto extends aTemplate {
     this.vx = 0;
     this.vy = 0;
     this.addTemplate(this.id,template);
-
-    if(this._isSmartPhone()){
-      this.data.isSmartPhone = true;
-    }
+    this.data.isSmartPhone = this._isSmartPhone();
 
     $('body').append(`<div data-id='${this.id}'></div>`);
     [].forEach.call(this.elements, (element,index) => {
@@ -86,26 +84,9 @@ class smartPhoto extends aTemplate {
     });
     this.update();
 
-    const keyboard = new Keyboard();
-    keyboard.register('slideRight', () => {
-      if(this.data.hide === true) {
-        return;
-      }
-      this.gotoSlide(this.data.next);
-    },['ArrowRight']);
-    keyboard.register('slideLeft', () => {
-      if(this.data.hide === true) {
-        return;
-      }
-      this.gotoSlide(this.data.prev);
-    },['ArrowLeft']);
-    keyboard.register('hidePhoto', () => {
-      if(this.data.hide === true) {
-        return;
-      }
-      this.hidePhoto();
-    },['Escape'])
-    keyboard.start();
+    if(!this.data.isSmartPhone) {
+        this._setKeyboard();
+    }
 
     $(window).resize(() => {
       this._resetTranslate();
@@ -153,6 +134,42 @@ class smartPhoto extends aTemplate {
     return pos/item.scale/this.data.scaleSize;
   }
 
+  groupItems () {
+    const items = this.data.items;
+    const currItem = items[this.data.currentIndex];
+    const group = currItem.group;
+    const arr = [];
+    items.forEach((item) => {
+      if(group === item.group){
+        arr.push(item);
+      }
+    });
+    return arr;
+  }
+
+  _setKeyboard () {
+    const keyboard = new Keyboard();
+    keyboard.register('slideRight', () => {
+      if(this.data.hide === true) {
+        return;
+      }
+      this.gotoSlide(this.data.next);
+    },['ArrowRight']);
+    keyboard.register('slideLeft', () => {
+      if(this.data.hide === true) {
+        return;
+      }
+      this.gotoSlide(this.data.prev);
+    },['ArrowLeft']);
+    keyboard.register('hidePhoto', () => {
+      if(this.data.hide === true) {
+        return;
+      }
+      this.hidePhoto();
+    },['Escape'])
+    keyboard.start();
+  }
+
   _getEachImageSize () {
     const arr = [];
     this.data.items.forEach((item) => {
@@ -182,6 +199,7 @@ class smartPhoto extends aTemplate {
     const item = {
       src: element.getAttribute('href'),
       caption: element.getAttribute('data-caption'),
+      group: element.getAttribute('data-group'),
       translateX: window.innerWidth * index,
       index: index,
       translateY:0,
