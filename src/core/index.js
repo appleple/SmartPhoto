@@ -218,6 +218,7 @@ class smartPhoto extends aTemplate {
     if(!id){
       element.setAttribute('data-id',index);
     }
+    element.setAttribute('href','#');
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       event.preventDefault();
