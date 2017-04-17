@@ -93,7 +93,6 @@ class smartPhoto extends aTemplate {
       this.data.currentGroup = currentItem.groupId;
       this._resetTranslate();
       this.setPosByCurrentIndex();
-      this.setSizeByScreen();
       this.update();       
     }
 
@@ -192,6 +191,12 @@ class smartPhoto extends aTemplate {
               util.triggerEvent(item.element,'click');
             }
             resolve();
+          }
+          img.onerror = () => {
+            resolve();
+            if(item.reserved === true) {
+              util.triggerEvent(item.element,'click');
+            }
           }
           img.src = item.src;
         });

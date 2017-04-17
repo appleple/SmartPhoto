@@ -6720,7 +6720,6 @@ var smartPhoto = function (_aTemplate) {
       _this.data.currentGroup = currentItem.groupId;
       _this._resetTranslate();
       _this.setPosByCurrentIndex();
-      _this.setSizeByScreen();
       _this.update();
     }
 
@@ -6826,6 +6825,12 @@ var smartPhoto = function (_aTemplate) {
                 util.triggerEvent(item.element, 'click');
               }
               resolve();
+            };
+            img.onerror = function () {
+              resolve();
+              if (item.reserved === true) {
+                util.triggerEvent(item.element, 'click');
+              }
             };
             img.src = item.src;
           });
