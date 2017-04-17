@@ -51,7 +51,6 @@ class smartPhoto extends aTemplate {
     this.data = util.extend({},defaults,settings);
     this.data.currentIndex = 0;
     this.data.hide = true;
-    this.data.items = [];
     this.data.group = {};
     this.data.scaleSize = 1;
     this.data.scale = false;
@@ -166,19 +165,25 @@ class smartPhoto extends aTemplate {
 
   _getEachImageSize () {
     const arr = [];
-    this.data.items.forEach((item) => {
-      const promise = new Promise((resolve,reject) => {
-        const img = new Image();
-        img.onload = () => {
-          item.width = img.width;
-          item.height = img.height;
-          item.loaded = true;
-          resolve();
-        }
-        img.src = item.src;
+    const group = this.data.group;
+    for (let i in group){
+      if (!group.hasOwnProperty(i)){
+        continue;
+      }
+      group[i].forEach((item) => {
+        const promise = new Promise((resolve,reject) => {
+          const img = new Image();
+          img.onload = () => {
+            item.width = img.width;
+            item.height = img.height;
+            item.loaded = true;
+            resolve();
+          }
+          img.src = item.src;
+        });
+        arr.push(promise);
       });
-      arr.push(promise);
-    });
+    }
     return Promise.all(arr);
   }
 
@@ -212,7 +217,6 @@ class smartPhoto extends aTemplate {
       loaded:false
     };
     group[groupId].push(item);
-    this.data.items.push(item);
     this.data.currentGroup = groupId;
     let id = element.getAttribute('data-id');
     if(!id){

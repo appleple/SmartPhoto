@@ -6678,7 +6678,6 @@ var smartPhoto = function (_aTemplate) {
     _this.data = util.extend({}, defaults, settings);
     _this.data.currentIndex = 0;
     _this.data.hide = true;
-    _this.data.items = [];
     _this.data.group = {};
     _this.data.scaleSize = 1;
     _this.data.scale = false;
@@ -6800,19 +6799,25 @@ var smartPhoto = function (_aTemplate) {
     key: '_getEachImageSize',
     value: function _getEachImageSize() {
       var arr = [];
-      this.data.items.forEach(function (item) {
-        var promise = new _promise2.default(function (resolve, reject) {
-          var img = new Image();
-          img.onload = function () {
-            item.width = img.width;
-            item.height = img.height;
-            item.loaded = true;
-            resolve();
-          };
-          img.src = item.src;
+      var group = this.data.group;
+      for (var i in group) {
+        if (!group.hasOwnProperty(i)) {
+          continue;
+        }
+        group[i].forEach(function (item) {
+          var promise = new _promise2.default(function (resolve, reject) {
+            var img = new Image();
+            img.onload = function () {
+              item.width = img.width;
+              item.height = img.height;
+              item.loaded = true;
+              resolve();
+            };
+            img.src = item.src;
+          });
+          arr.push(promise);
         });
-        arr.push(promise);
-      });
+      }
       return _promise2.default.all(arr);
     }
   }, {
@@ -6850,7 +6855,6 @@ var smartPhoto = function (_aTemplate) {
         loaded: false
       };
       group[groupId].push(item);
-      this.data.items.push(item);
       this.data.currentGroup = groupId;
       var id = element.getAttribute('data-id');
       if (!id) {
