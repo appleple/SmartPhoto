@@ -225,7 +225,6 @@ class smartPhoto extends aTemplate {
     if(!id){
       element.setAttribute('data-id',index);
     }
-    element.setAttribute('href',`#gid=${groupId}&pid=${id}`);
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       event.preventDefault();

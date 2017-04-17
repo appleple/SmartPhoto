@@ -6863,7 +6863,6 @@ var smartPhoto = function (_aTemplate) {
       if (!id) {
         element.setAttribute('data-id', index);
       }
-      element.setAttribute('href', '#gid=' + groupId + '&pid=' + id);
       element.setAttribute('data-index', index);
       element.addEventListener('click', function (event) {
         event.preventDefault();
@@ -7525,10 +7524,10 @@ module.exports.extend = deepExtend;
 module.exports.triggerEvent = function (el, eventName, options) {
   var event = void 0;
   if (window.CustomEvent) {
-    event = new CustomEvent(eventName, options);
+    event = new CustomEvent(eventName, { cancelable: true });
   } else {
     event = document.createEvent('CustomEvent');
-    event.initCustomEvent(eventName, true, true, options);
+    event.initCustomEvent(eventName, false, false, options);
   }
   el.dispatchEvent(event);
 };
