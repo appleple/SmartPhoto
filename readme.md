@@ -1,1 +1,1 @@
-# smartPhoto
+# smart-photo
