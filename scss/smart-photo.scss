@@ -24,9 +24,24 @@ $modal-bg-color: #333;
 	}
 }
 
+@keyframes smart-photo-loader{
+	0% { 
+		transform: rotate(0deg); 
+		opacity: 0.4; 
+	}
+	50%  { 
+		transform: rotate(180deg); 
+		opacity: 1; 
+	}
+	100%   { 
+		transform: rotate(360deg); 
+		opacity: 0.4; 
+	}
+}
+
 .smart-photo {
 	position: fixed;
-	z-index: 1000000;
+	z-index: 100;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -305,3 +320,27 @@ $modal-bg-color: #333;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
+
+.smart-photo-loader-wrap {
+	display: block;
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+}
+
+.smart-photo-loader {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 101;
+	margin-top: -25px;
+	margin-left: -25px;
+	width: 30px; 
+	height: 30px; 
+	border-radius: 50%;  
+	border: 8px solid #17cddd;  
+	border-right-color: transparent; 
+	
+	animation: smart-photo-loader 0.5s infinite linear;
+}
+

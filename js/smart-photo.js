@@ -6626,7 +6626,9 @@ var defaults = {
     smartPhotoHeader: 'smart-photo-header',
     smartPhotoCount: 'smart-photo-count',
     smartPhotoCaption: 'smart-photo-caption',
-    smartPhotoDismiss: 'smart-photo-dismiss'
+    smartPhotoDismiss: 'smart-photo-dismiss',
+    smartPhotoLoader: 'smart-photo-loader',
+    smartPhotoLoaderWrap: 'smart-photo-loader-wrap'
   },
   arrows: true,
   nav: true,
@@ -6680,7 +6682,6 @@ var smartPhoto = function (_aTemplate) {
     });
 
     _this._getEachImageSize().then(function () {
-      _this.triggerClickByHash();
       _this._resetTranslate();
       _this.setPosByCurrentIndex();
       _this.setHashByCurrentIndex();
@@ -6688,7 +6689,9 @@ var smartPhoto = function (_aTemplate) {
       _this.update();
     });
 
-    _this.update();
+    if (_this.triggerClickByHash() === false) {
+      _this.update();
+    }
 
     if (!_this.data.isSmartPhone) {
       _this._setKeyboard();
@@ -6925,11 +6928,14 @@ var smartPhoto = function (_aTemplate) {
     value: function triggerClickByHash() {
       var hash = location.hash.substr(1);
       var hashObj = util.parseQuery(hash);
+      var flag = false;
       [].forEach.call(this.elements, function (element) {
         if (hashObj.gid === element.getAttribute('data-group') && hashObj.pid === element.getAttribute('data-id')) {
           util.triggerEvent(element, "click");
+          flag = true;
         }
       });
+      return flag;
     }
   }, {
     key: 'setSizeByScreen',
@@ -7450,7 +7456,7 @@ var smartPhoto = function (_aTemplate) {
 module.exports = smartPhoto;
 
 },{"../lib/util":111,"./viwer.html":109,"a-template":1,"babel-runtime/core-js/object/get-prototype-of":5,"babel-runtime/core-js/promise":7,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/helpers/inherits":12,"babel-runtime/helpers/possibleConstructorReturn":13,"keyboard-js":105,"zepto-browserify":107}],109:[function(require,module,exports){
-module.exports = "<div class=\"\\{classNames.smartPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.smartPhotoBody\\}\">\n\t\t<div class=\"\\{classNames.smartPhotoInner\\}\">\n\t\t\t   <div class=\"\\{classNames.smartPhotoHeader\\}\">\n\t\t\t\t\t<span class=\"\\{classNames.smartPhotoCount\\}\">{currentIndex}[increment]/{total}</span>\n\t\t\t\t\t<span class=\"\\{classNames.smartPhotoCaption\\}\"><!-- BEGIN groupItems:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>\n\t\t\t\t\t<button class=\"\\{classNames.smartPhotoDismiss\\}\" data-action-click=\"hidePhoto()\"></button>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"\\{classNames.smartPhotoContent\\}\"<!-- BEGIN isSmartPhone:exist --> data-action-mousemove=\"onDrag\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"onDrag\" data-action-touchend=\"afterDrag\"<!-- END isSmartPhone:exist -->>\n\t\t\t\t</div>\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.smartPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.smartPhotoListOnMove\\}<!-- END onMoveClass:exist -->\">\n\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t<li style=\"transform:translate({translateX}px,{translateY}px);\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\">\n\t\t\t\t\t\t<div style=\"transform:translate({x}px,{y}px) scale({scale});\" class=\"\\\\{classNames.smartPhotoImgWrap\\\\}\" data-action-mousemove=\"onDrag\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"onDrag\" data-action-touchend=\"afterDrag\">\n\t\t\t\t\t\t\t<img style=\"<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->\" src=\"{src}\" class=\"\\\\{classNames.smartPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.smartPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.smartPhotoImgElasticMove\\\\}<!-- \\END elastic:exist -->\" ondragstart=\"return false;\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t<ul class=\"\\{classNames.smartPhotoArrows\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<li class=\"\\{classNames.smartPhotoArrowLeft\\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->\" data-action-click=\"gotoSlide({prev})\"></li>\n\t\t\t\t\t<li class=\"\\{classNames.smartPhotoArrowRight\\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->\" data-action-click=\"gotoSlide({next})\"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<nav class=\"\\{classNames.smartPhotoNav\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<ul >\n\t\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t\t<li data-action-click=\"gotoSlide({index})\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\" style=\"background-image:url({src});\"></li>\n\t\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t</div>\n</div>\n";
+module.exports = "<div class=\"\\{classNames.smartPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.smartPhotoBody\\}\">\n\t\t<div class=\"\\{classNames.smartPhotoInner\\}\">\n\t\t\t   <div class=\"\\{classNames.smartPhotoHeader\\}\">\n\t\t\t\t\t<span class=\"\\{classNames.smartPhotoCount\\}\">{currentIndex}[increment]/{total}</span>\n\t\t\t\t\t<span class=\"\\{classNames.smartPhotoCaption\\}\"><!-- BEGIN groupItems:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>\n\t\t\t\t\t<button class=\"\\{classNames.smartPhotoDismiss\\}\" data-action-click=\"hidePhoto()\"></button>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"\\{classNames.smartPhotoContent\\}\"<!-- BEGIN isSmartPhone:exist --> data-action-mousemove=\"onDrag\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"onDrag\" data-action-touchend=\"afterDrag\"<!-- END isSmartPhone:exist -->>\n\t\t\t\t</div>\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.smartPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.smartPhotoListOnMove\\}<!-- END onMoveClass:exist -->\">\n\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t<li style=\"transform:translate({translateX}px,{translateY}px);\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\">\n\t\t\t\t\t\t<!-- BEGIN loaded:exist -->\n\t\t\t\t\t\t<div style=\"transform:translate({x}px,{y}px) scale({scale});\" class=\"\\\\{classNames.smartPhotoImgWrap\\\\}\" data-action-mousemove=\"onDrag\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"onDrag\" data-action-touchend=\"afterDrag\">\t\t\t\t\n\t\t\t\t\t\t\t<img style=\"<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->\" src=\"{src}\" class=\"\\\\{classNames.smartPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.smartPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.smartPhotoImgElasticMove\\\\}<!-- \\END elastic:exist -->\" ondragstart=\"return false;\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:exist -->\n\t\t\t\t\t\t<!-- BEGIN loaded:empty -->\n\t\t\t\t\t\t<div class=\"\\\\{classNames.smartPhotoLoaderWrap\\\\}\">\n\t\t\t\t\t\t\t<span class=\"\\\\{classNames.smartPhotoLoader\\\\}\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:empty -->\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t<ul class=\"\\{classNames.smartPhotoArrows\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<li class=\"\\{classNames.smartPhotoArrowLeft\\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->\" data-action-click=\"gotoSlide({prev})\"></li>\n\t\t\t\t\t<li class=\"\\{classNames.smartPhotoArrowRight\\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->\" data-action-click=\"gotoSlide({next})\"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<nav class=\"\\{classNames.smartPhotoNav\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<ul >\n\t\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t\t<li data-action-click=\"gotoSlide({index})\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\" style=\"background-image:url({src});\"></li>\n\t\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t</div>\n</div>\n";
 
 },{}],110:[function(require,module,exports){
 'use strict';

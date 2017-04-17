@@ -27,7 +27,9 @@ const defaults = {
     smartPhotoHeader: 'smart-photo-header',
     smartPhotoCount: 'smart-photo-count',
     smartPhotoCaption: 'smart-photo-caption',
-    smartPhotoDismiss: 'smart-photo-dismiss'
+    smartPhotoDismiss: 'smart-photo-dismiss',
+    smartPhotoLoader: 'smart-photo-loader',
+    smartPhotoLoaderWrap: 'smart-photo-loader-wrap'
   },
   arrows:true,
   nav:true,
@@ -78,7 +80,6 @@ class smartPhoto extends aTemplate {
     });
 
     this._getEachImageSize().then(()=>{
-      this.triggerClickByHash();
       this._resetTranslate();
       this.setPosByCurrentIndex();
       this.setHashByCurrentIndex();
@@ -86,7 +87,9 @@ class smartPhoto extends aTemplate {
       this.update();
     });
 
-    this.update();
+    if(this.triggerClickByHash() === false) {
+        this.update();
+    }
 
     if(!this.data.isSmartPhone) {
         this._setKeyboard();
@@ -308,11 +311,14 @@ class smartPhoto extends aTemplate {
   triggerClickByHash () {
     const hash = location.hash.substr(1);
     const hashObj = util.parseQuery(hash);
+    let flag = false;
     [].forEach.call(this.elements, (element) => {
       if (hashObj.gid === element.getAttribute('data-group') && hashObj.pid === element.getAttribute('data-id')) {
         util.triggerEvent(element,"click");
+        flag = true;
       }
     });
+    return flag;
   }
 
   setSizeByScreen () {
