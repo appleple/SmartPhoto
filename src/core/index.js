@@ -86,7 +86,7 @@ class smartPhoto extends aTemplate {
       this.update();
     });
 
-    const currentItem = this._getCurrentIndexByHash();
+    const currentItem = this._getCurrentItemByHash();
 
     if(currentItem) {
       this.data.currentIndex = currentItem.index;
@@ -193,10 +193,10 @@ class smartPhoto extends aTemplate {
             resolve();
           }
           img.onerror = () => {
-            resolve();
             if(item.reserved === true) {
               util.triggerEvent(item.element,'click');
             }
+            resolve();
           }
           img.src = item.src;
         });
@@ -327,7 +327,7 @@ class smartPhoto extends aTemplate {
     $(window).scrollTop( scrollLocation );
   }
 
-  _getCurrentIndexByHash () {
+  _getCurrentItemByHash () {
     const group = this.data.group;
     const hash = location.hash.substr(1);
     const hashObj = util.parseQuery(hash);

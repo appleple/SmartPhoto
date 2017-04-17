@@ -6713,7 +6713,7 @@ var smartPhoto = function (_aTemplate) {
       _this.update();
     });
 
-    var currentItem = _this._getCurrentIndexByHash();
+    var currentItem = _this._getCurrentItemByHash();
 
     if (currentItem) {
       _this.data.currentIndex = currentItem.index;
@@ -6827,10 +6827,10 @@ var smartPhoto = function (_aTemplate) {
               resolve();
             };
             img.onerror = function () {
-              resolve();
               if (item.reserved === true) {
                 util.triggerEvent(item.element, 'click');
               }
+              resolve();
             };
             img.src = item.src;
           });
@@ -6968,8 +6968,8 @@ var smartPhoto = function (_aTemplate) {
       (0, _zeptoBrowserify.$)(window).scrollTop(scrollLocation);
     }
   }, {
-    key: '_getCurrentIndexByHash',
-    value: function _getCurrentIndexByHash() {
+    key: '_getCurrentItemByHash',
+    value: function _getCurrentItemByHash() {
       var group = this.data.group;
       var hash = location.hash.substr(1);
       var hashObj = util.parseQuery(hash);
