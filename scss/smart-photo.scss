@@ -291,10 +291,11 @@ $modal-bg-color: #333;
 	height: 50px;
 	background-position: center center;
 	background-size: cover;
+	opacity: .5;
 }
 
 .smart-photo-nav .current {
-	opacity: .5;
+	opacity: 1;
 }
 
 .smart-photo-nav img {
