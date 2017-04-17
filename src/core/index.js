@@ -81,12 +81,20 @@ class smartPhoto extends aTemplate {
 
     this._getEachImageSize().then(()=>{
       this._resetTranslate();
+      this.setPosByCurrentIndex();
       this.setSizeByScreen();
       this.update();
     });
 
-    if(this.triggerClickByHash() === false) {
-        this.update();
+    const currentItem = this._getCurrentIndexByHash();
+
+    if(currentItem) {
+      this.data.currentIndex = currentItem.index;
+      this.data.currentGroup = currentItem.groupId;
+      this._resetTranslate();
+      this.setPosByCurrentIndex();
+      this.setSizeByScreen();
+      this.update();       
     }
 
     if(!this.data.isSmartPhone) {
@@ -97,7 +105,6 @@ class smartPhoto extends aTemplate {
     $(window).resize(() => {
       this._resetTranslate();
       this.setPosByCurrentIndex();
-      this.setHashByCurrentIndex();
       this.setSizeByScreen();
       this.update();
     });
@@ -182,7 +189,7 @@ class smartPhoto extends aTemplate {
             item.height = img.height;
             item.loaded = true;
             if(item.reserved === true) {
-                util.triggerEvent(item.element,'click');
+              util.triggerEvent(item.element,'click');
             }
             resolve();
           }
@@ -315,11 +322,11 @@ class smartPhoto extends aTemplate {
     $(window).scrollTop( scrollLocation );
   }
 
-  triggerClickByHash () {
+  _getCurrentIndexByHash () {
     const group = this.data.group;
     const hash = location.hash.substr(1);
     const hashObj = util.parseQuery(hash);
-    let flag = false;
+    let currentItem = null;
     for (let i in group){
       if (!group.hasOwnProperty(i)){
         continue;
@@ -327,11 +334,11 @@ class smartPhoto extends aTemplate {
       group[i].forEach((item) => {
           if(hashObj.gid === item.groupId && hashObj.pid === item.id) {
               item.reserved = true;
-              flag = true;
+              currentItem = item;
           }
       });
     }
-    return flag;
+    return currentItem;
   }
 
   setSizeByScreen () {

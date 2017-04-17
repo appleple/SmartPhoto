@@ -6683,11 +6683,19 @@ var smartPhoto = function (_aTemplate) {
 
     _this._getEachImageSize().then(function () {
       _this._resetTranslate();
+      _this.setPosByCurrentIndex();
       _this.setSizeByScreen();
       _this.update();
     });
 
-    if (_this.triggerClickByHash() === false) {
+    var currentItem = _this._getCurrentIndexByHash();
+
+    if (currentItem) {
+      _this.data.currentIndex = currentItem.index;
+      _this.data.currentGroup = currentItem.groupId;
+      _this._resetTranslate();
+      _this.setPosByCurrentIndex();
+      _this.setSizeByScreen();
       _this.update();
     }
 
@@ -6698,7 +6706,6 @@ var smartPhoto = function (_aTemplate) {
     (0, _zeptoBrowserify.$)(window).resize(function () {
       _this._resetTranslate();
       _this.setPosByCurrentIndex();
-      _this.setHashByCurrentIndex();
       _this.setSizeByScreen();
       _this.update();
     });
@@ -6931,12 +6938,12 @@ var smartPhoto = function (_aTemplate) {
       (0, _zeptoBrowserify.$)(window).scrollTop(scrollLocation);
     }
   }, {
-    key: 'triggerClickByHash',
-    value: function triggerClickByHash() {
+    key: '_getCurrentIndexByHash',
+    value: function _getCurrentIndexByHash() {
       var group = this.data.group;
       var hash = location.hash.substr(1);
       var hashObj = util.parseQuery(hash);
-      var flag = false;
+      var currentItem = null;
       for (var i in group) {
         if (!group.hasOwnProperty(i)) {
           continue;
@@ -6944,11 +6951,11 @@ var smartPhoto = function (_aTemplate) {
         group[i].forEach(function (item) {
           if (hashObj.gid === item.groupId && hashObj.pid === item.id) {
             item.reserved = true;
-            flag = true;
+            currentItem = item;
           }
         });
       }
-      return flag;
+      return currentItem;
     }
   }, {
     key: 'setSizeByScreen',
