@@ -6683,8 +6683,6 @@ var smartPhoto = function (_aTemplate) {
 
     _this._getEachImageSize().then(function () {
       _this._resetTranslate();
-      _this.setPosByCurrentIndex();
-      _this.setHashByCurrentIndex();
       _this.setSizeByScreen();
       _this.update();
     });
@@ -6792,6 +6790,9 @@ var smartPhoto = function (_aTemplate) {
               item.width = img.width;
               item.height = img.height;
               item.loaded = true;
+              if (item.reserved === true) {
+                util.triggerEvent(item.element, 'click');
+              }
               resolve();
             };
             img.src = item.src;
@@ -6833,7 +6834,9 @@ var smartPhoto = function (_aTemplate) {
         width: 50,
         height: 50,
         id: element.getAttribute('data-id') || index,
-        loaded: false
+        loaded: false,
+        reserved: false, //click予約
+        element: element
       };
       group[groupId].push(item);
       this.data.currentGroup = groupId;
@@ -6854,7 +6857,7 @@ var smartPhoto = function (_aTemplate) {
         _this3.data.hide = false;
         _this3.data.photoPosX = 0;
         _this3.data.photoPosY = 0;
-        if (_this3.data.scaleOnClick === true && util.isSmartPhone()) {
+        if (_this3.data.scaleOnClick === true && _this3.data.isSmartPhone) {
           _this3.data.scale = true;
           _this3.data.hideUi = true;
           _this3.data.scaleSize = _this3._getScaleBoarder();
@@ -6870,9 +6873,11 @@ var smartPhoto = function (_aTemplate) {
     key: 'hidePhoto',
     value: function hidePhoto() {
       this.data.hide = true;
+      var scrollLocation = (0, _zeptoBrowserify.$)(window).scrollTop();
       if (location.hash) {
         location.hash = "";
       }
+      (0, _zeptoBrowserify.$)(window).scrollTop(scrollLocation);
       this.update();
     }
   }, {
@@ -6917,24 +6922,32 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'setHashByCurrentIndex',
     value: function setHashByCurrentIndex() {
+      var scrollLocation = (0, _zeptoBrowserify.$)(window).scrollTop();
       var items = this.groupItems();
       var id = items[this.data.currentIndex].id;
       var group = this.data.currentGroup;
       var hash = 'gid=' + group + '&pid=' + id;
       location.hash = hash;
+      (0, _zeptoBrowserify.$)(window).scrollTop(scrollLocation);
     }
   }, {
     key: 'triggerClickByHash',
     value: function triggerClickByHash() {
+      var group = this.data.group;
       var hash = location.hash.substr(1);
       var hashObj = util.parseQuery(hash);
       var flag = false;
-      [].forEach.call(this.elements, function (element) {
-        if (hashObj.gid === element.getAttribute('data-group') && hashObj.pid === element.getAttribute('data-id')) {
-          util.triggerEvent(element, "click");
-          flag = true;
+      for (var i in group) {
+        if (!group.hasOwnProperty(i)) {
+          continue;
         }
-      });
+        group[i].forEach(function (item) {
+          if (hashObj.gid === item.groupId && hashObj.pid === item.id) {
+            item.reserved = true;
+            flag = true;
+          }
+        });
+      }
       return flag;
     }
   }, {

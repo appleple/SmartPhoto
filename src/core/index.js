@@ -81,8 +81,6 @@ class smartPhoto extends aTemplate {
 
     this._getEachImageSize().then(()=>{
       this._resetTranslate();
-      this.setPosByCurrentIndex();
-      this.setHashByCurrentIndex();
       this.setSizeByScreen();
       this.update();
     });
@@ -183,6 +181,9 @@ class smartPhoto extends aTemplate {
             item.width = img.width;
             item.height = img.height;
             item.loaded = true;
+            if(item.reserved === true) {
+                util.triggerEvent(item.element,'click');
+            }
             resolve();
           }
           img.src = item.src;
@@ -220,7 +221,9 @@ class smartPhoto extends aTemplate {
       width:50,
       height:50,
       id: element.getAttribute('data-id') || index,
-      loaded:false
+      loaded:false,
+      reserved:false,//click予約
+      element:element
     };
     group[groupId].push(item);
     this.data.currentGroup = groupId;
@@ -241,7 +244,7 @@ class smartPhoto extends aTemplate {
       this.data.hide = false;
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
-      if(this.data.scaleOnClick === true && util.isSmartPhone()){
+      if(this.data.scaleOnClick === true && this.data.isSmartPhone){
         this.data.scale = true;
         this.data.hideUi = true;
         this.data.scaleSize = this._getScaleBoarder();
@@ -257,9 +260,11 @@ class smartPhoto extends aTemplate {
 
   hidePhoto () {
     this.data.hide = true;
+    const scrollLocation = $(window).scrollTop();
     if (location.hash) {
       location.hash = "";
     }
+    $(window).scrollTop( scrollLocation );
     this.update();
   }
 
@@ -301,23 +306,31 @@ class smartPhoto extends aTemplate {
   }
 
   setHashByCurrentIndex () {
+    const scrollLocation = $(window).scrollTop();
     const items = this.groupItems();
     const id = items[this.data.currentIndex].id;
     const group = this.data.currentGroup;
     const hash = `gid=${group}&pid=${id}`;
     location.hash = hash;
+    $(window).scrollTop( scrollLocation );
   }
 
   triggerClickByHash () {
+    const group = this.data.group;
     const hash = location.hash.substr(1);
     const hashObj = util.parseQuery(hash);
     let flag = false;
-    [].forEach.call(this.elements, (element) => {
-      if (hashObj.gid === element.getAttribute('data-group') && hashObj.pid === element.getAttribute('data-id')) {
-        util.triggerEvent(element,"click");
-        flag = true;
+    for (let i in group){
+      if (!group.hasOwnProperty(i)){
+        continue;
       }
-    });
+      group[i].forEach((item) => {
+          if(hashObj.gid === item.groupId && hashObj.pid === item.id) {
+              item.reserved = true;
+              flag = true;
+          }
+      });
+    }
     return flag;
   }
 
