@@ -6705,11 +6705,14 @@ var smartPhoto = function (_aTemplate) {
     });
 
     _this._getEachImageSize().then(function () {
+      _this.triggerClickByHash();
+      _this._resetTranslate();
+      _this.setPosByCurrentIndex();
+      _this.setHashByCurrentIndex();
       _this.setSizeByScreen();
       _this.update();
     });
 
-    _this.triggerClickByHash();
     _this.update();
 
     if (!_this.data.isSmartPhone) {
@@ -6860,7 +6863,7 @@ var smartPhoto = function (_aTemplate) {
       if (!id) {
         element.setAttribute('data-id', index);
       }
-      element.setAttribute('href', '#');
+      element.setAttribute('href', '#gid=' + groupId + '&pid=' + id);
       element.setAttribute('data-index', index);
       element.addEventListener('click', function (event) {
         event.preventDefault();

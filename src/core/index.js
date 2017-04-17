@@ -78,11 +78,14 @@ class smartPhoto extends aTemplate {
     });
 
     this._getEachImageSize().then(()=>{
+      this.triggerClickByHash();
+      this._resetTranslate();
+      this.setPosByCurrentIndex();
+      this.setHashByCurrentIndex();
       this.setSizeByScreen();
       this.update();
     });
 
-    this.triggerClickByHash();
     this.update();
 
     if(!this.data.isSmartPhone) {
@@ -222,7 +225,7 @@ class smartPhoto extends aTemplate {
     if(!id){
       element.setAttribute('data-id',index);
     }
-    element.setAttribute('href','#');
+    element.setAttribute('href',`#gid=${groupId}&pid=${id}`);
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       event.preventDefault();
