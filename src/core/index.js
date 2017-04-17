@@ -47,11 +47,12 @@ class smartPhoto extends aTemplate {
 
   constructor (selector, settings) {
     super();
-    
+
     this.data = util.extend({},defaults,settings);
     this.data.currentIndex = 0;
     this.data.hide = true;
     this.data.items = [];
+    this.data.group = {};
     this.data.scaleSize = 1;
     this.data.scale = false;
     this.pos = { x: 0, y: 0};
@@ -65,7 +66,6 @@ class smartPhoto extends aTemplate {
     this.elements = document.querySelectorAll(selector);
     const date = new Date();
     this.tapSecond = date.getTime();
-    this.data.total = this.elements.length;
     this.onListMove = false;
     this.id = this._getUniqId();
     this.vx = 0;
@@ -82,11 +82,14 @@ class smartPhoto extends aTemplate {
       this.setSizeByScreen();
       this.update();
     });
+
+    this.triggerClickByHash();
     this.update();
 
     if(!this.data.isSmartPhone) {
         this._setKeyboard();
     }
+
 
     $(window).resize(() => {
       this._resetTranslate();
@@ -135,16 +138,7 @@ class smartPhoto extends aTemplate {
   }
 
   groupItems () {
-    const items = this.data.items;
-    const currItem = items[this.data.currentIndex];
-    const group = currItem.group;
-    const arr = [];
-    items.forEach((item) => {
-      if(group === item.group){
-        arr.push(item);
-      }
-    });
-    return arr;
+    return this.data.group[this.data.currentGroup];
   }
 
   _setKeyboard () {
@@ -189,17 +183,26 @@ class smartPhoto extends aTemplate {
   }
 
   _resetTranslate () {
-    this.data.items.forEach((item,index) => {
+    const items = this.groupItems();
+    items.forEach((item,index) => {
       item.translateX = window.innerWidth * index;
     });
   }
 
   addNewItem (element) {
-    const index = this.data.items.length;
+    let groupId = element.getAttribute('data-group') || "nogroup";
+    const group = this.data.group;
+    if(groupId === "nogroup"){
+      element.setAttribute("data-group","nogroup");
+    }
+    if(!group[groupId]) {
+      group[groupId] = [];
+    }
+    const index = group[groupId].length;
     const item = {
       src: element.getAttribute('href'),
       caption: element.getAttribute('data-caption'),
-      group: element.getAttribute('data-group'),
+      groupId: groupId,
       translateX: window.innerWidth * index,
       index: index,
       translateY:0,
@@ -208,7 +211,9 @@ class smartPhoto extends aTemplate {
       id: element.getAttribute('data-id') || index,
       loaded:false
     };
+    group[groupId].push(item);
     this.data.items.push(item);
+    this.data.currentGroup = groupId;
     let id = element.getAttribute('data-id');
     if(!id){
       element.setAttribute('data-id',index);
@@ -216,7 +221,9 @@ class smartPhoto extends aTemplate {
     element.setAttribute('data-index',index);
     element.addEventListener('click', (event) => {
       event.preventDefault();
+      this.data.currentGroup = element.getAttribute('data-group');
       this.data.currentIndex = parseInt(element.getAttribute('data-index'));
+      this.data.total = this.groupItems().length;
       this.setPosByCurrentIndex();
       this.setHashByCurrentIndex();
       this.setSizeByScreen();
@@ -232,8 +239,8 @@ class smartPhoto extends aTemplate {
       this.update();
     });
 
-    if (location.hash && location.hash.substr(1) === element.getAttribute('data-id')) {
-      util.triggerEvent(element,"click");
+    if (!location.hash){
+      return;
     }
 
   }
@@ -274,7 +281,8 @@ class smartPhoto extends aTemplate {
   }
 
   setPosByCurrentIndex () {
-    const moveX = -1 * this.data.items[this.data.currentIndex].translateX;
+    const items = this.groupItems();
+    const moveX = -1 * items[this.data.currentIndex].translateX;
     this.pos.x = moveX;
     setTimeout(() => {
       this.data.translateX = moveX;
@@ -283,8 +291,21 @@ class smartPhoto extends aTemplate {
   }
 
   setHashByCurrentIndex () {
-    const id = this.data.items[this.data.currentIndex].id;
-    location.hash = id;
+    const items = this.groupItems();
+    const id = items[this.data.currentIndex].id;
+    const group = this.data.currentGroup;
+    const hash = `gid=${group}&pid=${id}`;
+    location.hash = hash;
+  }
+
+  triggerClickByHash () {
+    const hash = location.hash.substr(1);
+    const hashObj = util.parseQuery(hash);
+    [].forEach.call(this.elements, (element) => {
+      if (hashObj.gid === element.getAttribute('data-group') && hashObj.pid === element.getAttribute('data-id')) {
+        util.triggerEvent(element,"click");
+      }
+    });
   }
 
   setSizeByScreen () {
@@ -293,7 +314,8 @@ class smartPhoto extends aTemplate {
     const headerHeight = this.data.headerHeight;
     const footerHeight = this.data.footerHeight;
     const screenY = windowY - (headerHeight + footerHeight);
-    this.data.items.forEach((item) => {
+    const items = this.groupItems();
+    items.forEach((item) => {
       item.scale = screenY / item.height;
       item.x = (item.scale - 1) / 2 * item.width + (windowX - (item.width *item.scale)) / 2;
       item.y = (item.scale - 1) / 2 * item.height+ (windowY - (item.height *item.scale)) / 2;
@@ -325,7 +347,8 @@ class smartPhoto extends aTemplate {
   }
 
   setArrow(){
-    const length = this.data.items.length;
+    const items = this.groupItems();
+    const length = items.length;
     const next = this.data.currentIndex + 1;
     const prev = this.data.currentIndex - 1;
     this.data.showNextArrow = false;
@@ -358,6 +381,7 @@ class smartPhoto extends aTemplate {
   afterDrag () {
     this.isSwipable = false;
     this.onListMove = false;
+    const items = this.groupItems();
     if (this.isBeingZoomed) {
       this.afterGesture();
       return;
@@ -381,7 +405,7 @@ class smartPhoto extends aTemplate {
     const swipeWidth = this.oldPos.x - this.firstPos.x
     if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0 ) {
       this.data.currentIndex--;
-    } else if (swipeWidth <= - this.data.swipeOffset && this.data.currentIndex != this.data.items.length -1 ) {
+    } else if (swipeWidth <= - this.data.swipeOffset && this.data.currentIndex != items.length -1 ) {
       this.data.currentIndex++;
     }
     this.slideList();
@@ -612,8 +636,9 @@ class smartPhoto extends aTemplate {
   }
 
   _getSelectedItem () {
-    const index = this.data.currentIndex;
-    return this.data.items[index];
+    const data = this.data;
+    const index = data.currentIndex;
+    return data.group[data.currentGroup][index];
   }
 
   _getUniqId () {

@@ -42,3 +42,20 @@ module.exports.triggerEvent = (el, eventName, options) => {
   }
   el.dispatchEvent(event);
 }
+
+module.exports.parseQuery = (query) => {    
+  var s = query.split('&'),
+      data = {},
+      i = 0,
+      iz = s.length,
+      param, key, value;
+  for (; i < iz; i++) {
+      param = s[i].split('=');
+      if (param[0] !== void 0) {
+          key = param[0];
+          value = (param[1] !== void 0) ? param.slice(1).join('=') : key;
+          data[key] = decodeURIComponent(value);
+      }
+  }
+  return data;
+}
