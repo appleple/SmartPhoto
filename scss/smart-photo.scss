@@ -14,6 +14,16 @@ $modal-bg-color: #333;
 	}
 }
 
+@keyframes smart-photo-img-wrap {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
 @keyframes smart-photo-inner {
 	from {
 		transform: translate(0, 100px);
@@ -160,6 +170,15 @@ $modal-bg-color: #333;
 
 .smart-photo-img-wrap {
 	display: inline-block;
+	opacity: 1;
+	-webkit-transition: opacity $animation-speed $animation-function;
+	   -moz-transition: opacity $animation-speed $animation-function;
+	    -ms-transition: opacity $animation-speed $animation-function;
+	     -o-transition: opacity $animation-speed $animation-function;
+	        transition: opacity $animation-speed $animation-function;
+	animation-name: smart-photo-img-wrap;
+	animation-duration: $animation-speed;
+	animation-timing-function: $animation-function;
 }
 
 .smart-photo-img-left {
