@@ -68,5 +68,7 @@ module.exports.getViewPos = (element) => {
 }
 
 module.exports.removeElement = (element) => {
-  element.parentNode.removeChild(element);
+  if(element && element.parentNode) {
+    element.parentNode.removeChild(element);
+  }
 }
