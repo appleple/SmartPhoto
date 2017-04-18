@@ -271,7 +271,6 @@ class smartPhoto extends aTemplate {
     clone.style.height = `${img.offsetHeight}px`;
     clone.style.transform = `translate(${pos.left}px,${pos.top}px) scale(1)`;
     clone.style.zIndex = '101';
-    clone.style.opacity = '0.5';
 
     setTimeout(() => {
       clone.style.transition = 'all .3s ease-out';
