@@ -122,11 +122,11 @@ $modal-bg-color: #333;
 
 
 .smart-photo-body {
-	// max-width: 940px;
+	position: relative;
+	z-index: 102;
 	width: 100%;
 	height: 100%;
 	margin: 0 auto;
-	// display: table;
 }
 
 .smart-photo-inner {
