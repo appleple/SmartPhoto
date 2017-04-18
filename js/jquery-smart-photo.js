@@ -6653,7 +6653,8 @@ var defaults = {
     smartPhotoCaption: 'smart-photo-caption',
     smartPhotoDismiss: 'smart-photo-dismiss',
     smartPhotoLoader: 'smart-photo-loader',
-    smartPhotoLoaderWrap: 'smart-photo-loader-wrap'
+    smartPhotoLoaderWrap: 'smart-photo-loader-wrap',
+    smartPhotoImgClone: 'smart-photo-img-clone'
   },
   arrows: true,
   nav: true,
@@ -6698,6 +6699,7 @@ var smartPhoto = function (_aTemplate) {
     _this.id = _this._getUniqId();
     _this.vx = 0;
     _this.vy = 0;
+    _this.data.appearEffect = null;
     _this.addTemplate(_this.id, template);
     _this.data.isSmartPhone = _this._isSmartPhone();
 
@@ -6887,8 +6889,8 @@ var smartPhoto = function (_aTemplate) {
           _this3.data.hideUi = true;
           _this3.data.scaleSize = _this3._getScaleBoarder();
         }
-        _this3.update();
         _this3.addAppearEffect(element);
+        _this3.update();
       });
 
       if (!location.hash) {
@@ -6896,51 +6898,64 @@ var smartPhoto = function (_aTemplate) {
       }
     }
   }, {
-    key: 'addAppearEffect',
-    value: function addAppearEffect(element) {
+    key: 'onUpdated',
+    value: function onUpdated() {
       var _this4 = this;
 
+      if (this.data.appearEffect && this.data.appearEffect.once) {
+        this.data.appearEffect.once = false;
+        var appearEffect = this.data.appearEffect;
+        var effect = document.querySelector('[data-id="' + this.id + '"] .' + this.data.classNames.smartPhotoImgClone);
+        setTimeout(function () {
+          effect.style.transition = 'all .3s ease-out';
+          effect.style.transform = 'translate(' + appearEffect.afterX + 'px, ' + appearEffect.afterY + 'px) scale(' + appearEffect.scale + ')';
+        }, 1);
+        setTimeout(function () {
+          _this4.data.appearEffect = null;
+          _this4.data.appear = true;
+          util.removeElement(effect);
+          var $img = (0, _zeptoBrowserify.$)('.' + _this4.data.classNames.smartPhotoImg, '[data-id="' + _this4.id + '"]');
+          $img.addClass('active');
+        }, 300);
+      }
+    }
+  }, {
+    key: 'addAppearEffect',
+    value: function addAppearEffect(element) {
       var img = element.querySelector('img');
       var clone = img.cloneNode(true);
-      document.querySelector('[data-id="' + this.id + '"] .' + this.data.classNames.smartPhoto).appendChild(clone);
       var pos = util.getViewPos(img);
-      clone.style.top = '0px';
-      clone.style.left = '0px';
-      clone.style.position = 'fixed';
-      clone.style.width = img.offsetWidth + 'px';
-      clone.style.height = img.offsetHeight + 'px';
-      clone.style.transform = 'translate(' + pos.left + 'px,' + pos.top + 'px) scale(1)';
-      clone.style.zIndex = '101';
+      var appear = {};
+      appear.width = img.offsetWidth;
+      appear.height = img.offsetHeight;
+      appear.top = pos.top;
+      appear.left = pos.left;
+      appear.once = true;
+      appear.img = img.getAttribute('src');
 
-      setTimeout(function () {
-        clone.style.transition = 'all .3s ease-out';
-        var scale = 1;
-        var windowX = window.innerWidth;
-        var windowY = window.innerHeight;
-        var screenY = windowY - _this4.data.headerHeight - _this4.data.footerHeight;
-        if (_this4.data.scaleOnClick === true && _this4.data.isSmartPhone) {
-          if (img.offsetWidth > img.offsetHeight) {
-            scale = windowY / img.offsetHeight;
-          } else {
-            scale = windowX / img.offsetWidth;
-          }
+      // appear.transition = 'all .3s ease-out';
+      var scale = 1;
+      var windowX = window.innerWidth;
+      var windowY = window.innerHeight;
+      var screenY = windowY - this.data.headerHeight - this.data.footerHeight;
+      if (this.data.scaleOnClick === true && this.data.isSmartPhone) {
+        if (img.offsetWidth > img.offsetHeight) {
+          scale = windowY / img.offsetHeight;
         } else {
-          scale = screenY / img.offsetHeight;
-          if (scale * img.offsetWidth > windowX) {
-            scale = windowX / img.offsetWidth;
-          }
+          scale = windowX / img.offsetWidth;
         }
-        var x = (scale - 1) / 2 * img.offsetWidth + (windowX - img.offsetWidth * scale) / 2;
-        var y = (scale - 1) / 2 * img.offsetHeight + (windowY - img.offsetHeight * scale) / 2;
-        clone.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + scale + ')';
-      }, 1);
-
-      setTimeout(function () {
-        util.removeElement(clone);
-        _this4.data.appear = true;
-        var $img = (0, _zeptoBrowserify.$)('.' + _this4.data.classNames.smartPhotoImg, '[data-id="' + _this4.id + '"]');
-        $img.addClass('active');
-      }, 300);
+      } else {
+        scale = screenY / img.offsetHeight;
+        if (scale * img.offsetWidth > windowX) {
+          scale = windowX / img.offsetWidth;
+        }
+      }
+      var x = (scale - 1) / 2 * img.offsetWidth + (windowX - img.offsetWidth * scale) / 2;
+      var y = (scale - 1) / 2 * img.offsetHeight + (windowY - img.offsetHeight * scale) / 2;
+      appear.afterX = x;
+      appear.afterY = y;
+      appear.scale = scale;
+      this.data.appearEffect = appear;
     }
   }, {
     key: 'addLeaveEffect',
@@ -7546,7 +7561,7 @@ var smartPhoto = function (_aTemplate) {
 module.exports = smartPhoto;
 
 },{"../lib/util":112,"./viwer.html":110,"a-template":1,"babel-runtime/core-js/object/get-prototype-of":5,"babel-runtime/core-js/promise":7,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/helpers/inherits":12,"babel-runtime/helpers/possibleConstructorReturn":13,"keyboard-js":105,"zepto-browserify":107}],110:[function(require,module,exports){
-module.exports = "<div class=\"\\{classNames.smartPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.smartPhotoBody\\}\">\n\t\t<div class=\"\\{classNames.smartPhotoInner\\}\">\n\t\t\t   <div class=\"\\{classNames.smartPhotoHeader\\}\">\n\t\t\t\t\t<span class=\"\\{classNames.smartPhotoCount\\}\">{currentIndex}[increment]/{total}</span>\n\t\t\t\t\t<span class=\"\\{classNames.smartPhotoCaption\\}\"><!-- BEGIN groupItems:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>\n\t\t\t\t\t<button class=\"\\{classNames.smartPhotoDismiss\\}\" data-action-click=\"hidePhoto()\"></button>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"\\{classNames.smartPhotoContent\\}\"<!-- BEGIN isSmartPhone:exist --> data-action-mousemove=\"onDrag\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"onDrag\" data-action-touchend=\"afterDrag\"<!-- END isSmartPhone:exist -->>\n\t\t\t\t</div>\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.smartPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.smartPhotoListOnMove\\}<!-- END onMoveClass:exist -->\">\n\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t<li style=\"transform:translate({translateX}px,{translateY}px);\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\">\n\t\t\t\t\t\t<!-- BEGIN loaded:exist -->\n\t\t\t\t\t\t<div style=\"transform:translate({x}px,{y}px) scale({scale});\" class=\"\\\\{classNames.smartPhotoImgWrap\\\\}\" data-action-mousemove=\"onDrag\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"onDrag\" data-action-touchend=\"afterDrag\">\t\t\t\t\n\t\t\t\t\t\t\t<img style=\"<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->\" src=\"{src}\" class=\"\\\\{classNames.smartPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.smartPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.smartPhotoImgElasticMove\\\\}<!-- \\END elastic:exist --><!-- \\BEGIN appear:exist --> active<!-- \\END appear:exist -->\" ondragstart=\"return false;\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:exist -->\n\t\t\t\t\t\t<!-- BEGIN loaded:empty -->\n\t\t\t\t\t\t<div class=\"\\\\{classNames.smartPhotoLoaderWrap\\\\}\">\n\t\t\t\t\t\t\t<span class=\"\\\\{classNames.smartPhotoLoader\\\\}\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:empty -->\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t<ul class=\"\\{classNames.smartPhotoArrows\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<li class=\"\\{classNames.smartPhotoArrowLeft\\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->\" data-action-click=\"gotoSlide({prev})\"></li>\n\t\t\t\t\t<li class=\"\\{classNames.smartPhotoArrowRight\\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->\" data-action-click=\"gotoSlide({next})\"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<nav class=\"\\{classNames.smartPhotoNav\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<ul >\n\t\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t\t<li data-action-click=\"gotoSlide({index})\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\" style=\"background-image:url({src});\"></li>\n\t\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t</div>\n</div>\n";
+module.exports = "<div class=\"\\{classNames.smartPhoto\\}\"<!-- BEGIN hide:exist --> style=\"display:none;\"<!-- END hide:exist -->>\n\t<div class=\"\\{classNames.smartPhotoBody\\}\">\n\t\t<div class=\"\\{classNames.smartPhotoInner\\}\">\n\t\t\t   <div class=\"\\{classNames.smartPhotoHeader\\}\">\n\t\t\t\t\t<span class=\"\\{classNames.smartPhotoCount\\}\">{currentIndex}[increment]/{total}</span>\n\t\t\t\t\t<span class=\"\\{classNames.smartPhotoCaption\\}\"><!-- BEGIN groupItems:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>\n\t\t\t\t\t<button class=\"\\{classNames.smartPhotoDismiss\\}\" data-action-click=\"hidePhoto()\"></button>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"\\{classNames.smartPhotoContent\\}\"<!-- BEGIN isSmartPhone:exist --> data-action-mousemove=\"onDrag\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"onDrag\" data-action-touchend=\"afterDrag\"<!-- END isSmartPhone:exist -->>\n\t\t\t\t</div>\n\t\t\t\t<ul style=\"transform:translateX({translateX}px);\" class=\"\\{classNames.smartPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.smartPhotoListOnMove\\}<!-- END onMoveClass:exist -->\">\n\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t<li style=\"transform:translate({translateX}px,{translateY}px);\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\">\n\t\t\t\t\t\t<!-- BEGIN loaded:exist -->\n\t\t\t\t\t\t<div style=\"transform:translate({x}px,{y}px) scale({scale});\" class=\"\\\\{classNames.smartPhotoImgWrap\\\\}\" data-action-mousemove=\"onDrag\" data-action-mousedown=\"beforeDrag\" data-action-mouseup=\"afterDrag\" data-action-touchstart=\"beforeDrag\" data-action-touchmove=\"onDrag\" data-action-touchend=\"afterDrag\">\t\t\t\t\n\t\t\t\t\t\t\t<img style=\"<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->\" src=\"{src}\" class=\"\\\\{classNames.smartPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.smartPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.smartPhotoImgElasticMove\\\\}<!-- \\END elastic:exist --><!-- \\BEGIN appear:exist --> active<!-- \\END appear:exist -->\" ondragstart=\"return false;\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:exist -->\n\t\t\t\t\t\t<!-- BEGIN loaded:empty -->\n\t\t\t\t\t\t<div class=\"\\\\{classNames.smartPhotoLoaderWrap\\\\}\">\n\t\t\t\t\t\t\t<span class=\"\\\\{classNames.smartPhotoLoader\\\\}\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:empty -->\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t<ul class=\"\\{classNames.smartPhotoArrows\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<li class=\"\\{classNames.smartPhotoArrowLeft\\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->\" data-action-click=\"gotoSlide({prev})\"></li>\n\t\t\t\t\t<li class=\"\\{classNames.smartPhotoArrowRight\\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->\" data-action-click=\"gotoSlide({next})\"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<nav class=\"\\{classNames.smartPhotoNav\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->\">\n\t\t\t\t\t<ul >\n\t\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t\t<li data-action-click=\"gotoSlide({index})\" class=\"<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->\" style=\"background-image:url({src});\"></li>\n\t\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t\t<!-- BEGIN appearEffect:exist -->\n\t\t<img src=\\{appearEffect.img\\} \n\t\tclass=\"\\{classNames.smartPhotoImgClone\\}\"\n\t\tstyle=\"width:\\{appearEffect.width\\}px;height:\\{appearEffect.height\\}px;transform:translate(\\{appearEffect.left\\}px,\\{appearEffect.top\\}px) scale(1)\" />\n\t\t<!-- END appearEffect:exist -->\n\t</div>\n</div>\n";
 
 },{}],111:[function(require,module,exports){
 'use strict';

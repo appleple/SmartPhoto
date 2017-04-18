@@ -29,7 +29,8 @@ const defaults = {
     smartPhotoCaption: 'smart-photo-caption',
     smartPhotoDismiss: 'smart-photo-dismiss',
     smartPhotoLoader: 'smart-photo-loader',
-    smartPhotoLoaderWrap: 'smart-photo-loader-wrap'
+    smartPhotoLoaderWrap: 'smart-photo-loader-wrap',
+    smartPhotoImgClone: 'smart-photo-img-clone'
   },
   arrows:true,
   nav:true,
@@ -71,6 +72,7 @@ class smartPhoto extends aTemplate {
     this.id = this._getUniqId();
     this.vx = 0;
     this.vy = 0;
+    this.data.appearEffect = null;
     this.addTemplate(this.id,template);
     this.data.isSmartPhone = this._isSmartPhone();
 
@@ -249,8 +251,8 @@ class smartPhoto extends aTemplate {
         this.data.hideUi = true;
         this.data.scaleSize = this._getScaleBoarder();
       }
-      this.update();
       this.addAppearEffect(element);
+      this.update();
     });
 
     if (!location.hash){
@@ -259,48 +261,60 @@ class smartPhoto extends aTemplate {
 
   }
 
+  onUpdated () {
+    if(this.data.appearEffect && this.data.appearEffect.once) {
+      this.data.appearEffect.once = false;
+      const appearEffect = this.data.appearEffect;
+      const effect = document.querySelector(`[data-id="${this.id}"] .${this.data.classNames.smartPhotoImgClone}`);
+      setTimeout(()=>{
+        effect.style.transition = 'all .3s ease-out';
+        effect.style.transform = `translate(${appearEffect.afterX}px, ${appearEffect.afterY}px) scale(${appearEffect.scale})`;
+      },1);
+      setTimeout(()=>{
+        this.data.appearEffect = null;
+        this.data.appear = true;
+        util.removeElement(effect);
+        const $img = $(`.${this.data.classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
+        $img.addClass('active');
+      },300);
+    }
+  }
+
   addAppearEffect (element) {
     const img = element.querySelector('img');
     const clone = img.cloneNode(true);
-    document.querySelector(`[data-id="${this.id}"] .${this.data.classNames.smartPhoto}`).appendChild(clone);
     const pos = util.getViewPos(img);
-    clone.style.top = '0px';
-    clone.style.left = '0px';
-    clone.style.position = 'fixed';
-    clone.style.width = `${img.offsetWidth}px`;
-    clone.style.height = `${img.offsetHeight}px`;
-    clone.style.transform = `translate(${pos.left}px,${pos.top}px) scale(1)`;
-    clone.style.zIndex = '101';
+    const appear = {};
+    appear.width = img.offsetWidth;
+    appear.height = img.offsetHeight;
+    appear.top = pos.top;
+    appear.left = pos.left;
+    appear.once = true;
+    appear.img = img.getAttribute('src');
 
-    setTimeout(() => {
-      clone.style.transition = 'all .3s ease-out';
-      let scale = 1;
-      const windowX = window.innerWidth;
-      const windowY = window.innerHeight;
-      const screenY = windowY - this.data.headerHeight - this.data.footerHeight;
-      if(this.data.scaleOnClick === true && this.data.isSmartPhone){
-        if(img.offsetWidth > img.offsetHeight) {
-          scale = windowY / img.offsetHeight;
-        }else {
-          scale = windowX / img.offsetWidth;
-        }
-      }else{
-        scale = screenY / img.offsetHeight;
-        if(scale*img.offsetWidth > windowX) {
-          scale = windowX / img.offsetWidth;
-        }
+    // appear.transition = 'all .3s ease-out';
+    let scale = 1;
+    const windowX = window.innerWidth;
+    const windowY = window.innerHeight;
+    const screenY = windowY - this.data.headerHeight - this.data.footerHeight;
+    if(this.data.scaleOnClick === true && this.data.isSmartPhone){
+      if(img.offsetWidth > img.offsetHeight) {
+        scale = windowY / img.offsetHeight;
+      }else {
+        scale = windowX / img.offsetWidth;
       }
-      const x = (scale - 1) / 2 * img.offsetWidth + (windowX - (img.offsetWidth *scale)) / 2;
-      const y = (scale - 1) / 2 * img.offsetHeight + (windowY - (img.offsetHeight *scale)) / 2;
-      clone.style.transform = `translate(${x}px,${y}px) scale(${scale})`;
-    },1);
-
-    setTimeout(()=>{
-      util.removeElement(clone);
-      this.data.appear = true;
-      const $img = $(`.${this.data.classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
-      $img.addClass('active');
-    },300);
+    }else{
+      scale = screenY / img.offsetHeight;
+      if(scale*img.offsetWidth > windowX) {
+        scale = windowX / img.offsetWidth;
+      }
+    }
+    const x = (scale - 1) / 2 * img.offsetWidth + (windowX - (img.offsetWidth *scale)) / 2;
+    const y = (scale - 1) / 2 * img.offsetHeight + (windowY - (img.offsetHeight *scale)) / 2;
+    appear.afterX = x;
+    appear.afterY = y;
+    appear.scale = scale;
+    this.data.appearEffect = appear;
   }
 
   addLeaveEffect () {

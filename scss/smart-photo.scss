@@ -368,3 +368,10 @@ $modal-bg-color: #333;
 	animation: smart-photo-loader 0.5s infinite linear;
 }
 
+.smart-photo-img-clone {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 101;
+}
+
