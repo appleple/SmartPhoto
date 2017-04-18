@@ -6897,6 +6897,8 @@ var smartPhoto = function (_aTemplate) {
       clone.style.width = img.offsetWidth + 'px';
       clone.style.height = img.offsetHeight + 'px';
       clone.style.transform = 'translate(' + pos.left + 'px,' + pos.top + 'px) scale(1)';
+      clone.style.zIndex = '102';
+      clone.style.opacity = '0.5';
 
       setTimeout(function () {
         clone.style.transition = 'all .3s ease-out';
@@ -6919,6 +6921,7 @@ var smartPhoto = function (_aTemplate) {
         var x = (scale - 1) / 2 * img.offsetWidth + (windowX - img.offsetWidth * scale) / 2;
         var y = (scale - 1) / 2 * img.offsetHeight + (windowY - img.offsetHeight * scale) / 2;
         clone.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + scale + ')';
+        clone.style.opacity = '1';
       }, 1);
 
       setTimeout(function () {
