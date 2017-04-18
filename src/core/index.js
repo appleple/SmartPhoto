@@ -80,21 +80,16 @@ class smartPhoto extends aTemplate {
     });
 
     this._getEachImageSize().then(()=>{
-      this._resetTranslate();
-      this.setPosByCurrentIndex();
-      this.setSizeByScreen();
-      this.update();
+      const currentItem = this._getCurrentItemByHash();
+      if(currentItem) {
+        this.data.currentIndex = currentItem.index;
+        this.data.currentGroup = currentItem.groupId;
+        this._resetTranslate();
+        this.setPosByCurrentIndex();
+        this.setSizeByScreen();
+        util.triggerEvent(currentItem.element,'click');
+      }
     });
-
-    const currentItem = this._getCurrentItemByHash();
-
-    if(currentItem) {
-      this.data.currentIndex = currentItem.index;
-      this.data.currentGroup = currentItem.groupId;
-      this._resetTranslate();
-      this.setPosByCurrentIndex();
-      this.update();       
-    }
 
     if(!this.data.isSmartPhone) {
         this._setKeyboard();
@@ -187,15 +182,9 @@ class smartPhoto extends aTemplate {
             item.width = img.width;
             item.height = img.height;
             item.loaded = true;
-            if(item.reserved === true) {
-              util.triggerEvent(item.element,'click');
-            }
             resolve();
           }
           img.onerror = () => {
-            if(item.reserved === true) {
-              util.triggerEvent(item.element,'click');
-            }
             resolve();
           }
           img.src = item.src;
@@ -234,7 +223,6 @@ class smartPhoto extends aTemplate {
       height:50,
       id: element.getAttribute('data-id') || index,
       loaded:false,
-      reserved:false,//click予約
       element:element
     };
     group[groupId].push(item);
@@ -261,8 +249,8 @@ class smartPhoto extends aTemplate {
         this.data.hideUi = true;
         this.data.scaleSize = this._getScaleBoarder();
       }
-      this.addAppearEffect(element);
       this.update();
+      this.addAppearEffect(element);
     });
 
     if (!location.hash){
@@ -274,11 +262,11 @@ class smartPhoto extends aTemplate {
   addAppearEffect (element) {
     const img = element.querySelector('img');
     const clone = img.cloneNode(true);
-    document.querySelector('body').appendChild(clone);
+    document.querySelector(`[data-id="${this.id}"]`).appendChild(clone);
     const pos = util.getViewPos(img);
     clone.style.top = '0px';
     clone.style.left = '0px';
-    clone.style.position = 'fixed';
+    clone.style.position = 'absolute';
     clone.style.width = `${img.offsetWidth}px`;
     clone.style.height = `${img.offsetHeight}px`;
     clone.style.transform = `translate(${pos.left}px,${pos.top}px) scale(1)`;
@@ -305,7 +293,6 @@ class smartPhoto extends aTemplate {
       const x = (scale - 1) / 2 * img.offsetWidth + (windowX - (img.offsetWidth *scale)) / 2;
       const y = (scale - 1) / 2 * img.offsetHeight + (windowY - (img.offsetHeight *scale)) / 2;
       clone.style.transform = `translate(${x}px,${y}px) scale(${scale})`;
-      clone.style.opacity = '1';
     },1);
 
     setTimeout(()=>{
@@ -390,7 +377,6 @@ class smartPhoto extends aTemplate {
       }
       group[i].forEach((item) => {
           if(hashObj.gid === item.groupId && hashObj.pid === item.id) {
-              item.reserved = true;
               currentItem = item;
           }
       });
