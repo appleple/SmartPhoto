@@ -6937,6 +6937,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'hidePhoto',
     value: function hidePhoto() {
+      this.zoomOutPhoto();
       this.data.hide = true;
       this.data.appear = false;
       var scrollLocation = (0, _zeptoBrowserify.$)(window).scrollTop();

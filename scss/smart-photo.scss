@@ -83,8 +83,8 @@ $modal-bg-color: #333;
 .smart-photo-header {
 	display: block;
 	box-sizing: border-box;
-	position: absolute;
-	z-index: 3;
+	position: fixed;
+	z-index: 1004;
 	top: 0;
 	left: 0;
 	width: 100%;

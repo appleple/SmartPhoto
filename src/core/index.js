@@ -322,6 +322,7 @@ class smartPhoto extends aTemplate {
   }
 
   hidePhoto () {
+    this.zoomOutPhoto();
     this.data.hide = true;
     this.data.appear = false;
     const scrollLocation = $(window).scrollTop();
