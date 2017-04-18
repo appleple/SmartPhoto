@@ -6906,11 +6906,11 @@ var smartPhoto = function (_aTemplate) {
       var pos = util.getViewPos(img);
       clone.style.top = '0px';
       clone.style.left = '0px';
-      clone.style.position = 'absolute';
+      clone.style.position = 'fixed';
       clone.style.width = img.offsetWidth + 'px';
       clone.style.height = img.offsetHeight + 'px';
       clone.style.transform = 'translate(' + pos.left + 'px,' + pos.top + 'px) scale(1)';
-      clone.style.zIndex = '102';
+      clone.style.zIndex = '101';
       clone.style.opacity = '0.5';
 
       setTimeout(function () {
