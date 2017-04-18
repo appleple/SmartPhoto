@@ -262,7 +262,7 @@ class smartPhoto extends aTemplate {
   addAppearEffect (element) {
     const img = element.querySelector('img');
     const clone = img.cloneNode(true);
-    document.querySelector(`[data-id="${this.id}"]`).appendChild(clone);
+    document.querySelector(`[data-id="${this.id}"] .${this.data.classNames.smartPhoto}`).appendChild(clone);
     const pos = util.getViewPos(img);
     clone.style.top = '0px';
     clone.style.left = '0px';
