@@ -311,6 +311,9 @@ class smartPhoto extends aTemplate {
 
     setTimeout(()=>{
       util.removeElement(clone);
+      this.data.appear = true;
+      const $img = $(`.${this.data.classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
+      $img.addClass('active');
     },300);
   }
 
@@ -320,6 +323,7 @@ class smartPhoto extends aTemplate {
 
   hidePhoto () {
     this.data.hide = true;
+    this.data.appear = false;
     const scrollLocation = $(window).scrollTop();
     if (location.hash) {
       location.hash = "";

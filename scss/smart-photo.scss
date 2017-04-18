@@ -1,6 +1,6 @@
 $animation-speed: .3s;
 $animation-function: ease-out;
-$backdrop-color: rgba(0, 0, 0, .9);
+$backdrop-color: #000;
 $header-color: rgba(0, 0, 0, .2);
 $modal-bg-color: #333;
 
@@ -144,7 +144,7 @@ $modal-bg-color: #333;
 }
 
 .smart-photo-img {
-	display: block;
+	display: none;
 	// width: 100%;
 	width: auto;
 	height: auto;
@@ -156,6 +156,10 @@ $modal-bg-color: #333;
 	transition: transform .3s cubic-bezier(.4, 0, .22, 1);
 
 	-webkit-user-drag: none;
+}
+
+.smart-photo-img.active {
+	display: block;
 }
 
 .smart-photo-img-onmove {

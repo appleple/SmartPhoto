@@ -62,8 +62,8 @@ module.exports.parseQuery = (query) => {
 
 module.exports.getViewPos = (element) => {
   return {
-    left: element.getBoundingClientRect().left - window.scrollX,
-    top: element.getBoundingClientRect().top - window.scrollY,
+    left: element.getBoundingClientRect().left,
+    top: element.getBoundingClientRect().top,
   }
 }
 
