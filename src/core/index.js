@@ -261,12 +261,57 @@ class smartPhoto extends aTemplate {
         this.data.hideUi = true;
         this.data.scaleSize = this._getScaleBoarder();
       }
+      this.addAppearEffect(element);
       this.update();
     });
 
     if (!location.hash){
       return;
     }
+
+  }
+
+  addAppearEffect (element) {
+    const img = element.querySelector('img');
+    const clone = img.cloneNode(true);
+    document.querySelector('body').appendChild(clone);
+    const pos = util.getViewPos(img);
+    clone.style.top = '0px';
+    clone.style.left = '0px';
+    clone.style.position = 'fixed';
+    clone.style.width = `${img.offsetWidth}px`;
+    clone.style.height = `${img.offsetHeight}px`;
+    clone.style.transform = `translate(${pos.left}px,${pos.top}px) scale(1)`;
+
+    setTimeout(() => {
+      clone.style.transition = 'all .3s ease-out';
+      let scale = 1;
+      const windowX = window.innerWidth;
+      const windowY = window.innerHeight;
+      const screenY = windowY - this.data.headerHeight - this.data.footerHeight;
+      if(this.data.scaleOnClick === true && this.data.isSmartPhone){
+        if(img.offsetWidth > img.offsetHeight) {
+          scale = windowY / img.offsetHeight;
+        }else {
+          scale = windowX / img.offsetWidth;
+        }
+      }else{
+        scale = screenY / img.offsetHeight;
+        if(scale*img.offsetWidth > windowX) {
+          scale = windowX / img.offsetWidth;
+        }
+      }
+      const x = (scale - 1) / 2 * img.offsetWidth + (windowX - (img.offsetWidth *scale)) / 2;
+      const y = (scale - 1) / 2 * img.offsetHeight + (windowY - (img.offsetHeight *scale)) / 2;
+      clone.style.transform = `translate(${x}px,${y}px) scale(${scale})`;
+    },1);
+
+    setTimeout(()=>{
+      util.removeElement(clone);
+    },300);
+  }
+
+  addLeaveEffect () {
 
   }
 

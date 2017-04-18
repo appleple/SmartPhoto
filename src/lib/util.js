@@ -59,3 +59,14 @@ module.exports.parseQuery = (query) => {
   }
   return data;
 }
+
+module.exports.getViewPos = (element) => {
+  return {
+    left: element.getBoundingClientRect().left - window.scrollX,
+    top: element.getBoundingClientRect().top - window.scrollY,
+  }
+}
+
+module.exports.removeElement = (element) => {
+  element.parentNode.removeChild(element);
+}
