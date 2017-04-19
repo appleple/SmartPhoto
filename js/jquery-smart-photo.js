@@ -6708,8 +6708,6 @@ var smartPhoto = function (_aTemplate) {
       _this.addNewItem(element);
     });
 
-    _this._getEachImageSize();
-
     var currentItem = _this._getCurrentItemByHash();
     if (currentItem) {
       util.triggerEvent(currentItem.element, 'click');
@@ -6725,6 +6723,8 @@ var smartPhoto = function (_aTemplate) {
       _this.setSizeByScreen();
       _this.update();
     });
+
+    _this._getEachImageSize();
 
     setInterval(function () {
       _this._doAnim();
@@ -6743,6 +6743,9 @@ var smartPhoto = function (_aTemplate) {
     });
 
     (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
+      if (!e.originalEvent) {
+        return;
+      }
       if (!_this.isBeingZoomed && !_this.isSwipable && !_this.photoSwipable && !_this.data.elastic && _this.data.scale) {
         if (window.innerHeight > window.innerWidth) {
           _this._calcGravity(e.originalEvent.gamma, e.originalEvent.beta);
@@ -6871,17 +6874,14 @@ var smartPhoto = function (_aTemplate) {
         event.preventDefault();
         _this3.data.currentGroup = element.getAttribute('data-group');
         _this3.data.currentIndex = parseInt(element.getAttribute('data-index'));
-        _this3.data.total = _this3.groupItems().length;
-        _this3.data.hide = false;
-        _this3.data.photoPosX = 0;
-        _this3.data.photoPosY = 0;
+        _this3.setHashByCurrentIndex();
         var currentItem = _this3._getSelectedItem();
         if (currentItem.loaded) {
           _this3._initPhoto();
           _this3.addAppearEffect(element);
           _this3.update();
         } else {
-          _this3._loadCurrentItem().then(function () {
+          _this3._loadItem(currentItem).then(function () {
             _this3.data.appear = true;
             _this3._initPhoto();
             _this3.update();
@@ -6892,8 +6892,11 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_initPhoto',
     value: function _initPhoto() {
+      this.data.total = this.groupItems().length;
+      this.data.hide = false;
+      this.data.photoPosX = 0;
+      this.data.photoPosY = 0;
       this.setPosByCurrentIndex();
-      this.setHashByCurrentIndex();
       this.setSizeByScreen();
       this.setArrow();
       if (this.data.scaleOnClick === true && this.data.isSmartPhone) {
@@ -7065,23 +7068,20 @@ var smartPhoto = function (_aTemplate) {
       return currentItem;
     }
   }, {
-    key: '_loadCurrentItem',
-    value: function _loadCurrentItem() {
-      var _this7 = this;
-
+    key: '_loadItem',
+    value: function _loadItem(item) {
       return new _promise2.default(function (resolve, reject) {
         var img = new Image();
-        var currentItem = _this7._getCurrentItemByHash();
         img.onload = function () {
-          currentItem.width = img.width;
-          currentItem.height = img.height;
-          currentItem.loaded = true;
+          item.width = img.width;
+          item.height = img.height;
+          item.loaded = true;
           resolve();
         };
         img.onerror = function () {
           resolve();
         };
-        img.src = currentItem.src;
+        img.src = item.src;
       });
     }
   }, {
@@ -7093,6 +7093,7 @@ var smartPhoto = function (_aTemplate) {
       var footerHeight = this.data.footerHeight;
       var screenY = windowY - (headerHeight + footerHeight);
       var items = this.groupItems();
+      console.log(windowX, windowY);
       items.forEach(function (item) {
         item.scale = screenY / item.height;
         item.x = (item.scale - 1) / 2 * item.width + (windowX - item.width * item.scale) / 2;
@@ -7106,16 +7107,16 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'slideList',
     value: function slideList() {
-      var _this8 = this;
+      var _this7 = this;
 
       this.data.onMoveClass = true;
       this.setPosByCurrentIndex();
       this.setHashByCurrentIndex();
       this.setSizeByScreen();
       setTimeout(function () {
-        _this8.data.onMoveClass = false;
-        _this8.setArrow();
-        _this8.update();
+        _this7.data.onMoveClass = false;
+        _this7.setArrow();
+        _this7.update();
       }, 200);
     }
   }, {
@@ -7224,7 +7225,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'zoomPhoto',
     value: function zoomPhoto() {
-      var _this9 = this;
+      var _this8 = this;
 
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
@@ -7232,8 +7233,8 @@ var smartPhoto = function (_aTemplate) {
       this.data.photoPosY = 0;
       this._photoUpdate();
       setTimeout(function () {
-        _this9.data.scale = true;
-        _this9._photoUpdate();
+        _this8.data.scale = true;
+        _this8._photoUpdate();
       }, 300);
     }
   }, {
@@ -7418,7 +7419,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_registerElasticForce',
     value: function _registerElasticForce(x, y) {
-      var _this10 = this;
+      var _this9 = this;
 
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
@@ -7435,8 +7436,8 @@ var smartPhoto = function (_aTemplate) {
       }
       this._photoUpdate();
       setTimeout(function () {
-        _this10.data.elastic = false;
-        _this10._photoUpdate();
+        _this9.data.elastic = false;
+        _this9._photoUpdate();
       }, 300);
     }
   }, {

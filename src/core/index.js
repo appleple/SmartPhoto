@@ -81,8 +81,6 @@ class smartPhoto extends aTemplate {
       this.addNewItem(element);
     });
 
-    this._getEachImageSize();
-
     const currentItem = this._getCurrentItemByHash();
     if(currentItem) {
       util.triggerEvent(currentItem.element,'click');
@@ -99,6 +97,8 @@ class smartPhoto extends aTemplate {
       this.setSizeByScreen();
       this.update();
     });
+
+    this._getEachImageSize();
 
     setInterval(()=>{
       this._doAnim();
@@ -118,6 +118,9 @@ class smartPhoto extends aTemplate {
     });
 
     $(window).on("deviceorientation", (e) => {
+      if(!e.originalEvent){
+        return;
+      }
       if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && this.data.scale){
         if (window.innerHeight > window.innerWidth) {
           this._calcGravity(e.originalEvent.gamma, e.originalEvent.beta);
@@ -233,17 +236,14 @@ class smartPhoto extends aTemplate {
       event.preventDefault();
       this.data.currentGroup = element.getAttribute('data-group');
       this.data.currentIndex = parseInt(element.getAttribute('data-index'));
-      this.data.total = this.groupItems().length;
-      this.data.hide = false;
-      this.data.photoPosX = 0;
-      this.data.photoPosY = 0;
+      this.setHashByCurrentIndex();
       const currentItem = this._getSelectedItem();
       if(currentItem.loaded) {
         this._initPhoto();
         this.addAppearEffect(element);
         this.update();
       } else {
-        this._loadCurrentItem().then(() => {
+        this._loadItem(currentItem).then(() => {
           this.data.appear = true;
           this._initPhoto();
           this.update();
@@ -253,8 +253,11 @@ class smartPhoto extends aTemplate {
   }
 
   _initPhoto () {
-    this.setPosByCurrentIndex();
-    this.setHashByCurrentIndex();
+    this.data.total = this.groupItems().length;
+    this.data.hide = false;
+    this.data.photoPosX = 0;
+    this.data.photoPosY = 0;  
+    this.setPosByCurrentIndex();  
     this.setSizeByScreen();
     this.setArrow(); 
     if(this.data.scaleOnClick === true && this.data.isSmartPhone){
@@ -414,20 +417,19 @@ class smartPhoto extends aTemplate {
     return currentItem;
   }
 
-  _loadCurrentItem () {
+  _loadItem (item) {
     return new Promise ((resolve,reject) => {
       const img = new Image();
-      const currentItem = this._getCurrentItemByHash();
       img.onload = () => {
-        currentItem.width = img.width;
-        currentItem.height = img.height;
-        currentItem.loaded = true; 
+        item.width = img.width;
+        item.height = img.height;
+        item.loaded = true; 
         resolve(); 
       }
       img.onerror = () => { 
         resolve();
       }
-      img.src = currentItem.src;
+      img.src = item.src;
     });
   }
 
@@ -438,6 +440,7 @@ class smartPhoto extends aTemplate {
     const footerHeight = this.data.footerHeight;
     const screenY = windowY - (headerHeight + footerHeight);
     const items = this.groupItems();
+    console.log(windowX,windowY);
     items.forEach((item) => {
       item.scale = screenY / item.height;
       item.x = (item.scale - 1) / 2 * item.width + (windowX - (item.width *item.scale)) / 2;
