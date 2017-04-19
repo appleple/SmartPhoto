@@ -6895,7 +6895,7 @@ var smartPhoto = function (_aTemplate) {
           effect.style.transition = 'all .3s ease-out';
           effect.style.transform = 'translate(' + appearEffect.afterX + 'px, ' + appearEffect.afterY + 'px) scale(' + appearEffect.scale + ')';
           resolve();
-        }, 1);
+        }, 30);
       });
     }
   }, {
