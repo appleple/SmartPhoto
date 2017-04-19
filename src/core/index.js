@@ -234,21 +234,34 @@ class smartPhoto extends aTemplate {
       this.data.currentGroup = element.getAttribute('data-group');
       this.data.currentIndex = parseInt(element.getAttribute('data-index'));
       this.data.total = this.groupItems().length;
-      this.setPosByCurrentIndex();
-      this.setHashByCurrentIndex();
-      this.setSizeByScreen();
-      this.setArrow();
       this.data.hide = false;
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
-      if(this.data.scaleOnClick === true && this.data.isSmartPhone){
-        this.data.scale = true;
-        this.data.hideUi = true;
-        this.data.scaleSize = this._getScaleBoarder();
+      const currentItem = this._getSelectedItem();
+      if(currentItem.loaded) {
+        this._initPhoto();
+        this.addAppearEffect(element);
+        this.update();
+      } else {
+        this._loadCurrentItem().then(() => {
+          this.data.appear = true;
+          this._initPhoto();
+          this.update();
+        });
       }
-      this.addAppearEffect(element);
-      this.update();
     });
+  }
+
+  _initPhoto () {
+    this.setPosByCurrentIndex();
+    this.setHashByCurrentIndex();
+    this.setSizeByScreen();
+    this.setArrow(); 
+    if(this.data.scaleOnClick === true && this.data.isSmartPhone){
+      this.data.scale = true;
+      this.data.hideUi = true;
+      this.data.scaleSize = this._getScaleBoarder();
+    }
   }
 
   onUpdated () {
@@ -278,25 +291,10 @@ class smartPhoto extends aTemplate {
     setTimeout(()=>{
       const $img = $(`.${classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
       const effect = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoImgClone}`);
-      const loader = document.querySelector(`[data-id="${this.id}"] .current .${classNames.smartPhotoLoader}`);
-      if (loader) {
-          this._loadCurrentItem().then(() => {
-            this.data.appearEffect = null;
-            this.data.appear = true;
-            this.setSizeByScreen();
-            if(this.data.scaleOnClick === true && this.data.isSmartPhone){
-              this.data.scale = true;
-              this.data.hideUi = true;
-              this.data.scaleSize = this._getScaleBoarder();
-            }
-            this.update(); 
-          });
-      } else {
-        this.data.appearEffect = null;
-        this.data.appear = true;
-        $img.addClass('active');
-        util.removeElement(effect);
-      }
+      this.data.appearEffect = null;
+      this.data.appear = true;
+      $img.addClass('active');
+      util.removeElement(effect);
     },300);  
   }
 
@@ -423,7 +421,7 @@ class smartPhoto extends aTemplate {
       img.onload = () => {
         currentItem.width = img.width;
         currentItem.height = img.height;
-        currentItem.loaded = true;   
+        currentItem.loaded = true; 
         resolve(); 
       }
       img.onerror = () => { 
