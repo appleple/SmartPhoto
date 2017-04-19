@@ -264,18 +264,32 @@ class smartPhoto extends aTemplate {
   onUpdated () {
     if(this.data.appearEffect && this.data.appearEffect.once) {
       this.data.appearEffect.once = false;
-      const appearEffect = this.data.appearEffect;
-      const classNames = this.data.classNames;
-      const effect = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoImgClone}`);
+      this.execEffect().then(() => {
+        this.replaceEffectWithImg();
+      });
+    }
+  }
+
+  execEffect () {
+    const appearEffect = this.data.appearEffect;
+    const classNames = this.data.classNames;
+    const effect = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoImgClone}`);
+    return new Promise((resolve,reject) => {
       setTimeout(()=>{
         effect.style.transition = 'all .3s ease-out';
         effect.style.transform = `translate(${appearEffect.afterX}px, ${appearEffect.afterY}px) scale(${appearEffect.scale})`;
+        resolve();
       },1);
-      setTimeout(()=>{
-        const $img = $(`.${classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
-        $img.addClass('active');
-        if (document.querySelector(`[data-id="${this.id}"] .current .${classNames.smartPhotoLoader}`)) {
-            this._loadCurrentItem().then(() => {
+    });
+  }
+
+  replaceEffectWithImg () {
+    const classNames = this.data.classNames;
+    setTimeout(()=>{
+      const $img = $(`.${classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
+      $img.addClass('active');
+      if (document.querySelector(`[data-id="${this.id}"] .current .${classNames.smartPhotoLoader}`)) {
+          this._loadCurrentItem().then(() => {
             this.data.appearEffect = null;
             this.data.appear = true;
             this._resetTranslate();
@@ -289,13 +303,12 @@ class smartPhoto extends aTemplate {
             }
             this.update(); 
           });
-        } else {
-          this.data.appearEffect = null;
-          this.data.appear = true;
-          util.removeElement(effect);
-        }
-      },300);
-    }
+      } else {
+        this.data.appearEffect = null;
+        this.data.appear = true;
+        util.removeElement(effect);
+      }
+    },300);  
   }
 
   addAppearEffect (element) {
