@@ -282,6 +282,11 @@ class smartPhoto extends aTemplate {
             this.setPosByCurrentIndex();
             this.setHashByCurrentIndex();
             this.setSizeByScreen();
+            if(this.data.scaleOnClick === true && this.data.isSmartPhone){
+              this.data.scale = true;
+              this.data.hideUi = true;
+              this.data.scaleSize = this._getScaleBoarder();
+            }
             this.update(); 
           });
         } else {

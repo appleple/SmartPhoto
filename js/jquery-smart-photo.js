@@ -6922,6 +6922,11 @@ var smartPhoto = function (_aTemplate) {
               _this4.setPosByCurrentIndex();
               _this4.setHashByCurrentIndex();
               _this4.setSizeByScreen();
+              if (_this4.data.scaleOnClick === true && _this4.data.isSmartPhone) {
+                _this4.data.scale = true;
+                _this4.data.hideUi = true;
+                _this4.data.scaleSize = _this4._getScaleBoarder();
+              }
               _this4.update();
             });
           } else {
