@@ -196,6 +196,10 @@ $modal-bg-color: #333;
 .smart-photo-arrows {
 	opacity: 1;
 	transition: all .3s;
+	position: relative;
+    z-index: 1002;
+    left: 0;
+    top: 50%;
 }
 
 .smart-photo-arrows.hide {

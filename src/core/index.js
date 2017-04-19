@@ -440,7 +440,6 @@ class smartPhoto extends aTemplate {
     const footerHeight = this.data.footerHeight;
     const screenY = windowY - (headerHeight + footerHeight);
     const items = this.groupItems();
-    console.log(windowX,windowY);
     items.forEach((item) => {
       item.scale = screenY / item.height;
       item.x = (item.scale - 1) / 2 * item.width + (windowX - (item.width *item.scale)) / 2;
