@@ -6712,11 +6712,6 @@ var smartPhoto = function (_aTemplate) {
 
     var currentItem = _this._getCurrentItemByHash();
     if (currentItem) {
-      _this.data.currentIndex = currentItem.index;
-      _this.data.currentGroup = currentItem.groupId;
-      _this._resetTranslate();
-      _this.setPosByCurrentIndex();
-      _this.setSizeByScreen();
       util.triggerEvent(currentItem.element, 'click');
     }
 
@@ -6928,7 +6923,7 @@ var smartPhoto = function (_aTemplate) {
       setTimeout(function () {
         var $img = (0, _zeptoBrowserify.$)('.' + classNames.smartPhotoImg, '[data-id="' + _this5.id + '"]');
         var effect = document.querySelector('[data-id="' + _this5.id + '"] .' + classNames.smartPhotoImgClone);
-        var loader = document.querySelector('[data-id="' + _this5.id + '"] .' + classNames.smartPhotoLoader);
+        var loader = document.querySelector('[data-id="' + _this5.id + '"] .current .' + classNames.smartPhotoLoader);
         if (loader) {
           _this5._loadCurrentItem().then(function () {
             _this5.data.appearEffect = null;

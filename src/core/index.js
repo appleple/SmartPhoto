@@ -85,11 +85,6 @@ class smartPhoto extends aTemplate {
 
     const currentItem = this._getCurrentItemByHash();
     if(currentItem) {
-      this.data.currentIndex = currentItem.index;
-      this.data.currentGroup = currentItem.groupId;
-      this._resetTranslate();
-      this.setPosByCurrentIndex();
-      this.setSizeByScreen();
       util.triggerEvent(currentItem.element,'click');
     }
 
@@ -283,7 +278,7 @@ class smartPhoto extends aTemplate {
     setTimeout(()=>{
       const $img = $(`.${classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
       const effect = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoImgClone}`);
-      const loader = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoLoader}`);
+      const loader = document.querySelector(`[data-id="${this.id}"] .current .${classNames.smartPhotoLoader}`);
       if (loader) {
           this._loadCurrentItem().then(() => {
             this.data.appearEffect = null;
