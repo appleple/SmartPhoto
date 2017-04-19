@@ -287,8 +287,9 @@ class smartPhoto extends aTemplate {
     const classNames = this.data.classNames;
     setTimeout(()=>{
       const $img = $(`.${classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
+      const effect = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoImgClone}`);
       $img.addClass('active');
-      if (document.querySelector(`[data-id="${this.id}"] .current .${classNames.smartPhotoLoader}`)) {
+      if (effect) {
           this._loadCurrentItem().then(() => {
             this.data.appearEffect = null;
             this.data.appear = true;

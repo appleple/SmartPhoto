@@ -6931,8 +6931,9 @@ var smartPhoto = function (_aTemplate) {
       var classNames = this.data.classNames;
       setTimeout(function () {
         var $img = (0, _zeptoBrowserify.$)('.' + classNames.smartPhotoImg, '[data-id="' + _this5.id + '"]');
+        var effect = document.querySelector('[data-id="' + _this5.id + '"] .' + classNames.smartPhotoImgClone);
         $img.addClass('active');
-        if (document.querySelector('[data-id="' + _this5.id + '"] .current .' + classNames.smartPhotoLoader)) {
+        if (effect) {
           _this5._loadCurrentItem().then(function () {
             _this5.data.appearEffect = null;
             _this5.data.appear = true;
