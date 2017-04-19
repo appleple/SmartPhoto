@@ -285,15 +285,13 @@ class smartPhoto extends aTemplate {
     const clone = img.cloneNode(true);
     const pos = util.getViewPos(img);
     const appear = {};
+    let scale = 1;
     appear.width = img.offsetWidth;
     appear.height = img.offsetHeight;
     appear.top = pos.top;
     appear.left = pos.left;
     appear.once = true;
-    appear.img = img.getAttribute('src');
-
-    // appear.transition = 'all .3s ease-out';
-    let scale = 1;
+    appear.img = img.getAttribute('src');  
     const windowX = window.innerWidth;
     const windowY = window.innerHeight;
     const screenY = windowY - this.data.headerHeight - this.data.footerHeight;

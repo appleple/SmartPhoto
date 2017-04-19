@@ -12,7 +12,7 @@
 					<!-- BEGIN groupItems:loop -->
 					<li style="transform:translate({translateX}px,{translateY}px);" class="<!-- \BEGIN currentIndex:touch#{index} -->current<!-- \END currentIndex:touch#{index} -->">
 						<!-- BEGIN loaded:exist -->
-						<div style="transform:translate({x}px,{y}px) scale({scale});" class="\\{classNames.smartPhotoImgWrap\\}" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">				
+						<div style="transform:translate({x}px,{y}px) scale({scale});" class="\\{classNames.smartPhotoImgWrap\\}" data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag" data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag">
 							<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}[virtualPos]px,\{photoPosY\}[virtualPos]px) scale(\{scaleSize\});<!-- \END currentIndex:touch#{index} -->" src="{src}" class="\\{classNames.smartPhotoImg\\}<!-- \BEGIN scale:exist -->  \\{classNames.smartPhotoImgOnMove\\}<!-- \END scale:exist --><!-- \BEGIN elastic:exist --> \\{classNames.smartPhotoImgElasticMove\\}<!-- \END elastic:exist --><!-- \BEGIN appear:exist --> active<!-- \END appear:exist -->" ondragstart="return false;">
 						</div>
 						<!-- END loaded:exist -->
@@ -41,7 +41,7 @@
 				<!-- END nav:exist -->
 		</div>
 		<!-- BEGIN appearEffect:exist -->
-		<img src=\{appearEffect.img\} 
+		<img src=\{appearEffect.img\}
 		class="\{classNames.smartPhotoImgClone\}"
 		style="width:\{appearEffect.width\}px;height:\{appearEffect.height\}px;transform:translate(\{appearEffect.left\}px,\{appearEffect.top\}px) scale(1)" />
 		<!-- END appearEffect:exist -->
