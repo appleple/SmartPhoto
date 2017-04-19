@@ -6867,10 +6867,6 @@ var smartPhoto = function (_aTemplate) {
         _this3.addAppearEffect(element);
         _this3.update();
       });
-
-      if (!location.hash) {
-        return;
-      }
     }
   }, {
     key: 'onUpdated',
@@ -6907,14 +6903,11 @@ var smartPhoto = function (_aTemplate) {
       setTimeout(function () {
         var $img = (0, _zeptoBrowserify.$)('.' + classNames.smartPhotoImg, '[data-id="' + _this5.id + '"]');
         var effect = document.querySelector('[data-id="' + _this5.id + '"] .' + classNames.smartPhotoImgClone);
-        $img.addClass('active');
-        if (effect) {
+        var loader = document.querySelector('[data-id="' + _this5.id + '"] .' + classNames.smartPhotoLoader);
+        if (loader) {
           _this5._loadCurrentItem().then(function () {
             _this5.data.appearEffect = null;
             _this5.data.appear = true;
-            _this5._resetTranslate();
-            _this5.setPosByCurrentIndex();
-            _this5.setHashByCurrentIndex();
             _this5.setSizeByScreen();
             if (_this5.data.scaleOnClick === true && _this5.data.isSmartPhone) {
               _this5.data.scale = true;
@@ -6926,6 +6919,7 @@ var smartPhoto = function (_aTemplate) {
         } else {
           _this5.data.appearEffect = null;
           _this5.data.appear = true;
+          $img.addClass('active');
           util.removeElement(effect);
         }
       }, 300);

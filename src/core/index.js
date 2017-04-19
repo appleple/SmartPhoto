@@ -254,11 +254,6 @@ class smartPhoto extends aTemplate {
       this.addAppearEffect(element);
       this.update();
     });
-
-    if (!location.hash){
-      return;
-    }
-
   }
 
   onUpdated () {
@@ -288,14 +283,11 @@ class smartPhoto extends aTemplate {
     setTimeout(()=>{
       const $img = $(`.${classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
       const effect = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoImgClone}`);
-      $img.addClass('active');
-      if (effect) {
+      const loader = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoLoader}`);
+      if (loader) {
           this._loadCurrentItem().then(() => {
             this.data.appearEffect = null;
             this.data.appear = true;
-            this._resetTranslate();
-            this.setPosByCurrentIndex();
-            this.setHashByCurrentIndex();
             this.setSizeByScreen();
             if(this.data.scaleOnClick === true && this.data.isSmartPhone){
               this.data.scale = true;
@@ -307,6 +299,7 @@ class smartPhoto extends aTemplate {
       } else {
         this.data.appearEffect = null;
         this.data.appear = true;
+        $img.addClass('active');
         util.removeElement(effect);
       }
     },300);  
