@@ -309,7 +309,10 @@ $modal-bg-color: #333;
 
 .smart-photo-list {
 	list-style-type: none;
-	position: relative;
+	position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 103;
 	margin: 0;
 	padding: 0;
 	white-space: nowrap;

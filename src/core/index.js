@@ -81,17 +81,17 @@ class smartPhoto extends aTemplate {
       this.addNewItem(element);
     });
 
-    this._getEachImageSize().then(()=>{
-      const currentItem = this._getCurrentItemByHash();
-      if(currentItem) {
-        this.data.currentIndex = currentItem.index;
-        this.data.currentGroup = currentItem.groupId;
-        this._resetTranslate();
-        this.setPosByCurrentIndex();
-        this.setSizeByScreen();
-        util.triggerEvent(currentItem.element,'click');
-      }
-    });
+    this._getEachImageSize();
+
+    const currentItem = this._getCurrentItemByHash();
+    if(currentItem) {
+      this.data.currentIndex = currentItem.index;
+      this.data.currentGroup = currentItem.groupId;
+      this._resetTranslate();
+      this.setPosByCurrentIndex();
+      this.setSizeByScreen();
+      util.triggerEvent(currentItem.element,'click');
+    }
 
     if(!this.data.isSmartPhone) {
         this._setKeyboard();
@@ -273,7 +273,7 @@ class smartPhoto extends aTemplate {
       setTimeout(()=>{
         this.data.appearEffect = null;
         this.data.appear = true;
-        util.removeElement(effect);
+        // util.removeElement(effect);
         const $img = $(`.${this.data.classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
         $img.addClass('active');
       },300);

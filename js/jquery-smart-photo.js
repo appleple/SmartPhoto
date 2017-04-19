@@ -6708,17 +6708,17 @@ var smartPhoto = function (_aTemplate) {
       _this.addNewItem(element);
     });
 
-    _this._getEachImageSize().then(function () {
-      var currentItem = _this._getCurrentItemByHash();
-      if (currentItem) {
-        _this.data.currentIndex = currentItem.index;
-        _this.data.currentGroup = currentItem.groupId;
-        _this._resetTranslate();
-        _this.setPosByCurrentIndex();
-        _this.setSizeByScreen();
-        util.triggerEvent(currentItem.element, 'click');
-      }
-    });
+    _this._getEachImageSize();
+
+    var currentItem = _this._getCurrentItemByHash();
+    if (currentItem) {
+      _this.data.currentIndex = currentItem.index;
+      _this.data.currentGroup = currentItem.groupId;
+      _this._resetTranslate();
+      _this.setPosByCurrentIndex();
+      _this.setSizeByScreen();
+      util.triggerEvent(currentItem.element, 'click');
+    }
 
     if (!_this.data.isSmartPhone) {
       _this._setKeyboard();
@@ -6913,7 +6913,7 @@ var smartPhoto = function (_aTemplate) {
         setTimeout(function () {
           _this4.data.appearEffect = null;
           _this4.data.appear = true;
-          util.removeElement(effect);
+          // util.removeElement(effect);
           var $img = (0, _zeptoBrowserify.$)('.' + _this4.data.classNames.smartPhotoImg, '[data-id="' + _this4.id + '"]');
           $img.addClass('active');
         }, 300);
