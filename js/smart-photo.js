@@ -6858,6 +6858,8 @@ var smartPhoto = function (_aTemplate) {
           _this3.addAppearEffect(element);
           _this3.update();
         } else {
+          _this3._initPhoto();
+          _this3.update();
           _this3._loadItem(currentItem).then(function () {
             _this3.data.appear = true;
             _this3._initPhoto();

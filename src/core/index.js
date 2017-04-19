@@ -242,13 +242,13 @@ class smartPhoto extends aTemplate {
         this._initPhoto();
         this.addAppearEffect(element);
         this.update();
-
       } else {
+        this._initPhoto();
+        this.update();
         this._loadItem(currentItem).then(() => {
           this.data.appear = true;
           this._initPhoto();
           this.update();
-  
         });
       }
     });
