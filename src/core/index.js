@@ -90,20 +90,20 @@ class smartPhoto extends aTemplate {
         this._setKeyboard();
     }
 
-
-    $(window).resize(() => {
-      this._resetTranslate();
-      this.setPosByCurrentIndex();
-      this.setSizeByScreen();
-      this.update();
-    });
-
     this._getEachImageSize();
 
     setInterval(()=>{
       this._doAnim();
     },this.data.forceInterval);
 
+    if(!this.data.isSmartPhone){
+      $(window).resize(() => {
+        this._resetTranslate();
+        this.setPosByCurrentIndex();
+        this.setSizeByScreen();
+        this.update();
+      });
+    }
 
     if(!this.data.isSmartPhone || !this.data.useOrientationApi){
       return;
@@ -242,11 +242,13 @@ class smartPhoto extends aTemplate {
         this._initPhoto();
         this.addAppearEffect(element);
         this.update();
+
       } else {
         this._loadItem(currentItem).then(() => {
           this.data.appear = true;
           this._initPhoto();
           this.update();
+  
         });
       }
     });
@@ -350,6 +352,7 @@ class smartPhoto extends aTemplate {
     }
     $(window).scrollTop( scrollLocation );
     this.update();
+    console.log('update');
   }
 
   _getTouchPos (e) {

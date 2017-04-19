@@ -6692,18 +6692,20 @@ var smartPhoto = function (_aTemplate) {
       _this._setKeyboard();
     }
 
-    (0, _zeptoBrowserify.$)(window).resize(function () {
-      _this._resetTranslate();
-      _this.setPosByCurrentIndex();
-      _this.setSizeByScreen();
-      _this.update();
-    });
-
     _this._getEachImageSize();
 
     setInterval(function () {
       _this._doAnim();
     }, _this.data.forceInterval);
+
+    if (!_this.data.isSmartPhone) {
+      (0, _zeptoBrowserify.$)(window).resize(function () {
+        _this._resetTranslate();
+        _this.setPosByCurrentIndex();
+        _this.setSizeByScreen();
+        _this.update();
+      });
+    }
 
     if (!_this.data.isSmartPhone || !_this.data.useOrientationApi) {
       return (0, _possibleConstructorReturn3.default)(_this);
@@ -6972,6 +6974,7 @@ var smartPhoto = function (_aTemplate) {
       }
       (0, _zeptoBrowserify.$)(window).scrollTop(scrollLocation);
       this.update();
+      console.log('update');
     }
   }, {
     key: '_getTouchPos',
