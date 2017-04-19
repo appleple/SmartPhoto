@@ -243,8 +243,6 @@ class smartPhoto extends aTemplate {
         this.addAppearEffect(element);
         this.update();
       } else {
-        this._initPhoto();
-        this.update();
         this._loadItem(currentItem).then(() => {
           this.data.appear = true;
           this._initPhoto();
@@ -294,12 +292,9 @@ class smartPhoto extends aTemplate {
   replaceEffectWithImg () {
     const classNames = this.data.classNames;
     setTimeout(()=>{
-      const $img = $(`.${classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
-      const effect = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoImgClone}`);
       this.data.appearEffect = null;
       this.data.appear = true;
-      $img.addClass('active');
-      util.removeElement(effect);
+      this.update();
     },300);  
   }
 
@@ -352,7 +347,6 @@ class smartPhoto extends aTemplate {
     }
     $(window).scrollTop( scrollLocation );
     this.update();
-    console.log('update');
   }
 
   _getTouchPos (e) {
