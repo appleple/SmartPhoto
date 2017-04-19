@@ -265,17 +265,30 @@ class smartPhoto extends aTemplate {
     if(this.data.appearEffect && this.data.appearEffect.once) {
       this.data.appearEffect.once = false;
       const appearEffect = this.data.appearEffect;
-      const effect = document.querySelector(`[data-id="${this.id}"] .${this.data.classNames.smartPhotoImgClone}`);
+      const classNames = this.data.classNames;
+      const effect = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoImgClone}`);
       setTimeout(()=>{
         effect.style.transition = 'all .3s ease-out';
         effect.style.transform = `translate(${appearEffect.afterX}px, ${appearEffect.afterY}px) scale(${appearEffect.scale})`;
       },1);
       setTimeout(()=>{
-        this.data.appearEffect = null;
-        this.data.appear = true;
-        // util.removeElement(effect);
-        const $img = $(`.${this.data.classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
+        const $img = $(`.${classNames.smartPhotoImg}`,`[data-id="${this.id}"]`);
         $img.addClass('active');
+        if (document.querySelector(`[data-id="${this.id}"] .current .${classNames.smartPhotoLoader}`)) {
+            this._loadCurrentItem().then(() => {
+            this.data.appearEffect = null;
+            this.data.appear = true;
+            this._resetTranslate();
+            this.setPosByCurrentIndex();
+            this.setHashByCurrentIndex();
+            this.setSizeByScreen();
+            this.update(); 
+          });
+        } else {
+          this.data.appearEffect = null;
+          this.data.appear = true;
+          util.removeElement(effect);
+        }
       },300);
     }
   }
@@ -316,7 +329,7 @@ class smartPhoto extends aTemplate {
   }
 
   addLeaveEffect () {
-
+    
   }
 
   hidePhoto () {
@@ -394,6 +407,23 @@ class smartPhoto extends aTemplate {
       });
     }
     return currentItem;
+  }
+
+  _loadCurrentItem () {
+    return new Promise ((resolve,reject) => {
+      const img = new Image();
+      const currentItem = this._getCurrentItemByHash();
+      img.onload = () => {
+        currentItem.width = img.width;
+        currentItem.height = img.height;
+        currentItem.loaded = true;   
+        resolve(); 
+      }
+      img.onerror = () => { 
+        resolve();
+      }
+      img.src = currentItem.src;
+    });
   }
 
   setSizeByScreen () {
