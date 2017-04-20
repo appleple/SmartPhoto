@@ -9,6 +9,13 @@
     <meta name="theme-color" content="#157878">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="./assets/css/style.css?v=96c482a683ca3d2e8dd0d3c3a74134ace03a6260">
+	<link rel="stylesheet" href="https://unpkg.com/smartphoto@latest/css/smart-photo.min.css">
+	<style>
+		.js-img-viwer img{
+			height: 200px;
+			width: auto;
+		}
+	</style>
   </head>
   <body>
     <section class="page-header">
@@ -22,13 +29,32 @@
 
     <section class="main-content">
       <h1 id="smartphoto">SmartPhoto</h1>
-<p>The most easy to use responsive image viwer especially for mobile devices</p>
+
+		<a href="./assets/images/large-kuma.jpg" class="js-img-viwer" data-caption="くま" data-id="kuma" data-group="0">
+			<img src="./assets/images/kuma.jpg" />
+		</a>
+		<a href="./assets/images/large-rakuda.jpg" class="js-img-viwer" data-caption="ラクダ" data-id="rakuda" data-group="0">
+			<img src="./assets/images/rakuda.jpg" />
+		</a>
+		<a href="./assets/images/large-lion.jpg" class="js-img-viwer" data-caption="ライオン" data-id="raion" data-group="0">
+			<img src="./assets/images/lion.jpg" />
+		</a>
+		<a href="./assets/images/large-sai.jpg" class="js-img-viwer" data-caption="サイ" data-id="sai" data-group="0">
+			<img src="./assets/images/sai.jpg" />
+		</a>
+		<a href="./assets/images/large-kaba.jpg" class="js-img-viwer" data-caption="かば" data-id="kaba" data-group="0">
+			<img src="./assets/images/kaba.jpg" />
+		</a>
+		<a href="./assets/images/large-koara.jpg" class="js-img-viwer" data-caption="コアラ" data-id="koara" data-group="0">
+			<img src="./assets/images/koara.jpg" />
+		</a>
 
 <h2 id="feature">Feature</h2>
 <ul>
   <li>Flick images to zoom/drag images and also switch to next images</li>
   <li>Use Accelerometer to move images</li>
   <li>Scale images to the optimized size so to view each image clearly</li>
+  <li>You can make some groups by data-group attribute</li>
 </ul>
 
 <h2 id="instration">Instration</h2>
@@ -160,6 +186,11 @@
       </footer>
     </section>
 
-
+<script src="https://unpkg.com/smartphoto@latest/js/smart-photo.js"></script>
+<script>
+window.addEventListener('load',function(){
+    new smartPhoto(".js-img-viwer");
+});
+</script>
   </body>
 </html>
