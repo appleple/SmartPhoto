@@ -1,6 +1,6 @@
 {
   "name": "smartphoto",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "smartphoto",
   "homepage": "http://developer.a-blogcms.jp",
   "main": "lib/index.js",
@@ -41,7 +41,7 @@
     "watchify": "^3.9.0",
     "node-cmd": "^2.0.0",
     "co": "^4.6.0",
-    "fs-extra": "^2.1.2"    
+    "fs-extra": "^2.1.2"
   },
   "dependencies": {
     "a-template": "0.1.4",
