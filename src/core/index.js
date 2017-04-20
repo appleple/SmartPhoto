@@ -518,9 +518,10 @@ class smartPhoto extends aTemplate {
     }
     const date = new Date();
     const tapSecond = date.getTime();
-    if(Math.abs(this.tapSecond - tapSecond) <= 500) {
+    const offset = this.tapSecond - tapSecond;
+    this.tapSecond = tapSecond;
+    if(Math.abs(offset) <= 500) {
       this.e.preventDefault();
-      this.tapSecond = tapSecond;
       this.zoomPhoto();
       return;
     }

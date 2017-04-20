@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.2.3
+ *   version: 0.2.4
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -5360,9 +5360,10 @@ var smartPhoto = function (_aTemplate) {
       }
       var date = new Date();
       var tapSecond = date.getTime();
-      if (Math.abs(this.tapSecond - tapSecond) <= 500) {
+      var offset = this.tapSecond - tapSecond;
+      this.tapSecond = tapSecond;
+      if (Math.abs(offset) <= 500) {
         this.e.preventDefault();
-        this.tapSecond = tapSecond;
         this.zoomPhoto();
         return;
       }
