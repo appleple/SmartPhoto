@@ -2,7 +2,6 @@ $animation-speed: .3s;
 $animation-function: ease-out;
 $backdrop-color: rgba(0, 0, 0, 1);
 $header-color: rgba(0, 0, 0, .2);
-$modal-bg-color: #333;
 
 @keyframes smart-photo {
 	from {
@@ -153,7 +152,7 @@ $modal-bg-color: #333;
 	   -moz-user-select: none;
 	    -ms-user-select: none;
 	        user-select: none;
-	transition: transform .3s cubic-bezier(.4, 0, .22, 1);
+	transition: transform .3s $animation-function;
 
 	-webkit-user-drag: none;
 }
@@ -169,7 +168,7 @@ $modal-bg-color: #333;
 }
 
 .smart-photo-img-elasticmove {
-	transition: transform .3s cubic-bezier(.4, 0, .22, 1);
+	transition: transform .3s $animation-function;
 }
 
 .smart-photo-img-wrap {

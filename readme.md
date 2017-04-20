@@ -80,7 +80,6 @@ $(function(){
 	</tr>
 </table>
 
-
 When you want to hide arrows and nav
 ```js
 window.addEventListener('load',function(){
@@ -91,6 +90,30 @@ window.addEventListener('load',function(){
 });
 ```
 
+### SCSS
+
+<table>
+	<tr>
+		<th>variable</th>
+		<th>description</th>
+		<th>default</th>
+	</tr>
+    <tr>
+        <td>$animation-speed</td>
+        <td>animation speed when switching images</td>
+        <td>.3s</td>
+    </tr>
+    <tr>
+        <td>$backdrop-color</td>
+        <td>backdrop color when viewing images</td>
+        <td>rgba(0, 0, 0, 1)</td>
+    </tr>
+    <tr>
+        <td>$header-color</td>
+        <td>header color</td>
+        <td>rgba(0, 0, 0, .2)</td>
+    </tr>
+</table>
 
 
 ## Download
