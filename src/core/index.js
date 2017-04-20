@@ -43,7 +43,7 @@ const defaults = {
   registance:0.5,
   scaleOnClick:true,
   allowVerticalGravity:false,
-  useOrientationApi:true
+  useOrientationApi:false
 }
 
 class smartPhoto extends aTemplate {
@@ -105,10 +105,6 @@ class smartPhoto extends aTemplate {
       });
     }
 
-    if(!this.data.isSmartPhone || !this.data.useOrientationApi){
-      return;
-    }
-
     $(window).on("orientationchange", (e) => {
       this._resetTranslate();
       this.setPosByCurrentIndex();
@@ -117,8 +113,12 @@ class smartPhoto extends aTemplate {
       this.update();
     });
 
+    if(!this.data.isSmartPhone || !this.data.useOrientationApi){
+      return;
+    }
+
     $(window).on("deviceorientation", (e) => {
-      if(!e.originalEvent){
+      if(!e.originalEvent || this.data.appearEffect){
         return;
       }
       if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && this.data.scale){

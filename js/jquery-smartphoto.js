@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.1.0
+ *   version: 0.2.0
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -4847,7 +4847,7 @@ var defaults = {
   registance: 0.5,
   scaleOnClick: true,
   allowVerticalGravity: false,
-  useOrientationApi: true
+  useOrientationApi: false
 };
 
 var smartPhoto = function (_aTemplate) {
@@ -4912,10 +4912,6 @@ var smartPhoto = function (_aTemplate) {
       });
     }
 
-    if (!_this.data.isSmartPhone || !_this.data.useOrientationApi) {
-      return _possibleConstructorReturn(_this);
-    }
-
     (0, _zeptoBrowserify.$)(window).on("orientationchange", function (e) {
       _this._resetTranslate();
       _this.setPosByCurrentIndex();
@@ -4924,8 +4920,12 @@ var smartPhoto = function (_aTemplate) {
       _this.update();
     });
 
+    if (!_this.data.isSmartPhone || !_this.data.useOrientationApi) {
+      return _possibleConstructorReturn(_this);
+    }
+
     (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
-      if (!e.originalEvent) {
+      if (!e.originalEvent || _this.data.appearEffect) {
         return;
       }
       if (!_this.isBeingZoomed && !_this.isSwipable && !_this.photoSwipable && !_this.data.elastic && _this.data.scale) {

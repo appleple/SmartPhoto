@@ -14,7 +14,7 @@
     "sass": "node-sass ./scss/smartphoto.scss ./css/smartphoto.min.css --output-style compressed",
     "watch:js": "onchange \"src/\" -- npm run build:js",
     "watch:sass": "onchange \"scss\" -- npm run sass",
-    "sync": "browser-sync start --server './' --files './js/*.js' './css/*.css' --startPath '/test/jquery.html'",
+    "sync": "browser-sync start --server './' --files './js/*.js' './css/*.css' --startPath '/examples/jquery.html'",
     "start": "npm-run-all -p watch:js watch:sass sync"
   },
   "author": "appleple",
