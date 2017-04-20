@@ -41,7 +41,7 @@ const defaults = {
   footerHeight:60,
   forceInterval:10,
   registance:0.5,
-  scaleOnClick:true,
+  resizeStyle:'fill',
   allowVerticalGravity:false,
   useOrientationApi:false
 }
@@ -260,7 +260,7 @@ class smartPhoto extends aTemplate {
     this.setPosByCurrentIndex();  
     this.setSizeByScreen();
     this.setArrow(); 
-    if(this.data.scaleOnClick === true && this.data.isSmartPhone){
+    if(this.data.resizeStyle === 'fill' && this.data.isSmartPhone){
       this.data.scale = true;
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
@@ -313,7 +313,7 @@ class smartPhoto extends aTemplate {
     const windowX = window.innerWidth;
     const windowY = window.innerHeight;
     const screenY = windowY - this.data.headerHeight - this.data.footerHeight;
-    if(this.data.scaleOnClick === true && this.data.isSmartPhone){
+    if(this.data.resizeStyle === 'fill' && this.data.isSmartPhone){
       if(img.offsetWidth > img.offsetHeight) {
         scale = windowY / img.offsetHeight;
       }else {

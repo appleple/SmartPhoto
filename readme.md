@@ -61,9 +61,9 @@ $(function(){
 		<td>true</td>
 	</tr>
 	<tr>
-		<td>scaleOnClick</td>
-		<td>scale images to optimized sizes when tapped</td>
-		<td>true</td>
+		<td>resizeStyle</td>
+		<td>resize images to fill/fit on the screen</td>
+		<td>'fill'</td>
 	</tr>
 	<tr>
 		<td>useOrientationApi</td>
