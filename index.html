@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="description" content="The most easy to use responsive image viewer especially for mobile devices"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="./assets/css/style.css?v=96c482a683ca3d2e8dd0d3c3a74134ace03a6260">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">SmartPhoto</h1>
+      <h2 class="project-tagline">The most easy to use responsive image viewer especially for mobile devices</h2>
+
+        <a href="https://github.com/appleple/SmartPhoto" class="btn">View on GitHub</a>
+
+
+    </section>
+
+    <section class="main-content">
+      <h1 id="smartphoto">SmartPhoto</h1>
+<p>The most easy to use responsive image viwer especially for mobile devices</p>
+
+<h2 id="feature">Feature</h2>
+<ul>
+  <li>Flick images to zoom/drag images and also switch to next images</li>
+  <li>Use Accelerometer to move images</li>
+  <li>Scale images to the optimized size so to view each image clearly</li>
+</ul>
+
+<h2 id="instration">Instration</h2>
+<ul>
+  <li><a href="https://www.npmjs.com/package/smartphoto">npm</a></li>
+  <li><a href="https://raw.githubusercontent.com/appleple/smart-photo/master/js/smart-photo.js">standalone</a></li>
+</ul>
+
+<p>via npm</p>
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code>npm install smartphoto --save
+</code></pre>
+</div>
+
+<p>or yarn</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code>yarn add smartphoto
+</code></pre>
+</div>
+
+<h2 id="usage">Usage</h2>
+<p>smartphoto.js</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'load'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="k">new</span> <span class="nx">smartPhoto</span><span class="p">(</span><span class="s2">".js-img-viwer"</span><span class="p">,{</span>
+        <span class="na">arrows</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="p">});</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+<p>jquery-smartphoto.js</p>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">".js-img-viwer"</span><span class="p">).</span><span class="nx">smartPhoto</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+<h3 id="option">Option</h3>
+
+<table>
+	<tr>
+		<th>variable</th>
+		<th>description</th>
+		<th>default</th>
+	</tr>
+	<tr>
+		<td>arrows</td>
+		<td>prev/next arrows</td>
+		<td>true</td>
+	</tr>
+	<tr>
+		<td>nav</td>
+		<td>navigation images at the bottom</td>
+		<td>true</td>
+	</tr>
+	<tr>
+		<td>scaleOnClick</td>
+		<td>scale images to optimized sizes when tapped</td>
+		<td>true</td>
+	</tr>
+	<tr>
+		<td>useOrientationApi</td>
+		<td>use accelerometer to move images</td>
+		<td>true</td>
+	</tr>
+	<tr>
+		<td>animationSpeed</td>
+		<td>animation speed when switching images</td>
+		<td>300</td>
+	</tr>
+	<tr>
+		<td>forceInterval</td>
+		<td>frequency to apply force to images</td>
+		<td>10</td>
+	</tr>
+</table>
+
+<p>When you want to hide arrows and nav</p>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'load'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="k">new</span> <span class="nx">smartPhoto</span><span class="p">(</span><span class="s2">".js-img-viwer"</span><span class="p">,{</span>
+        <span class="na">arrows</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="na">nav</span><span class="p">:</span> <span class="kc">false</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+<h3 id="scss">SCSS</h3>
+
+<table>
+	<tr>
+		<th>variable</th>
+		<th>description</th>
+		<th>default</th>
+	</tr>
+    <tr>
+        <td>$animation-speed</td>
+        <td>animation speed when switching images</td>
+        <td>.3s</td>
+    </tr>
+    <tr>
+        <td>$backdrop-color</td>
+        <td>backdrop color when viewing images</td>
+        <td>rgba(0, 0, 0, 1)</td>
+    </tr>
+    <tr>
+        <td>$header-color</td>
+        <td>header color</td>
+        <td>rgba(0, 0, 0, .2)</td>
+    </tr>
+</table>
+
+<h2 id="download">Download</h2>
+<p><a href="https://github.com/appleple/SmartPhoto/archive/master.zip">Download ZIP</a></p>
+
+<h2 id="github">Github</h2>
+<p><a href="https://github.com/appleple/SmartPhoto">https://github.com/appleple/SmartPhoto</a></p>
+
+<h2 id="license">License</h2>
+<p>Code and documentation copyright 2017 by appleple, Inc. Code released under the <a href="https://github.com/appleple/SmartPhoto/blob/master/LICENSE">MIT License</a>.</p>
+
+
+      <footer class="site-footer">
+
+          <span class="site-footer-owner"><a href="https://github.com/appleple/SmartPhoto">SmartPhoto</a> is maintained by <a href="https://github.com/appleple">appleple</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </section>
+
+
+  </body>
+</html>
