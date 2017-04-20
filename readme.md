@@ -15,7 +15,7 @@ via npm
 npm install smartphoto --save
 ```
 
-or
+or yarn
 
 ```shell
 yarn add smartphoto
@@ -36,6 +36,47 @@ $(function(){
     $(".js-img-viwer").smartPhoto();
 });
 ```
+
+### Option
+
+<table>
+	<tr>
+		<td>variable</td>
+		<td>description</td>
+		<td>default</td>
+	</tr>
+	<tr>
+		<td>arrows</td>
+		<td>prev/next arrows</td>
+		<td>true</td>
+	</tr>
+	<tr>
+		<td>nav</td>
+		<td>navigation images at the bottom</td>
+		<td>true</td>
+	</tr>
+	<tr>
+		<td>scaleOnClick</td>
+		<td>scale images to optimized sizes when tapped</td>
+		<td>true</td>
+	</tr>
+	<tr>
+		<td>useOrientationApi</td>
+		<td>use accelerometer to move images</td>
+		<td>true</td>
+	</tr>
+	<tr>
+		<td>animationSpeed</td>
+		<td>animation speed when switching images</td>
+		<td>300</td>
+	</tr>
+	<tr>
+		<td>forceInterval</td>
+		<td>frequency to apply force to images</td>
+		<td>10</td>
+	</tr>
+</table>
+
 
 
 ## Download
