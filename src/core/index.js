@@ -500,7 +500,7 @@ class smartPhoto extends aTemplate {
     this.oldPos = pos;
   }
 
-  afterDrag () {
+  afterDrag (value) {
     this.isSwipable = false;
     this.onListMove = false;
     const items = this.groupItems();
@@ -508,7 +508,6 @@ class smartPhoto extends aTemplate {
       this.afterGesture();
       return;
     }
-    this.isBeingZoomed = false;
     if(this.data.scale){
       this.afterPhotoDrag();
       return;
@@ -519,13 +518,13 @@ class smartPhoto extends aTemplate {
     const date = new Date();
     const tapSecond = date.getTime();
     const offset = this.tapSecond - tapSecond;
-    this.tapSecond = tapSecond;
-    if(Math.abs(offset) <= 500) {
+    const swipeWidth = this.oldPos.x - this.firstPos.x;
+    if(Math.abs(offset) <= 500 && swipeWidth === 0) {
       this.e.preventDefault();
       this.zoomPhoto();
       return;
     }
-    const swipeWidth = this.oldPos.x - this.firstPos.x
+    this.tapSecond = tapSecond;
     if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0 ) {
       this.data.currentIndex--;
     } else if (swipeWidth <= - this.data.swipeOffset && this.data.currentIndex != items.length -1 ) {
