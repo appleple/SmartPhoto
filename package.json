@@ -15,7 +15,10 @@
     "watch:js": "onchange \"src/\" -- npm run build:js",
     "watch:sass": "onchange \"scss\" -- npm run sass",
     "sync": "browser-sync start --server './' --files './js/*.js' './css/*.css' --startPath '/examples/jquery.html'",
-    "start": "npm-run-all -p watch:js watch:sass sync"
+    "start": "npm-run-all -p watch:js watch:sass sync",
+    "patch": "npm version patch && node ./tools/index.js",
+    "minor": "npm version minor &&  node ./tools/index.js",
+    "major": "npm version major && node ./tools/index.js"
   },
   "author": "appleple",
   "license": "MIT",
@@ -35,7 +38,10 @@
     "onchange": "^3.2.1",
     "stringify": "^5.1.0",
     "uglify-js": "^2.7.5",
-    "watchify": "^3.9.0"
+    "watchify": "^3.9.0",
+    "node-cmd": "^2.0.0",
+    "co": "^4.6.0",
+    "fs-extra": "^2.1.2"    
   },
   "dependencies": {
     "a-template": "0.1.4",

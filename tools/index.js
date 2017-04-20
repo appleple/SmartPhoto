@@ -1,11 +1,32 @@
-#! /usr/bin/env node
-var fs = require("fs");
-var jsesc = require("jsesc");
-var process_path = process.cwd();
-var path = require('path');
-var text = fs.readFileSync(path.resolve(process_path, "./src/index.js"), 'utf8');
-text = text.replace(/import (.*?) from '((.*?)\.(html|css))'/g,function(a,b,c){
-  var template = jsesc(fs.readFileSync(path.resolve(process_path,"./src/",c), 'utf8'));
-	return "var "+ b +" = \'"+template+"\'";
+"use strict"
+const cmd = require('node-cmd')
+const co = require('co')
+const fs = require('fs-extra')
+
+const SystemPromise = (cmd_string) => {
+  return new Promise((resolve, reject) => {
+    cmd.get(
+      cmd_string,
+      (data, err, stderr) => {
+        if ( err ) {
+          console.log(err)
+        }
+        if ( stderr ) {
+          console.log(stderr)
+        }
+        resolve(data)
+      }
+    )
+  })
+}
+
+const pkg = fs.readJsonSync('../package.json')
+
+co(function *() {
+  try {
+    yield SystemPromise(`git push origin v${pkg.version}`);
+    yield SystemPromise(`npm publish`);
+  } catch ( err ) {
+    console.log(err)
+  }
 });
-fs.writeFileSync(path.resolve(process_path,"./lib/prebuild.js"),text, 'utf8');
