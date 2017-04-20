@@ -1,7 +1,8 @@
 "use strict"
-const cmd = require('node-cmd')
-const co = require('co')
-const fs = require('fs-extra')
+const cmd = require('node-cmd');
+const co = require('co');
+const fs = require('fs-extra');
+const pkg = require('./package.json');
 
 const SystemPromise = (cmd_string) => {
   return new Promise((resolve, reject) => {
@@ -20,7 +21,7 @@ const SystemPromise = (cmd_string) => {
   })
 }
 
-const pkg = fs.readJsonSync('../package.json')
+
 
 co(function *() {
   try {
