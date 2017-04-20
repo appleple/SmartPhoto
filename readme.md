@@ -126,5 +126,8 @@ window.addEventListener('load',function(){
 ## Github
 [https://github.com/appleple/SmartPhoto](https://github.com/appleple/SmartPhoto)
 
+## Contributor
+[@steelydylan](https://github.com/steelydylan)
+
 ## License
 Code and documentation copyright 2017 by appleple, Inc. Code released under the [MIT License](https://github.com/appleple/SmartPhoto/blob/master/LICENSE).
