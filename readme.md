@@ -26,7 +26,10 @@ smartphoto.js
 
 ```js
 window.addEventListener('load',function(){
-    new smartPhoto(".js-img-viwer");
+    new smartPhoto(".js-img-viwer",{
+        arrows: false,
+
+    });
 });
 ```
 
@@ -41,9 +44,9 @@ $(function(){
 
 <table>
 	<tr>
-		<td>variable</td>
-		<td>description</td>
-		<td>default</td>
+		<th>variable</th>
+		<th>description</th>
+		<th>default</th>
 	</tr>
 	<tr>
 		<td>arrows</td>
@@ -76,6 +79,17 @@ $(function(){
 		<td>10</td>
 	</tr>
 </table>
+
+
+When you want to hide arrows and nav
+```js
+window.addEventListener('load',function(){
+    new smartPhoto(".js-img-viwer",{
+        arrows: false,
+        nav: false
+    });
+});
+```
 
 
 
