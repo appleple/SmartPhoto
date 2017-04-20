@@ -26,10 +26,7 @@ smartphoto.js
 
 ```js
 window.addEventListener('load',function(){
-    new smartPhoto(".js-img-viwer",{
-        arrows: false,
-
-    });
+    new smartPhoto(".js-img-viwer");
 });
 ```
 
