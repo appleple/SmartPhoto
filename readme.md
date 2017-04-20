@@ -8,7 +8,7 @@ The most easy to use responsive image viwer especially for mobile devices
 
 ## Instration
 - [npm](https://www.npmjs.com/package/smartphoto)
-- [standalone](https://raw.githubusercontent.com/appleple/smart-photo/master/js/smart-photo.js)
+- [standalone](https://raw.githubusercontent.com/appleple/smart-photo/master/js/smartphoto.js)
 
 via npm
 ```shell

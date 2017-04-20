@@ -1,6 +1,6 @@
 {
   "name": "smartphoto",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "smartphoto",
   "homepage": "http://developer.a-blogcms.jp",
   "main": "lib/index.js",
@@ -17,7 +17,7 @@
     "sync": "browser-sync start --server './' --files './js/*.js' './css/*.css' --startPath '/test/jquery.html'",
     "start": "npm-run-all -p watch:js watch:sass sync"
   },
-  "author": "sappleple",
+  "author": "appleple",
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.18.0",
