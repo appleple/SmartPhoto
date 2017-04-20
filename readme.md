@@ -61,14 +61,14 @@ $(function(){
 		<td>true</td>
 	</tr>
 	<tr>
+		<td>useOrientationApi</td>
+		<td>use accelerometer to move images</td>
+		<td>false</td>
+	</tr>
+	<tr>
 		<td>resizeStyle</td>
 		<td>resize images to fill/fit on the screen</td>
 		<td>'fill'</td>
-	</tr>
-	<tr>
-		<td>useOrientationApi</td>
-		<td>use accelerometer to move images</td>
-		<td>true</td>
 	</tr>
 	<tr>
 		<td>animationSpeed</td>
