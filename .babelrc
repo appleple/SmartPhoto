@@ -2,5 +2,5 @@
   "presets": [
     "es2015"
   ],
-  "plugins": ["transform-runtime"]
+  "plugins": ["transform-html-import-to-string"]
 }

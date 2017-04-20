@@ -3,7 +3,7 @@ $animation-function: ease-out;
 $backdrop-color: rgba(0, 0, 0, 1);
 $header-color: rgba(0, 0, 0, .2);
 
-@keyframes smart-photo {
+@keyframes smartphoto {
 	from {
 		opacity: 0;
 	}
@@ -13,7 +13,7 @@ $header-color: rgba(0, 0, 0, .2);
 	}
 }
 
-@keyframes smart-photo-img-wrap {
+@keyframes smartphoto-img-wrap {
 	from {
 		opacity: 0;
 	}
@@ -23,7 +23,7 @@ $header-color: rgba(0, 0, 0, .2);
 	}
 }
 
-@keyframes smart-photo-inner {
+@keyframes smartphoto-inner {
 	from {
 		transform: translate(0, 100px);
 	}
@@ -33,7 +33,7 @@ $header-color: rgba(0, 0, 0, .2);
 	}
 }
 
-@keyframes smart-photo-loader{
+@keyframes smartphoto-loader{
 	0% { 
 		transform: rotate(0deg); 
 		opacity: 0.4; 
@@ -48,7 +48,7 @@ $header-color: rgba(0, 0, 0, .2);
 	}
 }
 
-.smart-photo {
+.smartphoto {
 	position: fixed;
 	z-index: 100;
 	top: 0;
@@ -64,22 +64,22 @@ $header-color: rgba(0, 0, 0, .2);
 	    -ms-transition: opacity $animation-speed $animation-function;
 	     -o-transition: opacity $animation-speed $animation-function;
 	        transition: opacity $animation-speed $animation-function;
-	animation-name: smart-photo;
+	animation-name: smartphoto;
 	animation-duration: $animation-speed;
 	animation-timing-function: $animation-function;
 }
 
-.smart-photo-close {
+.smartphoto-close {
 	opacity: 0;
 }
 
-.smart-photo-count {
+.smartphoto-count {
 	display: inline-block;
 	color: #FFF;
 	font-size: 16px;
 }
 
-.smart-photo-header {
+.smartphoto-header {
 	display: block;
 	box-sizing: border-box;
 	position: fixed;
@@ -92,7 +92,7 @@ $header-color: rgba(0, 0, 0, .2);
 	background-color: $header-color;
 }
 
-.smart-photo-content {
+.smartphoto-content {
 	display: block;
 	position: absolute;
 	top: 0;
@@ -101,7 +101,7 @@ $header-color: rgba(0, 0, 0, .2);
 	height: 100%;
 }
 
-.smart-photo-dismiss {
+.smartphoto-dismiss {
 	position: absolute;
 	top: 5px;
 	right: 5px;
@@ -115,12 +115,12 @@ $header-color: rgba(0, 0, 0, .2);
 	line-height: 1;
 }
 
-.smart-photo-dismiss:after {
+.smartphoto-dismiss:after {
 	content: "×";
 }
 
 
-.smart-photo-body {
+.smartphoto-body {
 	position: relative;
 	z-index: 102;
 	width: 100%;
@@ -128,7 +128,7 @@ $header-color: rgba(0, 0, 0, .2);
 	margin: 0 auto;
 }
 
-.smart-photo-inner {
+.smartphoto-inner {
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -136,13 +136,13 @@ $header-color: rgba(0, 0, 0, .2);
 	vertical-align: top;
 }
 
-.smart-photo-arrows {
+.smartphoto-arrows {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
 
-.smart-photo-img {
+.smartphoto-img {
 	display: none;
 	// width: 100%;
 	width: auto;
@@ -157,21 +157,21 @@ $header-color: rgba(0, 0, 0, .2);
 	-webkit-user-drag: none;
 }
 
-.smart-photo-img.active {
+.smartphoto-img.active {
 	display: block;
 }
 
-.smart-photo-img-onmove {
+.smartphoto-img-onmove {
 	cursor:         grab;
 	cursor: -webkit-grab;
 	transition: none;
 }
 
-.smart-photo-img-elasticmove {
+.smartphoto-img-elasticmove {
 	transition: transform .3s $animation-function;
 }
 
-.smart-photo-img-wrap {
+.smartphoto-img-wrap {
 	display: inline-block;
 	opacity: 1;
 	-webkit-transition: opacity $animation-speed $animation-function;
@@ -179,20 +179,20 @@ $header-color: rgba(0, 0, 0, .2);
 	    -ms-transition: opacity $animation-speed $animation-function;
 	     -o-transition: opacity $animation-speed $animation-function;
 	        transition: opacity $animation-speed $animation-function;
-	animation-name: smart-photo-img-wrap;
+	animation-name: smartphoto-img-wrap;
 	animation-duration: $animation-speed;
 	animation-timing-function: $animation-function;
 }
 
-.smart-photo-img-left {
+.smartphoto-img-left {
 	transform: translateX(150%) !important;
 }
 
-.smart-photo-img-right {
+.smartphoto-img-right {
 	transform: translateX(-150%) !important;
 }
 
-.smart-photo-arrows {
+.smartphoto-arrows {
 	opacity: 1;
 	transition: all .3s;
 	position: relative;
@@ -201,15 +201,15 @@ $header-color: rgba(0, 0, 0, .2);
     top: 50%;
 }
 
-.smart-photo-arrows.hide {
+.smartphoto-arrows.hide {
 	opacity: 0;
 }
 
-.smart-photo-arrows.hide.none {
+.smartphoto-arrows.hide.none {
 	display: none;
 }
 
-.smart-photo-arrows li {
+.smartphoto-arrows li {
 	display: block;
 	position: absolute;
 	top: 50%;
@@ -220,11 +220,11 @@ $header-color: rgba(0, 0, 0, .2);
 	transition: all .3s;
 }
 
-.smart-photo-arrows .show {
+.smartphoto-arrows .show {
 	opacity: 1;
 }
 
-.smart-photo-arrow-right {
+.smartphoto-arrow-right {
 	position: relative;
 	right: 0;
 	&:after {
@@ -243,7 +243,7 @@ $header-color: rgba(0, 0, 0, .2);
 	}
 }
 
-.smart-photo-arrow-left {
+.smartphoto-arrow-left {
 	position: relative;
 	left: 0;
 	&:after {
@@ -262,7 +262,7 @@ $header-color: rgba(0, 0, 0, .2);
 	}
 }
 
-.smart-photo-nav {
+.smartphoto-nav {
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -271,15 +271,15 @@ $header-color: rgba(0, 0, 0, .2);
 	transition: all .3s;
 }
 
-.smart-photo-nav.hide {
+.smartphoto-nav.hide {
 	opacity: 0;
 }
 
-.smart-photo-nav.hide.none {
+.smartphoto-nav.hide.none {
 	display: none;
 }
 
-.smart-photo-nav ul {
+.smartphoto-nav ul {
 	display: block;
 	overflow-x: scroll;
 	list-style: none;
@@ -291,7 +291,7 @@ $header-color: rgba(0, 0, 0, .2);
 	-webkit-overflow-scrolling: touch;
 }
 
-.smart-photo-nav li {
+.smartphoto-nav li {
 	display: inline-block;
 	overflow: hidden;
 	width: 50px;
@@ -301,16 +301,16 @@ $header-color: rgba(0, 0, 0, .2);
 	opacity: .5;
 }
 
-.smart-photo-nav .current {
+.smartphoto-nav .current {
 	opacity: 1;
 }
 
-.smart-photo-nav img {
+.smartphoto-nav img {
 	width: auto;
 	height: 100%;
 }
 
-.smart-photo-list {
+.smartphoto-list {
 	list-style-type: none;
 	position: absolute;
     top: 0;
@@ -330,11 +330,11 @@ $header-color: rgba(0, 0, 0, .2);
 	}
 }
 
-.smart-photo-list-onmove {
+.smartphoto-list-onmove {
 	transition: all .3s;
 }
 
-.smart-photo-caption {
+.smartphoto-caption {
 	overflow: hidden;
 	box-sizing: border-box;
 	position: absolute;
@@ -351,7 +351,7 @@ $header-color: rgba(0, 0, 0, .2);
 	text-overflow: ellipsis;
 }
 
-.smart-photo-loader-wrap {
+.smartphoto-loader-wrap {
 	display: block;
 	position: relative;
 	width: 0;
@@ -360,7 +360,7 @@ $header-color: rgba(0, 0, 0, .2);
 	transform: translate(50vw,50vh);
 }
 
-.smart-photo-loader {
+.smartphoto-loader {
 	position: absolute;
 	z-index: 101;
 	top: 0;
@@ -373,10 +373,10 @@ $header-color: rgba(0, 0, 0, .2);
 	border: 8px solid #17cddd;  
 	border-right-color: transparent; 
 	
-	animation: smart-photo-loader 0.5s infinite linear;
+	animation: smartphoto-loader 0.5s infinite linear;
 }
 
-.smart-photo-img-clone {
+.smartphoto-img-clone {
 	position: fixed;
 	top: 0;
 	left: 0;

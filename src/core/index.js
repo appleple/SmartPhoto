@@ -1,36 +1,36 @@
 import aTemplate from 'a-template';
 import { $ } from 'zepto-browserify';
+import template from './viwer.html';
 
 const util = require('../lib/util');
-const template = require('./viwer.html');
 const Keyboard = require('keyboard-js').Keyboard;
 
 const defaults = {
   classNames: {
-    smartPhoto: 'smart-photo',
-    smartPhotoClose: 'smart-photo-close',
-    smartPhotoBody: 'smart-photo-body',
-    smartPhotoInner: 'smart-photo-inner',
-    smartPhotoContent: 'smart-photo-content',
-    smartPhotoImg: 'smart-photo-img',
-    smartPhotoImgOnMove: 'smart-photo-img-onmove',
-    smartPhotoImgElasticMove: 'smart-photo-img-elasticmove',
-    smartPhotoImgWrap: 'smart-photo-img-wrap',
-    smartPhotoArrows: 'smart-photo-arrows',
-    smartPhotoNav: 'smart-photo-nav',
-    smartPhotoArrowRight: 'smart-photo-arrow-right',
-    smartPhotoArrowLeft: 'smart-photo-arrow-left',
-    smartPhotoImgLeft: 'smart-photo-img-left',
-    smartPhotoImgRight: 'smart-photo-img-right',
-    smartPhotoList: 'smart-photo-list',
-    smartPhotoListOnMove: 'smart-photo-list-onmove',
-    smartPhotoHeader: 'smart-photo-header',
-    smartPhotoCount: 'smart-photo-count',
-    smartPhotoCaption: 'smart-photo-caption',
-    smartPhotoDismiss: 'smart-photo-dismiss',
-    smartPhotoLoader: 'smart-photo-loader',
-    smartPhotoLoaderWrap: 'smart-photo-loader-wrap',
-    smartPhotoImgClone: 'smart-photo-img-clone'
+    smartPhoto: 'smartphoto',
+    smartPhotoClose: 'smartphoto-close',
+    smartPhotoBody: 'smartphoto-body',
+    smartPhotoInner: 'smartphoto-inner',
+    smartPhotoContent: 'smartphoto-content',
+    smartPhotoImg: 'smartphoto-img',
+    smartPhotoImgOnMove: 'smartphoto-img-onmove',
+    smartPhotoImgElasticMove: 'smartphoto-img-elasticmove',
+    smartPhotoImgWrap: 'smartphoto-img-wrap',
+    smartPhotoArrows: 'smartphoto-arrows',
+    smartPhotoNav: 'smartphoto-nav',
+    smartPhotoArrowRight: 'smartphoto-arrow-right',
+    smartPhotoArrowLeft: 'smartphoto-arrow-left',
+    smartPhotoImgLeft: 'smartphoto-img-left',
+    smartPhotoImgRight: 'smartphoto-img-right',
+    smartPhotoList: 'smartphoto-list',
+    smartPhotoListOnMove: 'smartphoto-list-onmove',
+    smartPhotoHeader: 'smartphoto-header',
+    smartPhotoCount: 'smartphoto-count',
+    smartPhotoCaption: 'smartphoto-caption',
+    smartPhotoDismiss: 'smartphoto-dismiss',
+    smartPhotoLoader: 'smartphoto-loader',
+    smartPhotoLoaderWrap: 'smartphoto-loader-wrap',
+    smartPhotoImgClone: 'smartphoto-img-clone'
   },
   arrows:true,
   nav:true,

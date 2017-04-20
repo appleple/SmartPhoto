@@ -507,6 +507,10 @@ babel-plugin-transform-es2015-unicode-regex@^6.22.0:
     babel-runtime "^6.22.0"
     regexpu-core "^2.0.0"
 
+babel-plugin-transform-html-import-to-string:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-html-import-to-string/-/babel-plugin-transform-html-import-to-string-0.0.1.tgz#949152515daad764cf55c51ab1787d206decf89d"
+
 babel-plugin-transform-regenerator@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-regenerator/-/babel-plugin-transform-regenerator-6.22.0.tgz#65740593a319c44522157538d690b84094617ea6"
