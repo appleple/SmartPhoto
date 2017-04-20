@@ -24,6 +24,11 @@ yarn add smartphoto
 ## Usage
 smartphoto.js
 
+require
+```js
+const smartPhoto = require('smartphoto');
+```
+
 ```js
 window.addEventListener('load',function(){
     new smartPhoto(".js-img-viwer");
