@@ -338,9 +338,9 @@ class smartPhoto extends aTemplate {
   }
 
   hidePhoto () {
-    this.zoomOutPhoto();
     this.data.hide = true;
     this.data.appear = false;
+    this.data.appearEffect = null;
     const scrollLocation = $(window).scrollTop();
     if (location.hash) {
       location.hash = "";
@@ -518,12 +518,12 @@ class smartPhoto extends aTemplate {
     }
     const date = new Date();
     const tapSecond = date.getTime();
-    if(Math.abs(this.tapSecond - tapSecond) < 200) {
+    if(Math.abs(this.tapSecond - tapSecond) <= 500) {
       this.e.preventDefault();
+      this.tapSecond = tapSecond;
       this.zoomPhoto();
       return;
     }
-    this.tapSecond = tapSecond;
     const swipeWidth = this.oldPos.x - this.firstPos.x
     if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0 ) {
       this.data.currentIndex--;

@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.2.1
+ *   version: 0.2.3
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -5142,9 +5142,9 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'hidePhoto',
     value: function hidePhoto() {
-      this.zoomOutPhoto();
       this.data.hide = true;
       this.data.appear = false;
+      this.data.appearEffect = null;
       var scrollLocation = (0, _zeptoBrowserify.$)(window).scrollTop();
       if (location.hash) {
         location.hash = "";
@@ -5335,12 +5335,12 @@ var smartPhoto = function (_aTemplate) {
       }
       var date = new Date();
       var tapSecond = date.getTime();
-      if (Math.abs(this.tapSecond - tapSecond) < 200) {
+      if (Math.abs(this.tapSecond - tapSecond) <= 500) {
         this.e.preventDefault();
+        this.tapSecond = tapSecond;
         this.zoomPhoto();
         return;
       }
-      this.tapSecond = tapSecond;
       var swipeWidth = this.oldPos.x - this.firstPos.x;
       if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
         this.data.currentIndex--;
