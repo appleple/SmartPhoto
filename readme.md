@@ -1,5 +1,6 @@
 # SmartPhoto
 [![npm version](https://badge.fury.io/js/smartphoto.svg)](https://badge.fury.io/js/smartphoto)
+
 The most easy to use responsive image viwer especially for mobile devices
 
 ## Feature
