@@ -21,8 +21,6 @@ const SystemPromise = (cmd_string) => {
   })
 }
 
-
-
 co(function *() {
   try {
     yield SystemPromise(`git push origin v${pkg.version}`);
