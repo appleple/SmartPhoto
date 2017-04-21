@@ -85,7 +85,7 @@ window.addEventListener('load',function(){
 	<tr>
 		<td>useOrientationApi</td>
 		<td>use accelerometer to move images</td>
-		<td>false</td>
+		<td>true</td>
 	</tr>
 	<tr>
 		<td>resizeStyle</td>
