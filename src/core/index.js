@@ -122,7 +122,7 @@ class smartPhoto extends aTemplate {
       if(!originalEvent || !originalEvent.gamma || this.data.appearEffect){
         return;
       }
-      if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && this.data.scale){
+      if(!this.isBeingZoomed && !this.photoSwipable && !this.data.elastic && this.data.scale){
         if (window.innerHeight > window.innerWidth) {
           this._calcGravity(originalEvent.gamma, originalEvent.beta);
         } else {
