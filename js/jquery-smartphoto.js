@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.2.6
+ *   version: 0.2.7
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -4846,8 +4846,8 @@ var defaults = {
   forceInterval: 10,
   registance: 0.5,
   resizeStyle: 'fill',
-  allowVerticalGravity: false,
-  useOrientationApi: false
+  verticalGravity: false,
+  useOrientationApi: true
 };
 
 var smartPhoto = function (_aTemplate) {
@@ -4925,14 +4925,15 @@ var smartPhoto = function (_aTemplate) {
     }
 
     (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
-      if (!e.originalEvent || _this.data.appearEffect) {
+      var originalEvent = e.originalEvent || e;
+      if (!originalEvent || !originalEvent.gamma || _this.data.appearEffect) {
         return;
       }
       if (!_this.isBeingZoomed && !_this.isSwipable && !_this.photoSwipable && !_this.data.elastic && _this.data.scale) {
         if (window.innerHeight > window.innerWidth) {
-          _this._calcGravity(e.originalEvent.gamma, e.originalEvent.beta);
+          _this._calcGravity(originalEvent.gamma, originalEvent.beta);
         } else {
-          _this._calcGravity(e.originalEvent.beta, e.originalEvent.gamma);
+          _this._calcGravity(originalEvent.beta, originalEvent.gamma);
         }
       }
     });
@@ -5680,7 +5681,7 @@ var smartPhoto = function (_aTemplate) {
       if (gamma > 5 || gamma < -5) {
         this.vx += gamma * 0.05;
       }
-      if (this.data.allowVerticalGravity === false) {
+      if (this.data.verticalGravity === false) {
         return;
       }
       if (beta > 5 || beta < -5) {

@@ -42,8 +42,8 @@ const defaults = {
   forceInterval:10,
   registance:0.5,
   resizeStyle:'fill',
-  allowVerticalGravity:false,
-  useOrientationApi:false
+  verticalGravity:false,
+  useOrientationApi:true
 }
 
 class smartPhoto extends aTemplate {
@@ -118,14 +118,15 @@ class smartPhoto extends aTemplate {
     }
 
     $(window).on("deviceorientation", (e) => {
-      if(!e.originalEvent || this.data.appearEffect){
+      let originalEvent = e.originalEvent || e;
+      if(!originalEvent || !originalEvent.gamma || this.data.appearEffect){
         return;
       }
       if(!this.isBeingZoomed && !this.isSwipable && !this.photoSwipable && !this.data.elastic && this.data.scale){
         if (window.innerHeight > window.innerWidth) {
-          this._calcGravity(e.originalEvent.gamma, e.originalEvent.beta);
+          this._calcGravity(originalEvent.gamma, originalEvent.beta);
         } else {
-          this._calcGravity(e.originalEvent.beta, e.originalEvent.gamma);
+          this._calcGravity(originalEvent.beta, originalEvent.gamma);
         }
       }
     });
@@ -811,7 +812,7 @@ class smartPhoto extends aTemplate {
     if(gamma > 5 || gamma < -5) {
       this.vx += gamma * 0.05;
     }
-    if(this.data.allowVerticalGravity === false){
+    if(this.data.verticalGravity === false){
       return;
     }
     if(beta > 5 || beta < -5){
