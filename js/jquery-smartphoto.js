@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.2.5
+ *   version: 0.2.6
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -5223,7 +5223,7 @@ var smartPhoto = function (_aTemplate) {
       var items = this.groupItems();
       var id = items[this.data.currentIndex].id;
       var group = this.data.currentGroup;
-      var hash = 'gid=' + group + '&pid=' + id;
+      var hash = 'group=' + group + '&photo=' + id;
       location.hash = hash;
       (0, _zeptoBrowserify.$)(window).scrollTop(scrollLocation);
     }
@@ -5239,7 +5239,7 @@ var smartPhoto = function (_aTemplate) {
           continue;
         }
         group[i].forEach(function (item) {
-          if (hashObj.gid === item.groupId && hashObj.pid === item.id) {
+          if (hashObj.group === item.groupId && hashObj.photo === item.id) {
             currentItem = item;
           }
         });

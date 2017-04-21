@@ -391,7 +391,7 @@ class smartPhoto extends aTemplate {
     const items = this.groupItems();
     const id = items[this.data.currentIndex].id;
     const group = this.data.currentGroup;
-    const hash = `gid=${group}&pid=${id}`;
+    const hash = `group=${group}&photo=${id}`;
     location.hash = hash;
     $(window).scrollTop( scrollLocation );
   }
@@ -406,7 +406,7 @@ class smartPhoto extends aTemplate {
         continue;
       }
       group[i].forEach((item) => {
-          if(hashObj.gid === item.groupId && hashObj.pid === item.id) {
+          if(hashObj.group === item.groupId && hashObj.photo === item.id) {
               currentItem = item;
           }
       });
