@@ -8,7 +8,7 @@ The most easy to use responsive image viwer especially for mobile devices
 - Use Accelerometer to move images
 - Scale images to fill/fit on the screen so to view each image clearly
 
-## Instration
+## Installation
 - [npm](https://www.npmjs.com/package/smartphoto)
 - [standalone](https://raw.githubusercontent.com/appleple/smart-photo/master/js/smartphoto.js)
 
