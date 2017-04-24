@@ -347,7 +347,33 @@ class smartPhoto extends aTemplate {
       location.hash = "";
     }
     $(window).scrollTop( scrollLocation );
-    this.update();
+    this._doHideEffect().then(() => {
+      this.update();
+    });
+  }
+
+  _doHideEffect () {
+    return new Promise((resolve,reject) => {
+      const classNames = this.data.classNames;
+      const photo = this._getElementByClass(classNames.smartPhoto);
+      const img = this._getElementByQuery(`.current .${classNames.smartPhotoImg}`);
+      const height = window.innerHeight;
+      const handler = () => {
+        photo.removeEventListener('transitionend', handler, true);
+        resolve();
+      };
+      photo.style.opacity = 0;
+      img.style.transform = `translateY(${height}px)`;
+      photo.addEventListener('transitionend',  handler, true); 
+    });
+  }
+
+  _getElementByClass (className) {
+    return document.querySelector(`[data-id="${this.id}"] .${className}`);
+  }
+
+  _getElementByQuery (query) {
+    return document.querySelector(`[data-id="${this.id}"] ${query}`);
   }
 
   _getTouchPos (e) {
@@ -383,6 +409,7 @@ class smartPhoto extends aTemplate {
     this.pos.x = moveX;
     setTimeout(() => {
       this.data.translateX = moveX;
+      this.data.translateY = 0;
       this._listUpdate();
     },1);
   }
@@ -497,14 +524,21 @@ class smartPhoto extends aTemplate {
     }
     const pos = this._getTouchPos(this.e);
     this.isSwipable = true;
+    this.dragStart = true;
     this.firstPos = pos;
     this.oldPos = pos;
   }
 
   afterDrag (value) {
+    const items = this.groupItems();
+    const date = new Date();
+    const tapSecond = date.getTime();
+    const offset = this.tapSecond - tapSecond;
+    const swipeWidth = this.oldPos.x - this.firstPos.x;
+    const swipeHeight = this.oldPos.y - this.firstPos.y;
     this.isSwipable = false;
     this.onListMove = false;
-    const items = this.groupItems();
+
     if (this.isBeingZoomed) {
       this.afterGesture();
       return;
@@ -512,26 +546,32 @@ class smartPhoto extends aTemplate {
     if(this.data.scale){
       this.afterPhotoDrag();
       return;
-    } else if (!util.isSmartPhone() && this.oldPos.x === this.firstPos.x) {
+    } else if (!util.isSmartPhone() && swipeWidth === 0 && swipeHeight === 0) {
       this.zoomPhoto();
       return;
     }
-    const date = new Date();
-    const tapSecond = date.getTime();
-    const offset = this.tapSecond - tapSecond;
-    const swipeWidth = this.oldPos.x - this.firstPos.x;
-    if(Math.abs(offset) <= 500 && swipeWidth === 0) {
+    if(Math.abs(offset) <= 500 && swipeWidth === 0 && swipeHeight === 0) {
       this.e.preventDefault();
       this.zoomPhoto();
       return;
     }
     this.tapSecond = tapSecond;
-    if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0 ) {
-      this.data.currentIndex--;
-    } else if (swipeWidth <= - this.data.swipeOffset && this.data.currentIndex != items.length -1 ) {
-      this.data.currentIndex++;
+    if (this.moveDir === 'horizontal') {
+      if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0 ) {
+        this.data.currentIndex--;
+      } else if (swipeWidth <= - this.data.swipeOffset && this.data.currentIndex != items.length -1 ) {
+        this.data.currentIndex++;
+      }
+      this.slideList();
     }
-    this.slideList();
+    if (this.moveDir === 'vertical') {
+      if (swipeHeight >= this.data.swipeOffset) {
+        this.hidePhoto();
+      } else {
+        this.data.translateY = 0;
+        this.slideList();
+      }
+    }
   }
 
   onDrag () {
@@ -550,11 +590,27 @@ class smartPhoto extends aTemplate {
     if(!this.isSwipable){
       return;
     }
+
     const pos = this._getTouchPos(this.e);
     const x = pos.x - this.oldPos.x;
-    this.pos.x += x;
+    const y = pos.y - this.firstPos.y;
+
+    if (this.dragStart) {
+      this.dragStart = false;
+      if( Math.abs(x) > Math.abs(y) ) {
+        this.moveDir = 'horizontal';
+      } else {
+        this.moveDir = 'vertical';
+      }
+    }
+
+    if (this.moveDir === 'horizontal') {
+      this.pos.x += x;
+      this.data.translateX = this.pos.x;
+    } else {
+      this.data.translateY = y;
+    }
     this.onListMove = true;
-    this.data.translateX = this.pos.x;
     this.oldPos = pos;
     this._listUpdate();
   }
@@ -861,7 +917,7 @@ class smartPhoto extends aTemplate {
   _listUpdate () {
     const classNames = this.data.classNames;
     const $list = $(`.${classNames.smartPhotoList}`,`[data-id="${this.id}"]`);
-    const transform = `translateX(${this.data.translateX}px)`;
+    const transform = `translate(${this.data.translateX}px,${this.data.translateY}px)`;
     $list.css('transform',transform);
     // $list
     if(this.data.onMoveClass) {

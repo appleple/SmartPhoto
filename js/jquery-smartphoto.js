@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.2.8
+ *   version: 0.2.11
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -4803,7 +4803,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var template = '<div class="\\{classNames.smartPhoto\\}"<!-- BEGIN hide:exist --> style="display:none;"<!-- END hide:exist -->>\n\t<div class="\\{classNames.smartPhotoBody\\}">\n\t\t<div class="\\{classNames.smartPhotoInner\\}">\n\t\t\t   <div class="\\{classNames.smartPhotoHeader\\}">\n\t\t\t\t\t<span class="\\{classNames.smartPhotoCount\\}">{currentIndex}[increment]/{total}</span>\n\t\t\t\t\t<span class="\\{classNames.smartPhotoCaption\\}"><!-- BEGIN groupItems:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>\n\t\t\t\t\t<button class="\\{classNames.smartPhotoDismiss\\}" data-action-click="hidePhoto()"></button>\n\t\t\t\t</div>\n\t\t\t\t<div class="\\{classNames.smartPhotoContent\\}"<!-- BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag(false)"<!-- END isSmartPhone:exist -->>\n\t\t\t\t</div>\n\t\t\t\t<ul style="transform:translateX({translateX}px);" class="\\{classNames.smartPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.smartPhotoListOnMove\\}<!-- END onMoveClass:exist -->">\n\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t<li style="transform:translate({translateX}px,{translateY}px);" class="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->">\n\t\t\t\t\t\t<!-- BEGIN loaded:exist -->\n\t\t\t\t\t\t<div style="transform:translate({x}px,{y}px) scale({scale});" class="\\\\{classNames.smartPhotoImgWrap\\\\}"<!-- \\BEGIN isSmartPhone:empty --> data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag"<!-- \\END isSmartPhone:empty --><!-- \\BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag"<!-- \\END isSmartPhone:exist -->>\n\t\t\t\t\t\t\t<img style="<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->" src="{src}" class="\\\\{classNames.smartPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.smartPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.smartPhotoImgElasticMove\\\\}<!-- \\END elastic:exist --><!-- \\BEGIN appear:exist --> active<!-- \\END appear:exist -->" ondragstart="return false;">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:exist -->\n\t\t\t\t\t\t<!-- BEGIN loaded:empty -->\n\t\t\t\t\t\t<div class="\\\\{classNames.smartPhotoLoaderWrap\\\\}">\n\t\t\t\t\t\t\t<span class="\\\\{classNames.smartPhotoLoader\\\\}"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:empty -->\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t<ul class="\\{classNames.smartPhotoArrows\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">\n\t\t\t\t\t<li class="\\{classNames.smartPhotoArrowLeft\\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->" data-action-click="gotoSlide({prev})"></li>\n\t\t\t\t\t<li class="\\{classNames.smartPhotoArrowRight\\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->" data-action-click="gotoSlide({next})"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<nav class="\\{classNames.smartPhotoNav\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">\n\t\t\t\t\t<ul >\n\t\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t\t<li data-action-click="gotoSlide({index})" class="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->" style="background-image:url({src});"></li>\n\t\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t\t<!-- BEGIN appearEffect:exist -->\n\t\t<img src=\\{appearEffect.img\\}\n\t\tclass="\\{classNames.smartPhotoImgClone\\}"\n\t\tstyle="width:\\{appearEffect.width\\}px;height:\\{appearEffect.height\\}px;transform:translate(\\{appearEffect.left\\}px,\\{appearEffect.top\\}px) scale(1)" />\n\t\t<!-- END appearEffect:exist -->\n\t</div>\n</div>\n';
+var template = '<div class="\\{classNames.smartPhoto\\}"<!-- BEGIN hide:exist --> style="display:none;"<!-- END hide:exist -->>\n\t<div class="\\{classNames.smartPhotoBody\\}">\n\t\t<div class="\\{classNames.smartPhotoInner\\}">\n\t\t\t   <div class="\\{classNames.smartPhotoHeader\\}">\n\t\t\t\t\t<span class="\\{classNames.smartPhotoCount\\}">{currentIndex}[increment]/{total}</span>\n\t\t\t\t\t<span class="\\{classNames.smartPhotoCaption\\}"><!-- BEGIN groupItems:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>\n\t\t\t\t\t<button class="\\{classNames.smartPhotoDismiss\\}" data-action-click="hidePhoto()"></button>\n\t\t\t\t</div>\n\t\t\t\t<div class="\\{classNames.smartPhotoContent\\}"<!-- BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag(false)"<!-- END isSmartPhone:exist -->>\n\t\t\t\t</div>\n\t\t\t\t<ul style="transform:translate({translateX}px,{translateY}px);" class="\\{classNames.smartPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.smartPhotoListOnMove\\}<!-- END onMoveClass:exist -->">\n\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t<li style="transform:translate({translateX}px,{translateY}px);" class="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->">\n\t\t\t\t\t\t<!-- BEGIN loaded:exist -->\n\t\t\t\t\t\t<div style="transform:translate({x}px,{y}px) scale({scale});" class="\\\\{classNames.smartPhotoImgWrap\\\\}"<!-- \\BEGIN isSmartPhone:empty --> data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag"<!-- \\END isSmartPhone:empty --><!-- \\BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag"<!-- \\END isSmartPhone:exist -->>\n\t\t\t\t\t\t\t<img style="<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->" src="{src}" class="\\\\{classNames.smartPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.smartPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.smartPhotoImgElasticMove\\\\}<!-- \\END elastic:exist --><!-- \\BEGIN appear:exist --> active<!-- \\END appear:exist -->" ondragstart="return false;">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:exist -->\n\t\t\t\t\t\t<!-- BEGIN loaded:empty -->\n\t\t\t\t\t\t<div class="\\\\{classNames.smartPhotoLoaderWrap\\\\}">\n\t\t\t\t\t\t\t<span class="\\\\{classNames.smartPhotoLoader\\\\}"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:empty -->\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t<ul class="\\{classNames.smartPhotoArrows\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">\n\t\t\t\t\t<li class="\\{classNames.smartPhotoArrowLeft\\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->" data-action-click="gotoSlide({prev})"></li>\n\t\t\t\t\t<li class="\\{classNames.smartPhotoArrowRight\\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->" data-action-click="gotoSlide({next})"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<nav class="\\{classNames.smartPhotoNav\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">\n\t\t\t\t\t<ul >\n\t\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t\t<li data-action-click="gotoSlide({index})" class="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->" style="background-image:url({src});"></li>\n\t\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t\t<!-- BEGIN appearEffect:exist -->\n\t\t<img src=\\{appearEffect.img\\}\n\t\tclass="\\{classNames.smartPhotoImgClone\\}"\n\t\tstyle="width:\\{appearEffect.width\\}px;height:\\{appearEffect.height\\}px;transform:translate(\\{appearEffect.left\\}px,\\{appearEffect.top\\}px) scale(1)" />\n\t\t<!-- END appearEffect:exist -->\n\t</div>\n</div>\n';
 
 
 var util = require('../lib/util');
@@ -5168,6 +5168,8 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'hidePhoto',
     value: function hidePhoto() {
+      var _this6 = this;
+
       this.data.hide = true;
       this.data.appear = false;
       this.data.appearEffect = null;
@@ -5176,7 +5178,38 @@ var smartPhoto = function (_aTemplate) {
         location.hash = "";
       }
       (0, _zeptoBrowserify.$)(window).scrollTop(scrollLocation);
-      this.update();
+      this._doHideEffect().then(function () {
+        _this6.update();
+      });
+    }
+  }, {
+    key: '_doHideEffect',
+    value: function _doHideEffect() {
+      var _this7 = this;
+
+      return new Promise(function (resolve, reject) {
+        var classNames = _this7.data.classNames;
+        var photo = _this7._getElementByClass(classNames.smartPhoto);
+        var img = _this7._getElementByQuery('.current .' + classNames.smartPhotoImg);
+        var height = window.innerHeight;
+        var handler = function handler() {
+          photo.removeEventListener('transitionend', handler, true);
+          resolve();
+        };
+        photo.style.opacity = 0;
+        img.style.transform = 'translateY(' + height + 'px)';
+        photo.addEventListener('transitionend', handler, true);
+      });
+    }
+  }, {
+    key: '_getElementByClass',
+    value: function _getElementByClass(className) {
+      return document.querySelector('[data-id="' + this.id + '"] .' + className);
+    }
+  }, {
+    key: '_getElementByQuery',
+    value: function _getElementByQuery(query) {
+      return document.querySelector('[data-id="' + this.id + '"] ' + query);
     }
   }, {
     key: '_getTouchPos',
@@ -5207,14 +5240,15 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'setPosByCurrentIndex',
     value: function setPosByCurrentIndex() {
-      var _this6 = this;
+      var _this8 = this;
 
       var items = this.groupItems();
       var moveX = -1 * items[this.data.currentIndex].translateX;
       this.pos.x = moveX;
       setTimeout(function () {
-        _this6.data.translateX = moveX;
-        _this6._listUpdate();
+        _this8.data.translateX = moveX;
+        _this8.data.translateY = 0;
+        _this8._listUpdate();
       }, 1);
     }
   }, {
@@ -5286,16 +5320,16 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'slideList',
     value: function slideList() {
-      var _this7 = this;
+      var _this9 = this;
 
       this.data.onMoveClass = true;
       this.setPosByCurrentIndex();
       this.setHashByCurrentIndex();
       this.setSizeByScreen();
       setTimeout(function () {
-        _this7.data.onMoveClass = false;
-        _this7.setArrow();
-        _this7.update();
+        _this9.data.onMoveClass = false;
+        _this9.setArrow();
+        _this9.update();
       }, 200);
     }
   }, {
@@ -5338,15 +5372,22 @@ var smartPhoto = function (_aTemplate) {
       }
       var pos = this._getTouchPos(this.e);
       this.isSwipable = true;
+      this.dragStart = true;
       this.firstPos = pos;
       this.oldPos = pos;
     }
   }, {
     key: 'afterDrag',
     value: function afterDrag(value) {
+      var items = this.groupItems();
+      var date = new Date();
+      var tapSecond = date.getTime();
+      var offset = this.tapSecond - tapSecond;
+      var swipeWidth = this.oldPos.x - this.firstPos.x;
+      var swipeHeight = this.oldPos.y - this.firstPos.y;
       this.isSwipable = false;
       this.onListMove = false;
-      var items = this.groupItems();
+
       if (this.isBeingZoomed) {
         this.afterGesture();
         return;
@@ -5354,26 +5395,32 @@ var smartPhoto = function (_aTemplate) {
       if (this.data.scale) {
         this.afterPhotoDrag();
         return;
-      } else if (!util.isSmartPhone() && this.oldPos.x === this.firstPos.x) {
+      } else if (!util.isSmartPhone() && swipeWidth === 0 && swipeHeight === 0) {
         this.zoomPhoto();
         return;
       }
-      var date = new Date();
-      var tapSecond = date.getTime();
-      var offset = this.tapSecond - tapSecond;
-      var swipeWidth = this.oldPos.x - this.firstPos.x;
-      if (Math.abs(offset) <= 500 && swipeWidth === 0) {
+      if (Math.abs(offset) <= 500 && swipeWidth === 0 && swipeHeight === 0) {
         this.e.preventDefault();
         this.zoomPhoto();
         return;
       }
       this.tapSecond = tapSecond;
-      if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
-        this.data.currentIndex--;
-      } else if (swipeWidth <= -this.data.swipeOffset && this.data.currentIndex != items.length - 1) {
-        this.data.currentIndex++;
+      if (this.moveDir === 'horizontal') {
+        if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
+          this.data.currentIndex--;
+        } else if (swipeWidth <= -this.data.swipeOffset && this.data.currentIndex != items.length - 1) {
+          this.data.currentIndex++;
+        }
+        this.slideList();
       }
-      this.slideList();
+      if (this.moveDir === 'vertical') {
+        if (swipeHeight >= this.data.swipeOffset) {
+          this.hidePhoto();
+        } else {
+          this.data.translateY = 0;
+          this.slideList();
+        }
+      }
     }
   }, {
     key: 'onDrag',
@@ -5393,18 +5440,34 @@ var smartPhoto = function (_aTemplate) {
       if (!this.isSwipable) {
         return;
       }
+
       var pos = this._getTouchPos(this.e);
       var x = pos.x - this.oldPos.x;
-      this.pos.x += x;
+      var y = pos.y - this.firstPos.y;
+
+      if (this.dragStart) {
+        this.dragStart = false;
+        if (Math.abs(x) > Math.abs(y)) {
+          this.moveDir = 'horizontal';
+        } else {
+          this.moveDir = 'vertical';
+        }
+      }
+
+      if (this.moveDir === 'horizontal') {
+        this.pos.x += x;
+        this.data.translateX = this.pos.x;
+      } else {
+        this.data.translateY = y;
+      }
       this.onListMove = true;
-      this.data.translateX = this.pos.x;
       this.oldPos = pos;
       this._listUpdate();
     }
   }, {
     key: 'zoomPhoto',
     value: function zoomPhoto() {
-      var _this8 = this;
+      var _this10 = this;
 
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
@@ -5412,8 +5475,8 @@ var smartPhoto = function (_aTemplate) {
       this.data.photoPosY = 0;
       this._photoUpdate();
       setTimeout(function () {
-        _this8.data.scale = true;
-        _this8._photoUpdate();
+        _this10.data.scale = true;
+        _this10._photoUpdate();
       }, 300);
     }
   }, {
@@ -5598,7 +5661,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_registerElasticForce',
     value: function _registerElasticForce(x, y) {
-      var _this9 = this;
+      var _this11 = this;
 
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
@@ -5615,8 +5678,8 @@ var smartPhoto = function (_aTemplate) {
       }
       this._photoUpdate();
       setTimeout(function () {
-        _this9.data.elastic = false;
-        _this9._photoUpdate();
+        _this11.data.elastic = false;
+        _this11._photoUpdate();
       }, 300);
     }
   }, {
@@ -5732,7 +5795,7 @@ var smartPhoto = function (_aTemplate) {
     value: function _listUpdate() {
       var classNames = this.data.classNames;
       var $list = (0, _zeptoBrowserify.$)('.' + classNames.smartPhotoList, '[data-id="' + this.id + '"]');
-      var transform = 'translateX(' + this.data.translateX + 'px)';
+      var transform = 'translate(' + this.data.translateX + 'px,' + this.data.translateY + 'px)';
       $list.css('transform', transform);
       // $list
       if (this.data.onMoveClass) {
