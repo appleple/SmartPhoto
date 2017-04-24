@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.2.12
+ *   version: 0.2.13
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -4906,17 +4906,17 @@ var smartPhoto = function (_aTemplate) {
     if (!_this.data.isSmartPhone) {
       (0, _zeptoBrowserify.$)(window).resize(function () {
         _this._resetTranslate();
-        _this.setPosByCurrentIndex();
-        _this.setSizeByScreen();
+        _this._setPosByCurrentIndex();
+        _this._setSizeByScreen();
         _this.update();
       });
     }
 
     (0, _zeptoBrowserify.$)(window).on("orientationchange", function (e) {
       _this._resetTranslate();
-      _this.setPosByCurrentIndex();
-      _this.setHashByCurrentIndex();
-      _this.setSizeByScreen();
+      _this._setPosByCurrentIndex();
+      _this._setHashByCurrentIndex();
+      _this._setSizeByScreen();
       _this.update();
     });
 
@@ -5057,7 +5057,7 @@ var smartPhoto = function (_aTemplate) {
         event.preventDefault();
         _this3.data.currentGroup = element.getAttribute('data-group');
         _this3.data.currentIndex = parseInt(element.getAttribute('data-index'));
-        _this3.setHashByCurrentIndex();
+        _this3._setHashByCurrentIndex();
         var currentItem = _this3._getSelectedItem();
         if (currentItem.loaded) {
           _this3._initPhoto();
@@ -5079,8 +5079,8 @@ var smartPhoto = function (_aTemplate) {
       this.data.hide = false;
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
-      this.setPosByCurrentIndex();
-      this.setSizeByScreen();
+      this._setPosByCurrentIndex();
+      this._setSizeByScreen();
       this.setArrow();
       if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
         this.data.scale = true;
@@ -5238,8 +5238,8 @@ var smartPhoto = function (_aTemplate) {
       return [{ x: touches[0].pageX, y: touches[0].pageY }, { x: touches[1].pageX, y: touches[1].pageY }];
     }
   }, {
-    key: 'setPosByCurrentIndex',
-    value: function setPosByCurrentIndex() {
+    key: '_setPosByCurrentIndex',
+    value: function _setPosByCurrentIndex() {
       var _this8 = this;
 
       var items = this.groupItems();
@@ -5252,8 +5252,8 @@ var smartPhoto = function (_aTemplate) {
       }, 1);
     }
   }, {
-    key: 'setHashByCurrentIndex',
-    value: function setHashByCurrentIndex() {
+    key: '_setHashByCurrentIndex',
+    value: function _setHashByCurrentIndex() {
       var scrollLocation = (0, _zeptoBrowserify.$)(window).scrollTop();
       var items = this.groupItems();
       var id = items[this.data.currentIndex].id;
@@ -5299,8 +5299,8 @@ var smartPhoto = function (_aTemplate) {
       });
     }
   }, {
-    key: 'setSizeByScreen',
-    value: function setSizeByScreen() {
+    key: '_setSizeByScreen',
+    value: function _setSizeByScreen() {
       var windowX = window.innerWidth;
       var windowY = window.innerHeight;
       var headerHeight = this.data.headerHeight;
@@ -5318,14 +5318,14 @@ var smartPhoto = function (_aTemplate) {
       });
     }
   }, {
-    key: 'slideList',
-    value: function slideList() {
+    key: '_slideList',
+    value: function _slideList() {
       var _this9 = this;
 
       this.data.onMoveClass = true;
-      this.setPosByCurrentIndex();
-      this.setHashByCurrentIndex();
-      this.setSizeByScreen();
+      this._setPosByCurrentIndex();
+      this._setHashByCurrentIndex();
+      this._setSizeByScreen();
       setTimeout(function () {
         _this9.data.onMoveClass = false;
         _this9.setArrow();
@@ -5339,7 +5339,7 @@ var smartPhoto = function (_aTemplate) {
       if (!this.data.currentIndex) {
         this.data.currentIndex = 0;
       }
-      this.slideList();
+      this._slideList();
     }
   }, {
     key: 'setArrow',
@@ -5415,14 +5415,14 @@ var smartPhoto = function (_aTemplate) {
         } else if (swipeWidth <= -this.data.swipeOffset && this.data.currentIndex != items.length - 1) {
           this.data.currentIndex++;
         }
-        this.slideList();
+        this._slideList();
       }
       if (this.moveDir === 'vertical') {
         if (swipeHeight >= this.data.swipeOffset) {
           this.hidePhoto();
         } else {
           this.data.translateY = 0;
-          this.slideList();
+          this._slideList();
         }
       }
     }
@@ -5582,6 +5582,9 @@ var smartPhoto = function (_aTemplate) {
       var item = this._getSelectedItem();
       var translate = 1;
       this.data.scaleSize += this._round(size, 6);
+      if (this.data.scaleSize < 0.2) {
+        this.data.scaleSize = 0.2;
+      }
       //todo
       if (this.data.scaleSize < oldScaleSize) {
         this.data.photoPosX = (1 + this.data.scaleSize - oldScaleSize) * posX;

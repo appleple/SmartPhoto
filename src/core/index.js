@@ -99,17 +99,17 @@ class smartPhoto extends aTemplate {
     if(!this.data.isSmartPhone){
       $(window).resize(() => {
         this._resetTranslate();
-        this.setPosByCurrentIndex();
-        this.setSizeByScreen();
+        this._setPosByCurrentIndex();
+        this._setSizeByScreen();
         this.update();
       });
     }
 
     $(window).on("orientationchange", (e) => {
       this._resetTranslate();
-      this.setPosByCurrentIndex();
-      this.setHashByCurrentIndex();
-      this.setSizeByScreen();
+      this._setPosByCurrentIndex();
+      this._setHashByCurrentIndex();
+      this._setSizeByScreen();
       this.update();
     });
 
@@ -237,7 +237,7 @@ class smartPhoto extends aTemplate {
       event.preventDefault();
       this.data.currentGroup = element.getAttribute('data-group');
       this.data.currentIndex = parseInt(element.getAttribute('data-index'));
-      this.setHashByCurrentIndex();
+      this._setHashByCurrentIndex();
       const currentItem = this._getSelectedItem();
       if(currentItem.loaded) {
         this._initPhoto();
@@ -258,8 +258,8 @@ class smartPhoto extends aTemplate {
     this.data.hide = false;
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;  
-    this.setPosByCurrentIndex();  
-    this.setSizeByScreen();
+    this._setPosByCurrentIndex();  
+    this._setSizeByScreen();
     this.setArrow(); 
     if(this.data.resizeStyle === 'fill' && this.data.isSmartPhone){
       this.data.scale = true;
@@ -403,7 +403,7 @@ class smartPhoto extends aTemplate {
     ]
   }
 
-  setPosByCurrentIndex () {
+  _setPosByCurrentIndex () {
     const items = this.groupItems();
     const moveX = -1 * items[this.data.currentIndex].translateX;
     this.pos.x = moveX;
@@ -414,7 +414,7 @@ class smartPhoto extends aTemplate {
     },1);
   }
 
-  setHashByCurrentIndex () {
+  _setHashByCurrentIndex () {
     const scrollLocation = $(window).scrollTop();
     const items = this.groupItems();
     const id = items[this.data.currentIndex].id;
@@ -458,7 +458,7 @@ class smartPhoto extends aTemplate {
     });
   }
 
-  setSizeByScreen () {
+  _setSizeByScreen () {
     const windowX = window.innerWidth;
     const windowY = window.innerHeight;
     const headerHeight = this.data.headerHeight;
@@ -476,11 +476,11 @@ class smartPhoto extends aTemplate {
     });
   }
 
-  slideList () {
+  _slideList () {
     this.data.onMoveClass = true;
-    this.setPosByCurrentIndex();
-    this.setHashByCurrentIndex();
-    this.setSizeByScreen();
+    this._setPosByCurrentIndex();
+    this._setHashByCurrentIndex();
+    this._setSizeByScreen();
     setTimeout(() => {
       this.data.onMoveClass = false;
       this.setArrow();
@@ -493,7 +493,7 @@ class smartPhoto extends aTemplate {
     if(!this.data.currentIndex) {
       this.data.currentIndex = 0;
     }
-    this.slideList();
+    this._slideList();
   }
 
   setArrow(){
@@ -566,14 +566,14 @@ class smartPhoto extends aTemplate {
       } else if (swipeWidth <= - this.data.swipeOffset && this.data.currentIndex != items.length -1 ) {
         this.data.currentIndex++;
       }
-      this.slideList();
+      this._slideList();
     }
     if (this.moveDir === 'vertical') {
       if (swipeHeight >= this.data.swipeOffset) {
         this.hidePhoto();
       } else {
         this.data.translateY = 0;
-        this.slideList();
+        this._slideList();
       }
     }
   }
@@ -723,6 +723,9 @@ class smartPhoto extends aTemplate {
     const item = this._getSelectedItem();
     let translate = 1;
     this.data.scaleSize += this._round(size,6);
+    if(this.data.scaleSize < 0.2) {
+      this.data.scaleSize = 0.2;
+    }
     //todo
     if(this.data.scaleSize < oldScaleSize) {
       this.data.photoPosX = (1 + this.data.scaleSize - oldScaleSize) * posX;
