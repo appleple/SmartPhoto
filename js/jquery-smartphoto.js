@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.2.11
+ *   version: 0.2.12
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -5383,10 +5383,14 @@ var smartPhoto = function (_aTemplate) {
       var date = new Date();
       var tapSecond = date.getTime();
       var offset = this.tapSecond - tapSecond;
-      var swipeWidth = this.oldPos.x - this.firstPos.x;
-      var swipeHeight = this.oldPos.y - this.firstPos.y;
+      var swipeWidth = 0;
+      var swipeHeight = 0;
       this.isSwipable = false;
       this.onListMove = false;
+      if (this.oldPos) {
+        swipeWidth = this.oldPos.x - this.firstPos.x;
+        swipeHeight = this.oldPos.y - this.firstPos.y;
+      }
 
       if (this.isBeingZoomed) {
         this.afterGesture();

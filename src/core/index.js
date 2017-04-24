@@ -534,10 +534,14 @@ class smartPhoto extends aTemplate {
     const date = new Date();
     const tapSecond = date.getTime();
     const offset = this.tapSecond - tapSecond;
-    const swipeWidth = this.oldPos.x - this.firstPos.x;
-    const swipeHeight = this.oldPos.y - this.firstPos.y;
+    let swipeWidth = 0;
+    let swipeHeight = 0;
     this.isSwipable = false;
     this.onListMove = false;
+    if(this.oldPos) {
+      swipeWidth = this.oldPos.x - this.firstPos.x;
+      swipeHeight = this.oldPos.y - this.firstPos.y;
+    }
 
     if (this.isBeingZoomed) {
       this.afterGesture();
