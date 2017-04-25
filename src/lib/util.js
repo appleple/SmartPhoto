@@ -72,3 +72,9 @@ module.exports.removeElement = (element) => {
     element.parentNode.removeChild(element);
   }
 }
+
+module.exports.append = (element,string) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(string, 'text/html');
+  element.appendChild(doc.querySelector('body').childNodes[0]);
+}

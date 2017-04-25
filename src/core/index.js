@@ -75,8 +75,8 @@ class smartPhoto extends aTemplate {
     this.data.appearEffect = null;
     this.addTemplate(this.id,template);
     this.data.isSmartPhone = this._isSmartPhone();
-
-    $('body').append(`<div data-id='${this.id}'></div>`);
+    const body = document.querySelector('body');
+    util.append(body,`<div data-id='${this.id}'></div>`);
     [].forEach.call(this.elements, (element,index) => {
       this.addNewItem(element);
     });
@@ -105,7 +105,7 @@ class smartPhoto extends aTemplate {
       });
     }
 
-    $(window).on("orientationchange", (e) => {
+    window.addEventListener("orientationchange", (e) => {
       this._resetTranslate();
       this._setPosByCurrentIndex();
       this._setHashByCurrentIndex();
@@ -117,7 +117,7 @@ class smartPhoto extends aTemplate {
       return;
     }
 
-    $(window).on("deviceorientation", (e) => {
+    window.addEventListener("deviceorientation", (e) => {
       let originalEvent = e.originalEvent || e;
       const orientation = window.orientation;
       if(!originalEvent || !originalEvent.gamma || this.data.appearEffect){

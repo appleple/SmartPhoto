@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.2.13
+ *   version: 0.2.14
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -4857,8 +4857,8 @@ var smartPhoto = function (_aTemplate) {
     _this.data.appearEffect = null;
     _this.addTemplate(_this.id, template);
     _this.data.isSmartPhone = _this._isSmartPhone();
-
-    (0, _zeptoBrowserify.$)('body').append('<div data-id=\'' + _this.id + '\'></div>');
+    var body = document.querySelector('body');
+    util.append(body, '<div data-id=\'' + _this.id + '\'></div>');
     [].forEach.call(_this.elements, function (element, index) {
       _this.addNewItem(element);
     });
@@ -4887,7 +4887,7 @@ var smartPhoto = function (_aTemplate) {
       });
     }
 
-    (0, _zeptoBrowserify.$)(window).on("orientationchange", function (e) {
+    window.addEventListener("orientationchange", function (e) {
       _this._resetTranslate();
       _this._setPosByCurrentIndex();
       _this._setHashByCurrentIndex();
@@ -4899,7 +4899,7 @@ var smartPhoto = function (_aTemplate) {
       return _possibleConstructorReturn(_this);
     }
 
-    (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
+    window.addEventListener("deviceorientation", function (e) {
       var originalEvent = e.originalEvent || e;
       var orientation = window.orientation;
       if (!originalEvent || !originalEvent.gamma || _this.data.appearEffect) {
@@ -5914,6 +5914,12 @@ module.exports.removeElement = function (element) {
   if (element && element.parentNode) {
     element.parentNode.removeChild(element);
   }
+};
+
+module.exports.append = function (element, string) {
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(string, 'text/html');
+  element.appendChild(doc.querySelector('body').childNodes[0]);
 };
 
 },{}]},{},[7])(7)
