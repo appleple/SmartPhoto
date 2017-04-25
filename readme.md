@@ -4,7 +4,7 @@
 The most easy to use responsive image viwer especially for mobile devices
 
 ## Feature
-- Flick images to zoom/drag images and also switch to next images
+- zoom/drag images and also flick to next images
 - Use Accelerometer to move images
 - Scale images to fill/fit on the screen so to view each image clearly
 
