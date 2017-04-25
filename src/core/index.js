@@ -1,5 +1,4 @@
 import aTemplate from 'a-template';
-import { $ } from 'zepto-browserify';
 import template from './viwer.html';
 
 const util = require('../lib/util');
@@ -97,7 +96,7 @@ class smartPhoto extends aTemplate {
     },this.data.forceInterval);
 
     if(!this.data.isSmartPhone){
-      $(window).resize(() => {
+      window.addEventListener("resize", (e) => {
         this._resetTranslate();
         this._setPosByCurrentIndex();
         this._setSizeByScreen();
@@ -339,19 +338,16 @@ class smartPhoto extends aTemplate {
     this.data.appearEffect = appear;
   }
 
-  addLeaveEffect () {
-    
-  }
-
   hidePhoto () {
     this.data.hide = true;
     this.data.appear = false;
     this.data.appearEffect = null;
-    const scrollLocation = $(window).scrollTop();
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
     if (location.hash) {
       location.hash = "";
     }
-    $(window).scrollTop( scrollLocation );
+    window.scroll(scrollX,scrollY);
     this._doHideEffect().then(() => {
       this.update();
     });
@@ -420,13 +416,14 @@ class smartPhoto extends aTemplate {
   }
 
   _setHashByCurrentIndex () {
-    const scrollLocation = $(window).scrollTop();
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
     const items = this.groupItems();
     const id = items[this.data.currentIndex].id;
     const group = this.data.currentGroup;
     const hash = `group=${group}&photo=${id}`;
     location.hash = hash;
-    $(window).scrollTop( scrollLocation );
+    window.scroll(scrollX,scrollY);
   }
 
   _getCurrentItemByHash () {
@@ -890,52 +887,53 @@ class smartPhoto extends aTemplate {
 
   _photoUpdate () {
     const classNames = this.data.classNames;
-    const $current = $('.current',`[data-id="${this.id}"]`);
-    const $this = $(`.${classNames.smartPhotoImg}`,$current);
+    const current = this._getElementByQuery('.current');
+    const img = current.querySelector(`.${classNames.smartPhotoImg}`);
+    const nav = this._getElementByQuery(`.${classNames.smartPhotoNav}`);
+    const arrows = this._getElementByQuery(`.${classNames.smartPhotoArrows}`);
     const photoPosX = this.virtualPos(this.data.photoPosX);
     const photoPosY = this.virtualPos(this.data.photoPosY);
     const scaleSize = this.data.scaleSize;
     const transform = `translate(${photoPosX}px,${photoPosY}px) scale(${scaleSize})`;
-    const $nav = $(`.${classNames.smartPhotoNav}`,`[data-id="${this.id}"]`);
-    const $arrows = $(`.${classNames.smartPhotoArrows}`,`[data-id="${this.id}"]`);
-    $this.css('transform',transform);
+
+    img.style.transform = transform;
     if (this.data.scale) {
-      $this.addClass(classNames.smartPhotoImgOnMove);
+      util.addClass(img,classNames.smartPhotoImgOnMove);
     } else {
-      $this.removeClass(classNames.smartPhotoImgOnMove);
+      util.removeClass(img,classNames.smartPhotoImgOnMove);
     }
     if (this.data.elastic) {
-      $this.addClass(classNames.smartPhotoImgElasticMove);
+      util.addClass(img,classNames.smartPhotoImgElasticMove);
     } else {
-      $this.removeClass(classNames.smartPhotoImgElasticMove);
+      util.removeClass(img,classNames.smartPhotoImgElasticMove);
     }
     if (this.data.hideUi) {
-      $nav.addClass('hide');
-      $arrows.addClass('hide');
-      setTimeout(() =>{
-        $nav.addClass('none');
-        $arrows.addClass('none');
+      util.addClass(nav,'hide');
+      util.addClass(arrows,'hide');
+      setTimeout(() => {
+        util.addClass(nav,'none');
+        util.addClass(arrows,'none');
       },100)
     } else {
-      $nav.removeClass('none');
-      $arrows.removeClass('none');
-      setTimeout(() =>{
-        $nav.removeClass('hide');
-        $arrows.removeClass('hide');
+      util.removeClass(nav,'none');
+      util.removeClass(arrows,'none');
+      setTimeout(() => {
+        util.removeClass(nav,'hide');
+        util.removeClass(arrows,'hide');
       },10)
     }
   }
 
   _listUpdate () {
     const classNames = this.data.classNames;
-    const $list = $(`.${classNames.smartPhotoList}`,`[data-id="${this.id}"]`);
+    const list = this._getElementByQuery(`.${classNames.smartPhotoList}`);
     const transform = `translate(${this.data.translateX}px,${this.data.translateY}px)`;
-    $list.css('transform',transform);
+    list.style.transform = transform;
     // $list
     if(this.data.onMoveClass) {
-      $list.addClass(classNames.smartPhotoListOnMove);
+      util.addClass(list,classNames.smartPhotoListOnMove);
     }else{
-      $list.removeClass(classNames.smartPhotoListOnMove);
+      util.removeClass(list,classNames.smartPhotoListOnMove);
     }
   }
 
