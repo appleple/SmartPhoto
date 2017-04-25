@@ -119,14 +119,19 @@ class smartPhoto extends aTemplate {
 
     $(window).on("deviceorientation", (e) => {
       let originalEvent = e.originalEvent || e;
+      const orientation = window.orientation;
       if(!originalEvent || !originalEvent.gamma || this.data.appearEffect){
         return;
       }
       if(!this.isBeingZoomed && !this.photoSwipable && !this.data.elastic && this.data.scale){
-        if (window.innerHeight > window.innerWidth) {
+        if (orientation === 0) {
           this._calcGravity(originalEvent.gamma, originalEvent.beta);
-        } else {
+        } else if (orientation === 90) {
           this._calcGravity(originalEvent.beta, originalEvent.gamma);
+        } else if (orientation === -90) {
+          this._calcGravity(-originalEvent.beta, -originalEvent.gamma);
+        } else if (orientation === 180) {
+          this._calcGravity(-originalEvent.gamma, -originalEvent.beta);
         }
       }
     });

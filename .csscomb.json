@@ -2,7 +2,7 @@
   "remove-empty-rulesets": true,
   "always-semicolon": true,
   "color-case": "upper",
-  "block-indent": "\t",
+  "block-indent": "  ",
   "color-shorthand": true,
   "element-case": "lower",
   "eof-newline": false,

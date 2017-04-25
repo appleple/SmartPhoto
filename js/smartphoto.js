@@ -4901,14 +4901,19 @@ var smartPhoto = function (_aTemplate) {
 
     (0, _zeptoBrowserify.$)(window).on("deviceorientation", function (e) {
       var originalEvent = e.originalEvent || e;
+      var orientation = window.orientation;
       if (!originalEvent || !originalEvent.gamma || _this.data.appearEffect) {
         return;
       }
       if (!_this.isBeingZoomed && !_this.photoSwipable && !_this.data.elastic && _this.data.scale) {
-        if (window.innerHeight > window.innerWidth) {
+        if (orientation === 0) {
           _this._calcGravity(originalEvent.gamma, originalEvent.beta);
-        } else {
+        } else if (orientation === 90) {
           _this._calcGravity(originalEvent.beta, originalEvent.gamma);
+        } else if (orientation === -90) {
+          _this._calcGravity(-originalEvent.beta, -originalEvent.gamma);
+        } else if (orientation === 180) {
+          _this._calcGravity(-originalEvent.gamma, -originalEvent.beta);
         }
       }
     });
