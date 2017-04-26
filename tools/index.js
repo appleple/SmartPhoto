@@ -23,8 +23,6 @@ const SystemPromise = (cmd_string) => {
 
 co(function *() {
   try {
-    yield SystemPromise(`$(npm bin)/uglifyjs ./js/jquery-smartphoto.js -m -c --comments -o ./js/jquery-smartphoto.min.js`);
-    yield SystemPromise(`$(npm bin)/uglifyjs ./js/smartphoto.js -m -c --comments -o ./js/smartphoto.min.js`);
     yield SystemPromise(`git push origin v${pkg.version}`);
     yield SystemPromise(`git push origin master`);
     yield SystemPromise(`npm publish`);
