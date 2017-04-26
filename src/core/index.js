@@ -117,20 +117,19 @@ class smartPhoto extends aTemplate {
     }
 
     window.addEventListener("deviceorientation", (e) => {
-      let originalEvent = e.originalEvent || e;
       const orientation = window.orientation;
-      if(!originalEvent || !originalEvent.gamma || this.data.appearEffect){
+      if(!e || !e.gamma || this.data.appearEffect){
         return;
       }
       if(!this.isBeingZoomed && !this.photoSwipable && !this.data.elastic && this.data.scale){
         if (orientation === 0) {
-          this._calcGravity(originalEvent.gamma, originalEvent.beta);
+          this._calcGravity(e.gamma, e.beta);
         } else if (orientation === 90) {
-          this._calcGravity(originalEvent.beta, originalEvent.gamma);
+          this._calcGravity(e.beta, e.gamma);
         } else if (orientation === -90) {
-          this._calcGravity(-originalEvent.beta, -originalEvent.gamma);
+          this._calcGravity(-e.beta, -e.gamma);
         } else if (orientation === 180) {
-          this._calcGravity(-originalEvent.gamma, -originalEvent.beta);
+          this._calcGravity(-e.gamma, -e.beta);
         }
       }
     });
@@ -384,11 +383,11 @@ class smartPhoto extends aTemplate {
       var event = this.e;
     }
     if (this._isTouched(event)) {
-      x = event.originalEvent.touches[0].pageX;
-      y = event.originalEvent.touches[0].pageY;
+      x = event.touches[0].pageX;
+      y = event.touches[0].pageY;
     } else if (this._isTouched(this.e)) {
-      x = this.e.originalEvent.touches[0].pageX;
-      y = this.e.originalEvent.touches[0].pageY;
+      x = this.e.touches[0].pageX;
+      y = this.e.touches[0].pageY;
     } else if(event.pageX){
       x = event.pageX;
       y = event.pageY;
@@ -397,7 +396,7 @@ class smartPhoto extends aTemplate {
   }
 
   _getGesturePos (e) {
-    const touches = e.originalEvent.touches;
+    const touches = e.touches;
      return [
       { x: touches[0].pageX, y: touches[0].pageY},
       { x: touches[1].pageX, y: touches[1].pageY}
@@ -848,7 +847,7 @@ class smartPhoto extends aTemplate {
   }
 
   _isTouched (e) {
-    if (e && e.originalEvent && e.originalEvent.touches) {
+    if (e && e.touches) {
       return true;
     } else {
       return false;
@@ -856,7 +855,7 @@ class smartPhoto extends aTemplate {
   }
 
   _isGestured (e) {
-    if (e && e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length > 1) {
+    if (e && e.touches && e.touches.length > 1) {
       return true;
     } else {
       return false;
