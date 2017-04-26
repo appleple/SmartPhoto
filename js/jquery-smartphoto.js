@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.3.1
+ *   version: 0.3.2
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -16,12 +16,6 @@
  * delegate:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   version: 3.1.2
- *
- * keyboard-js:
- *   license: MIT (http://opensource.org/licenses/MIT)
- *   author: creamidea
- *   homepage: https://github.com/creamidea/keyboard-js#readme
- *   version: 1.1.4
  *
  * morphdom:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -673,7 +667,7 @@ var aTemplate = function () {
 
 module.exports = aTemplate;
 
-},{"delegate":3,"morphdom":5}],2:[function(require,module,exports){
+},{"delegate":3,"morphdom":4}],2:[function(require,module,exports){
 var DOCUMENT_NODE_TYPE = 9;
 
 /**
@@ -752,252 +746,6 @@ function listener(element, selector, type, callback) {
 module.exports = delegate;
 
 },{"./closest":2}],4:[function(require,module,exports){
-"use strict"
-
-var Keyboard = (function () {
-  function __Keyboard() {
-    this.keys = {} // to record the pressed key
-    this.register_list = {} // to record the registers(key combos)
-    this.state = {} // to record every register matching condition. do you want to get this value?
-    this.statistic = {} // the keypress statistic
-    this.specialKeyString = {
-      "altKey": "Alt",
-      "ctrlKey": "Control",
-      "metaKey": "Meta",
-      "shiftKey": "Shift"
-    }
-  }
-  __Keyboard.prototype.listen = function (keyDown, keyUp) {
-    var option = this.option, element = document
-    if (option.element && typeof option.element.addEventListener === 'function') {
-      element = option.element
-    }
-    element.addEventListener('keydown', (function (event) {
-      this.keydown(event, keyDown)
-    }).bind(this), false)
-    element.addEventListener('keyup', (function (event) {
-      this.keyup(event, keyUp)
-    }).bind(this), false)
-  }
-
-  __Keyboard.prototype.unlisten = function () {
-    // maybe you need callback?
-    var option = this.option, element = document
-    if (option.element && typeof option.element.removeEventListener === 'function') {
-      element = option.element
-    }
-    element.removeEventListener('keydown', function () { })
-    element.removeEventListener('keyup', function () { })
-  }
-
-  __Keyboard.prototype.test = function (event) {
-    return this.testRegisters(event)
-  }
-
-  __Keyboard.prototype.testRegisters = function (event) {
-    var register_list = this.register_list
-    var register_names = Object.getOwnPropertySymbols(register_list)
-    var testKeys = this.testKeys.bind(this)
-    var state = {}
-    for (var i = 0, len = register_names.length; i < len; i++) {
-      var regName = register_names[i]
-      var reg = register_list[regName]
-      var keylist = reg[0]
-      var callback = reg[1]
-
-      // hit the target
-      if (testKeys(keylist)) {
-        if (callback && typeof callback === 'function') {
-          // TODO:
-          // Need event object? or context?
-          // var __wrapper_callback = (function () {
-          //   event.clearKeys = this.clearKeys.bind(this)
-          //   // inject the event(the last key) object
-          //   callback(event)
-
-          //   // BUG:
-          //   // when use `alert` or `confirm`, the event(keyup) of the pressed key will lost.
-          //   // so, you will don't know the key is really pressed or not when you are back.
-          //   // here code just detects some special keys.
-          //   // SO DO NOT USE ALERT OR CONFIRM!
-          //   Array.prototype.map.call(Object.keys(this.specialKeyString), ((function (key) {
-          //     if (event[key]) this.keys[this.specialKeyString[key]] = true
-          //   }).bind(this)))
-          // }).bind(this)
-          // if (typeof window === 'object' && window.requestAnimationFrame)
-          //   window.requestAnimationFrame(__wrapper_callback)
-          // else
-          //   setTimeout(__wrapper_callback, 16)
-
-          event.clearKeys = this.clearKeys.bind(this)
-          callback(event)
-        }
-        state[regName] = true
-        // if match successfully, return directly.
-        return state
-      }
-    }
-    return state
-  }
-
-  // @param keylist Array(Array) [combo1, combo2, ...]
-  __Keyboard.prototype.testKeys = function (keylist) {
-    var result = [], state = false
-    for (var i = 0, len = keylist.length; i < len; i++) {
-      var combo = keylist[i]
-      var allPressedkeys = Object.keys(this.keys)
-      var nowPressedkeys = []
-      var __state = 0 // no state. not true or false
-
-      // collect all pressed key now
-      allPressedkeys.forEach((function (value, index) {
-        if (this.keys[value]) nowPressedkeys.push(value)
-      }).bind(this))
-
-      // DEBUG: print the pressing key message
-      // console.log(allPressedkeys, this.keys)
-      if (this.option.DEBUG === true) {
-        var __printKey = nowPressedkeys.map(function (k, i) {
-          if (k === " ") return "Space"
-          else return k
-        }).join(" ")
-        console.log('[' + Date.now() + '] You hit key: %c' + __printKey, 'color: #ea4335; font-size: 16px')
-      }
-
-      // compare nowPressedkeys and combo
-      // console.log('compare: ', nowPressedkeys, combo)
-      if (nowPressedkeys.length !== combo.length) {
-        __state = false
-      } else {
-        for (var j = 0, len2 = combo.length; j < len2; j++) {
-          if (nowPressedkeys.indexOf(combo[j]) < 0) {
-            // not in the array
-            __state = false
-            break
-          }
-        }
-        // if j is equal to combo.length, this means that user hit the combo.
-        // otherwise, user does't.
-        if (j === combo.length && __state !== false) __state = true
-      }
-      result.push(__state)
-    }
-    // console.log('> result', result, this.keys)
-    result.forEach(function (v, i) {
-      if (v === true) state = true
-    })
-    return state
-  }
-
-  __Keyboard.prototype.keydown = function (event, keyDownCallback) {
-    var key = event.key, state = {}, rlt = true, map = Array.prototype.map
-    this.keys[key] = event.type === 'keydown'
-    // this.keys[key] = true
-    // the result of test
-    // true: hit the target, then prevent the default action, so return true
-    // otherwise, don't prevent it, so return false
-    state = this.test(event)
-    Object.keys(state).forEach(function (regName, i) {
-      if (state[regName] === true) rlt = false
-    })
-    this.state = state
-    if (!rlt) {
-      event.preventDefault()
-      event.stopPropagation()
-      // event.stopImmediatePropagation()
-    }
-    // console.log(rlt)
-    // statistic
-    this.collect(event.key, event.type, event.timeStamp)
-    if (typeof keyDownCallback === 'function') keyDownCallback(event)
-    return rlt
-  }
-
-  __Keyboard.prototype.keyup = function (event, keyUpCallback) {
-    var key = event.key
-    this.keys[key] = false
-    // statistic
-    this.collect(event.key, event.type, event.timeStamp)
-    if (typeof keyUpCallback === 'function') keyUpCallback(event)
-    return true
-  }
-
-  __Keyboard.prototype.collect = function (key, type, timeStamp) {
-    // lazy calculate
-    var target = this.statistic[key]
-    var _timeStamp = !!window.CustomEvent ? new CustomEvent('test').timeStamp : document.createEvent('KeyboardEvent').timeStamp
-    if (typeof target === 'undefined')
-      target = this.statistic[key] = {count: 0, total: 0, average: 0}
-    if (type === 'keydown') {
-      target.downTimeStamp = timeStamp || _timeStamp
-    } else if (type === 'keyup') {
-      target.count = target.count + 1
-      target.upTimeStamp = timeStamp || _timeStamp
-      target.total = (target.upTimeStamp - target.downTimeStamp) + target.total
-      target.total = +target.total.toFixed(2) || 0 // if incorrect, set 0
-      target.average = target.total / target.count
-    }
-  }
-
-  __Keyboard.prototype.register = function (name, callback/*, keylist*/) {
-    if (typeof name !== 'string') throw new Error('[from keyboard-js] Please input a register name.')
-    var sym
-    if (typeof Symbol !== 'undefined') sym = Symbol.for(name)
-    else sym = name
-    if (this.register_list[sym]) throw new Error('[from keyboard-js] The Register[' + name + '] has existed!')
-    var keylist = Array.prototype.slice.call(arguments, 2)
-    if (!(keylist[0] instanceof Array)) keylist = [keylist] // init [combo1:Array, combo2:Array, ....]
-    this.register_list[sym] = [keylist, callback]
-  }
-
-  __Keyboard.prototype.clearRegister = function (name) {
-    delete this.register_list[name]
-  }
-  __Keyboard.prototype.clearRegisterAll = function () {
-    this.register_list = {}
-  }
-  __Keyboard.prototype.clearKeys = function () {
-    this.keys = {}
-  }
-  var k = new __Keyboard()
-
-  var __instance = {
-    start: function (keyDown, keyUp) { k.listen(keyDown, keyUp) },
-    end: function () { k.unlisten(); k.clearRegisterAll(); k.clearKeys(); },
-    register: function () { k.register.apply(k, arguments) },
-    unregister: function () { k.clearRegister.apply(k, arguments) },
-    getStatistic: function () { return k.statistic },
-    // for test
-    __keydown: function () { k.keydown.apply(k, arguments) },
-    __keyup: function () { k.keyup.apply(k, arguments) }
-  }
-
-  return function (o) {
-    k.option = o || {}
-    if (typeof window === 'object') window.addEventListener('focus', function () {
-      k.keys = {}
-    }, false)
-    // window.addEventListener('blur', function () {
-    //     k.keys = {}
-    // }, false)
-    return __instance
-  }
-})()
-
-if (typeof exports !== "undefined") {
-  exports.Keyboard = Keyboard
-} else if (typeof define === 'function') {
-  define("Keyboard", [], function () {
-    return Keyboard
-  })
-} else {
-  if (window.Keyboard === undefined) window.Keyboard = Keyboard
-  else {
-    throw new Error('Library Keyboard has existed! Loaded failed.')
-  }
-}
-
-},{}],5:[function(require,module,exports){
 'use strict';
 
 var range; // Create a range object for efficently rendering strings to elements.
@@ -1672,7 +1420,7 @@ var morphdom = morphdomFactory(morphAttrs);
 
 module.exports = morphdom;
 
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 var smartPhoto = require('../index');
@@ -1697,7 +1445,7 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = applyJQuery;
 
-},{"../index":8}],7:[function(require,module,exports){
+},{"../index":7}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1716,9 +1464,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var template = '<div class="\\{classNames.smartPhoto\\}"<!-- BEGIN hide:exist --> style="display:none;"<!-- END hide:exist -->>\n\t<div class="\\{classNames.smartPhotoBody\\}">\n\t\t<div class="\\{classNames.smartPhotoInner\\}">\n\t\t\t   <div class="\\{classNames.smartPhotoHeader\\}">\n\t\t\t\t\t<span class="\\{classNames.smartPhotoCount\\}">{currentIndex}[increment]/{total}</span>\n\t\t\t\t\t<span class="\\{classNames.smartPhotoCaption\\}"><!-- BEGIN groupItems:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>\n\t\t\t\t\t<button class="\\{classNames.smartPhotoDismiss\\}" data-action-click="hidePhoto()"></button>\n\t\t\t\t</div>\n\t\t\t\t<div class="\\{classNames.smartPhotoContent\\}"<!-- BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag(false)"<!-- END isSmartPhone:exist -->>\n\t\t\t\t</div>\n\t\t\t\t<ul style="transform:translate({translateX}px,{translateY}px);" class="\\{classNames.smartPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.smartPhotoListOnMove\\}<!-- END onMoveClass:exist -->">\n\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t<li style="transform:translate({translateX}px,{translateY}px);" class="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->">\n\t\t\t\t\t\t<!-- BEGIN loaded:exist -->\n\t\t\t\t\t\t<div style="transform:translate({x}px,{y}px) scale({scale});" class="\\\\{classNames.smartPhotoImgWrap\\\\}"<!-- \\BEGIN isSmartPhone:empty --> data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag"<!-- \\END isSmartPhone:empty --><!-- \\BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag"<!-- \\END isSmartPhone:exist -->>\n\t\t\t\t\t\t\t<img style="<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->" src="{src}" class="\\\\{classNames.smartPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.smartPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.smartPhotoImgElasticMove\\\\}<!-- \\END elastic:exist --><!-- \\BEGIN appear:exist --> active<!-- \\END appear:exist -->" ondragstart="return false;">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:exist -->\n\t\t\t\t\t\t<!-- BEGIN loaded:empty -->\n\t\t\t\t\t\t<div class="\\\\{classNames.smartPhotoLoaderWrap\\\\}">\n\t\t\t\t\t\t\t<span class="\\\\{classNames.smartPhotoLoader\\\\}"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:empty -->\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t<ul class="\\{classNames.smartPhotoArrows\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">\n\t\t\t\t\t<li class="\\{classNames.smartPhotoArrowLeft\\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->" data-action-click="gotoSlide({prev})"></li>\n\t\t\t\t\t<li class="\\{classNames.smartPhotoArrowRight\\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->" data-action-click="gotoSlide({next})"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<nav class="\\{classNames.smartPhotoNav\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">\n\t\t\t\t\t<ul >\n\t\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t\t<li data-action-click="gotoSlide({index})" class="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->" style="background-image:url({src});"></li>\n\t\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t\t<!-- BEGIN appearEffect:exist -->\n\t\t<img src=\\{appearEffect.img\\}\n\t\tclass="\\{classNames.smartPhotoImgClone\\}"\n\t\tstyle="width:\\{appearEffect.width\\}px;height:\\{appearEffect.height\\}px;transform:translate(\\{appearEffect.left\\}px,\\{appearEffect.top\\}px) scale(1)" />\n\t\t<!-- END appearEffect:exist -->\n\t</div>\n</div>\n';
 
-
 var util = require('../lib/util');
-var Keyboard = require('keyboard-js').Keyboard;
 
 var defaults = {
   classNames: {
@@ -1804,10 +1550,6 @@ var smartPhoto = function (_aTemplate) {
       util.triggerEvent(currentItem.element, 'click');
     }
 
-    if (!_this.data.isSmartPhone) {
-      _this._setKeyboard();
-    }
-
     _this._getEachImageSize();
 
     setInterval(function () {
@@ -1821,6 +1563,21 @@ var smartPhoto = function (_aTemplate) {
         _this._setSizeByScreen();
         _this.update();
       });
+
+      window.addEventListener('keydown', function (e) {
+        var code = e.keyCode || e.which;
+        if (_this.data.hide === true) {
+          return;
+        }
+        if (code === 37) {
+          _this.gotoSlide(_this.data.prev);
+        } else if (code === 39) {
+          _this.gotoSlide(_this.data.next);
+        } else if (code === 27) {
+          _this.hidePhoto();
+        }
+      });
+      return _possibleConstructorReturn(_this);
     }
 
     window.addEventListener("orientationchange", function (e) {
@@ -1831,7 +1588,7 @@ var smartPhoto = function (_aTemplate) {
       _this.update();
     });
 
-    if (!_this.data.isSmartPhone || !_this.data.useOrientationApi) {
+    if (!_this.data.useOrientationApi) {
       return _possibleConstructorReturn(_this);
     }
 
@@ -1873,32 +1630,6 @@ var smartPhoto = function (_aTemplate) {
       return this.data.group[this.data.currentGroup];
     }
   }, {
-    key: '_setKeyboard',
-    value: function _setKeyboard() {
-      var _this2 = this;
-
-      var keyboard = new Keyboard();
-      keyboard.register('slideRight', function () {
-        if (_this2.data.hide === true) {
-          return;
-        }
-        _this2.gotoSlide(_this2.data.next);
-      }, ['ArrowRight']);
-      keyboard.register('slideLeft', function () {
-        if (_this2.data.hide === true) {
-          return;
-        }
-        _this2.gotoSlide(_this2.data.prev);
-      }, ['ArrowLeft']);
-      keyboard.register('hidePhoto', function () {
-        if (_this2.data.hide === true) {
-          return;
-        }
-        _this2.hidePhoto();
-      }, ['Escape']);
-      keyboard.start();
-    }
-  }, {
     key: '_getEachImageSize',
     value: function _getEachImageSize() {
       var arr = [];
@@ -1937,7 +1668,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'addNewItem',
     value: function addNewItem(element) {
-      var _this3 = this;
+      var _this2 = this;
 
       var groupId = element.getAttribute('data-group') || "nogroup";
       var group = this.data.group;
@@ -1970,19 +1701,19 @@ var smartPhoto = function (_aTemplate) {
       element.setAttribute('data-index', index);
       element.addEventListener('click', function (event) {
         event.preventDefault();
-        _this3.data.currentGroup = element.getAttribute('data-group');
-        _this3.data.currentIndex = parseInt(element.getAttribute('data-index'));
-        _this3._setHashByCurrentIndex();
-        var currentItem = _this3._getSelectedItem();
+        _this2.data.currentGroup = element.getAttribute('data-group');
+        _this2.data.currentIndex = parseInt(element.getAttribute('data-index'));
+        _this2._setHashByCurrentIndex();
+        var currentItem = _this2._getSelectedItem();
         if (currentItem.loaded) {
-          _this3._initPhoto();
-          _this3.addAppearEffect(element);
-          _this3.update();
+          _this2._initPhoto();
+          _this2.addAppearEffect(element);
+          _this2.update();
         } else {
-          _this3._loadItem(currentItem).then(function () {
-            _this3.data.appear = true;
-            _this3._initPhoto();
-            _this3.update();
+          _this2._loadItem(currentItem).then(function () {
+            _this2.data.appear = true;
+            _this2._initPhoto();
+            _this2.update();
           });
         }
       });
@@ -2006,12 +1737,12 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'onUpdated',
     value: function onUpdated() {
-      var _this4 = this;
+      var _this3 = this;
 
       if (this.data.appearEffect && this.data.appearEffect.once) {
         this.data.appearEffect.once = false;
         this.execEffect().then(function () {
-          _this4.replaceEffectWithImg();
+          _this3.replaceEffectWithImg();
         });
       }
     }
@@ -2032,13 +1763,13 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'replaceEffectWithImg',
     value: function replaceEffectWithImg() {
-      var _this5 = this;
+      var _this4 = this;
 
       var classNames = this.data.classNames;
       setTimeout(function () {
-        _this5.data.appearEffect = null;
-        _this5.data.appear = true;
-        _this5.update();
+        _this4.data.appearEffect = null;
+        _this4.data.appear = true;
+        _this4.update();
       }, 300);
     }
   }, {
@@ -2080,7 +1811,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'hidePhoto',
     value: function hidePhoto() {
-      var _this6 = this;
+      var _this5 = this;
 
       this.data.hide = true;
       this.data.appear = false;
@@ -2092,18 +1823,18 @@ var smartPhoto = function (_aTemplate) {
       }
       window.scroll(scrollX, scrollY);
       this._doHideEffect().then(function () {
-        _this6.update();
+        _this5.update();
       });
     }
   }, {
     key: '_doHideEffect',
     value: function _doHideEffect() {
-      var _this7 = this;
+      var _this6 = this;
 
       return new Promise(function (resolve, reject) {
-        var classNames = _this7.data.classNames;
-        var photo = _this7._getElementByClass(classNames.smartPhoto);
-        var img = _this7._getElementByQuery('.current .' + classNames.smartPhotoImg);
+        var classNames = _this6.data.classNames;
+        var photo = _this6._getElementByClass(classNames.smartPhoto);
+        var img = _this6._getElementByQuery('.current .' + classNames.smartPhotoImg);
         var height = window.innerHeight;
         var handler = function handler() {
           photo.removeEventListener('transitionend', handler, true);
@@ -2153,15 +1884,15 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_setPosByCurrentIndex',
     value: function _setPosByCurrentIndex() {
-      var _this8 = this;
+      var _this7 = this;
 
       var items = this.groupItems();
       var moveX = -1 * items[this.data.currentIndex].translateX;
       this.pos.x = moveX;
       setTimeout(function () {
-        _this8.data.translateX = moveX;
-        _this8.data.translateY = 0;
-        _this8._listUpdate();
+        _this7.data.translateX = moveX;
+        _this7.data.translateY = 0;
+        _this7._listUpdate();
       }, 1);
     }
   }, {
@@ -2234,16 +1965,16 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_slideList',
     value: function _slideList() {
-      var _this9 = this;
+      var _this8 = this;
 
       this.data.onMoveClass = true;
       this._setPosByCurrentIndex();
       this._setHashByCurrentIndex();
       this._setSizeByScreen();
       setTimeout(function () {
-        _this9.data.onMoveClass = false;
-        _this9.setArrow();
-        _this9.update();
+        _this8.data.onMoveClass = false;
+        _this8.setArrow();
+        _this8.update();
       }, 200);
     }
   }, {
@@ -2385,7 +2116,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'zoomPhoto',
     value: function zoomPhoto() {
-      var _this10 = this;
+      var _this9 = this;
 
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
@@ -2393,8 +2124,8 @@ var smartPhoto = function (_aTemplate) {
       this.data.photoPosY = 0;
       this._photoUpdate();
       setTimeout(function () {
-        _this10.data.scale = true;
-        _this10._photoUpdate();
+        _this9.data.scale = true;
+        _this9._photoUpdate();
       }, 300);
     }
   }, {
@@ -2582,7 +2313,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_registerElasticForce',
     value: function _registerElasticForce(x, y) {
-      var _this11 = this;
+      var _this10 = this;
 
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
@@ -2599,8 +2330,8 @@ var smartPhoto = function (_aTemplate) {
       }
       this._photoUpdate();
       setTimeout(function () {
-        _this11.data.elastic = false;
-        _this11._photoUpdate();
+        _this10.data.elastic = false;
+        _this10._photoUpdate();
       }, 300);
     }
   }, {
@@ -2768,12 +2499,12 @@ var smartPhoto = function (_aTemplate) {
 
 module.exports = smartPhoto;
 
-},{"../lib/util":9,"a-template":1,"keyboard-js":4}],8:[function(require,module,exports){
+},{"../lib/util":8,"a-template":1}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./core/');
 
-},{"./core/":7}],9:[function(require,module,exports){
+},{"./core/":6}],8:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -2873,4 +2604,4 @@ module.exports.removeClass = function (element, className) {
   }
 };
 
-},{}]},{},[6]);
+},{}]},{},[5]);

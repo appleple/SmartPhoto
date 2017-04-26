@@ -1,8 +1,6 @@
 import aTemplate from 'a-template';
 import template from './viwer.html';
-
 const util = require('../lib/util');
-const Keyboard = require('keyboard-js').Keyboard;
 
 const defaults = {
   classNames: {
@@ -85,10 +83,6 @@ class smartPhoto extends aTemplate {
       util.triggerEvent(currentItem.element,'click');
     }
 
-    if(!this.data.isSmartPhone) {
-        this._setKeyboard();
-    }
-
     this._getEachImageSize();
 
     setInterval(()=>{
@@ -102,6 +96,21 @@ class smartPhoto extends aTemplate {
         this._setSizeByScreen();
         this.update();
       });
+
+      window.addEventListener('keydown', (e) => {
+        const code = e.keyCode || e.which;
+        if(this.data.hide === true) {
+          return;
+        }
+        if(code === 37) {
+          this.gotoSlide(this.data.prev);
+        } else if (code === 39) {
+          this.gotoSlide(this.data.next);
+        } else if (code === 27) {
+          this.hidePhoto();
+        }
+      });
+      return;
     }
 
     window.addEventListener("orientationchange", (e) => {
@@ -112,7 +121,7 @@ class smartPhoto extends aTemplate {
       this.update();
     });
 
-    if(!this.data.isSmartPhone || !this.data.useOrientationApi){
+    if(!this.data.useOrientationApi){
       return;
     }
 
@@ -147,29 +156,6 @@ class smartPhoto extends aTemplate {
 
   groupItems () {
     return this.data.group[this.data.currentGroup];
-  }
-
-  _setKeyboard () {
-    const keyboard = new Keyboard();
-    keyboard.register('slideRight', () => {
-      if(this.data.hide === true) {
-        return;
-      }
-      this.gotoSlide(this.data.next);
-    },['ArrowRight']);
-    keyboard.register('slideLeft', () => {
-      if(this.data.hide === true) {
-        return;
-      }
-      this.gotoSlide(this.data.prev);
-    },['ArrowLeft']);
-    keyboard.register('hidePhoto', () => {
-      if(this.data.hide === true) {
-        return;
-      }
-      this.hidePhoto();
-    },['Escape'])
-    keyboard.start();
   }
 
   _getEachImageSize () {
