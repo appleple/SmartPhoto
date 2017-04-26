@@ -30,18 +30,18 @@
     "babelify": "^7.3.0",
     "browser-sync": "^2.18.6",
     "browserify": "^13.1.1",
+    "co": "^4.6.0",
+    "fs-extra": "^2.1.2",
     "http-server": "^0.9.0",
     "licensify": "^3.1.2",
+    "node-cmd": "^2.0.0",
     "node-sass": "^4.3.0",
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.0.1",
     "onchange": "^3.2.1",
     "stringify": "^5.1.0",
-    "uglify-js": "^2.7.5",
-    "watchify": "^3.9.0",
-    "node-cmd": "^2.0.0",
-    "co": "^4.6.0",
-    "fs-extra": "^2.1.2"
+    "uglify-js": "^2.8.22",
+    "watchify": "^3.9.0"
   },
   "dependencies": {
     "a-template": "0.2.0",
