@@ -5,33 +5,47 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="../css/smartphoto.min.css">
-	<title>smart-photo.js</title>
+	<link rel="stylesheet" href="./assets/style.css">
+	<title>jquery-smartphoto.js</title>
 </head>
 <body>
-	<a href="./assets/large-kuma.jpg" class="js-img-viwer" data-caption="くま" data-id="kuma" data-group="0">
-		<img src="./assets/kuma.jpg" width="360"/>
-	</a>
-	<a href="./assets/large-rakuda.jpg" class="js-img-viwer" data-caption="ラクダ" data-id="rakuda" data-group="0">
-		<img src="./assets/rakuda.jpg" width="360"/>
-	</a>
-	<a href="./assets/large-sai.jpg" class="js-img-viwer" data-caption="サイ" data-id="sai" data-group="0">
-		<img src="./assets/sai.jpg" width="360"/>
-	</a>
-	<a href="./assets/large-kaba.jpg" class="js-img-viwer" data-caption="かば" data-id="kaba" data-group="1">
-		<img src="./assets/kaba.jpg" width="360" />
-	</a>
-	<a href="./assets/large-koara.jpg" class="js-img-viwer" data-caption="コアラ" data-id="koara" data-group="1">
-		<img src="./assets/koara.jpg" width="360" />
-	</a>
-	<a href="./assets/large-lion.jpg" class="js-img-viwer" data-caption="ライオン" data-id="raion" data-group="1">
-		<img src="./assets/lion.jpg" width="360" />
-	</a>
-	<a href="./assets/large-kuma.jpg" class="js-img-viwer" data-caption="くま" data-id="kuma2" data-group="2">
-		<img src="./assets/kuma.jpg" width="360" />
-	</a>
-	<a href="./assets/large-rakuda.jpg" class="js-img-viwer" data-caption="ラクダ" data-id="rakuda2" data-group="2">
-		<img src="./assets/rakuda.jpg" width="360" />
-	</a>
+	<div class="wrapper">
+		<h1 class="title">jquery-smartphoto.js</h1>
+		<div class="masonry">
+			<div class="brick">
+				<a href="./assets/large-lion.jpg" class="js-img-viwer" data-caption="ライオン" data-id="raion">
+					<img src="./assets/lion.jpg" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-rakuda.jpg" class="js-img-viwer" data-caption="ラクダ" data-id="rakuda">
+					<img src="./assets/rakuda.jpg" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-kaba.jpg" class="js-img-viwer" data-caption="かば" data-id="kaba">
+					<img src="./assets/kaba.jpg" width="360" />
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-koara.jpg" class="js-img-viwer" data-caption="コアラ" data-id="koara">
+					<img src="./assets/koara.jpg" width="360" />
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-kuma.jpg" class="js-img-viwer" data-caption="くま" data-id="kuma">
+					<img src="./assets/kuma.jpg" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-sai.jpg" class="js-img-viwer" data-caption="サイ" data-id="sai">
+					<img src="./assets/sai.jpg" width="360"/>
+				</a>
+			</div>
+		</div>
+	</div>
+
+
 	<script
 	src="https://code.jquery.com/jquery-2.2.4.min.js"
 	integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
