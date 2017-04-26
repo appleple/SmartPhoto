@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.3.2
+ *   version: 0.3.3
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -1816,6 +1816,9 @@ var smartPhoto = function (_aTemplate) {
       this.data.hide = true;
       this.data.appear = false;
       this.data.appearEffect = null;
+      this.data.hideUi = false;
+      this.data.scale = false;
+      this.data.scaleSize = 1;
       var scrollX = window.scrollX;
       var scrollY = window.scrollY;
       if (location.hash) {

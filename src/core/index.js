@@ -327,6 +327,9 @@ class smartPhoto extends aTemplate {
     this.data.hide = true;
     this.data.appear = false;
     this.data.appearEffect = null;
+    this.data.hideUi = false;
+    this.data.scale = false;
+    this.data.scaleSize = 1;
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
     if (location.hash) {
