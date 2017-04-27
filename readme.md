@@ -4,9 +4,12 @@
 The most easy to use responsive image viwer especially for mobile devices
 
 ## Feature
-- zoom/drag images and also flick to next images
+- Intuitive gestures such as pinch-in/pinch-out/drag/swipe
 - Use Accelerometer to move images
-- Scale images to fill/fit on the screen so to view each image clearly
+- Scale images to fill/fit on the screen
+- Accessible from keyboard
+- Show pictures via URL hash
+- Can make photo groups
 
 ## Installation
 - [npm](https://www.npmjs.com/package/smartphoto)
