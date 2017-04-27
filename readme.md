@@ -118,7 +118,7 @@ window.addEventListener('load',function(){
 
 #### Fit/Fill Option
 
-You can choose if you want to scale images to fit/fill screen-width
+You can choose if you want to scale images to fit/fill
 
 ```js
 window.addEventListener('load',function(){
