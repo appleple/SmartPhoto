@@ -6,7 +6,6 @@ The most easy to use responsive image viwer especially for mobile devices
 ## Feature
 - Intuitive gestures such as pinch-in/pinch-out/drag/swipe
 - Use Accelerometer to move images
-- Scale images to fill/fit on the screen
 - Accessible from keyboard
 - Show pictures via URL hash
 - Can make photo groups
