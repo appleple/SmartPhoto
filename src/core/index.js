@@ -692,7 +692,7 @@ class smartPhoto extends aTemplate {
       } else if (this.data.photoPosY < bound.minY) {
         flagY = 1;
       }
-      //test
+
       if (this.data.photoPosX - bound.maxX > offset && this.data.currentIndex !== 0) {
         this.gotoSlide(this.data.prev);
         return;
@@ -702,6 +702,12 @@ class smartPhoto extends aTemplate {
         this.gotoSlide(this.data.next);
         return;
       }
+
+      // todo
+      // if(this.data.photoPosY - bound.maxY > offset) {
+      //   this.hidePhoto();
+      //   return;
+      // }
 
       if (flagX === 0 && flagY === 0) {
         this.vx = this.photoVX / 5;
