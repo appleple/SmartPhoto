@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.3.3
+ *   version: 0.3.4
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -1945,6 +1945,12 @@ var smartPhoto = function (_aTemplate) {
     value: function _slideList() {
       var _this8 = this;
 
+      this.data.scaleSize = 1;
+      this.isBeingZoomed = false;
+      this.data.hideUi = false;
+      this.data.scale = false;
+      this.data.photoPosX = 0;
+      this.data.photoPosY = 0;
       this.data.onMoveClass = true;
       this._setPosByCurrentIndex();
       this._setHashByCurrentIndex();
@@ -2160,8 +2166,10 @@ var smartPhoto = function (_aTemplate) {
       if (this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
         this.zoomOutPhoto();
       } else {
+        this.photoSwipable = false;
         var item = this._getSelectedItem();
         var bound = this._makeBound(item);
+        var offset = this.data.swipeOffset * this.data.scaleSize;
         var flagX = 0;
         var flagY = 0;
         if (this.data.photoPosX > bound.maxX) {
@@ -2174,6 +2182,17 @@ var smartPhoto = function (_aTemplate) {
         } else if (this.data.photoPosY < bound.minY) {
           flagY = 1;
         }
+        //test
+        if (this.data.photoPosX - bound.maxX > offset && this.data.currentIndex !== 0) {
+          this.gotoSlide(this.data.prev);
+          return;
+        }
+
+        if (bound.minX - this.data.photoPosX > offset && this.data.currentIndex + 1 !== this.data.total) {
+          this.gotoSlide(this.data.next);
+          return;
+        }
+
         if (flagX === 0 && flagY === 0) {
           this.vx = this.photoVX / 5;
           this.vy = this.photoVY / 5;
@@ -2181,7 +2200,6 @@ var smartPhoto = function (_aTemplate) {
           this._registerElasticForce(flagX, flagY);
         }
       }
-      this.photoSwipable = false;
     }
   }, {
     key: 'beforeGesture',
