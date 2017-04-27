@@ -64,18 +64,6 @@ window.addEventListener('load',function(){
 </script>
 ```
 
-### Fit/Fill Option
-
-You can choose if you want to scale images to fit/fill screen-width
-
-```js
-window.addEventListener('load',function(){
-  new smartPhoto(".js-img-viwer",{
-      resizeStyle: 'fit'
-  });
-});
-```
-
 ### Option
 
 <table>
@@ -116,13 +104,25 @@ window.addEventListener('load',function(){
 	</tr>
 </table>
 
-When you want to hide arrows and nav
+#### Hide parts
 ```js
 window.addEventListener('load',function(){
     new smartPhoto(".js-img-viwer",{
         arrows: false,
         nav: false
     });
+});
+```
+
+#### Fit/Fill Option
+
+You can choose if you want to scale images to fit/fill screen-width
+
+```js
+window.addEventListener('load',function(){
+  new smartPhoto(".js-img-viwer",{
+      resizeStyle: 'fit'
+  });
 });
 ```
 
