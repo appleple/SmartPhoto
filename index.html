@@ -11,12 +11,12 @@
     <link rel="stylesheet" href="./assets/css/style.css?v=96c482a683ca3d2e8dd0d3c3a74134ace03a6260">
 	<link rel="stylesheet" href="https://unpkg.com/smartphoto@0.3.4/css/smartphoto.min.css">
 	<style>
-		.js-img-viwer img{
+		.js-smartPhoto img{
 			height: 200px;
 			width: auto;
 		}
 		@media screen and (max-width:480px) {
-			.js-img-viwer img{
+			.js-smartPhoto img{
 				height: 80px;
 				width: auto;
 			}
@@ -32,24 +32,24 @@
     </section>
 
     <section class="main-content">
-      <h1 id="smartphoto">Demo</h1>
+		
 
-		<a href="./assets/images/large-kuma.jpg" class="js-img-viwer" data-caption="bear" data-id="bear" data-group="0">
+		<a href="./assets/images/large-kuma.jpg" class="js-smartPhoto" data-caption="bear" data-id="bear" data-group="animal">
 			<img src="./assets/images/kuma.jpg" />
 		</a>
-		<a href="./assets/images/large-rakuda.jpg" class="js-img-viwer" data-caption="camel" data-id="camel" data-group="0">
+		<a href="./assets/images/large-rakuda.jpg" class="js-smartPhoto" data-caption="camel" data-id="camel" data-group="animal">
 			<img src="./assets/images/rakuda.jpg" />
 		</a>
-		<a href="./assets/images/large-lion.jpg" class="js-img-viwer" data-caption="lion" data-id="lion" data-group="0">
+		<a href="./assets/images/large-lion.jpg" class="js-smartPhoto" data-caption="lion" data-id="lion" data-group="animal">
 			<img src="./assets/images/lion.jpg" />
 		</a>
-		<a href="./assets/images/large-sai.jpg" class="js-img-viwer" data-caption="rhinoceros" data-id="rhinoceros" data-group="0">
+		<a href="./assets/images/large-sai.jpg" class="js-smartPhoto" data-caption="rhinoceros" data-id="rhinoceros" data-group="animal">
 			<img src="./assets/images/sai.jpg" />
 		</a>
-		<a href="./assets/images/large-kaba.jpg" class="js-img-viwer" data-caption="hippopotamus" data-id="hippopotamus" data-group="0">
+		<a href="./assets/images/large-kaba.jpg" class="js-smartPhoto" data-caption="hippopotamus" data-id="hippopotamus" data-group="animal">
 			<img src="./assets/images/kaba.jpg" />
 		</a>
-		<a href="./assets/images/large-koara.jpg" class="js-img-viwer" data-caption="koala" data-id="koala" data-group="0">
+		<a href="./assets/images/large-koara.jpg" class="js-smartPhoto" data-caption="koala" data-id="koala" data-group="animal">
 			<img src="./assets/images/koara.jpg" />
 		</a>
 
@@ -79,18 +79,51 @@
 </code></pre>
 </div>
 
+
+<h2 id="cdn">CDN</h2>
+<p>Link directly to SmartPhoto files on <a href="https://unpkg.com/">unpkg</a>.</p>
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://unpkg.com/smartphoto@0.3.4/js/smartphoto.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre>
+</div>
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;link </span><span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://unpkg.com/smartphoto@0.3.4/css/smartphoto.min.css"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre>
+</div>
+
 <h2 id="usage">Usage</h2>
+
+<h3>HTML</h3>
+<p>Include the SmartPhoto .js/.css file in your site.</p>
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/path/to/js/smartphoto.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre>
+</div>
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;link </span><span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"/path/to/css/smartphoto.min.css"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre>
+</div>
+
+<div class="language-html highlighter-rouge"><pre class="highlight"><span class="nt">&lt;a</span> <span class="na">href</span>=<span class="s"><span class="pl-pds">"</span>./assets/large-kuma.jpg<span class="pl-pds">"</span></span> <span class="na">class</span>=<span class="s"><span class="pl-pds">"</span>js-smartPhoto<span class="pl-pds">"</span></span> <span class="na">data-caption</span>=<span class="s"><span class="pl-pds">"</span>bear<span class="pl-pds">"</span></span> <span class="na">data-id</span>=<span class="s"><span class="pl-pds">"</span>bear<span class="pl-pds">"</span></span>&gt;
+  <span class="nt">&lt;img</span> <span class="na">src</span>=<span class="s"><span class="pl-pds">"</span>./assets/kuma.jpg<span class="pl-pds">"</span></span> <span class="na">width</span>=<span class="s"><span class="pl-pds">"</span>360<span class="pl-pds">"</span></span> <span class="na">data-group</span>=<span class="s"><span class="pl-pds">"</span>animal<span class="pl-pds">"</span></span>/&gt;
+<span class="nt">&lt;/a</span>&gt;
+<span class="nt">&lt;a</span> <span class="na">href</span>=<span class="s"><span class="pl-pds">"</span>./assets/large-rakuda.jpg<span class="pl-pds">"</span></span> <span class="na">class</span>=<span class="s"><span class="pl-pds">"</span>js-smartPhoto<span class="pl-pds">"</span></span> <span class="na">data-caption</span>=<span class="s"><span class="pl-pds">"</span>camel<span class="pl-pds">"</span></span> <span class="na">data-id</span>=<span class="s"><span class="pl-pds">"</span>camel<span class="pl-pds">"</span></span>&gt;
+  <span class="nt">&lt;img</span> <span class="na">src</span>=<span class="s"><span class="pl-pds">"</span>./assets/rakuda.jpg<span class="pl-pds">"</span></span> <span class="na">width</span>=<span class="s"><span class="pl-pds">"</span>360<span class="pl-pds">"</span></span> <span class="na">data-group</span>=<span class="s"><span class="pl-pds">"</span>animal<span class="pl-pds">"</span></span>/&gt;
+<span class="nt">&lt;/a</span>&gt;
+<span class="nt">&lt;a</span> <span class="na">href</span>=<span class="s"><span class="pl-pds">"</span>./assets/large-sai.jpg<span class="pl-pds">"</span></span> <span class="na">class</span>=<span class="s"><span class="pl-pds">"</span>js-smartPhoto<span class="pl-pds">"</span></span> <span class="na">data-caption</span>=<span class="s"><span class="pl-pds">"</span>rhinoceros<span class="pl-pds">"</span></span> <span class="na">data-id</span>=<span class="s"><span class="pl-pds">"</span>rhinoceros<span class="pl-pds">"</span></span>&gt;
+  <span class="nt">&lt;img</span> <span class="na">src</span>=<span class="s"><span class="pl-pds">"</span>./assets/sai.jpg<span class="pl-pds">"</span></span> <span class="na">width</span>=<span class="s"><span class="pl-pds">"</span>360<span class="pl-pds">"</span></span> <span class="na">data-group</span>=<span class="s"><span class="pl-pds">"</span>animal<span class="pl-pds">"</span></span>/&gt;
+<span class="nt">&lt;/a</span>&gt;
+</pre></div>
+
+
+<h3>JavaScript</h3>
 <p>smartphoto.js</p>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'load'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
-    <span class="k">new</span> <span class="nx">smartPhoto</span><span class="p">(</span><span class="s2">".js-img-viwer"</span><span class="p">);</span>
+    <span class="k">new</span> <span class="nx">smartPhoto</span><span class="p">(</span><span class="s2">".js-smartPhoto"</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre>
 </div>
 
 <p>jquery-smartphoto.js</p>
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s2">".js-img-viwer"</span><span class="p">).</span><span class="nx">smartPhoto</span><span class="p">();</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">".js-smartPhoto"</span><span class="p">).</span><span class="nx">smartPhoto</span><span class="p">();</span>
 <span class="p">});</span>
 </code></pre>
 </div>
@@ -137,13 +170,23 @@
 
 <p>When you want to hide arrows and nav</p>
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'load'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
-    <span class="k">new</span> <span class="nx">smartPhoto</span><span class="p">(</span><span class="s2">".js-img-viwer"</span><span class="p">,{</span>
+    <span class="k">new</span> <span class="nx">smartPhoto</span><span class="p">(</span><span class="s2">'.js-smartPhoto'</span><span class="p">,{</span>
         <span class="na">arrows</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
         <span class="na">nav</span><span class="p">:</span> <span class="kc">false</span>
     <span class="p">});</span>
 <span class="p">});</span>
 </code></pre>
 </div>
+
+<p>When you want to fit images to the screen</p>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'load'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="k">new</span> <span class="nx">smartPhoto</span><span class="p">(</span><span class="s2">'.js-smartPhoto'</span><span class="p">,{</span>
+        <span class="na">resizeStyle</span><span class="p">:</span> <span class="s2">'fit'</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
 
 <h3 id="scss">SCSS</h3>
 
@@ -191,7 +234,7 @@
 <script src="https://unpkg.com/smartphoto@0.3.4/js/smartphoto.js"></script>
 <script>
 window.addEventListener('load',function(){
-    new smartPhoto(".js-img-viwer");
+    new smartPhoto(".js-smartPhoto");
 });
 </script>
   </body>
