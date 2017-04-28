@@ -333,7 +333,7 @@ class smartPhoto extends aTemplate {
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
     if (location.hash) {
-      location.hash = "";
+      this._setHash("");
     }
     window.scroll(scrollX,scrollY);
     this._doHideEffect().then(() => {
@@ -410,8 +410,19 @@ class smartPhoto extends aTemplate {
     const id = items[this.data.currentIndex].id;
     const group = this.data.currentGroup;
     const hash = `group=${group}&photo=${id}`;
-    location.hash = hash;
+    this._setHash(hash);
     window.scroll(scrollX,scrollY);
+  }
+
+  _setHash (hash) {
+ 		if(!(window.history && window.history.pushState)){
+			return false;
+		}   
+    if(hash) {
+      window.history.replaceState({},'',`#${hash}`);
+    } else {
+      window.history.replaceState({},'','');
+    }
   }
 
   _getCurrentItemByHash () {

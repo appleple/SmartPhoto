@@ -1797,7 +1797,7 @@ var smartPhoto = function (_aTemplate) {
       var scrollX = window.scrollX;
       var scrollY = window.scrollY;
       if (location.hash) {
-        location.hash = "";
+        this._setHash("");
       }
       window.scroll(scrollX, scrollY);
       this._doHideEffect().then(function () {
@@ -1882,8 +1882,20 @@ var smartPhoto = function (_aTemplate) {
       var id = items[this.data.currentIndex].id;
       var group = this.data.currentGroup;
       var hash = 'group=' + group + '&photo=' + id;
-      location.hash = hash;
+      this._setHash(hash);
       window.scroll(scrollX, scrollY);
+    }
+  }, {
+    key: '_setHash',
+    value: function _setHash(hash) {
+      if (!(window.history && window.history.pushState)) {
+        return false;
+      }
+      if (hash) {
+        window.history.replaceState({}, '', '#' + hash);
+      } else {
+        window.history.replaceState({}, '', '');
+      }
     }
   }, {
     key: '_getCurrentItemByHash',
