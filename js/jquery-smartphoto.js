@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.3.5
+ *   version: 0.4.0
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -2201,6 +2201,7 @@ var smartPhoto = function (_aTemplate) {
     key: 'afterPhotoDrag',
     value: function afterPhotoDrag() {
       if (this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
+        this.photoSwipable = false;
         this.zoomOutPhoto();
       } else {
         this.photoSwipable = false;

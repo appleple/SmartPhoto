@@ -685,6 +685,7 @@ class smartPhoto extends aTemplate {
 
   afterPhotoDrag () {
     if(this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
+      this.photoSwipable = false;
       this.zoomOutPhoto();
     }else{
       this.photoSwipable = false;
