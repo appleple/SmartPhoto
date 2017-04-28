@@ -1892,9 +1892,9 @@ var smartPhoto = function (_aTemplate) {
         return false;
       }
       if (hash) {
-        window.history.replaceState({}, '', '#' + hash);
+        window.history.replaceState(null, null, location.pathname + '#' + hash);
       } else {
-        window.history.replaceState({}, '', '');
+        window.history.replaceState(null, null, '' + location.pathname);
       }
     }
   }, {
