@@ -33,7 +33,7 @@ const smartPhoto = require('smartphoto');
 
 smartphoto.js
 ```js
-window.addEventListener('load',function(){
+document.addEventListener('DOMContentLoaded',function(){
     new smartPhoto(".js-img-viwer");
 });
 ```
@@ -60,7 +60,7 @@ $(function(){
 <link rel="stylesheet" href="./css/smartphoto.min.css">
 <script src="./js/smartphoto.js"></script>
 <script>
-window.addEventListener('load',function(){
+document.addEventListener('DOMContentLoaded',function(){
   new smartPhoto(".js-img-viwer");
 });
 </script>
