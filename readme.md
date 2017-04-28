@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
 #### Hide parts
 ```js
-window.addEventListener('load',function(){
+document.addEventListener('DOMContentLoaded',function(){
     new smartPhoto(".js-img-viwer",{
         arrows: false,
         nav: false
@@ -121,7 +121,7 @@ window.addEventListener('load',function(){
 You can choose if you want to scale images to fit/fill
 
 ```js
-window.addEventListener('load',function(){
+document.addEventListener('DOMContentLoaded',function(){
   new smartPhoto(".js-img-viwer",{
       resizeStyle: 'fit'
   });
