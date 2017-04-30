@@ -19,9 +19,9 @@
     "watch:sass": "onchange \"scss\" -- npm run sass",
     "sync": "browser-sync start --server './' --files './js/*.js' './css/*.css' --startPath '/examples/jquery.html'",
     "start": "npm-run-all -p watch:js watch:sass sync",
-    "patch": "npm run build:js && npm run test && npm version patch && node ./tools/index.js",
-    "minor": "npm run build:js && npm run test && npm version minor &&  node ./tools/index.js",
-    "major": "npm run build:js && npm run test && npm version major && node ./tools/index.js"
+    "patch": "npm run test && npm version patch && npm run build:js && node ./tools/index.js",
+    "minor": "npm run test && npm version minor &&  npm run build:js && node ./tools/index.js",
+    "major": "npm run test && npm version major && npm run build:js && node ./tools/index.js"
   },
   "author": "appleple",
   "license": "MIT",
