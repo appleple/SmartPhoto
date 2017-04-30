@@ -162,27 +162,25 @@ class smartPhoto extends aTemplate {
   _getEachImageSize() {
     const arr = [];
     const group = this.data.group;
-    for (const i in group) {
-      if (!group.hasOwnProperty(i)) {
-        continue;
-      }
-      group[i].forEach((item) => {
-        const promise = new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => {
-            item.width = img.width;
-            item.height = img.height;
-            item.loaded = true;
-            resolve();
-          };
-          img.onerror = () => {
-            reject();
-          };
-          img.src = item.src;
-        });
-        arr.push(promise);
+    const loadItems = (item) => {
+      const promise = new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          item.width = img.width;
+          item.height = img.height;
+          item.loaded = true;
+          resolve();
+        };
+        img.onerror = () => {
+          reject();
+        };
+        img.src = item.src;
       });
-    }
+      arr.push(promise);
+    };
+    Object.keys(group).forEach((key) => {
+      group[key].forEach(loadItems);
+    });
     return Promise.all(arr);
   }
 
@@ -410,7 +408,7 @@ class smartPhoto extends aTemplate {
 
   _setHash(hash) {
     if (!(window.history && window.history.pushState)) {
-      return false;
+      return;
     }
     if (hash) {
       window.history.replaceState(null, null, `${location.pathname}#${hash}`);
@@ -424,16 +422,14 @@ class smartPhoto extends aTemplate {
     const hash = location.hash.substr(1);
     const hashObj = util.parseQuery(hash);
     let currentItem = null;
-    for (const i in group) {
-      if (!group.hasOwnProperty(i)) {
-        continue;
+    const getCurrentItem = (item) => {
+      if (hashObj.group === item.groupId && hashObj.photo === item.id) {
+        currentItem = item;
       }
-      group[i].forEach((item) => {
-        if (hashObj.group === item.groupId && hashObj.photo === item.id) {
-          currentItem = item;
-        }
-      });
-    }
+    };
+    Object.keys(group).forEach((key) => {
+      group[key].forEach(getCurrentItem);
+    });
     return currentItem;
   }
 
