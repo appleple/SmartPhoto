@@ -18,6 +18,7 @@
     "no-mixed-operators": 0,
     "max-len": 0,
     "no-continue": 0,
-    "no-undef": ["error", { "typeof": true }]
+    "no-undef": ["error", { "typeof": true }],
+    "no-restricted-properties": 0
   }
 }

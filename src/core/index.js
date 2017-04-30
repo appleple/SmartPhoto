@@ -854,7 +854,7 @@ class smartPhoto extends aTemplate {
   }
 
   _round(val, precision) {
-    const digit = 10 ** precision;
+    const digit = Math.pow(10, precision);
     val *= digit;
     val = Math.round(val);
     val /= digit;

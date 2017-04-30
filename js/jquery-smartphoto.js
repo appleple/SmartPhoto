@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.4.0
+ *   version: 0.4.1
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -1464,6 +1464,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var template = '<div class="\\{classNames.smartPhoto\\}"<!-- BEGIN hide:exist --> style="display:none;"<!-- END hide:exist -->>\n\t<div class="\\{classNames.smartPhotoBody\\}">\n\t\t<div class="\\{classNames.smartPhotoInner\\}">\n\t\t\t   <div class="\\{classNames.smartPhotoHeader\\}">\n\t\t\t\t\t<span class="\\{classNames.smartPhotoCount\\}">{currentIndex}[increment]/{total}</span>\n\t\t\t\t\t<span class="\\{classNames.smartPhotoCaption\\}"><!-- BEGIN groupItems:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>\n\t\t\t\t\t<button class="\\{classNames.smartPhotoDismiss\\}" data-action-click="hidePhoto()"></button>\n\t\t\t\t</div>\n\t\t\t\t<div class="\\{classNames.smartPhotoContent\\}"<!-- BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag(false)"<!-- END isSmartPhone:exist -->>\n\t\t\t\t</div>\n\t\t\t\t<ul style="transform:translate({translateX}px,{translateY}px);" class="\\{classNames.smartPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.smartPhotoListOnMove\\}<!-- END onMoveClass:exist -->">\n\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t<li style="transform:translate({translateX}px,{translateY}px);" class="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->">\n\t\t\t\t\t\t<!-- BEGIN loaded:exist -->\n\t\t\t\t\t\t<div style="transform:translate({x}px,{y}px) scale({scale});" class="\\\\{classNames.smartPhotoImgWrap\\\\}"<!-- \\BEGIN isSmartPhone:empty --> data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag"<!-- \\END isSmartPhone:empty --><!-- \\BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag"<!-- \\END isSmartPhone:exist -->>\n\t\t\t\t\t\t\t<img style="<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->" src="{src}" class="\\\\{classNames.smartPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.smartPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.smartPhotoImgElasticMove\\\\}<!-- \\END elastic:exist --><!-- \\BEGIN appear:exist --> active<!-- \\END appear:exist -->" ondragstart="return false;">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:exist -->\n\t\t\t\t\t\t<!-- BEGIN loaded:empty -->\n\t\t\t\t\t\t<div class="\\\\{classNames.smartPhotoLoaderWrap\\\\}">\n\t\t\t\t\t\t\t<span class="\\\\{classNames.smartPhotoLoader\\\\}"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- END loaded:empty -->\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t</ul>\n\t\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t\t<ul class="\\{classNames.smartPhotoArrows\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">\n\t\t\t\t\t<li class="\\{classNames.smartPhotoArrowLeft\\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->" data-action-click="gotoSlide({prev})"></li>\n\t\t\t\t\t<li class="\\{classNames.smartPhotoArrowRight\\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->" data-action-click="gotoSlide({next})"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!-- END arrows:exist -->\n\t\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t\t<nav class="\\{classNames.smartPhotoNav\\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">\n\t\t\t\t\t<ul >\n\t\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t\t<li data-action-click="gotoSlide({index})" class="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->" style="background-image:url({src});"></li>\n\t\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t\t<!-- END nav:exist -->\n\t\t</div>\n\t\t<!-- BEGIN appearEffect:exist -->\n\t\t<img src=\\{appearEffect.img\\}\n\t\tclass="\\{classNames.smartPhotoImgClone\\}"\n\t\tstyle="width:\\{appearEffect.width\\}px;height:\\{appearEffect.height\\}px;transform:translate(\\{appearEffect.left\\}px,\\{appearEffect.top\\}px) scale(1)" />\n\t\t<!-- END appearEffect:exist -->\n\t</div>\n</div>\n';
 
+
 var util = require('../lib/util');
 
 var defaults = {
@@ -1541,7 +1542,7 @@ var smartPhoto = function (_aTemplate) {
     _this.data.isSmartPhone = _this._isSmartPhone();
     var body = document.querySelector('body');
     util.append(body, '<div data-id=\'' + _this.id + '\'></div>');
-    [].forEach.call(_this.elements, function (element, index) {
+    [].forEach.call(_this.elements, function (element) {
       _this.addNewItem(element);
     });
 
@@ -1557,7 +1558,7 @@ var smartPhoto = function (_aTemplate) {
     }, _this.data.forceInterval);
 
     if (!_this.data.isSmartPhone) {
-      window.addEventListener("resize", function (e) {
+      window.addEventListener('resize', function () {
         _this._resetTranslate();
         _this._setPosByCurrentIndex();
         _this._setSizeByScreen();
@@ -1580,7 +1581,7 @@ var smartPhoto = function (_aTemplate) {
       return _possibleConstructorReturn(_this);
     }
 
-    window.addEventListener("orientationchange", function (e) {
+    window.addEventListener('orientationchange', function () {
       _this._resetTranslate();
       _this._setPosByCurrentIndex();
       _this._setHashByCurrentIndex();
@@ -1592,7 +1593,7 @@ var smartPhoto = function (_aTemplate) {
       return _possibleConstructorReturn(_this);
     }
 
-    window.addEventListener("deviceorientation", function (e) {
+    window.addEventListener('deviceorientation', function (e) {
       var orientation = window.orientation;
       if (!e || !e.gamma || _this.data.appearEffect) {
         return;
@@ -1620,7 +1621,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'virtualPos',
     value: function virtualPos(pos) {
-      pos = parseInt(pos);
+      pos = parseInt(pos, 10);
       var item = this._getSelectedItem();
       return pos / item.scale / this.data.scaleSize;
     }
@@ -1634,27 +1635,25 @@ var smartPhoto = function (_aTemplate) {
     value: function _getEachImageSize() {
       var arr = [];
       var group = this.data.group;
-      for (var i in group) {
-        if (!group.hasOwnProperty(i)) {
-          continue;
-        }
-        group[i].forEach(function (item) {
-          var promise = new Promise(function (resolve, reject) {
-            var img = new Image();
-            img.onload = function () {
-              item.width = img.width;
-              item.height = img.height;
-              item.loaded = true;
-              resolve();
-            };
-            img.onerror = function () {
-              resolve();
-            };
-            img.src = item.src;
-          });
-          arr.push(promise);
+      var loadItems = function loadItems(item) {
+        var promise = new Promise(function (resolve, reject) {
+          var img = new Image();
+          img.onload = function () {
+            item.width = img.width;
+            item.height = img.height;
+            item.loaded = true;
+            resolve();
+          };
+          img.onerror = function () {
+            reject();
+          };
+          img.src = item.src;
         });
-      }
+        arr.push(promise);
+      };
+      Object.keys(group).forEach(function (key) {
+        group[key].forEach(loadItems);
+      });
       return Promise.all(arr);
     }
   }, {
@@ -1670,10 +1669,10 @@ var smartPhoto = function (_aTemplate) {
     value: function addNewItem(element) {
       var _this2 = this;
 
-      var groupId = element.getAttribute('data-group') || "nogroup";
+      var groupId = element.getAttribute('data-group') || 'nogroup';
       var group = this.data.group;
-      if (groupId === "nogroup") {
-        element.setAttribute("data-group", "nogroup");
+      if (groupId === 'nogroup') {
+        element.setAttribute('data-group', 'nogroup');
       }
       if (!group[groupId]) {
         group[groupId] = [];
@@ -1702,7 +1701,7 @@ var smartPhoto = function (_aTemplate) {
       element.addEventListener('click', function (event) {
         event.preventDefault();
         _this2.data.currentGroup = element.getAttribute('data-group');
-        _this2.data.currentIndex = parseInt(element.getAttribute('data-index'));
+        _this2.data.currentIndex = parseInt(element.getAttribute('data-index'), 10);
         _this2._setHashByCurrentIndex();
         var currentItem = _this2._getSelectedItem();
         if (currentItem.loaded) {
@@ -1752,7 +1751,7 @@ var smartPhoto = function (_aTemplate) {
       var appearEffect = this.data.appearEffect;
       var classNames = this.data.classNames;
       var effect = document.querySelector('[data-id="' + this.id + '"] .' + classNames.smartPhotoImgClone);
-      return new Promise(function (resolve, reject) {
+      return new Promise(function (resolve) {
         setTimeout(function () {
           effect.style.transition = 'all .3s ease-out';
           effect.style.transform = 'translate(' + appearEffect.afterX + 'px, ' + appearEffect.afterY + 'px) scale(' + appearEffect.scale + ')';
@@ -1765,7 +1764,6 @@ var smartPhoto = function (_aTemplate) {
     value: function replaceEffectWithImg() {
       var _this4 = this;
 
-      var classNames = this.data.classNames;
       setTimeout(function () {
         _this4.data.appearEffect = null;
         _this4.data.appear = true;
@@ -1776,7 +1774,6 @@ var smartPhoto = function (_aTemplate) {
     key: 'addAppearEffect',
     value: function addAppearEffect(element) {
       var img = element.querySelector('img');
-      var clone = img.cloneNode(true);
       var pos = util.getViewPos(img);
       var appear = {};
       var scale = 1;
@@ -1822,7 +1819,7 @@ var smartPhoto = function (_aTemplate) {
       var scrollX = window.scrollX;
       var scrollY = window.scrollY;
       if (location.hash) {
-        this._setHash("");
+        this._setHash('');
       }
       window.scroll(scrollX, scrollY);
       this._doHideEffect().then(function () {
@@ -1834,7 +1831,7 @@ var smartPhoto = function (_aTemplate) {
     value: function _doHideEffect() {
       var _this6 = this;
 
-      return new Promise(function (resolve, reject) {
+      return new Promise(function (resolve) {
         var classNames = _this6.data.classNames;
         var photo = _this6._getElementByClass(classNames.smartPhoto);
         var img = _this6._getElementByQuery('.current .' + classNames.smartPhotoImg);
@@ -1860,21 +1857,16 @@ var smartPhoto = function (_aTemplate) {
     }
   }, {
     key: '_getTouchPos',
-    value: function _getTouchPos(e) {
+    value: function _getTouchPos() {
       var x = 0;
       var y = 0;
-      if (typeof event === 'undefined') {
-        var event = this.e;
-      }
-      if (this._isTouched(event)) {
-        x = event.touches[0].pageX;
-        y = event.touches[0].pageY;
-      } else if (this._isTouched(this.e)) {
-        x = this.e.touches[0].pageX;
-        y = this.e.touches[0].pageY;
-      } else if (event.pageX) {
-        x = event.pageX;
-        y = event.pageY;
+      var e = typeof event === 'undefined' ? this.e : event;
+      if (this._isTouched(e)) {
+        x = e.touches[0].pageX;
+        y = e.touches[0].pageY;
+      } else if (e.pageX) {
+        x = e.pageX;
+        y = e.pageY;
       }
       return { x: x, y: y };
     }
@@ -1914,7 +1906,7 @@ var smartPhoto = function (_aTemplate) {
     key: '_setHash',
     value: function _setHash(hash) {
       if (!(window.history && window.history.pushState)) {
-        return false;
+        return;
       }
       if (hash) {
         window.history.replaceState(null, null, location.pathname + '#' + hash);
@@ -1929,22 +1921,20 @@ var smartPhoto = function (_aTemplate) {
       var hash = location.hash.substr(1);
       var hashObj = util.parseQuery(hash);
       var currentItem = null;
-      for (var i in group) {
-        if (!group.hasOwnProperty(i)) {
-          continue;
+      var getCurrentItem = function getCurrentItem(item) {
+        if (hashObj.group === item.groupId && hashObj.photo === item.id) {
+          currentItem = item;
         }
-        group[i].forEach(function (item) {
-          if (hashObj.group === item.groupId && hashObj.photo === item.id) {
-            currentItem = item;
-          }
-        });
-      }
+      };
+      Object.keys(group).forEach(function (key) {
+        group[key].forEach(getCurrentItem);
+      });
       return currentItem;
     }
   }, {
     key: '_loadItem',
     value: function _loadItem(item) {
-      return new Promise(function (resolve, reject) {
+      return new Promise(function (resolve) {
         var img = new Image();
         img.onload = function () {
           item.width = img.width;
@@ -2001,7 +1991,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'gotoSlide',
     value: function gotoSlide(index) {
-      this.data.currentIndex = parseInt(index);
+      this.data.currentIndex = parseInt(index, 10);
       if (!this.data.currentIndex) {
         this.data.currentIndex = 0;
       }
@@ -2036,7 +2026,7 @@ var smartPhoto = function (_aTemplate) {
         this.beforePhotoDrag();
         return;
       }
-      var pos = this._getTouchPos(this.e);
+      var pos = this._getTouchPos();
       this.isSwipable = true;
       this.dragStart = true;
       this.firstPos = pos;
@@ -2044,7 +2034,7 @@ var smartPhoto = function (_aTemplate) {
     }
   }, {
     key: 'afterDrag',
-    value: function afterDrag(value) {
+    value: function afterDrag() {
       var items = this.groupItems();
       var date = new Date();
       var tapSecond = date.getTime();
@@ -2077,9 +2067,9 @@ var smartPhoto = function (_aTemplate) {
       this.tapSecond = tapSecond;
       if (this.moveDir === 'horizontal') {
         if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
-          this.data.currentIndex--;
-        } else if (swipeWidth <= -this.data.swipeOffset && this.data.currentIndex != items.length - 1) {
-          this.data.currentIndex++;
+          this.data.currentIndex -= 1;
+        } else if (swipeWidth <= -this.data.swipeOffset && this.data.currentIndex !== items.length - 1) {
+          this.data.currentIndex += 1;
         }
         this._slideList();
       }
@@ -2111,7 +2101,7 @@ var smartPhoto = function (_aTemplate) {
         return;
       }
 
-      var pos = this._getTouchPos(this.e);
+      var pos = this._getTouchPos();
       var x = pos.x - this.oldPos.x;
       var y = pos.y - this.firstPos.y;
 
@@ -2163,7 +2153,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'beforePhotoDrag',
     value: function beforePhotoDrag() {
-      var pos = this._getTouchPos(this.e);
+      var pos = this._getTouchPos();
       this.photoSwipable = true;
       if (!this.data.photoPosX) {
         this.data.photoPosX = 0;
@@ -2181,16 +2171,16 @@ var smartPhoto = function (_aTemplate) {
         return;
       }
       this.e.preventDefault();
-      var pos = this._getTouchPos(this.e);
+      var pos = this._getTouchPos();
       var x = pos.x - this.oldPhotoPos.x;
       var y = pos.y - this.oldPhotoPos.y;
       var moveX = this._round(this.data.scaleSize * x, 6);
       var moveY = this._round(this.data.scaleSize * y, 6);
-      if (typeof moveX === "number") {
+      if (typeof moveX === 'number') {
         this.data.photoPosX += moveX;
         this.photoVX = moveX;
       }
-      if (typeof moveY === "number") {
+      if (typeof moveY === 'number') {
         this.data.photoPosY += moveY;
         this.photoVY = moveY;
       }
@@ -2264,13 +2254,11 @@ var smartPhoto = function (_aTemplate) {
       var oldScaleSize = this.data.scaleSize;
       var posX = this.data.photoPosX;
       var posY = this.data.photoPosY;
-      var item = this._getSelectedItem();
-      var translate = 1;
       this.data.scaleSize += this._round(size, 6);
       if (this.data.scaleSize < 0.2) {
         this.data.scaleSize = 0.2;
       }
-      //todo
+      // todo
       if (this.data.scaleSize < oldScaleSize) {
         this.data.photoPosX = (1 + this.data.scaleSize - oldScaleSize) * posX;
         this.data.photoPosY = (1 + this.data.scaleSize - oldScaleSize) * posY;
@@ -2316,19 +2304,18 @@ var smartPhoto = function (_aTemplate) {
       }
       if (item.width > item.height) {
         return window.innerHeight / (item.height * item.scale);
-      } else {
-        return window.innerWidth / (item.width * item.scale);
       }
+      return window.innerWidth / (item.width * item.scale);
     }
   }, {
     key: '_makeBound',
     value: function _makeBound(item) {
       var width = item.width * item.scale * this.data.scaleSize;
       var height = item.height * item.scale * this.data.scaleSize;
-      var minX = void 0,
-          minY = void 0,
-          maxX = void 0,
-          maxY = void 0;
+      var minX = void 0;
+      var minY = void 0;
+      var maxX = void 0;
+      var maxY = void 0;
       if (window.innerWidth > width) {
         maxX = (window.innerWidth - width) / 2;
         minX = -1 * maxX;
@@ -2397,9 +2384,9 @@ var smartPhoto = function (_aTemplate) {
     key: '_round',
     value: function _round(val, precision) {
       var digit = Math.pow(10, precision);
-      val = val * digit;
+      val *= digit;
       val = Math.round(val);
-      val = val / digit;
+      val /= digit;
       return val;
     }
   }, {
@@ -2407,18 +2394,16 @@ var smartPhoto = function (_aTemplate) {
     value: function _isTouched(e) {
       if (e && e.touches) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     }
   }, {
     key: '_isGestured',
     value: function _isGestured(e) {
       if (e && e.touches && e.touches.length > 1) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     }
   }, {
     key: '_isSmartPhone',
@@ -2426,9 +2411,8 @@ var smartPhoto = function (_aTemplate) {
       var agent = navigator.userAgent;
       if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0 || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     }
   }, {
     key: '_calcGravity',
