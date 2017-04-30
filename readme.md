@@ -4,6 +4,9 @@
 
 The most easy to use responsive image viwer especially for mobile devices
 
+See [https://appleple.github.io/SmartPhoto/](https://appleple.github.io/SmartPhoto/) for complete docs and demos<br/>
+If you are Japasese, See here [https://www.appleple.com/blog/javascript/smartphoto-js.html](https://www.appleple.com/blog/javascript/smartphoto-js.html) instead.
+
 ## Feature
 - Intuitive gestures such as pinch-in/pinch-out/drag/swipe
 - Use Accelerometer to move images
