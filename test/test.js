@@ -18,7 +18,7 @@ describe('test',() => {
     nightmare.goto(test_url)
       .click('[data-caption="lion"]')
       .click('.smartphoto-arrow-right')
-      .wait(300)
+      .wait(1000)
       .evaluate(() => {
         return document.querySelector('.smartphoto-caption').innerText;
       })
