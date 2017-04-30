@@ -14,20 +14,20 @@ const nightmare = Nightmare({
 const test_url = "file:///"+path.resolve(__dirname,"../examples/vanilla.html");
 const hash_url = test_url + "#group=nogroup&photo=rhinoceros";
 
-describe('test',function(){
+describe('test',() => {
   it('caption', (done) => {
     nightmare.goto(test_url)
       .click('[data-caption="lion"]')
       .click('.smartphoto-arrow-right')
       .wait(300)
-      .evaluate(function () {
+      .evaluate(() => {
         return document.querySelector('.smartphoto-caption').innerText;
       })
-      .then(function (result) {
+      .then((result) => {
         assert.equal(result,'camel');
         done();
       })
-      .catch(function (error) {
+      .catch((error) => {
         done(error);
       });
   });
@@ -35,14 +35,14 @@ describe('test',function(){
   it('hash', (done) => {
     nightmare.goto(hash_url)
       .wait(300)
-      .evaluate(function () {
+      .evaluate(() => {
           return document.querySelector('.smartphoto-caption').innerText;
       })
-      .then(function (result) {
+      .then(result => {
         assert.equal(result,'rhinoceros');
         done();
       })
-      .catch(function (error) {
+      .catch(error => {
         done(error);
       });
   });
