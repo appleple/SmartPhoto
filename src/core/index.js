@@ -1,5 +1,6 @@
 import aTemplate from 'a-template';
 import template from './viwer.html';
+
 const util = require('../lib/util');
 
 const defaults = {
@@ -29,37 +30,37 @@ const defaults = {
     smartPhotoLoaderWrap: 'smartphoto-loader-wrap',
     smartPhotoImgClone: 'smartphoto-img-clone'
   },
-  arrows:true,
-  nav:true,
+  arrows: true,
+  nav: true,
   animationSpeed: 300,
   swipeOffset: 100,
   maxWidth: 940,
-  headerHeight:60,
-  footerHeight:60,
-  forceInterval:10,
-  registance:0.5,
-  resizeStyle:'fill',
-  verticalGravity:false,
-  useOrientationApi:true
-}
+  headerHeight: 60,
+  footerHeight: 60,
+  forceInterval: 10,
+  registance: 0.5,
+  resizeStyle: 'fill',
+  verticalGravity: false,
+  useOrientationApi: true
+};
 
 class smartPhoto extends aTemplate {
 
-  constructor (selector, settings) {
+  constructor(selector, settings) {
     super();
 
-    this.data = util.extend({},defaults,settings);
+    this.data = util.extend({}, defaults, settings);
     this.data.currentIndex = 0;
     this.data.hide = true;
     this.data.group = {};
     this.data.scaleSize = 1;
     this.data.scale = false;
-    this.pos = { x: 0, y: 0};
+    this.pos = { x: 0, y: 0 };
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
     this.convert = {
-      increment:this.increment,
-      virtualPos:this.virtualPos
+      increment: this.increment,
+      virtualPos: this.virtualPos
     };
     this.data.groupItems = this.groupItems;
     this.elements = document.querySelectorAll(selector);
@@ -70,27 +71,27 @@ class smartPhoto extends aTemplate {
     this.vx = 0;
     this.vy = 0;
     this.data.appearEffect = null;
-    this.addTemplate(this.id,template);
+    this.addTemplate(this.id, template);
     this.data.isSmartPhone = this._isSmartPhone();
     const body = document.querySelector('body');
-    util.append(body,`<div data-id='${this.id}'></div>`);
-    [].forEach.call(this.elements, (element,index) => {
+    util.append(body, `<div data-id='${this.id}'></div>`);
+    [].forEach.call(this.elements, (element) => {
       this.addNewItem(element);
     });
 
     const currentItem = this._getCurrentItemByHash();
-    if(currentItem) {
-      util.triggerEvent(currentItem.element,'click');
+    if (currentItem) {
+      util.triggerEvent(currentItem.element, 'click');
     }
 
     this._getEachImageSize();
 
-    setInterval(()=>{
+    setInterval(() => {
       this._doAnim();
-    },this.data.forceInterval);
+    }, this.data.forceInterval);
 
-    if(!this.data.isSmartPhone){
-      window.addEventListener("resize", (e) => {
+    if (!this.data.isSmartPhone) {
+      window.addEventListener('resize', () => {
         this._resetTranslate();
         this._setPosByCurrentIndex();
         this._setSizeByScreen();
@@ -99,10 +100,10 @@ class smartPhoto extends aTemplate {
 
       window.addEventListener('keydown', (e) => {
         const code = e.keyCode || e.which;
-        if(this.data.hide === true) {
+        if (this.data.hide === true) {
           return;
         }
-        if(code === 37) {
+        if (code === 37) {
           this.gotoSlide(this.data.prev);
         } else if (code === 39) {
           this.gotoSlide(this.data.next);
@@ -113,7 +114,7 @@ class smartPhoto extends aTemplate {
       return;
     }
 
-    window.addEventListener("orientationchange", (e) => {
+    window.addEventListener('orientationchange', () => {
       this._resetTranslate();
       this._setPosByCurrentIndex();
       this._setHashByCurrentIndex();
@@ -121,16 +122,16 @@ class smartPhoto extends aTemplate {
       this.update();
     });
 
-    if(!this.data.useOrientationApi){
+    if (!this.data.useOrientationApi) {
       return;
     }
 
-    window.addEventListener("deviceorientation", (e) => {
+    window.addEventListener('deviceorientation', (e) => {
       const orientation = window.orientation;
-      if(!e || !e.gamma || this.data.appearEffect){
+      if (!e || !e.gamma || this.data.appearEffect) {
         return;
       }
-      if(!this.isBeingZoomed && !this.photoSwipable && !this.data.elastic && this.data.scale){
+      if (!this.isBeingZoomed && !this.photoSwipable && !this.data.elastic && this.data.scale) {
         if (orientation === 0) {
           this._calcGravity(e.gamma, e.beta);
         } else if (orientation === 90) {
@@ -144,39 +145,39 @@ class smartPhoto extends aTemplate {
     });
   }
 
-  increment (item) {
-    return item+1;
+  increment(item) {
+    return item + 1;
   }
 
-  virtualPos (pos) {
-    pos = parseInt(pos);
+  virtualPos(pos) {
+    pos = parseInt(pos, 10);
     const item = this._getSelectedItem();
-    return pos/item.scale/this.data.scaleSize;
+    return pos / item.scale / this.data.scaleSize;
   }
 
-  groupItems () {
+  groupItems() {
     return this.data.group[this.data.currentGroup];
   }
 
-  _getEachImageSize () {
+  _getEachImageSize() {
     const arr = [];
     const group = this.data.group;
-    for (let i in group){
-      if (!group.hasOwnProperty(i)){
+    for (const i in group) {
+      if (!group.hasOwnProperty(i)) {
         continue;
       }
       group[i].forEach((item) => {
-        const promise = new Promise((resolve,reject) => {
+        const promise = new Promise((resolve, reject) => {
           const img = new Image();
           img.onload = () => {
             item.width = img.width;
             item.height = img.height;
             item.loaded = true;
             resolve();
-          }
+          };
           img.onerror = () => {
             resolve();
-          }
+          };
           img.src = item.src;
         });
         arr.push(promise);
@@ -185,50 +186,50 @@ class smartPhoto extends aTemplate {
     return Promise.all(arr);
   }
 
-  _resetTranslate () {
+  _resetTranslate() {
     const items = this.groupItems();
-    items.forEach((item,index) => {
+    items.forEach((item, index) => {
       item.translateX = window.innerWidth * index;
     });
   }
 
-  addNewItem (element) {
-    let groupId = element.getAttribute('data-group') || "nogroup";
+  addNewItem(element) {
+    const groupId = element.getAttribute('data-group') || 'nogroup';
     const group = this.data.group;
-    if(groupId === "nogroup"){
-      element.setAttribute("data-group","nogroup");
+    if (groupId === 'nogroup') {
+      element.setAttribute('data-group', 'nogroup');
     }
-    if(!group[groupId]) {
+    if (!group[groupId]) {
       group[groupId] = [];
     }
     const index = group[groupId].length;
     const item = {
       src: element.getAttribute('href'),
       caption: element.getAttribute('data-caption'),
-      groupId: groupId,
+      groupId,
       translateX: window.innerWidth * index,
-      index: index,
-      translateY:0,
-      width:50,
-      height:50,
+      index,
+      translateY: 0,
+      width: 50,
+      height: 50,
       id: element.getAttribute('data-id') || index,
-      loaded:false,
-      element:element
+      loaded: false,
+      element
     };
     group[groupId].push(item);
     this.data.currentGroup = groupId;
-    let id = element.getAttribute('data-id');
-    if(!id){
-      element.setAttribute('data-id',index);
+    const id = element.getAttribute('data-id');
+    if (!id) {
+      element.setAttribute('data-id', index);
     }
-    element.setAttribute('data-index',index);
+    element.setAttribute('data-index', index);
     element.addEventListener('click', (event) => {
       event.preventDefault();
       this.data.currentGroup = element.getAttribute('data-group');
       this.data.currentIndex = parseInt(element.getAttribute('data-index'));
       this._setHashByCurrentIndex();
       const currentItem = this._getSelectedItem();
-      if(currentItem.loaded) {
+      if (currentItem.loaded) {
         this._initPhoto();
         this.addAppearEffect(element);
         this.update();
@@ -242,23 +243,23 @@ class smartPhoto extends aTemplate {
     });
   }
 
-  _initPhoto () {
+  _initPhoto() {
     this.data.total = this.groupItems().length;
     this.data.hide = false;
     this.data.photoPosX = 0;
-    this.data.photoPosY = 0;  
-    this._setPosByCurrentIndex();  
+    this.data.photoPosY = 0;
+    this._setPosByCurrentIndex();
     this._setSizeByScreen();
-    this.setArrow(); 
-    if(this.data.resizeStyle === 'fill' && this.data.isSmartPhone){
+    this.setArrow();
+    if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
       this.data.scale = true;
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
     }
   }
 
-  onUpdated () {
-    if(this.data.appearEffect && this.data.appearEffect.once) {
+  onUpdated() {
+    if (this.data.appearEffect && this.data.appearEffect.once) {
       this.data.appearEffect.once = false;
       this.execEffect().then(() => {
         this.replaceEffectWithImg();
@@ -266,31 +267,29 @@ class smartPhoto extends aTemplate {
     }
   }
 
-  execEffect () {
+  execEffect() {
     const appearEffect = this.data.appearEffect;
     const classNames = this.data.classNames;
     const effect = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoImgClone}`);
-    return new Promise((resolve,reject) => {
-      setTimeout(()=>{
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
         effect.style.transition = 'all .3s ease-out';
         effect.style.transform = `translate(${appearEffect.afterX}px, ${appearEffect.afterY}px) scale(${appearEffect.scale})`;
         resolve();
-      },30);
+      }, 30);
     });
   }
 
-  replaceEffectWithImg () {
-    const classNames = this.data.classNames;
-    setTimeout(()=>{
+  replaceEffectWithImg() {
+    setTimeout(() => {
       this.data.appearEffect = null;
       this.data.appear = true;
       this.update();
-    },300);  
+    }, 300);
   }
 
-  addAppearEffect (element) {
+  addAppearEffect(element) {
     const img = element.querySelector('img');
-    const clone = img.cloneNode(true);
     const pos = util.getViewPos(img);
     const appear = {};
     let scale = 1;
@@ -299,31 +298,31 @@ class smartPhoto extends aTemplate {
     appear.top = pos.top;
     appear.left = pos.left;
     appear.once = true;
-    appear.img = img.getAttribute('src');  
+    appear.img = img.getAttribute('src');
     const windowX = window.innerWidth;
     const windowY = window.innerHeight;
     const screenY = windowY - this.data.headerHeight - this.data.footerHeight;
-    if(this.data.resizeStyle === 'fill' && this.data.isSmartPhone){
-      if(img.offsetWidth > img.offsetHeight) {
+    if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
+      if (img.offsetWidth > img.offsetHeight) {
         scale = windowY / img.offsetHeight;
-      }else {
+      } else {
         scale = windowX / img.offsetWidth;
       }
-    }else{
+    } else {
       scale = screenY / img.offsetHeight;
-      if(scale*img.offsetWidth > windowX) {
+      if (scale * img.offsetWidth > windowX) {
         scale = windowX / img.offsetWidth;
       }
     }
-    const x = (scale - 1) / 2 * img.offsetWidth + (windowX - (img.offsetWidth *scale)) / 2;
-    const y = (scale - 1) / 2 * img.offsetHeight + (windowY - (img.offsetHeight *scale)) / 2;
+    const x = (scale - 1) / 2 * img.offsetWidth + (windowX - (img.offsetWidth * scale)) / 2;
+    const y = (scale - 1) / 2 * img.offsetHeight + (windowY - (img.offsetHeight * scale)) / 2;
     appear.afterX = x;
     appear.afterY = y;
     appear.scale = scale;
     this.data.appearEffect = appear;
   }
 
-  hidePhoto () {
+  hidePhoto() {
     this.data.hide = true;
     this.data.appear = false;
     this.data.appearEffect = null;
@@ -333,16 +332,16 @@ class smartPhoto extends aTemplate {
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
     if (location.hash) {
-      this._setHash("");
+      this._setHash('');
     }
-    window.scroll(scrollX,scrollY);
+    window.scroll(scrollX, scrollY);
     this._doHideEffect().then(() => {
       this.update();
     });
   }
 
-  _doHideEffect () {
-    return new Promise((resolve,reject) => {
+  _doHideEffect() {
+    return new Promise((resolve) => {
       const classNames = this.data.classNames;
       const photo = this._getElementByClass(classNames.smartPhoto);
       const img = this._getElementByQuery(`.current .${classNames.smartPhotoImg}`);
@@ -353,46 +352,44 @@ class smartPhoto extends aTemplate {
       };
       photo.style.opacity = 0;
       img.style.transform = `translateY(${height}px)`;
-      photo.addEventListener('transitionend',  handler, true); 
+      photo.addEventListener('transitionend', handler, true);
     });
   }
 
-  _getElementByClass (className) {
+  _getElementByClass(className) {
     return document.querySelector(`[data-id="${this.id}"] .${className}`);
   }
 
-  _getElementByQuery (query) {
+  _getElementByQuery(query) {
     return document.querySelector(`[data-id="${this.id}"] ${query}`);
   }
 
-  _getTouchPos (e) {
+  _getTouchPos() {
     let x = 0;
     let y = 0;
-    if (typeof event === 'undefined'){
-      var event = this.e;
-    }
+    const event = typeof event === 'undefined' ? this.e : event;
     if (this._isTouched(event)) {
       x = event.touches[0].pageX;
       y = event.touches[0].pageY;
     } else if (this._isTouched(this.e)) {
       x = this.e.touches[0].pageX;
       y = this.e.touches[0].pageY;
-    } else if(event.pageX){
+    } else if (event.pageX) {
       x = event.pageX;
       y = event.pageY;
     }
-    return { x: x, y: y };
+    return { x, y };
   }
 
-  _getGesturePos (e) {
+  _getGesturePos(e) {
     const touches = e.touches;
-     return [
-      { x: touches[0].pageX, y: touches[0].pageY},
-      { x: touches[1].pageX, y: touches[1].pageY}
-    ]
+    return [
+      { x: touches[0].pageX, y: touches[0].pageY },
+      { x: touches[1].pageX, y: touches[1].pageY }
+    ];
   }
 
-  _setPosByCurrentIndex () {
+  _setPosByCurrentIndex() {
     const items = this.groupItems();
     const moveX = -1 * items[this.data.currentIndex].translateX;
     this.pos.x = moveX;
@@ -400,10 +397,10 @@ class smartPhoto extends aTemplate {
       this.data.translateX = moveX;
       this.data.translateY = 0;
       this._listUpdate();
-    },1);
+    }, 1);
   }
 
-  _setHashByCurrentIndex () {
+  _setHashByCurrentIndex() {
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
     const items = this.groupItems();
@@ -411,55 +408,55 @@ class smartPhoto extends aTemplate {
     const group = this.data.currentGroup;
     const hash = `group=${group}&photo=${id}`;
     this._setHash(hash);
-    window.scroll(scrollX,scrollY);
+    window.scroll(scrollX, scrollY);
   }
 
-  _setHash (hash) {
- 		if(!(window.history && window.history.pushState)){
-			return false;
-		}   
-    if(hash) {
-      window.history.replaceState(null,null,`${location.pathname}#${hash}`);
+  _setHash(hash) {
+    if (!(window.history && window.history.pushState)) {
+      return false;
+    }
+    if (hash) {
+      window.history.replaceState(null, null, `${location.pathname}#${hash}`);
     } else {
-      window.history.replaceState(null,null,`${location.pathname}`);
+      window.history.replaceState(null, null, `${location.pathname}`);
     }
   }
 
-  _getCurrentItemByHash () {
+  _getCurrentItemByHash() {
     const group = this.data.group;
     const hash = location.hash.substr(1);
     const hashObj = util.parseQuery(hash);
     let currentItem = null;
-    for (let i in group){
-      if (!group.hasOwnProperty(i)){
+    for (const i in group) {
+      if (!group.hasOwnProperty(i)) {
         continue;
       }
       group[i].forEach((item) => {
-          if(hashObj.group === item.groupId && hashObj.photo === item.id) {
-              currentItem = item;
-          }
+        if (hashObj.group === item.groupId && hashObj.photo === item.id) {
+          currentItem = item;
+        }
       });
     }
     return currentItem;
   }
 
-  _loadItem (item) {
-    return new Promise ((resolve,reject) => {
+  _loadItem(item) {
+    return new Promise((resolve) => {
       const img = new Image();
       img.onload = () => {
         item.width = img.width;
         item.height = img.height;
-        item.loaded = true; 
-        resolve(); 
-      }
-      img.onerror = () => { 
+        item.loaded = true;
         resolve();
-      }
+      };
+      img.onerror = () => {
+        resolve();
+      };
       img.src = item.src;
     });
   }
 
-  _setSizeByScreen () {
+  _setSizeByScreen() {
     const windowX = window.innerWidth;
     const windowY = window.innerHeight;
     const headerHeight = this.data.headerHeight;
@@ -468,16 +465,16 @@ class smartPhoto extends aTemplate {
     const items = this.groupItems();
     items.forEach((item) => {
       item.scale = screenY / item.height;
-      item.x = (item.scale - 1) / 2 * item.width + (windowX - (item.width *item.scale)) / 2;
-      item.y = (item.scale - 1) / 2 * item.height+ (windowY - (item.height *item.scale)) / 2;
-      if(item.width * item.scale > windowX){
+      item.x = (item.scale - 1) / 2 * item.width + (windowX - (item.width * item.scale)) / 2;
+      item.y = (item.scale - 1) / 2 * item.height + (windowY - (item.height * item.scale)) / 2;
+      if (item.width * item.scale > windowX) {
         item.scale = windowX / item.width;
         item.x = (item.scale - 1) / 2 * item.width;
       }
     });
   }
 
-  _slideList () {
+  _slideList() {
     this.data.scaleSize = 1;
     this.isBeingZoomed = false;
     this.data.hideUi = false;
@@ -492,51 +489,51 @@ class smartPhoto extends aTemplate {
       this.data.onMoveClass = false;
       this.setArrow();
       this.update();
-    },200);
+    }, 200);
   }
 
   gotoSlide(index) {
-    this.data.currentIndex = parseInt(index);
-    if(!this.data.currentIndex) {
+    this.data.currentIndex = parseInt(index, 10);
+    if (!this.data.currentIndex) {
       this.data.currentIndex = 0;
     }
     this._slideList();
   }
 
-  setArrow(){
+  setArrow() {
     const items = this.groupItems();
     const length = items.length;
     const next = this.data.currentIndex + 1;
     const prev = this.data.currentIndex - 1;
     this.data.showNextArrow = false;
     this.data.showPrevArrow = false;
-    if(next !== length) {
+    if (next !== length) {
       this.data.next = next;
       this.data.showNextArrow = true;
     }
-    if(prev !== -1) {
+    if (prev !== -1) {
       this.data.prev = prev;
       this.data.showPrevArrow = true;
     }
   }
 
-  beforeDrag () {
+  beforeDrag() {
     if (this._isGestured(this.e)) {
       this.beforeGesture();
       return;
     }
-    if(this.data.scale){
+    if (this.data.scale) {
       this.beforePhotoDrag();
       return;
     }
-    const pos = this._getTouchPos(this.e);
+    const pos = this._getTouchPos();
     this.isSwipable = true;
     this.dragStart = true;
     this.firstPos = pos;
     this.oldPos = pos;
   }
 
-  afterDrag (value) {
+  afterDrag() {
     const items = this.groupItems();
     const date = new Date();
     const tapSecond = date.getTime();
@@ -545,7 +542,7 @@ class smartPhoto extends aTemplate {
     let swipeHeight = 0;
     this.isSwipable = false;
     this.onListMove = false;
-    if(this.oldPos) {
+    if (this.oldPos) {
       swipeWidth = this.oldPos.x - this.firstPos.x;
       swipeHeight = this.oldPos.y - this.firstPos.y;
     }
@@ -554,24 +551,24 @@ class smartPhoto extends aTemplate {
       this.afterGesture();
       return;
     }
-    if(this.data.scale){
+    if (this.data.scale) {
       this.afterPhotoDrag();
       return;
     } else if (!util.isSmartPhone() && swipeWidth === 0 && swipeHeight === 0) {
       this.zoomPhoto();
       return;
     }
-    if(Math.abs(offset) <= 500 && swipeWidth === 0 && swipeHeight === 0) {
+    if (Math.abs(offset) <= 500 && swipeWidth === 0 && swipeHeight === 0) {
       this.e.preventDefault();
       this.zoomPhoto();
       return;
     }
     this.tapSecond = tapSecond;
     if (this.moveDir === 'horizontal') {
-      if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0 ) {
-        this.data.currentIndex--;
-      } else if (swipeWidth <= - this.data.swipeOffset && this.data.currentIndex != items.length -1 ) {
-        this.data.currentIndex++;
+      if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
+        this.data.currentIndex -= 1;
+      } else if (swipeWidth <= -this.data.swipeOffset && this.data.currentIndex !== items.length - 1) {
+        this.data.currentIndex += 1;
       }
       this._slideList();
     }
@@ -585,7 +582,7 @@ class smartPhoto extends aTemplate {
     }
   }
 
-  onDrag () {
+  onDrag() {
     this.e.preventDefault();
     if (this._isGestured(this.e) && this.onListMove === false) {
       this.onGesture();
@@ -594,21 +591,21 @@ class smartPhoto extends aTemplate {
     if (this.isBeingZoomed) {
       return;
     }
-    if(this.data.scale){
+    if (this.data.scale) {
       this.onPhotoDrag();
       return;
     }
-    if(!this.isSwipable){
+    if (!this.isSwipable) {
       return;
     }
 
-    const pos = this._getTouchPos(this.e);
+    const pos = this._getTouchPos();
     const x = pos.x - this.oldPos.x;
     const y = pos.y - this.firstPos.y;
 
     if (this.dragStart) {
       this.dragStart = false;
-      if( Math.abs(x) > Math.abs(y) ) {
+      if (Math.abs(x) > Math.abs(y)) {
         this.moveDir = 'horizontal';
       } else {
         this.moveDir = 'vertical';
@@ -626,19 +623,19 @@ class smartPhoto extends aTemplate {
     this._listUpdate();
   }
 
-  zoomPhoto(){
+  zoomPhoto() {
     this.data.hideUi = true;
-    this.data.scaleSize =  this._getScaleBoarder();
+    this.data.scaleSize = this._getScaleBoarder();
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
     this._photoUpdate();
-    setTimeout(()=>{
+    setTimeout(() => {
       this.data.scale = true;
       this._photoUpdate();
-    },300)
+    }, 300);
   }
 
-  zoomOutPhoto(){
+  zoomOutPhoto() {
     this.data.scaleSize = 1;
     this.isBeingZoomed = false;
     this.data.hideUi = false;
@@ -648,34 +645,34 @@ class smartPhoto extends aTemplate {
     this._photoUpdate();
   }
 
-  beforePhotoDrag (){
-    const pos = this._getTouchPos(this.e);
+  beforePhotoDrag() {
+    const pos = this._getTouchPos();
     this.photoSwipable = true;
-    if(!this.data.photoPosX) {
+    if (!this.data.photoPosX) {
       this.data.photoPosX = 0;
     }
-    if(!this.data.photoPosY) {
+    if (!this.data.photoPosY) {
       this.data.photoPosY = 0;
     }
     this.oldPhotoPos = pos;
     this.firstPhotoPos = pos;
   }
 
-  onPhotoDrag () {
+  onPhotoDrag() {
     if (!this.photoSwipable) {
       return;
     }
     this.e.preventDefault();
-    const pos = this._getTouchPos(this.e);
+    const pos = this._getTouchPos();
     const x = pos.x - this.oldPhotoPos.x;
     const y = pos.y - this.oldPhotoPos.y;
-    let moveX = this._round(this.data.scaleSize*x,6);
-    let moveY = this._round(this.data.scaleSize*y,6);
-    if(typeof moveX === "number") {
+    const moveX = this._round(this.data.scaleSize * x, 6);
+    const moveY = this._round(this.data.scaleSize * y, 6);
+    if (typeof moveX === 'number') {
       this.data.photoPosX += moveX;
       this.photoVX = moveX;
     }
-    if(typeof moveY === "number"){
+    if (typeof moveY === 'number') {
       this.data.photoPosY += moveY;
       this.photoVY = moveY;
     }
@@ -683,11 +680,11 @@ class smartPhoto extends aTemplate {
     this._photoUpdate();
   }
 
-  afterPhotoDrag () {
-    if(this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
+  afterPhotoDrag() {
+    if (this.oldPhotoPos.x === this.firstPhotoPos.x && this.photoSwipable) {
       this.photoSwipable = false;
       this.zoomOutPhoto();
-    }else{
+    } else {
       this.photoSwipable = false;
       const item = this._getSelectedItem();
       const bound = this._makeBound(item);
@@ -709,7 +706,7 @@ class smartPhoto extends aTemplate {
         this.gotoSlide(this.data.prev);
         return;
       }
-      
+
       if (bound.minX - this.data.photoPosX > offset && this.data.currentIndex + 1 !== this.data.total) {
         this.gotoSlide(this.data.next);
         return;
@@ -725,42 +722,40 @@ class smartPhoto extends aTemplate {
         this.vx = this.photoVX / 5;
         this.vy = this.photoVY / 5;
       } else {
-        this._registerElasticForce(flagX,flagY);
+        this._registerElasticForce(flagX, flagY);
       }
     }
   }
 
-  beforeGesture () {
+  beforeGesture() {
     const pos = this._getGesturePos(this.e);
-    const distance = this._getDistance(pos[0],pos[1]);
+    const distance = this._getDistance(pos[0], pos[1]);
     this.isBeingZoomed = true;
     this.oldDistance = distance;
     this.data.scale = true;
     this.e.preventDefault();
   }
 
-  onGesture () {
+  onGesture() {
     const pos = this._getGesturePos(this.e);
-    const distance = this._getDistance(pos[0],pos[1]);
+    const distance = this._getDistance(pos[0], pos[1]);
     const size = (distance - this.oldDistance) / 100;
     const oldScaleSize = this.data.scaleSize;
     const posX = this.data.photoPosX;
     const posY = this.data.photoPosY;
-    const item = this._getSelectedItem();
-    let translate = 1;
-    this.data.scaleSize += this._round(size,6);
-    if(this.data.scaleSize < 0.2) {
+    this.data.scaleSize += this._round(size, 6);
+    if (this.data.scaleSize < 0.2) {
       this.data.scaleSize = 0.2;
     }
-    //todo
-    if(this.data.scaleSize < oldScaleSize) {
+    // todo
+    if (this.data.scaleSize < oldScaleSize) {
       this.data.photoPosX = (1 + this.data.scaleSize - oldScaleSize) * posX;
       this.data.photoPosY = (1 + this.data.scaleSize - oldScaleSize) * posY;
     }
 
-    if(this.data.scaleSize < 1 || this.data.scaleSize > this._getScaleBoarder()){
+    if (this.data.scaleSize < 1 || this.data.scaleSize > this._getScaleBoarder()) {
       this.data.hideUi = true;
-    }else{
+    } else {
       this.data.hideUi = false;
     }
     this.oldDistance = distance;
@@ -768,9 +763,9 @@ class smartPhoto extends aTemplate {
     this._photoUpdate();
   }
 
-  afterGesture () {
+  afterGesture() {
     this.isBeingZoomed = false;
-    if(this.data.scaleSize > this._getScaleBoarder()) {
+    if (this.data.scaleSize > this._getScaleBoarder()) {
       return;
     }
     this.data.photoPosX = 0;
@@ -781,135 +776,134 @@ class smartPhoto extends aTemplate {
     this._photoUpdate();
   }
 
-  _getForceAndTheta (vx,vy) {
+  _getForceAndTheta(vx, vy) {
     return {
-      force: Math.sqrt(vx*vx + vy*vy),
-      theta: Math.atan2(vy,vx)
-    }
+      force: Math.sqrt((vx * vx) + (vy * vy)),
+      theta: Math.atan2(vy, vx)
+    };
   }
 
-  _getScaleBoarder () {
+  _getScaleBoarder() {
     const item = this._getSelectedItem();
-    if(!util.isSmartPhone()){
+    if (!util.isSmartPhone()) {
       return 1 / item.scale;
     }
-    if(item.width > item.height){
-      return window.innerHeight / (item.height*item.scale);
-    }else{
-      return window.innerWidth / (item.width*item.scale);
+    if (item.width > item.height) {
+      return window.innerHeight / (item.height * item.scale);
     }
+    return window.innerWidth / (item.width * item.scale);
   }
 
-  _makeBound (item) {
-    let width = item.width * item.scale * this.data.scaleSize;
-    let height = item.height * item.scale * this.data.scaleSize;
-    let minX,minY,maxX,maxY;
-    if(window.innerWidth > width){
+  _makeBound(item) {
+    const width = item.width * item.scale * this.data.scaleSize;
+    const height = item.height * item.scale * this.data.scaleSize;
+    let minX;
+    let minY;
+    let maxX;
+    let maxY;
+    if (window.innerWidth > width) {
       maxX = (window.innerWidth - width) / 2;
       minX = -1 * maxX;
-    }else{
+    } else {
       maxX = (width - window.innerWidth) / 2;
       minX = -1 * maxX;
     }
-    if(window.innerHeight > height){
+    if (window.innerHeight > height) {
       maxY = (window.innerHeight - height) / 2;
       minY = -1 * maxY;
-    }else{
+    } else {
       maxY = (height - window.innerHeight) / 2;
       minY = -1 * maxY;
     }
     return {
-      minX: this._round(minX,6)*this.data.scaleSize,
-      minY: this._round(minY,6)*this.data.scaleSize,
-      maxX: this._round(maxX,6)*this.data.scaleSize,
-      maxY: this._round(maxY,6)*this.data.scaleSize
-    }
+      minX: this._round(minX, 6) * this.data.scaleSize,
+      minY: this._round(minY, 6) * this.data.scaleSize,
+      maxX: this._round(maxX, 6) * this.data.scaleSize,
+      maxY: this._round(maxY, 6) * this.data.scaleSize
+    };
   }
 
-  _registerElasticForce (x, y) {
+  _registerElasticForce(x, y) {
     const item = this._getSelectedItem();
     const bound = this._makeBound(item);
     this.data.elastic = true;
-    if(x === 1){
+    if (x === 1) {
       this.data.photoPosX = bound.minX;
-    }else if(x === -1){
+    } else if (x === -1) {
       this.data.photoPosX = bound.maxX;
     }
-    if(y === 1){
+    if (y === 1) {
       this.data.photoPosY = bound.minY;
-    }else if (y === -1){
+    } else if (y === -1) {
       this.data.photoPosY = bound.maxY;
     }
     this._photoUpdate();
     setTimeout(() => {
       this.data.elastic = false;
       this._photoUpdate();
-    },300);
+    }, 300);
   }
 
-  _getSelectedItem () {
+  _getSelectedItem() {
     const data = this.data;
     const index = data.currentIndex;
     return data.group[data.currentGroup][index];
   }
 
-  _getUniqId () {
+  _getUniqId() {
     return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
   }
 
-  _getDistance (point1, point2) {
+  _getDistance(point1, point2) {
     const x = point1.x - point2.x;
     const y = point1.y - point2.y;
-    return Math.sqrt(x*x+y*y);
+    return Math.sqrt((x * x) + (y * y));
   }
 
-  _round (val, precision) {
-    const digit = Math.pow(10,precision);
-    val = val * digit;
+  _round(val, precision) {
+    const digit = 10 ** precision;
+    val *= digit;
     val = Math.round(val);
-    val = val / digit;
+    val /= digit;
     return val;
   }
 
-  _isTouched (e) {
+  _isTouched(e) {
     if (e && e.touches) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
-  _isGestured (e) {
+  _isGestured(e) {
     if (e && e.touches && e.touches.length > 1) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
-  _isSmartPhone () {
-    const agent = navigator.userAgent
+  _isSmartPhone() {
+    const agent = navigator.userAgent;
     if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0
         || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
-      return true
-    } else {
-      return false
+      return true;
     }
+    return false;
   }
 
-  _calcGravity (gamma,beta) {
-    if(gamma > 5 || gamma < -5) {
+  _calcGravity(gamma, beta) {
+    if (gamma > 5 || gamma < -5) {
       this.vx += gamma * 0.05;
     }
-    if(this.data.verticalGravity === false){
+    if (this.data.verticalGravity === false) {
       return;
     }
-    if(beta > 5 || beta < -5){
+    if (beta > 5 || beta < -5) {
       this.vy += beta * 0.05;
     }
   }
 
-  _photoUpdate () {
+  _photoUpdate() {
     const classNames = this.data.classNames;
     const current = this._getElementByQuery('.current');
     const img = current.querySelector(`.${classNames.smartPhotoImg}`);
@@ -922,64 +916,69 @@ class smartPhoto extends aTemplate {
 
     img.style.transform = transform;
     if (this.data.scale) {
-      util.addClass(img,classNames.smartPhotoImgOnMove);
+      util.addClass(img, classNames.smartPhotoImgOnMove);
     } else {
-      util.removeClass(img,classNames.smartPhotoImgOnMove);
+      util.removeClass(img, classNames.smartPhotoImgOnMove);
     }
     if (this.data.elastic) {
-      util.addClass(img,classNames.smartPhotoImgElasticMove);
+      util.addClass(img, classNames.smartPhotoImgElasticMove);
     } else {
-      util.removeClass(img,classNames.smartPhotoImgElasticMove);
+      util.removeClass(img, classNames.smartPhotoImgElasticMove);
     }
     if (this.data.hideUi) {
-      util.addClass(nav,'hide');
-      util.addClass(arrows,'hide');
+      util.addClass(nav, 'hide');
+      util.addClass(arrows, 'hide');
       setTimeout(() => {
-        util.addClass(nav,'none');
-        util.addClass(arrows,'none');
-      },100)
+        util.addClass(nav, 'none');
+        util.addClass(arrows, 'none');
+      }, 100);
     } else {
-      util.removeClass(nav,'none');
-      util.removeClass(arrows,'none');
+      util.removeClass(nav, 'none');
+      util.removeClass(arrows, 'none');
       setTimeout(() => {
-        util.removeClass(nav,'hide');
-        util.removeClass(arrows,'hide');
-      },10)
+        util.removeClass(nav, 'hide');
+        util.removeClass(arrows, 'hide');
+      }, 10);
     }
   }
 
-  _listUpdate () {
+  _listUpdate() {
     const classNames = this.data.classNames;
     const list = this._getElementByQuery(`.${classNames.smartPhotoList}`);
     const transform = `translate(${this.data.translateX}px,${this.data.translateY}px)`;
     list.style.transform = transform;
     // $list
-    if(this.data.onMoveClass) {
-      util.addClass(list,classNames.smartPhotoListOnMove);
-    }else{
-      util.removeClass(list,classNames.smartPhotoListOnMove);
+    if (this.data.onMoveClass) {
+      util.addClass(list, classNames.smartPhotoListOnMove);
+    } else {
+      util.removeClass(list, classNames.smartPhotoListOnMove);
     }
   }
 
-  _doAnim () {
-    if (this.isBeingZoomed || this.isSwipable || this.photoSwipable || this.data.elastic || !this.data.scale ){
+  _doAnim() {
+    if (this.isBeingZoomed ||
+        this.isSwipable ||
+        this.photoSwipable ||
+        this.data.elastic ||
+        !this.data.scale
+    ) {
       return;
     }
     this.data.photoPosX += this.vx;
     this.data.photoPosY += this.vy;
     const item = this._getSelectedItem();
     const bound = this._makeBound(item);
-    if(this.data.photoPosX < bound.minX){
+    if (this.data.photoPosX < bound.minX) {
       this.data.photoPosX = bound.minX;
       this.vx *= -0.2;
-    }else if(this.data.photoPosX > bound.maxX){
+    } else if (this.data.photoPosX > bound.maxX) {
       this.data.photoPosX = bound.maxX;
       this.vx *= -0.2;
     }
-    if(this.data.photoPosY < bound.minY){
+    if (this.data.photoPosY < bound.minY) {
       this.data.photoPosY = bound.minY;
       this.vy *= -0.2;
-    }else if (this.data.photoPosY > bound.maxY){
+    } else if (this.data.photoPosY > bound.maxY) {
       this.data.photoPosY = bound.maxY;
       this.vy *= -0.2;
     }
@@ -990,8 +989,8 @@ class smartPhoto extends aTemplate {
     if (Math.abs(force) < 0.5) {
       return;
     }
-    this.vx = Math.cos(theta)*force;
-    this.vy = Math.sin(theta)*force;
+    this.vx = Math.cos(theta) * force;
+    this.vy = Math.sin(theta) * force;
     this._photoUpdate();
   }
 
