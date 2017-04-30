@@ -176,7 +176,7 @@ class smartPhoto extends aTemplate {
             resolve();
           };
           img.onerror = () => {
-            resolve();
+            reject();
           };
           img.src = item.src;
         });
@@ -226,7 +226,7 @@ class smartPhoto extends aTemplate {
     element.addEventListener('click', (event) => {
       event.preventDefault();
       this.data.currentGroup = element.getAttribute('data-group');
-      this.data.currentIndex = parseInt(element.getAttribute('data-index'));
+      this.data.currentIndex = parseInt(element.getAttribute('data-index'), 10);
       this._setHashByCurrentIndex();
       const currentItem = this._getSelectedItem();
       if (currentItem.loaded) {
@@ -271,7 +271,7 @@ class smartPhoto extends aTemplate {
     const appearEffect = this.data.appearEffect;
     const classNames = this.data.classNames;
     const effect = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoImgClone}`);
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         effect.style.transition = 'all .3s ease-out';
         effect.style.transform = `translate(${appearEffect.afterX}px, ${appearEffect.afterY}px) scale(${appearEffect.scale})`;
@@ -367,16 +367,13 @@ class smartPhoto extends aTemplate {
   _getTouchPos() {
     let x = 0;
     let y = 0;
-    const event = typeof event === 'undefined' ? this.e : event;
-    if (this._isTouched(event)) {
-      x = event.touches[0].pageX;
-      y = event.touches[0].pageY;
-    } else if (this._isTouched(this.e)) {
-      x = this.e.touches[0].pageX;
-      y = this.e.touches[0].pageY;
-    } else if (event.pageX) {
-      x = event.pageX;
-      y = event.pageY;
+    const e = typeof event === 'undefined' ? this.e : event;
+    if (this._isTouched(e)) {
+      x = e.touches[0].pageX;
+      y = e.touches[0].pageY;
+    } else if (e.pageX) {
+      x = e.pageX;
+      y = e.pageY;
     }
     return { x, y };
   }

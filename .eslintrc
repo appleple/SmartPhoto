@@ -17,6 +17,7 @@
     "no-param-reassign": 0,
     "no-mixed-operators": 0,
     "max-len": 0,
-    "no-continue": 0
+    "no-continue": 0,
+    "no-undef": ["error", { "typeof": true }]
   }
 }
