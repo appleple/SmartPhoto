@@ -2,6 +2,8 @@ const Nightmare = require('nightmare');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const test_url = "file:///"+path.resolve(__dirname,"../examples/vanilla.html");
+const hash_url = test_url + "#group=nogroup&photo=rhinoceros";
 
 const nightmare = Nightmare({
     webPreferences  : {
@@ -10,9 +12,6 @@ const nightmare = Nightmare({
   },
   show: true
 });
-
-const test_url = "file:///"+path.resolve(__dirname,"../examples/vanilla.html");
-const hash_url = test_url + "#group=nogroup&photo=rhinoceros";
 
 describe('test',() => {
   it('caption', (done) => {
