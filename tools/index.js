@@ -23,6 +23,8 @@ const SystemPromise = (cmd_string) => {
 
 co(function *() {
   try {
+    yield SystemPromise(`git add -A`);
+    yield SystemPromise(`git commit -m "v${pkg.version}"`);
     yield SystemPromise(`git push origin v${pkg.version}`);
     yield SystemPromise(`git push origin master`);
     yield SystemPromise(`npm publish`);
