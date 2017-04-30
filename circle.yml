@@ -3,7 +3,7 @@ machine:
     version: 6.9.2
 dependencies:
   override:
-    - "npm install -g electron && npm install"
+    - "npm install"
 test:
   override:
     - "npm run test"

@@ -1697,6 +1697,13 @@ electron@^1.4.4:
     electron-download "^3.0.1"
     extract-zip "^1.0.3"
 
+electron@1.4.16:
+  version "1.4.16"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-1.4.16.tgz#435a7c037c6a858de37569bb4b012c3f286bf1f3"
+  dependencies:
+    electron-download "^3.0.1"
+    extract-zip "^1.0.3"
+
 elliptic@^6.0.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.4.0.tgz#cac9af8762c85836187003c8dfe193e5e2eae5df"
@@ -2932,10 +2939,6 @@ jsprim@^1.2.2:
     extsprintf "1.0.2"
     json-schema "0.2.3"
     verror "1.3.6"
-
-keyboard-js@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/keyboard-js/-/keyboard-js-1.1.4.tgz#67aef2956ab80e65fffbfe253f050abcedfce037"
 
 keypress@0.1.x:
   version "0.1.0"
