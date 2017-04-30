@@ -5,7 +5,7 @@
   "homepage": "http://developer.a-blogcms.jp",
   "main": "lib/index.js",
   "scripts": {
-    "test": "npm run lint",
+    "test": "npm run lint && mocha ./test/test.js --timeout 1000000",
     "lint": "eslint ./src/core/index.js --fix",
     "build:js": "npm-run-all -p build:lib build:jquery build:global",
     "build:lib": "npm run babel",
@@ -40,11 +40,14 @@
     "fs-extra": "^2.1.2",
     "http-server": "^0.9.0",
     "licensify": "^3.1.2",
+    "mocha": "^3.3.0",
+    "nightmare": "^2.8.1",
     "node-cmd": "^2.0.0",
     "node-sass": "^4.3.0",
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.0.1",
     "onchange": "^3.2.1",
+    "power-assert": "^1.4.2",
     "stringify": "^5.1.0",
     "uglify-js": "^2.8.22",
     "watchify": "^3.9.0"
