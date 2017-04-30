@@ -1,6 +1,8 @@
 machine:
   node:
     version: 6.9.2
+  post:
+    - npm install -g npm@3
 dependencies:
   override:
     - "npm install"
