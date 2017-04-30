@@ -9,14 +9,18 @@
     <meta name="theme-color" content="#157878">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="./assets/css/style.css?v=96c482a683ca3d2e8dd0d3c3a74134ace03a6260">
-	<link rel="stylesheet" href="https://unpkg.com/smartphoto@0.4.1/css/smartphoto.min.css">
+	<link rel="stylesheet" href="https://unpkg.com/smartphoto@0.4.3/css/smartphoto.min.css">
 	<style>
-		.js-smartPhoto img{
+		.js-smartPhoto img,
+		.js-smartPhoto-fit img,
+		.js-smartPhoto-hide img{
 			height: 200px;
 			width: auto;
 		}
 		@media screen and (max-width:480px) {
-			.js-smartPhoto img{
+			.js-smartPhoto img,
+			.js-smartPhoto-fit img,
+			.js-smartPhoto-hide img{
 				height: 80px;
 				width: auto;
 			}
@@ -82,10 +86,10 @@
 
 <h2 id="cdn">CDN</h2>
 <p>Link directly to SmartPhoto files on <a href="https://unpkg.com/">unpkg</a>.</p>
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://unpkg.com/smartphoto@0.3.5/js/smartphoto.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://unpkg.com/smartphoto@0.4.3/js/smartphoto.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 </code></pre>
 </div>
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;link </span><span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://unpkg.com/smartphoto@0.3.5/css/smartphoto.min.css"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;link </span><span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://unpkg.com/smartphoto@0.4.3/css/smartphoto.min.css"</span><span class="nt">&gt;&lt;/script&gt;</span>
 </code></pre>
 </div>
 
@@ -115,7 +119,7 @@
 <h3>JavaScript</h3>
 <p>smartphoto.js</p>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'DOMContentLoaded'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'load'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
     <span class="k">new</span> <span class="nx">smartPhoto</span><span class="p">(</span><span class="s2">".js-smartPhoto"</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre>
@@ -168,20 +172,60 @@
 	</tr>
 </table>
 
-<p>When you want to hide arrows and nav</p>
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'DOMContentLoaded'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
+<p>When you want to fit images to the screen</p>
+
+<a href="./assets/images/large-kuma.jpg" class="js-smartPhoto-fit" data-caption="bear" data-id="bear" data-group="fit">
+	<img src="./assets/images/kuma.jpg" />
+</a>
+<a href="./assets/images/large-rakuda.jpg" class="js-smartPhoto-fit" data-caption="camel" data-id="camel" data-group="fit">
+	<img src="./assets/images/rakuda.jpg" />
+</a>
+<a href="./assets/images/large-lion.jpg" class="js-smartPhoto-fit" data-caption="lion" data-id="lion" data-group="fit">
+	<img src="./assets/images/lion.jpg" />
+</a>
+<a href="./assets/images/large-sai.jpg" class="js-smartPhoto-fit" data-caption="rhinoceros" data-id="rhinoceros" data-group="fit">
+	<img src="./assets/images/sai.jpg" />
+</a>
+<a href="./assets/images/large-kaba.jpg" class="js-smartPhoto-fit" data-caption="hippopotamus" data-id="hippopotamus" data-group="fit">
+	<img src="./assets/images/kaba.jpg" />
+</a>
+<a href="./assets/images/large-koara.jpg" class="js-smartPhoto-fit" data-caption="koala" data-id="koala" data-group="fit">
+	<img src="./assets/images/koara.jpg" />
+</a>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'load'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
     <span class="k">new</span> <span class="nx">smartPhoto</span><span class="p">(</span><span class="s2">'.js-smartPhoto'</span><span class="p">,{</span>
-        <span class="na">arrows</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-        <span class="na">nav</span><span class="p">:</span> <span class="kc">false</span>
+        <span class="na">resizeStyle</span><span class="p">:</span> <span class="s2">'fit'</span>
     <span class="p">});</span>
 <span class="p">});</span>
 </code></pre>
 </div>
 
-<p>When you want to fit images to the screen</p>
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'DOMContentLoaded'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
+<p>When you want to hide arrows and nav</p>
+
+<a href="./assets/images/large-kuma.jpg" class="js-smartPhoto-hide" data-caption="bear" data-id="bear" data-group="hide">
+	<img src="./assets/images/kuma.jpg" />
+</a>
+<a href="./assets/images/large-rakuda.jpg" class="js-smartPhoto-hide" data-caption="camel" data-id="camel" data-group="hide">
+	<img src="./assets/images/rakuda.jpg" />
+</a>
+<a href="./assets/images/large-lion.jpg" class="js-smartPhoto-hide" data-caption="lion" data-id="lion" data-group="hide">
+	<img src="./assets/images/lion.jpg" />
+</a>
+<a href="./assets/images/large-sai.jpg" class="js-smartPhoto-hide" data-caption="rhinoceros" data-id="rhinoceros" data-group="hide">
+	<img src="./assets/images/sai.jpg" />
+</a>
+<a href="./assets/images/large-kaba.jpg" class="js-smartPhoto-hide" data-caption="hippopotamus" data-id="hippopotamus" data-group="hide">
+	<img src="./assets/images/kaba.jpg" />
+</a>
+<a href="./assets/images/large-koara.jpg" class="js-smartPhoto-hide" data-caption="koala" data-id="koala" data-group="hide">
+	<img src="./assets/images/koara.jpg" />
+</a>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'load'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
     <span class="k">new</span> <span class="nx">smartPhoto</span><span class="p">(</span><span class="s2">'.js-smartPhoto'</span><span class="p">,{</span>
-        <span class="na">resizeStyle</span><span class="p">:</span> <span class="s2">'fit'</span>
+        <span class="na">arrows</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="na">nav</span><span class="p">:</span> <span class="kc">false</span>
     <span class="p">});</span>
 <span class="p">});</span>
 </code></pre>
@@ -231,10 +275,17 @@
       </footer>
     </section>
 
-<script src="https://unpkg.com/smartphoto@0.4.1/js/smartphoto.js"></script>
+<script src="https://unpkg.com/smartphoto@0.4.3/js/smartphoto.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
     new smartPhoto(".js-smartPhoto");
+	new smartPhoto(".js-smartPhoto-hide",{
+		arrows:false,
+		nav:false
+	});
+	new smartPhoto(".js-smartPhoto-fit",{
+		resizeStyle:'fit'
+	});
 });
 </script>
   </body>
