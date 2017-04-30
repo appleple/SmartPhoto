@@ -3,7 +3,7 @@
 [![CircleCI](https://circleci.com/gh/appleple/SmartPhoto/tree/master.svg?style=shield)](https://circleci.com/gh/appleple/SmartPhoto/tree/master)
 
 The most easy to use responsive image viwer especially for mobile devices
-See [https://appleple.github.io/SmartPhoto/](https://appleple.github.io/SmartPhoto/) for complete docs and demos
+See [https://appleple.github.io/SmartPhoto/](https://appleple.github.io/SmartPhoto/) for complete docs and demos<br/>
 If you are Japasese, See here [https://www.appleple.com/blog/javascript/smartphoto-js.html](https://www.appleple.com/blog/javascript/smartphoto-js.html) instead.
 
 ## Feature
