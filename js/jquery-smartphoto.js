@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 0.4.4
+ *   version: 0.4.5
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -2028,9 +2028,9 @@ var smartPhoto = function (_aTemplate) {
       if (this._isGestured(this.e)) {
         this.beforeGesture();
         return;
-      } else {
-        this.isBeingZoomed = false;
       }
+      this.isBeingZoomed = false;
+
       if (this.data.scale) {
         this.beforePhotoDrag();
         return;
