@@ -513,9 +513,9 @@ class smartPhoto extends aTemplate {
     if (this._isGestured(this.e)) {
       this.beforeGesture();
       return;
-    } else {
-      this.isBeingZoomed = false;
     }
+    this.isBeingZoomed = false;
+
     if (this.data.scale) {
       this.beforePhotoDrag();
       return;
