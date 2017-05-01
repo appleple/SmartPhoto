@@ -513,6 +513,8 @@ class smartPhoto extends aTemplate {
     if (this._isGestured(this.e)) {
       this.beforeGesture();
       return;
+    } else {
+      this.isBeingZoomed = false;
     }
     if (this.data.scale) {
       this.beforePhotoDrag();
@@ -534,11 +536,11 @@ class smartPhoto extends aTemplate {
     let swipeHeight = 0;
     this.isSwipable = false;
     this.onListMove = false;
+
     if (this.oldPos) {
       swipeWidth = this.oldPos.x - this.firstPos.x;
       swipeHeight = this.oldPos.y - this.firstPos.y;
     }
-
     if (this.isBeingZoomed) {
       this.afterGesture();
       return;
@@ -735,6 +737,7 @@ class smartPhoto extends aTemplate {
     const oldScaleSize = this.data.scaleSize;
     const posX = this.data.photoPosX;
     const posY = this.data.photoPosY;
+    this.isBeingZoomed = true;
     this.data.scaleSize += this._round(size, 6);
     if (this.data.scaleSize < 0.2) {
       this.data.scaleSize = 0.2;
@@ -756,7 +759,6 @@ class smartPhoto extends aTemplate {
   }
 
   afterGesture() {
-    this.isBeingZoomed = false;
     if (this.data.scaleSize > this._getScaleBoarder()) {
       return;
     }
