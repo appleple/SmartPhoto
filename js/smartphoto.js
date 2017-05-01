@@ -1481,7 +1481,6 @@ var defaults = {
   nav: true,
   animationSpeed: 300,
   swipeOffset: 100,
-  maxWidth: 940,
   headerHeight: 60,
   footerHeight: 60,
   forceInterval: 10,

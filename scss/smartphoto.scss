@@ -145,7 +145,7 @@ $header-color: rgba(0, 0, 0, .2);
 
 .smartphoto-img {
   display: none;
-  // width: 100%;
+  max-width: none;
   width: auto;
   height: auto;
   cursor: zoom-in;
@@ -259,7 +259,6 @@ $header-color: rgba(0, 0, 0, .2);
   padding: 0;
   text-align: center;
   white-space: nowrap;
-
   -webkit-overflow-scrolling: touch;
 }
 
@@ -268,6 +267,7 @@ $header-color: rgba(0, 0, 0, .2);
   overflow: hidden;
   width: 50px;
   height: 50px;
+  background-color: #FFF;
   background-position: center center;
   background-size: cover;
   opacity: .5;

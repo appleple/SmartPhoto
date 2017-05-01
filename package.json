@@ -9,8 +9,8 @@
     "lint": "eslint ./src/core/index.js --fix",
     "build:js": "npm-run-all -p build:lib build:jquery build:global",
     "build:lib": "npm run babel",
-    "build:jquery": "browserify ./src/adaptor/jquery.js -t babelify -t [ stringify --extensions [.html .css] ] -p licensify -o ./js/jquery-smartphoto.js && npm run build:jquery:min",
-    "build:global": "browserify ./src/index.js -t babelify -t [stringify --extensions [.html .css] ] -p licensify --standalone smartPhoto -o ./js/smartphoto.js && npm run build:global:min",
+    "build:jquery": "browserify ./src/adaptor/jquery.js -t babelify -p licensify -o ./js/jquery-smartphoto.js && npm run build:jquery:min",
+    "build:global": "browserify ./src/index.js -t babelify -p licensify --standalone smartPhoto -o ./js/smartphoto.js && npm run build:global:min",
     "build:jquery:min": "uglifyjs ./js/jquery-smartphoto.js -m -c --comments -o ./js/jquery-smartphoto.min.js",
     "build:global:min": "uglifyjs ./js/smartphoto.js -m -c --comments -o ./js/smartphoto.min.js",
     "build:sass": "npm-run-all -p sass sass:min",
@@ -50,7 +50,6 @@
     "npm-run-all": "^4.0.1",
     "onchange": "^3.2.1",
     "power-assert": "^1.4.2",
-    "stringify": "^5.1.0",
     "uglify-js": "^2.8.22",
     "watchify": "^3.9.0"
   },

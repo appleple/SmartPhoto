@@ -135,6 +135,7 @@
 
 .smartphoto-img {
   display: none;
+  max-width: none;
   width: auto;
   height: auto;
   cursor: zoom-in;
@@ -255,6 +256,7 @@
   overflow: hidden;
   width: 50px;
   height: 50px;
+  background-color: #FFF;
   background-position: center center;
   background-size: cover;
   opacity: .5;
