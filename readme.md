@@ -11,7 +11,7 @@ If you are Japasese, See here [https://www.appleple.com/blog/javascript/smartpho
 ## Feature
 - Intuitive gestures such as pinch-in/pinch-out/drag/swipe
 - Use Accelerometer to move images
-- Accessible from keyboard
+- Accessible from keyboards and screen-readers
 - Show pictures via URL hash
 - Can make photo groups
 
