@@ -346,6 +346,10 @@
   text-overflow: ellipsis;
 }
 
+.smartphoto-caption:focus {
+  outline: none;
+}
+
 .smartphoto-loader-wrap {
   display: block;
   position: relative;

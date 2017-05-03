@@ -3,7 +3,7 @@
 		<div class="\{classNames.smartPhotoInner\}">
 			   <div class="\{classNames.smartPhotoHeader\}">
 					<span class="\{classNames.smartPhotoCount\}">{currentIndex}[increment]/{total}</span>
-					<span class="\{classNames.smartPhotoCaption\}" aria-live="polite"><!-- BEGIN groupItems:loop --><!-- \BEGIN currentIndex:touch#{index} -->{caption}<!-- \END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>
+					<span class="\{classNames.smartPhotoCaption\}" aria-live="polite" tabindex="-1"><!-- BEGIN groupItems:loop --><!-- \BEGIN currentIndex:touch#{index} -->{caption}<!-- \END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>
 					<button class="\{classNames.smartPhotoDismiss\}" data-action-click="hidePhoto()"><span class="smartphoto-sr-only">\{message.closeDialog\}</span></button>
 				</div>
 				<div class="\{classNames.smartPhotoContent\}"<!-- BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag(false)"<!-- END isSmartPhone:exist -->>

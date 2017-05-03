@@ -71,6 +71,7 @@ class smartPhoto extends aTemplate {
     const date = new Date();
     this.tapSecond = date.getTime();
     this.onListMove = false;
+    this.clicked = false;
     this.id = this._getUniqId();
     this.vx = 0;
     this.vy = 0;
@@ -234,10 +235,12 @@ class smartPhoto extends aTemplate {
       if (currentItem.loaded) {
         this._initPhoto();
         this.addAppearEffect(element);
+        this.clicked = true;
         this.update();
       } else {
         this._loadItem(currentItem).then(() => {
           this.data.appear = true;
+          this.clicked = true;
           this._initPhoto();
           this.update();
         });
@@ -266,6 +269,12 @@ class smartPhoto extends aTemplate {
       this.execEffect().then(() => {
         this.replaceEffectWithImg();
       });
+    }
+    if (this.clicked) {
+      this.clicked = false;
+      const classNames = this.data.classNames;
+      const caption = this._getElementByClass(classNames.smartPhotoCaption);
+      caption.focus();
     }
   }
 

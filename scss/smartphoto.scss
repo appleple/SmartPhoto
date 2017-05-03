@@ -351,6 +351,9 @@ $header-color: rgba(0, 0, 0, .2);
   line-height: 50px;
   white-space: nowrap;
   text-overflow: ellipsis;
+  &:focus{
+    outline: none;
+  }
 }
 
 .smartphoto-loader-wrap {
