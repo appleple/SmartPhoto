@@ -70,6 +70,10 @@ $header-color: rgba(0, 0, 0, .2);
   animation-timing-function: $animation-function;
 }
 
+.smartphoto[aria-hidden="true"] {
+  display: none;
+}
+
 .smartphoto-close {
   opacity: 0;
 }
@@ -141,6 +145,10 @@ $header-color: rgba(0, 0, 0, .2);
   list-style-type: none;
   margin: 0;
   padding: 0;
+}
+
+.smartphoto-arrows[aria-hidden="true"] {
+  display: none;
 }
 
 .smartphoto-img {
@@ -247,7 +255,7 @@ $header-color: rgba(0, 0, 0, .2);
   opacity: 0;
 }
 
-.smartphoto-nav.hide.none {
+.smartphoto-nav[aria-hidden="true"] {
   display: none;
 }
 

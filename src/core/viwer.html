@@ -1,4 +1,4 @@
-<div class="\{classNames.smartPhoto\}"<!-- BEGIN hide:exist --> style="display:none;"<!-- END hide:exist -->>
+<div class="\{classNames.smartPhoto\}"<!-- BEGIN hide:exist --> aria-hidden="true"<!-- END hide:exist --><!-- BEGIN hide:empty --> aria-hidden="false"<!-- END hide:empty -->>
 	<div class="\{classNames.smartPhotoBody\}">
 		<div class="\{classNames.smartPhotoInner\}">
 			   <div class="\{classNames.smartPhotoHeader\}">
@@ -25,7 +25,7 @@
 					<!-- END groupItems:loop -->
 				</ul>
 				<!-- BEGIN arrows:exist -->
-				<ul class="\{classNames.smartPhotoArrows\}<!-- BEGIN hideUi:exist --> hide<!-- END hideUi:exist -->">
+				<ul class="\{classNames.smartPhotoArrows\}"<!-- BEGIN hideUi:exist --> aria-hidden="true"<!-- END hideUi:exist -->>
 					<li class="\{classNames.smartPhotoArrowLeft\}<!-- BEGIN showPrevArrow:exist --> show<!-- END showPrevArrow:exist -->" data-action-click="gotoSlide({prev})"></li>
 					<li class="\{classNames.smartPhotoArrowRight\}<!-- BEGIN showNextArrow:exist --> show<!-- END showNextArrow:exist -->" data-action-click="gotoSlide({next})"></li>
 				</ul>

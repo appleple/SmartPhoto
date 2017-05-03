@@ -62,6 +62,10 @@
   animation-timing-function: ease-out;
 }
 
+.smartphoto[aria-hidden="true"] {
+  display: none;
+}
+
 .smartphoto-close {
   opacity: 0;
 }
@@ -131,6 +135,10 @@
   list-style-type: none;
   margin: 0;
   padding: 0;
+}
+
+.smartphoto-arrows[aria-hidden="true"] {
+  display: none;
 }
 
 .smartphoto-img {
@@ -236,7 +244,7 @@
   opacity: 0;
 }
 
-.smartphoto-nav.hide.none {
+.smartphoto-nav[aria-hidden="true"] {
   display: none;
 }
 
