@@ -226,6 +226,16 @@ $header-color: rgba(0, 0, 0, .2);
   height: 30px;
   opacity: 0;
   transition: all .3s $animation-function;
+  &:focus{
+    outline: none;
+  }
+}
+
+.smartphoto-arrows a {
+  display: block;
+  text-decoration: none;
+  width: 100%;
+  height: 100%;
 }
 
 .smartphoto-arrows .show {
@@ -275,6 +285,12 @@ $header-color: rgba(0, 0, 0, .2);
   overflow: hidden;
   width: 50px;
   height: 50px;
+}
+
+.smartphoto-nav a{
+  display: block;
+  width: 100%;
+  height: 100%;
   background-color: #FFF;
   background-position: center center;
   background-size: cover;
@@ -307,6 +323,9 @@ $header-color: rgba(0, 0, 0, .2);
     width: 100%;
     height: 100%;
     transition: all .3s $animation-function;
+    &:focus {
+      outline: none;
+    }
   }
 }
 
@@ -360,4 +379,15 @@ $header-color: rgba(0, 0, 0, .2);
   z-index: 100;
   top: 0;
   left: 0;
+}
+
+.smartphoto-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
 }

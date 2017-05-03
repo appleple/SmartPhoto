@@ -485,6 +485,9 @@ class smartPhoto extends aTemplate {
   }
 
   gotoSlide(index) {
+    if (this.e && this.e.preventDefault) {
+      this.e.preventDefault();
+    }
     this.data.currentIndex = parseInt(index, 10);
     if (!this.data.currentIndex) {
       this.data.currentIndex = 0;
