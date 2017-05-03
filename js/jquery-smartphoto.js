@@ -2470,11 +2470,19 @@ var smartPhoto = function (_aTemplate) {
         util.removeClass(img, classNames.smartPhotoImgElasticMove);
       }
       if (this.data.hideUi) {
-        nav.setAttribute('aria-hidden', 'true');
-        arrows.setAttribute('aria-hidden', 'true');
+        if (nav) {
+          nav.setAttribute('aria-hidden', 'true');
+        }
+        if (arrows) {
+          arrows.setAttribute('aria-hidden', 'true');
+        }
       } else {
-        nav.setAttribute('aria-hidden', 'false');
-        arrows.setAttribute('aria-hidden', 'false');
+        if (nav) {
+          nav.setAttribute('aria-hidden', 'false');
+        }
+        if (arrows) {
+          arrows.setAttribute('aria-hidden', 'false');
+        }
       }
     }
   }, {
