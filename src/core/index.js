@@ -958,11 +958,11 @@ class smartPhoto extends aTemplate {
   }
 
   _getWindowWidth() {
-    return (document.documentElement.clientWidth || window.innerWidth || 0);
+    return document.documentElement.clientWidth;
   }
 
   _getWindowHeight() {
-    return (document.documentElement.clientHeight || window.innerHeight || 0);
+    return window.innerHeight;
   }
 
   _listUpdate() {
