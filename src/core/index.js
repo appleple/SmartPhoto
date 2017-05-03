@@ -937,10 +937,10 @@ class smartPhoto extends aTemplate {
       util.removeClass(img, classNames.smartPhotoImgElasticMove);
     }
     if (this.data.hideUi) {
-      if(nav) {
+      if (nav) {
         nav.setAttribute('aria-hidden', 'true');
       }
-      if(arrows) {
+      if (arrows) {
         arrows.setAttribute('aria-hidden', 'true');
       }
     } else {
