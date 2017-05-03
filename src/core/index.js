@@ -931,12 +931,12 @@ class smartPhoto extends aTemplate {
       util.addClass(nav, 'hide');
       util.addClass(arrows, 'hide');
       setTimeout(() => {
-        nav.setAttribute('aria-hidden','true');
-        arrows.setAttribute('aria-hidden','true');
+        nav.setAttribute('aria-hidden', 'true');
+        arrows.setAttribute('aria-hidden', 'true');
       }, 100);
     } else {
-      nav.setAttribute('aria-hidden','false');
-      arrows.setAttribute('aria-hidden','false');
+      nav.setAttribute('aria-hidden', 'false');
+      arrows.setAttribute('aria-hidden', 'false');
       setTimeout(() => {
         util.removeClass(nav, 'hide');
         util.removeClass(arrows, 'hide');
