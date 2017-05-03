@@ -48,6 +48,38 @@ $header-color: rgba(0, 0, 0, .2);
   }
 }
 
+@keyframes smartphoto-appear {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+
+  1% {
+    display: block;
+    opacity: 0;
+  }
+
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}
+
+@keyframes smartphoto-hide {
+  0% {
+    display: block;
+    opacity: 1;
+  }
+  99% {
+    display: block;
+    opacity: 0;
+  }
+  100% {
+    display: none;
+    opacity: 0;
+  }
+}
+
 .smartphoto {
   position: fixed;
   z-index: 100;
@@ -141,16 +173,6 @@ $header-color: rgba(0, 0, 0, .2);
   vertical-align: top;
 }
 
-.smartphoto-arrows {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-.smartphoto-arrows[aria-hidden="true"] {
-  display: none;
-}
-
 .smartphoto-img {
   display: none;
   max-width: none;
@@ -202,19 +224,21 @@ $header-color: rgba(0, 0, 0, .2);
 }
 
 .smartphoto-arrows {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
   position: relative;
   z-index: 1002;
   top: 50%;
   left: 0;
   opacity: 1;
-  transition: all .3s $animation-function;
+  animation-name: smartphoto-appear;
+  animation-duration: $animation-speed;
+  animation-timing-function: $animation-function;
 }
 
-.smartphoto-arrows.hide {
-  opacity: 0;
-}
-
-.smartphoto-arrows.hide.none {
+.smartphoto-arrows[aria-hidden="true"] {
+  animation-name: smartphoto-hide;
   display: none;
 }
 
@@ -224,22 +248,24 @@ $header-color: rgba(0, 0, 0, .2);
   top: 50%;
   width: 30px;
   height: 30px;
-  opacity: 0;
-  transition: all .3s $animation-function;
-  &:focus{
+  animation-duration: $animation-speed;
+  animation-timing-function: $animation-function;
+  animation-name: smartphoto-appear;
+  &:focus {
     outline: none;
   }
 }
 
-.smartphoto-arrows a {
-  display: block;
-  text-decoration: none;
-  width: 100%;
-  height: 100%;
+.smartphoto-arrows [aria-hidden="true"] {
+  animation-name: smartphoto-hide;
+  display: none;  
 }
 
-.smartphoto-arrows .show {
-  opacity: 1;
+.smartphoto-arrows a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
 }
 
 .smartphoto-arrow-right {
@@ -258,14 +284,13 @@ $header-color: rgba(0, 0, 0, .2);
   left: 0;
   width: 100%;
   opacity: 1;
-  transition: all .3s $animation-function;
-}
-
-.smartphoto-nav.hide {
-  opacity: 0;
+  animation-name: smartphoto-appear;
+  animation-duration: $animation-speed;
+  animation-timing-function: $animation-function;
 }
 
 .smartphoto-nav[aria-hidden="true"] {
+  animation-name: smartphoto-hide;
   display: none;
 }
 
@@ -277,6 +302,7 @@ $header-color: rgba(0, 0, 0, .2);
   padding: 0;
   text-align: center;
   white-space: nowrap;
+
   -webkit-overflow-scrolling: touch;
 }
 
@@ -287,7 +313,7 @@ $header-color: rgba(0, 0, 0, .2);
   height: 50px;
 }
 
-.smartphoto-nav a{
+.smartphoto-nav a {
   display: block;
   width: 100%;
   height: 100%;
@@ -351,7 +377,7 @@ $header-color: rgba(0, 0, 0, .2);
   line-height: 50px;
   white-space: nowrap;
   text-overflow: ellipsis;
-  &:focus{
+  &:focus {
     outline: none;
   }
 }
@@ -388,12 +414,12 @@ $header-color: rgba(0, 0, 0, .2);
 }
 
 .smartphoto-sr-only {
+  overflow: hidden;
   position: absolute;
   width: 1px;
   height: 1px;
-  padding: 0;
   margin: -1px;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
+  padding: 0;
   border: 0;
+  clip: rect(0,0,0,0);
 }

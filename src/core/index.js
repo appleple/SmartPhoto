@@ -937,19 +937,11 @@ class smartPhoto extends aTemplate {
       util.removeClass(img, classNames.smartPhotoImgElasticMove);
     }
     if (this.data.hideUi) {
-      util.addClass(nav, 'hide');
-      util.addClass(arrows, 'hide');
-      setTimeout(() => {
-        nav.setAttribute('aria-hidden', 'true');
-        arrows.setAttribute('aria-hidden', 'true');
-      }, 100);
+      nav.setAttribute('aria-hidden', 'true');
+      arrows.setAttribute('aria-hidden', 'true');
     } else {
       nav.setAttribute('aria-hidden', 'false');
       arrows.setAttribute('aria-hidden', 'false');
-      setTimeout(() => {
-        util.removeClass(nav, 'hide');
-        util.removeClass(arrows, 'hide');
-      }, 10);
     }
   }
 

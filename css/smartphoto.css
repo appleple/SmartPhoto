@@ -40,6 +40,36 @@
   }
 }
 
+@keyframes smartphoto-appear {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  1% {
+    display: block;
+    opacity: 0;
+  }
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}
+
+@keyframes smartphoto-hide {
+  0% {
+    display: block;
+    opacity: 1;
+  }
+  99% {
+    display: block;
+    opacity: 0;
+  }
+  100% {
+    display: none;
+    opacity: 0;
+  }
+}
+
 .smartphoto {
   position: fixed;
   z-index: 100;
@@ -131,16 +161,6 @@
   vertical-align: top;
 }
 
-.smartphoto-arrows {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-.smartphoto-arrows[aria-hidden="true"] {
-  display: none;
-}
-
 .smartphoto-img {
   display: none;
   max-width: none;
@@ -191,19 +211,21 @@
 }
 
 .smartphoto-arrows {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
   position: relative;
   z-index: 1002;
   top: 50%;
   left: 0;
   opacity: 1;
-  transition: all 0.3s ease-out;
+  animation-name: smartphoto-appear;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
 }
 
-.smartphoto-arrows.hide {
-  opacity: 0;
-}
-
-.smartphoto-arrows.hide.none {
+.smartphoto-arrows[aria-hidden="true"] {
+  animation-name: smartphoto-hide;
   display: none;
 }
 
@@ -213,23 +235,25 @@
   top: 50%;
   width: 30px;
   height: 30px;
-  opacity: 0;
-  transition: all 0.3s ease-out;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
+  animation-name: smartphoto-appear;
 }
 
 .smartphoto-arrows li:focus {
   outline: none;
 }
 
-.smartphoto-arrows a {
-  display: block;
-  text-decoration: none;
-  width: 100%;
-  height: 100%;
+.smartphoto-arrows [aria-hidden="true"] {
+  animation-name: smartphoto-hide;
+  display: none;
 }
 
-.smartphoto-arrows .show {
-  opacity: 1;
+.smartphoto-arrows a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
 }
 
 .smartphoto-arrow-right {
@@ -248,14 +272,13 @@
   left: 0;
   width: 100%;
   opacity: 1;
-  transition: all 0.3s ease-out;
-}
-
-.smartphoto-nav.hide {
-  opacity: 0;
+  animation-name: smartphoto-appear;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
 }
 
 .smartphoto-nav[aria-hidden="true"] {
+  animation-name: smartphoto-hide;
   display: none;
 }
 
@@ -382,12 +405,12 @@
 }
 
 .smartphoto-sr-only {
+  overflow: hidden;
   position: absolute;
   width: 1px;
   height: 1px;
-  padding: 0;
   margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  padding: 0;
   border: 0;
+  clip: rect(0, 0, 0, 0);
 }
