@@ -30,6 +30,11 @@ const defaults = {
     smartPhotoLoaderWrap: 'smartphoto-loader-wrap',
     smartPhotoImgClone: 'smartphoto-img-clone'
   },
+  message: {
+    gotoNextImage: 'go to the next image',
+    gotoPrevImage: 'go to the previous image',
+    closeDialog: 'close the image dialog'
+  },
   arrows: true,
   nav: true,
   animationSpeed: 300,

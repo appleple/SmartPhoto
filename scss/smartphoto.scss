@@ -295,9 +295,12 @@ $header-color: rgba(0, 0, 0, .2);
   background-position: center center;
   background-size: cover;
   opacity: .5;
+  &:focus {
+    opacity: .8;
+  }
 }
 
-.smartphoto-nav .current {
+.smartphoto-nav a.current {
   opacity: 1;
 }
 

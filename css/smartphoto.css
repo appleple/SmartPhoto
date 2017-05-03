@@ -287,7 +287,11 @@
   opacity: .5;
 }
 
-.smartphoto-nav .current {
+.smartphoto-nav a:focus {
+  opacity: .8;
+}
+
+.smartphoto-nav a.current {
   opacity: 1;
 }
 
