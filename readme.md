@@ -1,6 +1,7 @@
 # SmartPhoto
 [![npm version](https://badge.fury.io/js/smartphoto.svg)](https://badge.fury.io/js/smartphoto)
 [![CircleCI](https://circleci.com/gh/appleple/SmartPhoto/tree/master.svg?style=shield)](https://circleci.com/gh/appleple/SmartPhoto/tree/master)
+[![GitHub license](https://img.shields.io/badge/license-MIT-green.svg)](https://raw.githubusercontent.com/appleple/SmartPhoto/master/LICENSE)
 
 The most easy to use responsive image viwer especially for mobile devices
 
