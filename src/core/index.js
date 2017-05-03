@@ -192,7 +192,7 @@ class smartPhoto extends aTemplate {
   _resetTranslate() {
     const items = this.groupItems();
     items.forEach((item, index) => {
-      item.translateX = window.innerWidth * index;
+      item.translateX = this._getWindowWidth() * index;
     });
   }
 
@@ -210,7 +210,7 @@ class smartPhoto extends aTemplate {
       src: element.getAttribute('href'),
       caption: element.getAttribute('data-caption'),
       groupId,
-      translateX: window.innerWidth * index,
+      translateX: this._getWindowWidth() * index,
       index,
       translateY: 0,
       width: 50,
@@ -310,8 +310,8 @@ class smartPhoto extends aTemplate {
     appear.left = pos.left;
     appear.once = true;
     appear.img = img.getAttribute('src');
-    const windowX = window.innerWidth;
-    const windowY = window.innerHeight;
+    const windowX = this._getWindowWidth();
+    const windowY = this._getWindowHeight();
     const screenY = windowY - this.data.headerHeight - this.data.footerHeight;
     if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
       if (img.offsetWidth > img.offsetHeight) {
@@ -356,7 +356,7 @@ class smartPhoto extends aTemplate {
       const classNames = this.data.classNames;
       const photo = this._getElementByClass(classNames.smartPhoto);
       const img = this._getElementByQuery(`.current .${classNames.smartPhotoImg}`);
-      const height = window.innerHeight;
+      const height = this._getWindowHeight();
       const handler = () => {
         photo.removeEventListener('transitionend', handler, true);
         resolve();
@@ -463,8 +463,8 @@ class smartPhoto extends aTemplate {
   }
 
   _setSizeByScreen() {
-    const windowX = window.innerWidth;
-    const windowY = window.innerHeight;
+    const windowX = this._getWindowWidth();
+    const windowY = this._getWindowHeight();
     const headerHeight = this.data.headerHeight;
     const footerHeight = this.data.footerHeight;
     const screenY = windowY - (headerHeight + footerHeight);
@@ -796,13 +796,15 @@ class smartPhoto extends aTemplate {
 
   _getScaleBoarder() {
     const item = this._getSelectedItem();
+    const windowWidth = this._getWindowWidth();
+    const windowHeight = this._getWindowHeight();
     if (!util.isSmartPhone()) {
       return 1 / item.scale;
     }
     if (item.width > item.height) {
-      return window.innerHeight / (item.height * item.scale);
+      return windowHeight / (item.height * item.scale);
     }
-    return window.innerWidth / (item.width * item.scale);
+    return windowWidth / (item.width * item.scale);
   }
 
   _makeBound(item) {
@@ -812,18 +814,20 @@ class smartPhoto extends aTemplate {
     let minY;
     let maxX;
     let maxY;
-    if (window.innerWidth > width) {
-      maxX = (window.innerWidth - width) / 2;
+    const windowWidth = this._getWindowWidth();
+    const windowHeight = this._getWindowHeight();
+    if (windowWidth > width) {
+      maxX = (windowWidth - width) / 2;
       minX = -1 * maxX;
     } else {
-      maxX = (width - window.innerWidth) / 2;
+      maxX = (width - windowWidth) / 2;
       minX = -1 * maxX;
     }
-    if (window.innerHeight > height) {
-      maxY = (window.innerHeight - height) / 2;
+    if (windowHeight > height) {
+      maxY = (windowHeight - height) / 2;
       minY = -1 * maxY;
     } else {
-      maxY = (height - window.innerHeight) / 2;
+      maxY = (height - windowHeight) / 2;
       minY = -1 * maxY;
     }
     return {
@@ -951,6 +955,14 @@ class smartPhoto extends aTemplate {
         arrows.setAttribute('aria-hidden', 'false');
       }
     }
+  }
+
+  _getWindowWidth() {
+    return (document.documentElement.clientWidth || window.innerWidth || 0);
+  }
+
+  _getWindowHeight() {
+    return (document.documentElement.clientHeight || window.innerHeight || 0);
   }
 
   _listUpdate() {
