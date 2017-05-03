@@ -25,6 +25,10 @@
     "minor": "npm run test && npm version minor && npm run build:js && node ./tools/index.js",
     "major": "npm run test && npm version major && npm run build:js && node ./tools/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/appleple/SmartPhoto/"
+  },
   "author": "appleple",
   "license": "MIT",
   "devDependencies": {
