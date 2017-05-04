@@ -1539,7 +1539,11 @@ var smartPhoto = function (_aTemplate) {
       util.triggerEvent(currentItem.element, 'click');
     }
 
-    _this._getEachImageSize();
+    _this.update();
+    _this._getEachImageSize().then(function () {
+      var photo = _this._getElementByClass(_this.data.classNames.smartPhoto);
+      util.triggerEvent(photo, 'loadall');
+    });
 
     setInterval(function () {
       _this._doAnim();
@@ -1602,6 +1606,16 @@ var smartPhoto = function (_aTemplate) {
   }
 
   _createClass(smartPhoto, [{
+    key: 'on',
+    value: function on(event, fn) {
+      var _this2 = this;
+
+      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
+      photo.addEventListener(event, function (e) {
+        fn.call(_this2, e);
+      });
+    }
+  }, {
     key: 'increment',
     value: function increment(item) {
       return item + 1;
@@ -1647,17 +1661,17 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_resetTranslate',
     value: function _resetTranslate() {
-      var _this2 = this;
+      var _this3 = this;
 
       var items = this.groupItems();
       items.forEach(function (item, index) {
-        item.translateX = _this2._getWindowWidth() * index;
+        item.translateX = _this3._getWindowWidth() * index;
       });
     }
   }, {
     key: 'addNewItem',
     value: function addNewItem(element) {
-      var _this3 = this;
+      var _this4 = this;
 
       var groupId = element.getAttribute('data-group') || 'nogroup';
       var group = this.data.group;
@@ -1690,21 +1704,21 @@ var smartPhoto = function (_aTemplate) {
       element.setAttribute('data-index', index);
       element.addEventListener('click', function (event) {
         event.preventDefault();
-        _this3.data.currentGroup = element.getAttribute('data-group');
-        _this3.data.currentIndex = parseInt(element.getAttribute('data-index'), 10);
-        _this3._setHashByCurrentIndex();
-        var currentItem = _this3._getSelectedItem();
+        _this4.data.currentGroup = element.getAttribute('data-group');
+        _this4.data.currentIndex = parseInt(element.getAttribute('data-index'), 10);
+        _this4._setHashByCurrentIndex();
+        var currentItem = _this4._getSelectedItem();
         if (currentItem.loaded) {
-          _this3._initPhoto();
-          _this3.addAppearEffect(element);
-          _this3.clicked = true;
-          _this3.update();
+          _this4._initPhoto();
+          _this4.addAppearEffect(element);
+          _this4.clicked = true;
+          _this4.update();
         } else {
-          _this3._loadItem(currentItem).then(function () {
-            _this3.data.appear = true;
-            _this3.clicked = true;
-            _this3._initPhoto();
-            _this3.update();
+          _this4._loadItem(currentItem).then(function () {
+            _this4.data.appear = true;
+            _this4.clicked = true;
+            _this4._initPhoto();
+            _this4.update();
           });
         }
       });
@@ -1728,12 +1742,12 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'onUpdated',
     value: function onUpdated() {
-      var _this4 = this;
+      var _this5 = this;
 
       if (this.data.appearEffect && this.data.appearEffect.once) {
         this.data.appearEffect.once = false;
         this.execEffect().then(function () {
-          _this4.replaceEffectWithImg();
+          _this5.replaceEffectWithImg();
         });
       }
       if (this.clicked) {
@@ -1760,12 +1774,12 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'replaceEffectWithImg',
     value: function replaceEffectWithImg() {
-      var _this5 = this;
+      var _this6 = this;
 
       setTimeout(function () {
-        _this5.data.appearEffect = null;
-        _this5.data.appear = true;
-        _this5.update();
+        _this6.data.appearEffect = null;
+        _this6.data.appear = true;
+        _this6.update();
       }, 300);
     }
   }, {
@@ -1806,7 +1820,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'hidePhoto',
     value: function hidePhoto() {
-      var _this6 = this;
+      var _this7 = this;
 
       this.data.hide = true;
       this.data.appear = false;
@@ -1821,19 +1835,21 @@ var smartPhoto = function (_aTemplate) {
       }
       window.scroll(scrollX, scrollY);
       this._doHideEffect().then(function () {
-        _this6.update();
+        var photo = _this7._getElementByClass(_this7.data.classNames.smartPhoto);
+        util.triggerEvent(photo, 'close');
+        _this7.update();
       });
     }
   }, {
     key: '_doHideEffect',
     value: function _doHideEffect() {
-      var _this7 = this;
+      var _this8 = this;
 
       return new Promise(function (resolve) {
-        var classNames = _this7.data.classNames;
-        var photo = _this7._getElementByClass(classNames.smartPhoto);
-        var img = _this7._getElementByQuery('.current .' + classNames.smartPhotoImg);
-        var height = _this7._getWindowHeight();
+        var classNames = _this8.data.classNames;
+        var photo = _this8._getElementByClass(classNames.smartPhoto);
+        var img = _this8._getElementByQuery('.current .' + classNames.smartPhotoImg);
+        var height = _this8._getWindowHeight();
         var handler = function handler() {
           photo.removeEventListener('transitionend', handler, true);
           resolve();
@@ -1877,15 +1893,15 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_setPosByCurrentIndex',
     value: function _setPosByCurrentIndex() {
-      var _this8 = this;
+      var _this9 = this;
 
       var items = this.groupItems();
       var moveX = -1 * items[this.data.currentIndex].translateX;
       this.pos.x = moveX;
       setTimeout(function () {
-        _this8.data.translateX = moveX;
-        _this8.data.translateY = 0;
-        _this8._listUpdate();
+        _this9.data.translateX = moveX;
+        _this9.data.translateY = 0;
+        _this9._listUpdate();
       }, 1);
     }
   }, {
@@ -1968,7 +1984,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_slideList',
     value: function _slideList() {
-      var _this9 = this;
+      var _this10 = this;
 
       this.data.scaleSize = 1;
       this.isBeingZoomed = false;
@@ -1981,9 +1997,11 @@ var smartPhoto = function (_aTemplate) {
       this._setHashByCurrentIndex();
       this._setSizeByScreen();
       setTimeout(function () {
-        _this9.data.onMoveClass = false;
-        _this9.setArrow();
-        _this9.update();
+        var photo = _this10._getElementByClass(_this10.data.classNames.smartPhoto);
+        util.triggerEvent(photo, 'change');
+        _this10.data.onMoveClass = false;
+        _this10.setArrow();
+        _this10.update();
       }, 200);
     }
   }, {
@@ -2024,11 +2042,12 @@ var smartPhoto = function (_aTemplate) {
         return;
       }
       this.isBeingZoomed = false;
-
       if (this.data.scale) {
         this.beforePhotoDrag();
         return;
       }
+      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
+      util.triggerEvent(photo, 'swipestart');
       var pos = this._getTouchPos();
       this.isSwipable = true;
       this.dragStart = true;
@@ -2068,6 +2087,8 @@ var smartPhoto = function (_aTemplate) {
         return;
       }
       this.tapSecond = tapSecond;
+      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
+      util.triggerEvent(photo, 'swipeend');
       if (this.moveDir === 'horizontal') {
         if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
           this.data.currentIndex -= 1;
@@ -2130,7 +2151,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'zoomPhoto',
     value: function zoomPhoto() {
-      var _this10 = this;
+      var _this11 = this;
 
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
@@ -2138,8 +2159,10 @@ var smartPhoto = function (_aTemplate) {
       this.data.photoPosY = 0;
       this._photoUpdate();
       setTimeout(function () {
-        _this10.data.scale = true;
-        _this10._photoUpdate();
+        _this11.data.scale = true;
+        var photo = _this11._getElementByClass(_this11.data.classNames.smartPhoto);
+        util.triggerEvent(photo, 'zoomin');
+        _this11._photoUpdate();
       }, 300);
     }
   }, {
@@ -2151,6 +2174,8 @@ var smartPhoto = function (_aTemplate) {
       this.data.scale = false;
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
+      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
+      util.triggerEvent(photo, 'zoomout');
       this._photoUpdate();
     }
   }, {
@@ -2241,6 +2266,8 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'beforeGesture',
     value: function beforeGesture() {
+      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
+      util.triggerEvent(photo, 'gesturestart');
       var pos = this._getGesturePos(this.e);
       var distance = this._getDistance(pos[0], pos[1]);
       this.isBeingZoomed = true;
@@ -2288,6 +2315,8 @@ var smartPhoto = function (_aTemplate) {
       this.data.scale = false;
       this.data.scaleSize = 1;
       this.data.hideUi = false;
+      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
+      util.triggerEvent(photo, 'gestureend');
       this._photoUpdate();
     }
   }, {
@@ -2347,7 +2376,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_registerElasticForce',
     value: function _registerElasticForce(x, y) {
-      var _this11 = this;
+      var _this12 = this;
 
       var item = this._getSelectedItem();
       var bound = this._makeBound(item);
@@ -2364,8 +2393,8 @@ var smartPhoto = function (_aTemplate) {
       }
       this._photoUpdate();
       setTimeout(function () {
-        _this11.data.elastic = false;
-        _this11._photoUpdate();
+        _this12.data.elastic = false;
+        _this12._photoUpdate();
       }, 300);
     }
   }, {

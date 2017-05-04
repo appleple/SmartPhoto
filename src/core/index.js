@@ -89,7 +89,11 @@ class smartPhoto extends aTemplate {
       util.triggerEvent(currentItem.element, 'click');
     }
 
-    this._getEachImageSize();
+    this.update();
+    this._getEachImageSize().then(()=> {
+      const photo = this._getElementByClass(this.data.classNames.smartPhoto);
+      util.triggerEvent(photo, 'loadall');
+    });
 
     setInterval(() => {
       this._doAnim();
@@ -147,6 +151,13 @@ class smartPhoto extends aTemplate {
           this._calcGravity(-e.gamma, -e.beta);
         }
       }
+    });
+  }
+
+  on(event, fn) {
+    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
+    photo.addEventListener(event, (e) => {
+      fn.call(this,e);
     });
   }
 
@@ -347,6 +358,8 @@ class smartPhoto extends aTemplate {
     }
     window.scroll(scrollX, scrollY);
     this._doHideEffect().then(() => {
+      const photo = this._getElementByClass(this.data.classNames.smartPhoto);
+      util.triggerEvent(photo, 'close');
       this.update();
     });
   }
@@ -492,6 +505,8 @@ class smartPhoto extends aTemplate {
     this._setHashByCurrentIndex();
     this._setSizeByScreen();
     setTimeout(() => {
+      const photo = this._getElementByClass(this.data.classNames.smartPhoto);
+      util.triggerEvent(photo, 'change');
       this.data.onMoveClass = false;
       this.setArrow();
       this.update();
@@ -532,11 +547,12 @@ class smartPhoto extends aTemplate {
       return;
     }
     this.isBeingZoomed = false;
-
     if (this.data.scale) {
       this.beforePhotoDrag();
       return;
     }
+    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
+    util.triggerEvent(photo, 'swipestart');
     const pos = this._getTouchPos();
     this.isSwipable = true;
     this.dragStart = true;
@@ -575,6 +591,8 @@ class smartPhoto extends aTemplate {
       return;
     }
     this.tapSecond = tapSecond;
+    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
+    util.triggerEvent(photo, 'swipeend');
     if (this.moveDir === 'horizontal') {
       if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
         this.data.currentIndex -= 1;
@@ -642,6 +660,8 @@ class smartPhoto extends aTemplate {
     this._photoUpdate();
     setTimeout(() => {
       this.data.scale = true;
+      const photo = this._getElementByClass(this.data.classNames.smartPhoto);
+      util.triggerEvent(photo, 'zoomin');
       this._photoUpdate();
     }, 300);
   }
@@ -653,6 +673,8 @@ class smartPhoto extends aTemplate {
     this.data.scale = false;
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
+    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
+    util.triggerEvent(photo, 'zoomout');
     this._photoUpdate();
   }
 
@@ -739,6 +761,8 @@ class smartPhoto extends aTemplate {
   }
 
   beforeGesture() {
+    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
+    util.triggerEvent(photo, 'gesturestart');
     const pos = this._getGesturePos(this.e);
     const distance = this._getDistance(pos[0], pos[1]);
     this.isBeingZoomed = true;
@@ -784,6 +808,8 @@ class smartPhoto extends aTemplate {
     this.data.scale = false;
     this.data.scaleSize = 1;
     this.data.hideUi = false;
+    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
+    util.triggerEvent(photo, 'gestureend');
     this._photoUpdate();
   }
 

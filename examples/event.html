@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="../css/smartphoto.min.css">
+	<title>smart-photo.js</title>
+	<link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+	<div class="wrapper">
+		<h1 class="title">smartphoto.js</h1>
+		<div class="masonry">
+			<div class="brick">
+				<a href="./assets/large-lion.jpg" class="js-img-viwer" data-caption="lion" data-id="lion">
+					<img src="./assets/lion.jpg" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-rakuda.jpg" class="js-img-viwer" data-caption="camel" data-id="camel">
+					<img src="./assets/rakuda.jpg" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-kaba.jpg" class="js-img-viwer" data-caption="hippopotamus" data-id="hippopotamus">
+					<img src="./assets/kaba.jpg" width="360" />
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-koara.jpg" class="js-img-viwer" data-caption="koala" data-id="koala">
+					<img src="./assets/koara.jpg" width="360" />
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-kuma.jpg" class="js-img-viwer" data-caption="bear" data-id="bear">
+					<img src="./assets/kuma.jpg" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-sai.jpg" class="js-img-viwer" data-caption="rhinoceros" data-id="rhinoceros">
+					<img src="./assets/sai.jpg" width="360"/>
+				</a>
+			</div>
+		</div>
+	</div>
+	<script src="../js/smartphoto.js?v=1"></script>
+	<script>
+	document.addEventListener('DOMContentLoaded',function(){
+		var photo = new smartPhoto(".js-img-viwer");
+        photo.on('change',function(){
+            console.log('change');
+        });
+        photo.on('close',function(){
+            console.log('close');
+        });
+        photo.on('swipestart',function(){
+            console.log('swipestart');
+        });
+        photo.on('swipeend',function(){
+            console.log('swipeend');
+        });
+        photo.on('loadall',function(){
+            console.log('loadall');
+        });
+	});
+	</script>
+</body>
+</html>
