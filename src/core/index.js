@@ -90,7 +90,7 @@ class smartPhoto extends aTemplate {
     }
 
     this.update();
-    this._getEachImageSize().then(()=> {
+    this._getEachImageSize().then(() => {
       const photo = this._getElementByClass(this.data.classNames.smartPhoto);
       util.triggerEvent(photo, 'loadall');
     });
@@ -157,7 +157,7 @@ class smartPhoto extends aTemplate {
   on(event, fn) {
     const photo = this._getElementByClass(this.data.classNames.smartPhoto);
     photo.addEventListener(event, (e) => {
-      fn.call(this,e);
+      fn.call(this, e);
     });
   }
 
