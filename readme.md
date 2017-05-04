@@ -133,6 +133,31 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 ```
 
+### Event
+
+```js
+// when photo is changed
+photo.on('change',function(){
+    console.log('change');
+});
+// when the modal is closed
+photo.on('close',function(){
+    console.log('close');
+});
+// when swipe start
+photo.on('swipestart',function(){
+    console.log('swipestart');
+});
+// when swipe end
+photo.on('swipeend',function(){
+    console.log('swipeend');
+});
+// when all images are loaded
+photo.on('loadall',function(){
+    console.log('loadall');
+});
+```
+
 ### SCSS
 
 <table>
