@@ -55,6 +55,7 @@ class smartPhoto extends aTemplate {
 
     this.data = util.extend({}, defaults, settings);
     this.data.currentIndex = 0;
+    this.data.oldIndex = 0;
     this.data.hide = true;
     this.data.group = {};
     this.data.scaleSize = 1;
@@ -91,8 +92,7 @@ class smartPhoto extends aTemplate {
 
     this.update();
     this._getEachImageSize().then(() => {
-      const photo = this._getElementByClass(this.data.classNames.smartPhoto);
-      util.triggerEvent(photo, 'loadall');
+      this._fireEvent('loadall');
     });
 
     setInterval(() => {
@@ -228,7 +228,7 @@ class smartPhoto extends aTemplate {
       height: 50,
       id: element.getAttribute('data-id') || index,
       loaded: false,
-      element
+      element: element
     };
     group[groupId].push(item);
     this.data.currentGroup = groupId;
@@ -248,12 +248,14 @@ class smartPhoto extends aTemplate {
         this.addAppearEffect(element);
         this.clicked = true;
         this.update();
+        this._fireEvent('open');
       } else {
         this._loadItem(currentItem).then(() => {
           this.data.appear = true;
           this.clicked = true;
           this._initPhoto();
           this.update();
+          this._fireEvent('open');
         });
       }
     });
@@ -358,9 +360,8 @@ class smartPhoto extends aTemplate {
     }
     window.scroll(scrollX, scrollY);
     this._doHideEffect().then(() => {
-      const photo = this._getElementByClass(this.data.classNames.smartPhoto);
-      util.triggerEvent(photo, 'close');
       this.update();
+      this._fireEvent('close');
     });
   }
 
@@ -505,11 +506,13 @@ class smartPhoto extends aTemplate {
     this._setHashByCurrentIndex();
     this._setSizeByScreen();
     setTimeout(() => {
-      const photo = this._getElementByClass(this.data.classNames.smartPhoto);
-      util.triggerEvent(photo, 'change');
       this.data.onMoveClass = false;
       this.setArrow();
       this.update();
+      if(this.data.oldIndex !== this.data.currentIndex) {
+        this._fireEvent('change');
+      }
+      this.data.oldIndex = this.data.currentIndex;
     }, 200);
   }
 
@@ -551,8 +554,6 @@ class smartPhoto extends aTemplate {
       this.beforePhotoDrag();
       return;
     }
-    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
-    util.triggerEvent(photo, 'swipestart');
     const pos = this._getTouchPos();
     this.isSwipable = true;
     this.dragStart = true;
@@ -591,8 +592,7 @@ class smartPhoto extends aTemplate {
       return;
     }
     this.tapSecond = tapSecond;
-    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
-    util.triggerEvent(photo, 'swipeend');
+    this._fireEvent('swipeend');
     if (this.moveDir === 'horizontal') {
       if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
         this.data.currentIndex -= 1;
@@ -633,6 +633,7 @@ class smartPhoto extends aTemplate {
     const y = pos.y - this.firstPos.y;
 
     if (this.dragStart) {
+      this._fireEvent('swipestart');
       this.dragStart = false;
       if (Math.abs(x) > Math.abs(y)) {
         this.moveDir = 'horizontal';
@@ -660,9 +661,8 @@ class smartPhoto extends aTemplate {
     this._photoUpdate();
     setTimeout(() => {
       this.data.scale = true;
-      const photo = this._getElementByClass(this.data.classNames.smartPhoto);
-      util.triggerEvent(photo, 'zoomin');
       this._photoUpdate();
+      this._fireEvent('zoomin');
     }, 300);
   }
 
@@ -673,9 +673,8 @@ class smartPhoto extends aTemplate {
     this.data.scale = false;
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
-    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
-    util.triggerEvent(photo, 'zoomout');
     this._photoUpdate();
+    this._fireEvent('zoomout');
   }
 
   beforePhotoDrag() {
@@ -761,8 +760,7 @@ class smartPhoto extends aTemplate {
   }
 
   beforeGesture() {
-    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
-    util.triggerEvent(photo, 'gesturestart');
+    this._fireEvent('gesturestart');
     const pos = this._getGesturePos(this.e);
     const distance = this._getDistance(pos[0], pos[1]);
     this.isBeingZoomed = true;
@@ -808,8 +806,7 @@ class smartPhoto extends aTemplate {
     this.data.scale = false;
     this.data.scaleSize = 1;
     this.data.hideUi = false;
-    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
-    util.triggerEvent(photo, 'gestureend');
+    this._fireEvent('gestureend');
     this._photoUpdate();
   }
 
@@ -1002,6 +999,11 @@ class smartPhoto extends aTemplate {
     } else {
       util.removeClass(list, classNames.smartPhotoListOnMove);
     }
+  }
+
+  _fireEvent(eventName) {
+    const photo = this._getElementByClass(this.data.classNames.smartPhoto);
+    util.triggerEvent(photo, eventName);
   }
 
   _doAnim() {

@@ -1505,6 +1505,7 @@ var smartPhoto = function (_aTemplate) {
 
     _this.data = util.extend({}, defaults, settings);
     _this.data.currentIndex = 0;
+    _this.data.oldIndex = 0;
     _this.data.hide = true;
     _this.data.group = {};
     _this.data.scaleSize = 1;
@@ -1541,8 +1542,7 @@ var smartPhoto = function (_aTemplate) {
 
     _this.update();
     _this._getEachImageSize().then(function () {
-      var photo = _this._getElementByClass(_this.data.classNames.smartPhoto);
-      util.triggerEvent(photo, 'loadall');
+      _this._fireEvent('loadall');
     });
 
     setInterval(function () {
@@ -1713,12 +1713,14 @@ var smartPhoto = function (_aTemplate) {
           _this4.addAppearEffect(element);
           _this4.clicked = true;
           _this4.update();
+          _this4._fireEvent('open');
         } else {
           _this4._loadItem(currentItem).then(function () {
             _this4.data.appear = true;
             _this4.clicked = true;
             _this4._initPhoto();
             _this4.update();
+            _this4._fireEvent('open');
           });
         }
       });
@@ -1835,9 +1837,8 @@ var smartPhoto = function (_aTemplate) {
       }
       window.scroll(scrollX, scrollY);
       this._doHideEffect().then(function () {
-        var photo = _this7._getElementByClass(_this7.data.classNames.smartPhoto);
-        util.triggerEvent(photo, 'close');
         _this7.update();
+        _this7._fireEvent('close');
       });
     }
   }, {
@@ -1997,11 +1998,13 @@ var smartPhoto = function (_aTemplate) {
       this._setHashByCurrentIndex();
       this._setSizeByScreen();
       setTimeout(function () {
-        var photo = _this10._getElementByClass(_this10.data.classNames.smartPhoto);
-        util.triggerEvent(photo, 'change');
         _this10.data.onMoveClass = false;
         _this10.setArrow();
         _this10.update();
+        if (_this10.data.oldIndex !== _this10.data.currentIndex) {
+          _this10._fireEvent('change');
+        }
+        _this10.data.oldIndex = _this10.data.currentIndex;
       }, 200);
     }
   }, {
@@ -2046,8 +2049,6 @@ var smartPhoto = function (_aTemplate) {
         this.beforePhotoDrag();
         return;
       }
-      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
-      util.triggerEvent(photo, 'swipestart');
       var pos = this._getTouchPos();
       this.isSwipable = true;
       this.dragStart = true;
@@ -2087,8 +2088,7 @@ var smartPhoto = function (_aTemplate) {
         return;
       }
       this.tapSecond = tapSecond;
-      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
-      util.triggerEvent(photo, 'swipeend');
+      this._fireEvent('swipeend');
       if (this.moveDir === 'horizontal') {
         if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
           this.data.currentIndex -= 1;
@@ -2130,6 +2130,7 @@ var smartPhoto = function (_aTemplate) {
       var y = pos.y - this.firstPos.y;
 
       if (this.dragStart) {
+        this._fireEvent('swipestart');
         this.dragStart = false;
         if (Math.abs(x) > Math.abs(y)) {
           this.moveDir = 'horizontal';
@@ -2160,9 +2161,8 @@ var smartPhoto = function (_aTemplate) {
       this._photoUpdate();
       setTimeout(function () {
         _this11.data.scale = true;
-        var photo = _this11._getElementByClass(_this11.data.classNames.smartPhoto);
-        util.triggerEvent(photo, 'zoomin');
         _this11._photoUpdate();
+        _this11._fireEvent('zoomin');
       }, 300);
     }
   }, {
@@ -2174,9 +2174,8 @@ var smartPhoto = function (_aTemplate) {
       this.data.scale = false;
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
-      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
-      util.triggerEvent(photo, 'zoomout');
       this._photoUpdate();
+      this._fireEvent('zoomout');
     }
   }, {
     key: 'beforePhotoDrag',
@@ -2266,8 +2265,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'beforeGesture',
     value: function beforeGesture() {
-      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
-      util.triggerEvent(photo, 'gesturestart');
+      this._fireEvent('gesturestart');
       var pos = this._getGesturePos(this.e);
       var distance = this._getDistance(pos[0], pos[1]);
       this.isBeingZoomed = true;
@@ -2315,8 +2313,7 @@ var smartPhoto = function (_aTemplate) {
       this.data.scale = false;
       this.data.scaleSize = 1;
       this.data.hideUi = false;
-      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
-      util.triggerEvent(photo, 'gestureend');
+      this._fireEvent('gestureend');
       this._photoUpdate();
     }
   }, {
@@ -2526,6 +2523,12 @@ var smartPhoto = function (_aTemplate) {
       } else {
         util.removeClass(list, classNames.smartPhotoListOnMove);
       }
+    }
+  }, {
+    key: '_fireEvent',
+    value: function _fireEvent(eventName) {
+      var photo = this._getElementByClass(this.data.classNames.smartPhoto);
+      util.triggerEvent(photo, eventName);
     }
   }, {
     key: '_doAnim',
