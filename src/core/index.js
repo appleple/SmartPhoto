@@ -228,7 +228,7 @@ class smartPhoto extends aTemplate {
       height: 50,
       id: element.getAttribute('data-id') || index,
       loaded: false,
-      element: element
+      element
     };
     group[groupId].push(item);
     this.data.currentGroup = groupId;
@@ -509,7 +509,7 @@ class smartPhoto extends aTemplate {
       this.data.onMoveClass = false;
       this.setArrow();
       this.update();
-      if(this.data.oldIndex !== this.data.currentIndex) {
+      if (this.data.oldIndex !== this.data.currentIndex) {
         this._fireEvent('change');
       }
       this.data.oldIndex = this.data.currentIndex;
