@@ -136,25 +136,37 @@ document.addEventListener('DOMContentLoaded',function(){
 ### Event
 
 ```js
-// when photo is changed
-photo.on('change',function(){
-    console.log('change');
+// when the modal opened
+photo.on('open',function(){
+    console.log('open');
 });
-// when the modal is closed
+// when the modal closed
 photo.on('close',function(){
     console.log('close');
-});
-// when swipe start
-photo.on('swipestart',function(){
-    console.log('swipestart');
-});
-// when swipe end
-photo.on('swipeend',function(){
-    console.log('swipeend');
 });
 // when all images are loaded
 photo.on('loadall',function(){
     console.log('loadall');
+});
+// when photo is changed
+photo.on('change',function(){
+    console.log('change');
+});
+// when swipe started
+photo.on('swipestart',function(){
+    console.log('swipestart');
+});
+// when swipe ended
+photo.on('swipeend',function(){
+    console.log('swipeend');
+});
+// when zoomed in
+photo.on('zoomin',function(){
+    console.log('zoomin');
+});
+// when zoomed out
+photo.on('zoomout',function(){
+    console.log('zoomout');
 });
 ```
 
