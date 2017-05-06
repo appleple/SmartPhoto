@@ -1,0 +1,15 @@
+machine:
+  node:
+    version: 6.9.2
+  post:
+general:
+  branches:
+    ignore:
+      - gh-pages
+dependencies:
+  override:
+    - "npm install extract-zip@1.6.0"
+    - "npm install"
+test:
+  override:
+    - "npm run test"
