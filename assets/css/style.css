@@ -265,10 +265,7 @@ a:hover { text-decoration: underline; }
 @media screen and (max-width: 42em) { .btn { display: block; width: 100%; padding: 0.75rem; font-size: 0.9rem; }
   .btn + .btn { margin-top: 1rem; margin-left: 0; } }
 
-.page-header { color: #fff; background-color: #c40f32; }
-@media screen and (min-width: 64em) { .page-header { padding: 8rem 0 5rem 0; } }
-@media screen and (min-width: 42em) and (max-width: 64em) { .page-header { padding: 3rem 4rem; } }
-@media screen and (max-width: 42em) { .page-header { padding: 2rem 1rem; } }
+.page-header { color: #fff; background-color: #c40f32; padding: 7rem 0 5rem 0;}
 
 .project-name { margin-top: 0; margin-bottom: 0.1rem; }
 @media screen and (min-width: 64em) { .project-name { font-size: 3.25rem; } }
@@ -327,6 +324,7 @@ a:hover { text-decoration: underline; }
 .container {
     max-width: 980px;
     margin: 0 auto;
+    padding: 0 15px;
 }
 
 .page-header-brand{
@@ -366,7 +364,7 @@ a:hover { text-decoration: underline; }
 }
 
 .main-container {
-  padding: 50px 0;
+  padding: 50px 15px;
 }
 
 .page-header-brand small {
@@ -399,4 +397,13 @@ a:hover { text-decoration: underline; }
   font-size: 30px;
   width: 60%;
   padding: 10px;
+}
+
+@media screen and (max-width: 42em){
+  .row{
+    display: block;
+  }
+  .col-6{
+    width: auto;
+  }
 }
