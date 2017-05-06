@@ -280,9 +280,11 @@ a:hover { text-decoration: underline; }
 @media screen and (min-width: 42em) and (max-width: 64em) { .project-tagline { font-size: 1.15rem; } }
 @media screen and (max-width: 42em) { .project-tagline { font-size: 1rem; } }
 
-
+.main-container {
+  font-size: 120%;
+}
 .main-container img { max-width: 100%; }
-.main-container h1, .main-container h2, .main-container h3, .main-container h4, .main-container h5, .main-container h6 { margin-top: 2rem; margin-bottom: 1rem; font-weight: normal; color: #ca004f; }
+.main-container h1, .main-container h2, .main-container h3, .main-container h4, .main-container h5, .main-container h6 { margin-top: 2rem; margin-bottom: 1rem; font-weight: normal; color: #ca004f; text-align: center;}
 .main-container p { margin-bottom: 1em; }
 .main-container code { padding: 2px 4px; font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.9rem; color: #567482; background-color: #f3f6fa; border-radius: 0.3rem; }
 .main-container pre { padding: 0.8rem; margin-top: 0; margin-bottom: 1rem; font: 1rem Consolas, "Liberation Mono", Menlo, Courier, monospace; color: #567482; word-wrap: normal; background-color: #f3f6fa; border: solid 1px #dce6f0; border-radius: 0.3rem; }
@@ -365,4 +367,10 @@ a:hover { text-decoration: underline; }
 
 .main-container {
   padding: 50px 0;
+}
+
+.page-header-brand small {
+  display: inline-block;
+  margin-left: 8px;
+  opacity: .7;
 }
