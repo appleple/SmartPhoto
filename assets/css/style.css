@@ -374,3 +374,29 @@ a:hover { text-decoration: underline; }
   margin-left: 8px;
   opacity: .7;
 }
+
+.feature-list{
+  display: table;
+}
+
+.feature-list li {
+  display: table-row;
+}
+
+.feature-list i {
+  display: table-cell;
+  text-align: center;
+  font-size: 100px;
+  color: #ca004f;
+  vertical-align: middle;
+  width: 40%;
+  padding: 20px;
+}
+
+.feature-list span {
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 30px;
+  width: 60%;
+  padding: 10px;
+}
