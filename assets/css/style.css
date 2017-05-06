@@ -303,14 +303,19 @@ a:hover { text-decoration: underline; }
 .main-container dl dd { padding: 0; margin-bottom: 1rem; }
 .main-container hr { height: 2px; padding: 0; margin: 1rem 0; background-color: #eff0f1; border: 0; }
 
-.site-footer { padding-top: 2rem; margin-top: 2rem; border-top: solid 1px #eff0f1; }
+.site-footer { padding-top: 2rem; padding-bottom: 2rem; margin-top: 2rem; border-top: solid 1px #eff0f1; background-color: #c40f32; color: #FFF;}
 @media screen and (min-width: 64em) { .site-footer { font-size: 1rem; } }
 @media screen and (min-width: 42em) and (max-width: 64em) { .site-footer { font-size: 1rem; } }
 @media screen and (max-width: 42em) { .site-footer { font-size: 0.9rem; } }
 
 .site-footer-owner { display: block; font-weight: bold; }
 
-.site-footer-credits { color: #819198; }
+.site-footer-credits { color: #FFF; }
+
+.site-footer a{
+  color: #FFF;
+  text-decoration: underline;
+}
 
 
 .page-header-top {
@@ -319,6 +324,7 @@ a:hover { text-decoration: underline; }
   left: 0;
   width: 100%;
   text-align: left;
+  background-color: #c40f32;
 }
 
 .container {
@@ -332,6 +338,7 @@ a:hover { text-decoration: underline; }
   margin-bottom: 15px;
   display: inline-block;
   font-size: 24px;
+  color: #FFF;
 }
 
 .page-header-navi {
@@ -360,6 +367,62 @@ a:hover { text-decoration: underline; }
 .col-4{
   width: 33.3333333%;
 }
+.col-9 {
+  width: 75%;
+}
+
+.col-3{
+  width: 25%;
+}
+
+.sidelist {
+    list-style-type: none;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin: 0 0 20px;
+    font-size: 14px
+}
+
+.sidelist-item {
+    display: block;
+    padding: 5px 0
+}
+
+.sidelist-item:hover,.sidelist-item:link,.sidelist-item:visited {
+    color: #888;
+    text-decoration: none
+}
+
+.sidelist-item:hover {
+    color: #000
+}
+
+.active>.sidelist-item {
+    color: #000;
+    font-weight: 700
+}
+
+.main-container .sidelist ul {
+    border-left: 2px solid #c42d11;
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 14px
+}
+
+.main-container .sidelist ul .sidelist-item {
+    padding: 5px 0 5px 20px
+}
+
+.main-container .sidelist-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #c42d11;
+    margin-top: 0;
+    text-align: left;
+    margin-bottom: 20px
+}
 
 .logo{
   display: block;
@@ -378,17 +441,23 @@ a:hover { text-decoration: underline; }
 }
 
 .feature-box{
-  padding: 10px;
+  padding: 0 10px 20px 10px;
 }
 
 .feature-box-title{
-  font-size: 30px;
+  font-size: 24px;
+  margin-top: 0px !important;
   text-align: left !important;
   color: #ca004f !important;
 }
 
 .feature-box-title i{
   margin-right: 10px;
+}
+
+.demo-list{
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 @media screen and (max-width: 42em){
@@ -402,5 +471,11 @@ a:hover { text-decoration: underline; }
   .project-name,
   .logo{
     display: none;
+  }
+  .page-header {
+        padding: 7rem 0 1rem 0;
+  }
+  .main-container {
+    padding: 15px;
   }
 }
