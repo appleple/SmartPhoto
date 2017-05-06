@@ -383,6 +383,7 @@ a:hover { text-decoration: underline; }
 
 .feature-box-title{
   font-size: 30px;
+  text-align: left !important;
   color: #ca004f !important;
 }
 
@@ -394,7 +395,12 @@ a:hover { text-decoration: underline; }
   .row{
     display: block;
   }
-  .col-6{
+  .col-6,
+  .col-4{
     width: auto;
+  }
+  .project-name,
+  .logo{
+    display: none;
   }
 }
