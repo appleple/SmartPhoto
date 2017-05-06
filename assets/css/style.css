@@ -460,6 +460,8 @@ a:hover { text-decoration: underline; }
   white-space: nowrap;
 }
 
+.doc-container h1, .doc-container h2, .doc-container h3, .doc-container h4, .doc-container h5, .doc-container h6 { margin-top: 0; margin-bottom: 1rem; font-weight: normal; color: #555555; text-align: left;}
+
 @media screen and (max-width: 42em){
   .row{
     display: block;
