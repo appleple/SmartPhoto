@@ -105,23 +105,78 @@
                     </tr>
                 </table>
                 <h3>Methods</h3>
-                <p>By making an instance like below, you can execute some methods via the instance</p>
+                <p>By making an instance like below, you can execute some methods through the instance</p>
                 <pre><code class="js">var mySmartPhoto = new smartPhoto(".js-smartPhoto");</code></pre>
+                <p>Zoom in</p>
                 <pre><code class="js">mySmartPhoto.zoomPhoto();</code></pre>
 
-                画像を拡大表示します
+                <p>Zoom out</p>
+                <pre><code class="js">mySmartPhoto.zoomOutPhoto();</code></pre>
 
-                mySmartPhoto.zoomOutPhoto();
+                <p>slide to the 6th image</p>
+                <pre><code class="js">mySmartPhoto.gotoSlide(6);</code></pre>
 
-                画像の拡大表示を終了します。
-
-                mySmartPhoto.gotoSlide(1);
-
-                画像をグループ表示している際に、そのグループの1番目の画像に移動します。
-
-                mySmartPhoto.addNewItem(element);
-
-                ギャラリーに新たな画像を登録します。
+                <p>add new image to your gallery</p>
+                <pre><code class="js">mySmartPhoto.addNewItem(element);</code></pre>
+                <h3>Events</h3>
+                <p>when the modal opened</p>
+<pre><code class="js">mySmartPhoto.on('open',function(){
+    console.log('open');
+});</code></pre>
+                <p>when the modal closed</p>
+<pre><code class="js">photo.on('close',function(){
+    console.log('close');
+});</code></pre>
+                <p>when all images are loaded</p>
+<pre><code class="js">photo.on('loadall',function(){
+    console.log('loadall');
+});</code></pre>
+                <p>when photo is changed</p>
+<pre><code class="js">photo.on('change',function(){
+    console.log('change');
+});</code></pre>
+                <p>when swipe started</p>
+<pre><code class="js">photo.on('swipestart',function(){
+    console.log('swipestart');
+});</code></pre>
+                <p>when swipe ended</p>
+<pre><code class="js">photo.on('swipeend',function(){
+    console.log('swipeend');
+});</code></pre>
+                <p>when zoomed in</p>
+<pre><code class="js">photo.on('zoomin',function(){
+    console.log('zoomin');
+});</code></pre>
+                <p>when zoomed out</p>
+<pre><code class="js">photo.on('zoomout',function(){
+    console.log('zoomout');
+});</code></pre>
+                <h2>Development</h2>
+                <h3>SCSS</h3>
+                <table style="margin-bottom:20px;">
+                    <tr>
+                        <th>variable</th>
+                        <th>description</th>
+                        <th>default</th>
+                    </tr>
+                    <tr>
+                        <td>$animation-speed</td>
+                        <td>animation speed when switching images</td>
+                        <td>.3s</td>
+                    </tr>
+                    <tr>
+                        <td>$backdrop-color</td>
+                        <td>backdrop color when viewing images</td>
+                        <td>rgba(0, 0, 0, 1)</td>
+                    </tr>
+                    <tr>
+                        <td>$header-color</td>
+                        <td>header color</td>
+                        <td>rgba(0, 0, 0, .2)</td>
+                    </tr>
+                </table>
+                <h3>Dependencies</h3>
+                a-template.js
             </div>
         </div>
     </div>
