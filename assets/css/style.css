@@ -486,4 +486,7 @@ a:hover { text-decoration: underline; }
   .main-container {
     padding: 15px;
   }
+  .page-header-navi{
+    float: none;
+  }
 }
