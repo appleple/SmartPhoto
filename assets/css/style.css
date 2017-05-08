@@ -467,6 +467,8 @@ a:hover { text-decoration: underline; }
     display: block;
   }
   .col-6,
+  .col-3,
+  .col-9,
   .col-4{
     width: auto;
   }

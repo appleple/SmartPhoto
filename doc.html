@@ -11,22 +11,7 @@
     <link rel="stylesheet" href="./assets/css/style.css?v=96c482a683ca3d2e8dd0d3c3a74134ace03a6260">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://unpkg.com/smartphoto@0.5.3/css/smartphoto.min.css">
-	<style>
-		.js-smartPhoto img,
-		.js-smartPhoto-fit img,
-		.js-smartPhoto-hide img{
-			height: 250px;
-			width: auto;
-		}
-		@media screen and (max-width:480px) {
-			.js-smartPhoto img,
-			.js-smartPhoto-fit img,
-			.js-smartPhoto-hide img{
-				height: 80px;
-				width: auto;
-			}
-		}
-	</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
   </head>
   <body>
     <header class="page-header-top" style="position:static">
@@ -69,8 +54,62 @@
             <div class="col-9">
                 <h2>Getting Started</h2>
                 <h3>About</h3>
+                <p>Touch enabled intuitive image viewer.<br/>and you don't have to learn a lot to use this library.</p>
+                <h3>Installation</h3>
+                <h4>Via CDN</h4>
+                <p>Link directly to SmartPhoto files on <a href="https://unpkg.com/">unpkg</a>.</p>
+                <pre><code class="html">&lt;script src="https://unpkg.com/smartphoto@0.5.7/js/smartphoto.min.js"&gt;&lt/script&gt;
+&ltlink rel="stylesheet" href="https://unpkg.com/smartphoto@0.5.7/css/smartphoto.min.css" /&gt;</code></pre>
+                <h4>via npm</h4>
+                npm
+                <pre><code class="shell">npm install smartphoto --save</code></pre>
+                or yarn
+                <pre><code class="shell">yarn add smartphoto</code></pre>
+                <h2>API</h2>
+                <h3>Options</h3>
+                <table style="margin-bottom:20px;">
+                    <tr>
+                        <th>variable</th>
+                        <th>description</th>
+                        <th>default</th>
+                    </tr>
+                    <tr>
+                        <td>arrows</td>
+                        <td>prev/next arrows</td>
+                        <td>true</td>
+                    </tr>
+                    <tr>
+                        <td>nav</td>
+                        <td>navigation images at the bottom</td>
+                        <td>true</td>
+                    </tr>
+                    <tr>
+                        <td>useOrientationApi</td>
+                        <td>use accelerometer to move images</td>
+                        <td>true</td>
+                    </tr>
+                    <tr>
+                        <td>resizeStyle</td>
+                        <td>resize images to fill/fit on the screen</td>
+                        <td>'fill'</td>
+                    </tr>
+                    <tr>
+                        <td>animationSpeed</td>
+                        <td>animation speed when switching images</td>
+                        <td>300</td>
+                    </tr>
+                    <tr>
+                        <td>forceInterval</td>
+                        <td>frequency to apply force to images</td>
+                        <td>10</td>
+                    </tr>
+                </table>
+                <h3>Methods</h3>
+
             </div>
         </div>
     </div>
   </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  <script src="./js/doc.js"></script>
 </html>
