@@ -340,6 +340,10 @@ a:hover { text-decoration: underline; }
   font-size: 24px;
   color: #FFF;
 }
+.page-header-brand a {
+  color: #FFF;
+  text-decoration: none;
+}
 
 .page-header-navi {
   display: flex;
