@@ -105,7 +105,23 @@
                     </tr>
                 </table>
                 <h3>Methods</h3>
+                <p>By making an instance like below, you can execute some methods via the instance</p>
+                <pre><code class="js">var mySmartPhoto = new smartPhoto(".js-smartPhoto");</code></pre>
+                <pre><code class="js">mySmartPhoto.zoomPhoto();</code></pre>
 
+                画像を拡大表示します
+
+                mySmartPhoto.zoomOutPhoto();
+
+                画像の拡大表示を終了します。
+
+                mySmartPhoto.gotoSlide(1);
+
+                画像をグループ表示している際に、そのグループの1番目の画像に移動します。
+
+                mySmartPhoto.addNewItem(element);
+
+                ギャラリーに新たな画像を登録します。
             </div>
         </div>
     </div>
