@@ -490,3 +490,18 @@ a:hover { text-decoration: underline; }
     float: none;
   }
 }
+
+.js-smartPhoto img,
+.js-smartPhoto-fit img,
+.js-smartPhoto-hide img{
+  height: 250px;
+  width: auto;
+}
+@media screen and (max-width:480px) {
+  .js-smartPhoto img,
+  .js-smartPhoto-fit img,
+  .js-smartPhoto-hide img{
+    height: 80px;
+    width: auto;
+  }
+}
