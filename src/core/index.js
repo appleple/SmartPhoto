@@ -228,6 +228,7 @@ class smartPhoto extends aTemplate {
       height: 50,
       id: element.getAttribute('data-id') || index,
       loaded: false,
+      processed: false,
       element
     };
     group[groupId].push(item);
@@ -251,9 +252,9 @@ class smartPhoto extends aTemplate {
         this._fireEvent('open');
       } else {
         this._loadItem(currentItem).then(() => {
-          this.data.appear = true;
-          this.clicked = true;
           this._initPhoto();
+          this.addAppearEffect(element);
+          this.clicked = true;
           this.update();
           this._fireEvent('open');
         });
@@ -280,7 +281,9 @@ class smartPhoto extends aTemplate {
     if (this.data.appearEffect && this.data.appearEffect.once) {
       this.data.appearEffect.once = false;
       this.execEffect().then(() => {
-        this.replaceEffectWithImg();
+        this.data.appearEffect = null;
+        this.data.appear = true;
+        this.update();
       });
     }
     if (this.clicked) {
@@ -292,24 +295,19 @@ class smartPhoto extends aTemplate {
   }
 
   execEffect() {
-    const appearEffect = this.data.appearEffect;
-    const classNames = this.data.classNames;
-    const effect = document.querySelector(`[data-id="${this.id}"] .${classNames.smartPhotoImgClone}`);
     return new Promise((resolve) => {
-      setTimeout(() => {
-        effect.style.transition = 'all .3s ease-out';
-        effect.style.transform = `translate(${appearEffect.afterX}px, ${appearEffect.afterY}px) scale(${appearEffect.scale})`;
+      const appearEffect = this.data.appearEffect;
+      const classNames = this.data.classNames;
+      const effect = this._getElementByClass(classNames.smartPhotoImgClone);
+      const handler = () => {
+        effect.removeEventListener('transitionend', handler, true);
         resolve();
-      }, 30);
+      }
+      effect.addEventListener('transitionend', handler, true);
+      setTimeout(()=>{
+        effect.style.transform = `translate(${appearEffect.afterX}px, ${appearEffect.afterY}px) scale(${appearEffect.scale})`;
+      },10);
     });
-  }
-
-  replaceEffectWithImg() {
-    setTimeout(() => {
-      this.data.appearEffect = null;
-      this.data.appear = true;
-      this.update();
-    }, 300);
   }
 
   addAppearEffect(element) {
@@ -484,6 +482,10 @@ class smartPhoto extends aTemplate {
     const screenY = windowY - (headerHeight + footerHeight);
     const items = this.groupItems();
     items.forEach((item) => {
+      if(!item.loaded){
+        return;
+      }
+      item.processed = true;
       item.scale = screenY / item.height;
       item.x = (item.scale - 1) / 2 * item.width + (windowX - (item.width * item.scale)) / 2;
       item.y = (item.scale - 1) / 2 * item.height + (windowY - (item.height * item.scale)) / 2;

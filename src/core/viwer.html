@@ -11,16 +11,16 @@
 				<ul style="transform:translate({translateX}px,{translateY}px);" class="\{classNames.smartPhotoList\}<!-- BEGIN onMoveClass:exist --> \{classNames.smartPhotoListOnMove\}<!-- END onMoveClass:exist -->">
 					<!-- BEGIN groupItems:loop -->
 					<li style="transform:translate({translateX}px,{translateY}px);" class="<!-- \BEGIN currentIndex:touch#{index} -->current<!-- \END currentIndex:touch#{index} -->">
-						<!-- BEGIN loaded:exist -->
+						<!-- BEGIN processed:exist -->
 						<div style="transform:translate({x}px,{y}px) scale({scale});" class="\\{classNames.smartPhotoImgWrap\\}"<!-- \BEGIN isSmartPhone:empty --> data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag"<!-- \END isSmartPhone:empty --><!-- \BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag"<!-- \END isSmartPhone:exist -->>
 							<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}[virtualPos]px,\{photoPosY\}[virtualPos]px) scale(\{scaleSize\});<!-- \END currentIndex:touch#{index} -->" src="{src}" class="\\{classNames.smartPhotoImg\\}<!-- \BEGIN scale:exist -->  \\{classNames.smartPhotoImgOnMove\\}<!-- \END scale:exist --><!-- \BEGIN elastic:exist --> \\{classNames.smartPhotoImgElasticMove\\}<!-- \END elastic:exist --><!-- \BEGIN appear:exist --> active<!-- \END appear:exist -->" ondragstart="return false;">
 						</div>
-						<!-- END loaded:exist -->
-						<!-- BEGIN loaded:empty -->
+						<!-- END processed:exist -->
+						<!-- BEGIN processed:empty -->
 						<div class="\\{classNames.smartPhotoLoaderWrap\\}">
 							<span class="\\{classNames.smartPhotoLoader\\}"></span>
 						</div>
-						<!-- END loaded:empty -->
+						<!-- END processed:empty -->
 					</li>
 					<!-- END groupItems:loop -->
 				</ul>

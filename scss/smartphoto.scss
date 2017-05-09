@@ -284,6 +284,7 @@ $header-color: rgba(0, 0, 0, .2);
   left: 0;
   width: 100%;
   opacity: 1;
+  z-index: 102;
   animation-name: smartphoto-appear;
   animation-duration: $animation-speed;
   animation-timing-function: $animation-function;
@@ -343,10 +344,13 @@ $header-color: rgba(0, 0, 0, .2);
   left: 0;
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
   white-space: nowrap;
   li {
     display: block;
     position: absolute;
+    overflow: hidden;
     top: 0;
     left: 0;
     width: 100%;
@@ -411,6 +415,7 @@ $header-color: rgba(0, 0, 0, .2);
   z-index: 100;
   top: 0;
   left: 0;
+  transition: all $animation-speed $animation-function;
 }
 
 .smartphoto-sr-only {
