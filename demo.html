@@ -57,12 +57,32 @@
 });</code></pre>
 			<h2>Orientation Api</h2>
 			<p>you can turn off the orientation api so as not to move the image when tilting the smartphone</p>
+<div class="demo-list">
+				<a href="./assets/images/large-kuma.jpg" class="js-smartPhoto2" data-caption="bear" data-id="bear" data-group="no-gravity">
+					<img src="./assets/images/kuma.jpg" />
+				</a>
+				<a href="./assets/images/large-rakuda.jpg" class="js-smartPhoto2" data-caption="camel" data-id="camel" data-group="no-gravity">
+					<img src="./assets/images/rakuda.jpg" />
+				</a>
+				<a href="./assets/images/large-lion.jpg" class="js-smartPhoto2" data-caption="lion" data-id="lion" data-group="no-gravity">
+					<img src="./assets/images/lion.jpg" />
+				</a>
+				<a href="./assets/images/large-sai.jpg" class="js-smartPhoto2" data-caption="rhinoceros" data-id="rhinoceros" data-group="no-gravity">
+					<img src="./assets/images/sai.jpg" />
+				</a>
+				<a href="./assets/images/large-kaba.jpg" class="js-smartPhoto2" data-caption="hippopotamus" data-id="hippopotamus" data-group="no-gravity">
+					<img src="./assets/images/kaba.jpg" />
+				</a>
+				<a href="./assets/images/large-koara.jpg" class="js-smartPhoto2" data-caption="koala" data-id="koala" data-group="no-gravity">
+					<img src="./assets/images/koara.jpg" />
+				</a>
+			</div>
 <pre><code class="js">document.addEventListener('DOMContentLoaded',function(){
   new smartPhoto(".js-smartPhoto",{
     useOrientationApi: false
   });
 });</code></pre>	
-		
+
 		</div>
 
       <footer class="site-footer">
@@ -79,6 +99,9 @@
 			document.addEventListener('DOMContentLoaded',function(){
 				new smartPhoto(".js-smartPhoto",{
 						resizeStyle: 'fit'
+				});
+				new smartPhoto(".js-smartPhoto2",{
+						useOrientationApi: false
 				});
 			});
 			</script>

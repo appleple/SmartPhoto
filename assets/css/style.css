@@ -493,14 +493,16 @@ a:hover { text-decoration: underline; }
 
 .js-smartPhoto img,
 .js-smartPhoto-fit img,
-.js-smartPhoto-hide img{
+.js-smartPhoto-hide img,
+.js-smartPhoto2 img{
   height: 250px;
   width: auto;
 }
 @media screen and (max-width:480px) {
   .js-smartPhoto img,
   .js-smartPhoto-fit img,
-  .js-smartPhoto-hide img{
+  .js-smartPhoto-hide img,
+  .js-smartPhoto2 img{
     height: 80px;
     width: auto;
   }
