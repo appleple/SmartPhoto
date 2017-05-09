@@ -272,7 +272,6 @@
   left: 0;
   width: 100%;
   opacity: 1;
-  z-index: 102;
   animation-name: smartphoto-appear;
   animation-duration: 0.3s;
   animation-timing-function: ease-out;
@@ -332,15 +331,12 @@
   left: 0;
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
   white-space: nowrap;
 }
 
 .smartphoto-list li {
   display: block;
   position: absolute;
-  overflow: hidden;
   top: 0;
   left: 0;
   width: 100%;
