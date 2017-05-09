@@ -302,11 +302,11 @@ class smartPhoto extends aTemplate {
       const handler = () => {
         effect.removeEventListener('transitionend', handler, true);
         resolve();
-      }
+      };
       effect.addEventListener('transitionend', handler, true);
-      setTimeout(()=>{
+      setTimeout(() => {
         effect.style.transform = `translate(${appearEffect.afterX}px, ${appearEffect.afterY}px) scale(${appearEffect.scale})`;
-      },10);
+      }, 10);
     });
   }
 
@@ -482,7 +482,7 @@ class smartPhoto extends aTemplate {
     const screenY = windowY - (headerHeight + footerHeight);
     const items = this.groupItems();
     items.forEach((item) => {
-      if(!item.loaded){
+      if (!item.loaded) {
         return;
       }
       item.processed = true;
