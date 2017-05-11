@@ -1532,7 +1532,7 @@ var smartPhoto = function (_aTemplate) {
     var body = document.querySelector('body');
     _this.updateDebounce = util.debounce(function () {
       _this.update();
-    }, 500);
+    }, 400);
     util.append(body, '<div data-id=\'' + _this.id + '\'></div>');
     [].forEach.call(_this.elements, function (element) {
       _this.addNewItem(element);
@@ -2048,7 +2048,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: 'beforeDrag',
     value: function beforeDrag() {
-      if (this._isGestured(this.e)) {
+      if (this._isGestured(this.e) && this.data.onMoveClass === false) {
         this.beforeGesture();
         return;
       }
@@ -2162,6 +2162,9 @@ var smartPhoto = function (_aTemplate) {
     value: function zoomPhoto() {
       var _this11 = this;
 
+      if (this.data.onMoveClass === false) {
+        return;
+      }
       var classNames = this.data.classNames;
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();

@@ -82,7 +82,7 @@ class smartPhoto extends aTemplate {
     const body = document.querySelector('body');
     this.updateDebounce = util.debounce(() => {
       this.update();
-    },500);
+    },400);
     util.append(body, `<div data-id='${this.id}'></div>`);
     [].forEach.call(this.elements, (element) => {
       this.addNewItem(element);
@@ -554,7 +554,7 @@ class smartPhoto extends aTemplate {
   }
 
   beforeDrag() {
-    if (this._isGestured(this.e)) {
+    if (this._isGestured(this.e) && this.data.onMoveClass === false) {
       this.beforeGesture();
       return;
     }
@@ -663,6 +663,9 @@ class smartPhoto extends aTemplate {
   }
 
   zoomPhoto() {
+    if(this.data.onMoveClass === false) {
+      return;
+    }
     const classNames = this.data.classNames;
     this.data.hideUi = true;
     this.data.scaleSize = this._getScaleBoarder();
