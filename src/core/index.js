@@ -502,11 +502,9 @@ class smartPhoto extends aTemplate {
   _slideList() {
     const classNames = this.data.classNames;
     const list = this._getElementByClass(classNames.smartPhotoList);
+    this.updateDebounce();
     const handler = () => {
       this.data.onMoveClass = false;
-      const date = new Date();
-      this.setArrow();
-      this.updateDebounce();
       if (this.data.oldIndex !== this.data.currentIndex) {
         this._fireEvent('change');
       }
@@ -524,6 +522,7 @@ class smartPhoto extends aTemplate {
     this._setPosByCurrentIndex();
     this._setHashByCurrentIndex();
     this._setSizeByScreen();
+    this.setArrow();
   }
 
   gotoSlide(index) {
