@@ -199,7 +199,7 @@ $header-color: rgba(0, 0, 0, .2);
 }
 
 .smartphoto-img-elasticmove {
-  transition: transform .3s $animation-function;
+  transition: transform .2s $animation-function;
 }
 
 .smartphoto-img-wrap {
@@ -351,7 +351,7 @@ $header-color: rgba(0, 0, 0, .2);
     left: 0;
     width: 100%;
     height: 100%;
-    transition: all .3s $animation-function;
+    transition: all .2s $animation-function;
     &:focus {
       outline: none;
     }
@@ -359,7 +359,7 @@ $header-color: rgba(0, 0, 0, .2);
 }
 
 .smartphoto-list-onmove {
-  transition: all .3s $animation-function;
+  transition: all .2s $animation-function;
 }
 
 .smartphoto-caption {

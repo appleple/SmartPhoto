@@ -80,6 +80,9 @@ class smartPhoto extends aTemplate {
     this.addTemplate(this.id, template);
     this.data.isSmartPhone = this._isSmartPhone();
     const body = document.querySelector('body');
+    this.updateDebounce = util.debounce(() => {
+      this.update();
+    },500);
     util.append(body, `<div data-id='${this.id}'></div>`);
     [].forEach.call(this.elements, (element) => {
       this.addNewItem(element);
@@ -104,7 +107,7 @@ class smartPhoto extends aTemplate {
         this._resetTranslate();
         this._setPosByCurrentIndex();
         this._setSizeByScreen();
-        this.update();
+        this.updateDebounce();
       });
 
       window.addEventListener('keydown', (e) => {
@@ -128,7 +131,7 @@ class smartPhoto extends aTemplate {
       this._setPosByCurrentIndex();
       this._setHashByCurrentIndex();
       this._setSizeByScreen();
-      this.update();
+      this.updateDebounce();
     });
 
     if (!this.data.useOrientationApi) {
@@ -304,9 +307,9 @@ class smartPhoto extends aTemplate {
         resolve();
       };
       effect.addEventListener('transitionend', handler, true);
-      setTimeout(() => {
+      window.requestAnimationFrame(() => {
         effect.style.transform = `translate(${appearEffect.afterX}px, ${appearEffect.afterY}px) scale(${appearEffect.scale})`;
-      }, 10);
+      });
     });
   }
 
@@ -413,11 +416,11 @@ class smartPhoto extends aTemplate {
     const items = this.groupItems();
     const moveX = -1 * items[this.data.currentIndex].translateX;
     this.pos.x = moveX;
-    setTimeout(() => {
+    window.requestAnimationFrame(() => {
       this.data.translateX = moveX;
       this.data.translateY = 0;
       this._listUpdate();
-    }, 1);
+    });
   }
 
   _setHashByCurrentIndex() {
@@ -497,6 +500,20 @@ class smartPhoto extends aTemplate {
   }
 
   _slideList() {
+    const classNames = this.data.classNames;
+    const list = this._getElementByClass(classNames.smartPhotoList);
+    const handler = () => {
+      this.data.onMoveClass = false;
+      const date = new Date();
+      this.setArrow();
+      this.updateDebounce();
+      if (this.data.oldIndex !== this.data.currentIndex) {
+        this._fireEvent('change');
+      }
+      this.data.oldIndex = this.data.currentIndex;
+      list.removeEventListener('transitionend', handler, true);
+    };
+    list.addEventListener('transitionend', handler, true);
     this.data.scaleSize = 1;
     this.isBeingZoomed = false;
     this.data.hideUi = false;
@@ -507,15 +524,6 @@ class smartPhoto extends aTemplate {
     this._setPosByCurrentIndex();
     this._setHashByCurrentIndex();
     this._setSizeByScreen();
-    setTimeout(() => {
-      this.data.onMoveClass = false;
-      this.setArrow();
-      this.update();
-      if (this.data.oldIndex !== this.data.currentIndex) {
-        this._fireEvent('change');
-      }
-      this.data.oldIndex = this.data.currentIndex;
-    }, 200);
   }
 
   gotoSlide(index) {
@@ -656,16 +664,20 @@ class smartPhoto extends aTemplate {
   }
 
   zoomPhoto() {
+    const classNames = this.data.classNames;
     this.data.hideUi = true;
     this.data.scaleSize = this._getScaleBoarder();
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
-    this._photoUpdate();
-    setTimeout(() => {
+    const img = this._getElementByQuery(`.current .${classNames.smartPhotoImg}`);
+    const handler = () => {
       this.data.scale = true;
       this._photoUpdate();
       this._fireEvent('zoomin');
-    }, 300);
+      img.removeEventListener('transitionend', handler, true);
+    };
+    img.addEventListener('transitionend', handler, true);
+    this._photoUpdate();
   }
 
   zoomOutPhoto() {
@@ -866,6 +878,7 @@ class smartPhoto extends aTemplate {
   _registerElasticForce(x, y) {
     const item = this._getSelectedItem();
     const bound = this._makeBound(item);
+    const classNames = this.data.classNames;
     this.data.elastic = true;
     if (x === 1) {
       this.data.photoPosX = bound.minX;
@@ -877,11 +890,14 @@ class smartPhoto extends aTemplate {
     } else if (y === -1) {
       this.data.photoPosY = bound.maxY;
     }
-    this._photoUpdate();
-    setTimeout(() => {
+    const img = this._getElementByQuery(`.current .${classNames.smartPhotoImg}`);
+    const handler = () => {
       this.data.elastic = false;
       this._photoUpdate();
-    }, 300);
+      img.removeEventListener('transitionend', handler, true);
+    };
+    img.addEventListener('transitionend', handler, true);
+    this._photoUpdate();
   }
 
   _getSelectedItem() {
