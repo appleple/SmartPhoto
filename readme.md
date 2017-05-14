@@ -54,14 +54,14 @@ $(function(){
 ### Basic Standalone Usage
 
 ```html
-<a href="./assets/large-kuma.jpg" class="js-img-viwer" data-caption="くま" data-id="kuma">
-  <img src="./assets/kuma.jpg" width="360" data-group="0"/>
+<a href="./assets/large-kuma.jpg" class="js-img-viwer" data-caption="くま" data-id="kuma" data-group="0">
+  <img src="./assets/kuma.jpg" width="360"/>
 </a>
-<a href="./assets/large-rakuda.jpg" class="js-img-viwer" data-caption="ラクダ" data-id="rakuda">
-  <img src="./assets/rakuda.jpg" width="360" data-group="0"/>
+<a href="./assets/large-rakuda.jpg" class="js-img-viwer" data-caption="ラクダ" data-id="rakuda" data-group="0">
+  <img src="./assets/rakuda.jpg" width="360"/>
 </a>
-<a href="./assets/large-sai.jpg" class="js-img-viwer" data-caption="サイ" data-id="sai">
-  <img src="./assets/sai.jpg" width="360" data-group="0"/>
+<a href="./assets/large-sai.jpg" class="js-img-viwer" data-caption="サイ" data-id="sai" data-group="0">
+  <img src="./assets/sai.jpg" width="360"/>
 </a>
 <link rel="stylesheet" href="./css/smartphoto.min.css">
 <script src="./js/smartphoto.js"></script>
