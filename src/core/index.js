@@ -2,6 +2,7 @@ import aTemplate from 'a-template';
 import template from './viwer.html';
 
 const util = require('../lib/util');
+const Promise = require('es6-promise-polyfill').Promise;
 
 const defaults = {
   classNames: {
