@@ -11,7 +11,7 @@
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: steelydylan
- *   version: 0.2.2
+ *   version: 0.2.3
  *
  * es6-promise-polyfill:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -124,6 +124,9 @@ if (typeof document !== "undefined") {
     }
     if (id) {
       var obj = getObjectById(id);
+      if (!obj) {
+        return;
+      }
       if (target.getAttribute('type') === 'radio') {} else if (target.getAttribute('type') === 'checkbox') {
         (function () {
           var arr = [];
@@ -170,6 +173,9 @@ if (typeof document !== "undefined") {
       return;
     }
     var obj = getObjectById(id);
+    if (!obj) {
+      return;
+    }
     obj.e = e;
     if (obj.method && obj.method[method]) {
       obj.method[method].apply(obj, pts);
