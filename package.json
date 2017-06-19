@@ -51,7 +51,7 @@
     "node-cmd": "^2.0.0",
     "node-sass": "^4.3.0",
     "nodemon": "^1.11.0",
-    "npm-run-all": "^4.0.1",
+    "npm-run-all": "^4.0.2",
     "onchange": "^3.2.1",
     "power-assert": "^1.4.2",
     "uglify-js": "^2.8.22",

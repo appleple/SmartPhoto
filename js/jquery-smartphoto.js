@@ -1794,7 +1794,8 @@ var defaults = {
   registance: 0.5,
   resizeStyle: 'fill',
   verticalGravity: false,
-  useOrientationApi: true
+  useOrientationApi: true,
+  useHistoryApi: true
 };
 
 var smartPhoto = function (_aTemplate) {
@@ -2219,7 +2220,7 @@ var smartPhoto = function (_aTemplate) {
   }, {
     key: '_setHash',
     value: function _setHash(hash) {
-      if (!(window.history && window.history.pushState)) {
+      if (!(window.history && window.history.pushState) || !this.data.useHistoryApi) {
         return;
       }
       if (hash) {

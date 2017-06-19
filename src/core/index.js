@@ -46,7 +46,8 @@ const defaults = {
   registance: 0.5,
   resizeStyle: 'fill',
   verticalGravity: false,
-  useOrientationApi: true
+  useOrientationApi: true,
+  useHistoryApi: true
 };
 
 class smartPhoto extends aTemplate {
@@ -433,7 +434,7 @@ class smartPhoto extends aTemplate {
   }
 
   _setHash(hash) {
-    if (!(window.history && window.history.pushState)) {
+    if (!(window.history && window.history.pushState) || !this.data.useHistoryApi) {
       return;
     }
     if (hash) {
