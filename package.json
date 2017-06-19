@@ -1,6 +1,6 @@
 {
   "name": "smartphoto",
-  "version": "0.5.12",
+  "version": "0.6.0",
   "description": "smartphoto",
   "homepage": "http://developer.a-blogcms.jp",
   "main": "lib/index.js",
