@@ -103,7 +103,7 @@ class smartPhoto extends aTemplate {
 
     if (!this.data.isSmartPhone) {
       window.addEventListener('resize', () => {
-        if(!this.groupItems()){
+        if (!this.groupItems()) {
           return;
         }
         this._resetTranslate();
@@ -129,7 +129,7 @@ class smartPhoto extends aTemplate {
     }
 
     window.addEventListener('orientationchange', () => {
-      if(!this.groupItems()){
+      if (!this.groupItems()) {
         return;
       }
       this._resetTranslate();
