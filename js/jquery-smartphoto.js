@@ -1854,6 +1854,9 @@ var smartPhoto = function (_aTemplate) {
 
     if (!_this.data.isSmartPhone) {
       window.addEventListener('resize', function () {
+        if (!_this.groupItems()) {
+          return;
+        }
         _this._resetTranslate();
         _this._setPosByCurrentIndex();
         _this._setSizeByScreen();
@@ -1877,6 +1880,9 @@ var smartPhoto = function (_aTemplate) {
     }
 
     window.addEventListener('orientationchange', function () {
+      if (!_this.groupItems()) {
+        return;
+      }
       _this._resetTranslate();
       _this._setPosByCurrentIndex();
       _this._setHashByCurrentIndex();
