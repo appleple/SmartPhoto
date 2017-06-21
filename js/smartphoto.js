@@ -11,7 +11,7 @@
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: steelydylan
- *   version: 0.2.3
+ *   version: 0.2.4
  *
  * es6-promise-polyfill:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -88,7 +88,7 @@ var findAncestor = function findAncestor(element, selector) {
   if (typeof element.closest === 'function') {
     return element.closest(selector) || null;
   }
-  while (element) {
+  while (element && element !== document) {
     if (matches(element, selector)) {
       return element;
     }

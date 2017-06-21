@@ -9,9 +9,9 @@ JSONStream@^1.0.3:
     jsonparse "^1.2.0"
     through ">=2.2.7 <3"
 
-a-template@0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/a-template/-/a-template-0.2.3.tgz#994b7748c5ad17b62f7504e3b6cd06d5c2552e05"
+a-template@0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/a-template/-/a-template-0.2.4.tgz#5b3899ffffd3f03fc684b5bfe5e363d498843a13"
   dependencies:
     delegate "^3.1.2"
     morphdom "^2.3.1"
