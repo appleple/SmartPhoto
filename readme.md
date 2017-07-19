@@ -39,29 +39,29 @@ const smartPhoto = require('smartphoto');
 
 smartphoto.js
 ```js
-document.addEventListener('DOMContentLoaded',function(){
-    new smartPhoto(".js-img-viwer");
+window.addEventListener('DOMContentLoaded',function(){
+    new smartPhoto(".js-smartphoto");
 });
 ```
 
 jquery-smartphoto.js
 ```js
 $(function(){
-    $(".js-img-viwer").smartPhoto();
+    $(".js-smartphoto").smartPhoto();
 });
 ```
 
 ### Basic Standalone Usage
 
 ```html
-<a href="./assets/large-kuma.jpg" class="js-img-viwer" data-caption="くま" data-id="kuma" data-group="0">
-  <img src="./assets/kuma.jpg" width="360"/>
+<a href="./assets/large-bear.jpg" class="js-smartphoto" data-caption="bear" data-id="bear" data-group="0">
+  <img src="./assets/bear.jpg" width="360"/>
 </a>
-<a href="./assets/large-rakuda.jpg" class="js-img-viwer" data-caption="ラクダ" data-id="rakuda" data-group="0">
-  <img src="./assets/rakuda.jpg" width="360"/>
+<a href="./assets/large-camel.jpg" class="js-smartphoto" data-caption="camel" data-id="rakuda" data-group="0">
+  <img src="./assets/camel.jpg" width="360"/>
 </a>
-<a href="./assets/large-sai.jpg" class="js-img-viwer" data-caption="サイ" data-id="sai" data-group="0">
-  <img src="./assets/sai.jpg" width="360"/>
+<a href="./assets/large-rhinoceros.jpg" class="js-smartphoto" data-caption="rhinoceros" data-id="sai" data-group="0">
+  <img src="./assets/rhinoceros.jpg" width="360"/>
 </a>
 <link rel="stylesheet" href="./css/smartphoto.min.css">
 <script src="./js/smartphoto.js"></script>
