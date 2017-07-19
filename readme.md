@@ -67,7 +67,7 @@ $(function(){
 <script src="./js/smartphoto.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
-  new smartPhoto(".js-img-viwer");
+  new smartPhoto(".js-smartphoto");
 });
 </script>
 ```
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded',function(){
 #### Hide parts
 ```js
 document.addEventListener('DOMContentLoaded',function(){
-    new smartPhoto(".js-img-viwer",{
+    new smartPhoto(".js-smartphoto",{
         arrows: false,
         nav: false
     });
@@ -128,7 +128,7 @@ You can choose if you want to scale images to fit/fill
 
 ```js
 document.addEventListener('DOMContentLoaded',function(){
-  new smartPhoto(".js-img-viwer",{
+  new smartPhoto(".js-smartphoto",{
       resizeStyle: 'fit'
   });
 });
