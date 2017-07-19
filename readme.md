@@ -57,7 +57,7 @@ $(function(){
 <a href="./assets/large-bear.jpg" class="js-smartphoto" data-caption="bear" data-id="bear" data-group="0">
   <img src="./assets/bear.jpg" width="360"/>
 </a>
-<a href="./assets/large-camel.jpg" class="js-smartphoto" data-caption="camel" data-id="rakuda" data-group="0">
+<a href="./assets/large-camel.jpg" class="js-smartphoto" data-caption="camel" data-id="camel" data-group="0">
   <img src="./assets/camel.jpg" width="360"/>
 </a>
 <a href="./assets/large-rhinoceros.jpg" class="js-smartphoto" data-caption="rhinoceros" data-id="sai" data-group="0">
