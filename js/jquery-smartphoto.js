@@ -11,7 +11,7 @@
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: steelydylan
- *   version: 0.2.4
+ *   version: 0.2.3
  *
  * es6-promise-polyfill:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -88,7 +88,7 @@ var findAncestor = function findAncestor(element, selector) {
   if (typeof element.closest === 'function') {
     return element.closest(selector) || null;
   }
-  while (element && element !== document) {
+  while (element) {
     if (matches(element, selector)) {
       return element;
     }
@@ -2020,14 +2020,14 @@ var smartPhoto = function (_aTemplate) {
         var currentItem = _this4._getSelectedItem();
         if (currentItem.loaded) {
           _this4._initPhoto();
-          _this4.addAppearEffect(element);
+          _this4.addAppearEffect(element, currentItem);
           _this4.clicked = true;
           _this4.update();
           _this4._fireEvent('open');
         } else {
           _this4._loadItem(currentItem).then(function () {
             _this4._initPhoto();
-            _this4.addAppearEffect(element);
+            _this4.addAppearEffect(element, currentItem);
             _this4.clicked = true;
             _this4.update();
             _this4._fireEvent('open');
@@ -2092,7 +2092,7 @@ var smartPhoto = function (_aTemplate) {
     }
   }, {
     key: 'addAppearEffect',
-    value: function addAppearEffect(element) {
+    value: function addAppearEffect(element, item) {
       var img = element.querySelector('img');
       var pos = util.getViewPos(img);
       var appear = {};
@@ -2103,23 +2103,25 @@ var smartPhoto = function (_aTemplate) {
       appear.left = pos.left;
       appear.once = true;
       appear.img = img.getAttribute('src');
-      var windowX = this._getWindowWidth();
-      var windowY = this._getWindowHeight();
-      var screenY = windowY - this.data.headerHeight - this.data.footerHeight;
-      if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
+      var toX = this._getWindowWidth();
+      var toY = this._getWindowHeight();
+      var screenY = toY - this.data.headerHeight - this.data.footerHeight;
+      if (item.height < toY) {
+        scale = 1;
+      } else if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
         if (img.offsetWidth > img.offsetHeight) {
-          scale = windowY / img.offsetHeight;
+          scale = toY / img.offsetHeight;
         } else {
-          scale = windowX / img.offsetWidth;
+          scale = toX / img.offsetWidth;
         }
       } else {
         scale = screenY / img.offsetHeight;
-        if (scale * img.offsetWidth > windowX) {
-          scale = windowX / img.offsetWidth;
+        if (scale * img.offsetWidth > toX) {
+          scale = toX / img.offsetWidth;
         }
       }
-      var x = (scale - 1) / 2 * img.offsetWidth + (windowX - img.offsetWidth * scale) / 2;
-      var y = (scale - 1) / 2 * img.offsetHeight + (windowY - img.offsetHeight * scale) / 2;
+      var x = (scale - 1) / 2 * img.offsetWidth + (toX - img.offsetWidth * scale) / 2;
+      var y = (scale - 1) / 2 * img.offsetHeight + (toY - img.offsetHeight * scale) / 2;
       appear.afterX = x;
       appear.afterY = y;
       appear.scale = scale;
@@ -2284,6 +2286,9 @@ var smartPhoto = function (_aTemplate) {
         }
         item.processed = true;
         item.scale = screenY / item.height;
+        if (item.height < screenY) {
+          item.scale = 1;
+        }
         item.x = (item.scale - 1) / 2 * item.width + (windowX - item.width * item.scale) / 2;
         item.y = (item.scale - 1) / 2 * item.height + (windowY - item.height * item.scale) / 2;
         if (item.width * item.scale > windowX) {
@@ -2466,6 +2471,9 @@ var smartPhoto = function (_aTemplate) {
 
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
+      if (this.data.scaleSize <= 1) {
+        return;
+      }
       this.data.photoPosX = 0;
       this.data.photoPosY = 0;
       this._photoUpdate();

@@ -254,14 +254,14 @@ class smartPhoto extends aTemplate {
       const currentItem = this._getSelectedItem();
       if (currentItem.loaded) {
         this._initPhoto();
-        this.addAppearEffect(element);
+        this.addAppearEffect(element, currentItem);
         this.clicked = true;
         this.update();
         this._fireEvent('open');
       } else {
         this._loadItem(currentItem).then(() => {
           this._initPhoto();
-          this.addAppearEffect(element);
+          this.addAppearEffect(element, currentItem);
           this.clicked = true;
           this.update();
           this._fireEvent('open');
@@ -318,7 +318,7 @@ class smartPhoto extends aTemplate {
     });
   }
 
-  addAppearEffect(element) {
+  addAppearEffect(element, item) {
     const img = element.querySelector('img');
     const pos = util.getViewPos(img);
     const appear = {};
@@ -329,23 +329,25 @@ class smartPhoto extends aTemplate {
     appear.left = pos.left;
     appear.once = true;
     appear.img = img.getAttribute('src');
-    const windowX = this._getWindowWidth();
-    const windowY = this._getWindowHeight();
-    const screenY = windowY - this.data.headerHeight - this.data.footerHeight;
-    if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
+    const toX = this._getWindowWidth();
+    const toY = this._getWindowHeight();
+    const screenY = toY - this.data.headerHeight - this.data.footerHeight;
+    if (item.height < toY) {
+      scale = 1;
+    } else if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
       if (img.offsetWidth > img.offsetHeight) {
-        scale = windowY / img.offsetHeight;
+        scale = toY / img.offsetHeight;
       } else {
-        scale = windowX / img.offsetWidth;
+        scale = toX / img.offsetWidth;
       }
     } else {
       scale = screenY / img.offsetHeight;
-      if (scale * img.offsetWidth > windowX) {
-        scale = windowX / img.offsetWidth;
+      if (scale * img.offsetWidth > toX) {
+        scale = toX / img.offsetWidth;
       }
     }
-    const x = (scale - 1) / 2 * img.offsetWidth + (windowX - (img.offsetWidth * scale)) / 2;
-    const y = (scale - 1) / 2 * img.offsetHeight + (windowY - (img.offsetHeight * scale)) / 2;
+    const x = (scale - 1) / 2 * img.offsetWidth + (toX - (img.offsetWidth * scale)) / 2;
+    const y = (scale - 1) / 2 * img.offsetHeight + (toY - (img.offsetHeight * scale)) / 2;
     appear.afterX = x;
     appear.afterY = y;
     appear.scale = scale;
@@ -495,6 +497,9 @@ class smartPhoto extends aTemplate {
       }
       item.processed = true;
       item.scale = screenY / item.height;
+      if (item.height < screenY) {
+        item.scale = 1;
+      }
       item.x = (item.scale - 1) / 2 * item.width + (windowX - (item.width * item.scale)) / 2;
       item.y = (item.scale - 1) / 2 * item.height + (windowY - (item.height * item.scale)) / 2;
       if (item.width * item.scale > windowX) {
@@ -666,6 +671,9 @@ class smartPhoto extends aTemplate {
   zoomPhoto() {
     this.data.hideUi = true;
     this.data.scaleSize = this._getScaleBoarder();
+    if (this.data.scaleSize <= 1) {
+      return;
+    }
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
     this._photoUpdate();
