@@ -2107,7 +2107,7 @@ var smartPhoto = function (_aTemplate) {
       var toY = this._getWindowHeight();
       var screenY = toY - this.data.headerHeight - this.data.footerHeight;
       if (item.height < toY) {
-        scale = 1;
+        scale = item.width / img.offsetWidth;
       } else if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
         if (img.offsetWidth > img.offsetHeight) {
           scale = toY / img.offsetHeight;
