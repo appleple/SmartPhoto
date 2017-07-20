@@ -332,9 +332,7 @@ class smartPhoto extends aTemplate {
     const toX = this._getWindowWidth();
     const toY = this._getWindowHeight();
     const screenY = toY - this.data.headerHeight - this.data.footerHeight;
-    if (item.height < toY) {
-      scale = item.width / img.offsetWidth;
-    } else if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
+    if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
       if (img.offsetWidth > img.offsetHeight) {
         scale = toY / img.offsetHeight;
       } else {
@@ -346,6 +344,17 @@ class smartPhoto extends aTemplate {
         scale = toX / img.offsetWidth;
       }
     }
+    //小さい画像の場合の対策
+    if (screenY < toX) {
+      if (item.width * scale < toX) {
+        scale = item.width / img.offsetWidth;
+      }
+    } else {
+      if (item.height * scale < screenY) {
+        scale = item.width / img.offsetWidth;
+      }
+    }
+    
     const x = (scale - 1) / 2 * img.offsetWidth + (toX - (img.offsetWidth * scale)) / 2;
     const y = (scale - 1) / 2 * img.offsetHeight + (toY - (img.offsetHeight * scale)) / 2;
     appear.afterX = x;
