@@ -2965,14 +2965,13 @@ var smartPhoto = function (_aTemplate) {
       _this.addNewItem(element);
     });
 
-    var currentItem = _this._getCurrentItemByHash();
-    if (currentItem) {
-      util.triggerEvent(currentItem.element, 'click');
-    }
-
     _this.update();
     _this._getEachImageSize().then(function () {
       _this._fireEvent('loadall');
+      var currentItem = _this._getCurrentItemByHash();
+      if (currentItem) {
+        util.triggerEvent(currentItem.element, 'click');
+      }
     });
 
     setInterval(function () {
@@ -3244,7 +3243,7 @@ var smartPhoto = function (_aTemplate) {
         if (item.width < screenX) {
           scale = item.width / appear.width;
         } else {
-          scale = screenX / appear.width;
+          scale = screenY / appear.height;
         }
       } else if (appear.height > appear.width) {
         if (item.height < screenY) {
@@ -3252,6 +3251,9 @@ var smartPhoto = function (_aTemplate) {
         } else {
           scale = screenY / appear.height;
         }
+      }
+      if (appear.width * scale > toX) {
+        scale = toX / appear.width;
       }
 
       var x = (scale - 1) / 2 * img.offsetWidth + (toX - img.offsetWidth * scale) / 2;

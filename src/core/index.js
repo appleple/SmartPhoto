@@ -87,14 +87,13 @@ class smartPhoto extends aTemplate {
       this.addNewItem(element);
     });
 
-    const currentItem = this._getCurrentItemByHash();
-    if (currentItem) {
-      util.triggerEvent(currentItem.element, 'click');
-    }
-
     this.update();
     this._getEachImageSize().then(() => {
       this._fireEvent('loadall');
+      const currentItem = this._getCurrentItemByHash();
+      if (currentItem) {
+        util.triggerEvent(currentItem.element, 'click');
+      }
     });
 
     setInterval(() => {
@@ -343,7 +342,7 @@ class smartPhoto extends aTemplate {
       if (item.width < screenX) {
         scale = item.width / appear.width;
       } else {
-        scale = screenX / appear.width;
+        scale = screenY / appear.height;
       }
     } else if (appear.height > appear.width) {
       if (item.height < screenY) {
@@ -351,6 +350,9 @@ class smartPhoto extends aTemplate {
       } else {
         scale = screenY / appear.height;
       }
+    }
+    if (appear.width * scale > toX) {
+      scale = toX / appear.width;
     }
 
     const x = (scale - 1) / 2 * img.offsetWidth + (toX - (img.offsetWidth * scale)) / 2;
