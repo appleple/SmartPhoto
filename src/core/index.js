@@ -332,25 +332,24 @@ class smartPhoto extends aTemplate {
     const toX = this._getWindowWidth();
     const toY = this._getWindowHeight();
     const screenY = toY - this.data.headerHeight - this.data.footerHeight;
+    const screenX = toX;
     if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
       if (img.offsetWidth > img.offsetHeight) {
         scale = toY / img.offsetHeight;
       } else {
         scale = toX / img.offsetWidth;
       }
-    } else {
-      if (screenY < toX && appear.width > appear.height) {
-        if (item.width < toX) {
-          scale = item.width / img.offsetWidth;
-        } else {
-          scale = toX / img.offsetWidth;
-        }
-      } else if (screenY > toX && appear.height > appear.width) {
-        if (item.height < screenY) {
-          scale = item.height / img.offsetHeight;
-        }else {
-          scale = screenY / img.offsetHeight;
-        }
+    } else if (appear.width > appear.height) {
+      if (item.width < screenX) {
+        scale = item.width / appear.width;
+      } else {
+        scale = screenX / appear.width;
+      }
+    } else if (appear.height > appear.width) {
+      if (item.height < screenY) {
+        scale = item.height / appear.height;
+      } else {
+        scale = screenY / appear.height;
       }
     }
 
