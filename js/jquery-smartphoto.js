@@ -2118,15 +2118,13 @@ var smartPhoto = function (_aTemplate) {
           scale = toX / img.offsetWidth;
         }
       }
-      //小さい画像の場合の対策
+      // 小さい画像の場合の対策
       if (screenY < toX) {
         if (item.width * scale < toX) {
           scale = item.width / img.offsetWidth;
         }
-      } else {
-        if (item.height * scale < screenY) {
-          scale = item.width / img.offsetWidth;
-        }
+      } else if (item.height * scale < screenY) {
+        scale = item.width / img.offsetWidth;
       }
 
       var x = (scale - 1) / 2 * img.offsetWidth + (toX - img.offsetWidth * scale) / 2;

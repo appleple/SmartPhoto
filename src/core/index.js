@@ -344,17 +344,15 @@ class smartPhoto extends aTemplate {
         scale = toX / img.offsetWidth;
       }
     }
-    //小さい画像の場合の対策
+    // 小さい画像の場合の対策
     if (screenY < toX) {
       if (item.width * scale < toX) {
         scale = item.width / img.offsetWidth;
       }
-    } else {
-      if (item.height * scale < screenY) {
-        scale = item.width / img.offsetWidth;
-      }
+    } else if (item.height * scale < screenY) {
+      scale = item.width / img.offsetWidth;
     }
-    
+
     const x = (scale - 1) / 2 * img.offsetWidth + (toX - (img.offsetWidth * scale)) / 2;
     const y = (scale - 1) / 2 * img.offsetHeight + (toY - (img.offsetHeight * scale)) / 2;
     appear.afterX = x;
