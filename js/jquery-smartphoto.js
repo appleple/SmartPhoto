@@ -3366,9 +3366,9 @@ var smartPhoto = function (_aTemplate) {
         return;
       }
       if (hash) {
-        window.history.replaceState(null, null, location.pathname + '#' + hash);
+        window.history.replaceState(null, null, '' + location.pathname + location.search + '#' + hash);
       } else {
-        window.history.replaceState(null, null, '' + location.pathname);
+        window.history.replaceState(null, null, '' + location.pathname + location.search);
       }
     }
   }, {
