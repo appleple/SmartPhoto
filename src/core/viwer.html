@@ -6,7 +6,7 @@
 					<span class="\{classNames.smartPhotoCaption\}" aria-live="polite" tabindex="-1"><!-- BEGIN groupItems:loop --><!-- \BEGIN currentIndex:touch#{index} -->{caption}<!-- \END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>
 					<button class="\{classNames.smartPhotoDismiss\}" data-action-click="hidePhoto()"><span class="smartphoto-sr-only">\{message.closeDialog\}</span></button>
 				</div>
-				<div class="\{classNames.smartPhotoContent\}"<!-- BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag(false)"<!-- END isSmartPhone:exist -->>
+				<div class="\{classNames.smartPhotoContent\}"<!-- BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag(false)"<!-- END isSmartPhone:exist --><!-- BEGIN isSmartPhone:empty --> data-action-click="hidePhoto()"<!-- END isSmartPhone:empty -->>
 				</div>
 				<ul style="transform:translate({translateX}px,{translateY}px);" class="\{classNames.smartPhotoList\}<!-- BEGIN onMoveClass:exist --> \{classNames.smartPhotoListOnMove\}<!-- END onMoveClass:exist -->">
 					<!-- BEGIN groupItems:loop -->
