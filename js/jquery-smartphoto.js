@@ -19,6 +19,12 @@
  *   contributors: Duncan Hall <himself@duncanhall.net>
  *   version: 2.0.4
  *
+ * custom-event-polyfill:
+ *   license: MIT (http://opensource.org/licenses/MIT)
+ *   author: NO AUTHOR!
+ *   contributors: Frank Panetta (http://www.savvi.io), Mikhail Reenko <reenko@yandex.ru>, Joscha Feth <joscha@feth.com> (http://www.feth.com)
+ *   version: 0.3.0
+ *
  * define-properties:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Jordan Harband
@@ -666,7 +672,7 @@ var aTemplate = function () {
 
 exports.default = aTemplate;
 module.exports = exports['default'];
-},{"./util":2,"array.prototype.find":4,"morphdom":28}],2:[function(require,module,exports){
+},{"./util":2,"array.prototype.find":4,"morphdom":29}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -733,7 +739,7 @@ module.exports = function find(predicate) {
 	return undefined;
 };
 
-},{"es-abstract/es6":9}],4:[function(require,module,exports){
+},{"es-abstract/es6":10}],4:[function(require,module,exports){
 'use strict';
 
 var define = require('define-properties');
@@ -761,7 +767,7 @@ define(boundFindShim, {
 
 module.exports = boundFindShim;
 
-},{"./implementation":3,"./polyfill":5,"./shim":6,"define-properties":7,"es-abstract/es6":9}],5:[function(require,module,exports){
+},{"./implementation":3,"./polyfill":5,"./shim":6,"define-properties":8,"es-abstract/es6":10}],5:[function(require,module,exports){
 'use strict';
 
 module.exports = function getPolyfill() {
@@ -794,7 +800,53 @@ module.exports = function shimArrayPrototypeFind() {
 	return polyfill;
 };
 
-},{"./polyfill":5,"define-properties":7}],7:[function(require,module,exports){
+},{"./polyfill":5,"define-properties":8}],7:[function(require,module,exports){
+// Polyfill for creating CustomEvents on IE9/10/11
+
+// code pulled from:
+// https://github.com/d4tocchini/customevent-polyfill
+// https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent#Polyfill
+
+try {
+    var ce = new window.CustomEvent('test');
+    ce.preventDefault();
+    if (ce.defaultPrevented !== true) {
+        // IE has problems with .preventDefault() on custom events
+        // http://stackoverflow.com/questions/23349191
+        throw new Error('Could not prevent default');
+    }
+} catch(e) {
+  var CustomEvent = function(event, params) {
+    var evt, origPrevent;
+    params = params || {
+      bubbles: false,
+      cancelable: false,
+      detail: undefined
+    };
+
+    evt = document.createEvent("CustomEvent");
+    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+    origPrevent = evt.preventDefault;
+    evt.preventDefault = function () {
+      origPrevent.call(this);
+      try {
+        Object.defineProperty(this, 'defaultPrevented', {
+          get: function () {
+            return true;
+          }
+        });
+      } catch(e) {
+        this.defaultPrevented = true;
+      }
+    };
+    return evt;
+  };
+
+  CustomEvent.prototype = window.Event.prototype;
+  window.CustomEvent = CustomEvent; // expose definition to window
+}
+
+},{}],8:[function(require,module,exports){
 'use strict';
 
 var keys = require('object-keys');
@@ -852,7 +904,7 @@ defineProperties.supportsDescriptors = !!supportsDescriptors;
 
 module.exports = defineProperties;
 
-},{"foreach":20,"object-keys":29}],8:[function(require,module,exports){
+},{"foreach":21,"object-keys":30}],9:[function(require,module,exports){
 'use strict';
 
 var $isNaN = require('./helpers/isNaN');
@@ -940,7 +992,7 @@ var ES5 = {
 
 module.exports = ES5;
 
-},{"./helpers/isFinite":11,"./helpers/isNaN":12,"./helpers/mod":14,"./helpers/sign":15,"es-to-primitive/es5":16,"is-callable":24}],9:[function(require,module,exports){
+},{"./helpers/isFinite":12,"./helpers/isNaN":13,"./helpers/mod":15,"./helpers/sign":16,"es-to-primitive/es5":17,"is-callable":25}],10:[function(require,module,exports){
 'use strict';
 
 var toStr = Object.prototype.toString;
@@ -1274,7 +1326,7 @@ delete ES6.CheckObjectCoercible; // renamed in ES6 to RequireObjectCoercible
 
 module.exports = ES6;
 
-},{"./es5":8,"./helpers/assign":10,"./helpers/isFinite":11,"./helpers/isNaN":12,"./helpers/isPrimitive":13,"./helpers/mod":14,"./helpers/sign":15,"es-to-primitive/es6":17,"function-bind":22,"is-regex":26}],10:[function(require,module,exports){
+},{"./es5":9,"./helpers/assign":11,"./helpers/isFinite":12,"./helpers/isNaN":13,"./helpers/isPrimitive":14,"./helpers/mod":15,"./helpers/sign":16,"es-to-primitive/es6":18,"function-bind":23,"is-regex":27}],11:[function(require,module,exports){
 var has = Object.prototype.hasOwnProperty;
 module.exports = Object.assign || function assign(target, source) {
 	for (var key in source) {
@@ -1285,33 +1337,33 @@ module.exports = Object.assign || function assign(target, source) {
 	return target;
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var $isNaN = Number.isNaN || function (a) { return a !== a; };
 
 module.exports = Number.isFinite || function (x) { return typeof x === 'number' && !$isNaN(x) && x !== Infinity && x !== -Infinity; };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = Number.isNaN || function isNaN(a) {
 	return a !== a;
 };
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = function isPrimitive(value) {
 	return value === null || (typeof value !== 'function' && typeof value !== 'object');
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = function mod(number, modulo) {
 	var remain = number % modulo;
 	return Math.floor(remain >= 0 ? remain : remain + modulo);
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = function sign(number) {
 	return number >= 0 ? 1 : -1;
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 var toStr = Object.prototype.toString;
@@ -1350,7 +1402,7 @@ module.exports = function ToPrimitive(input, PreferredType) {
 	return ES5internalSlots['[[DefaultValue]]'](input, PreferredType);
 };
 
-},{"./helpers/isPrimitive":18,"is-callable":24}],17:[function(require,module,exports){
+},{"./helpers/isPrimitive":19,"is-callable":25}],18:[function(require,module,exports){
 'use strict';
 
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
@@ -1426,9 +1478,9 @@ module.exports = function ToPrimitive(input, PreferredType) {
 	return ordinaryToPrimitive(input, hint === 'default' ? 'number' : hint);
 };
 
-},{"./helpers/isPrimitive":18,"is-callable":24,"is-date-object":25,"is-symbol":27}],18:[function(require,module,exports){
-arguments[4][13][0].apply(exports,arguments)
-},{"dup":13}],19:[function(require,module,exports){
+},{"./helpers/isPrimitive":19,"is-callable":25,"is-date-object":26,"is-symbol":28}],19:[function(require,module,exports){
+arguments[4][14][0].apply(exports,arguments)
+},{"dup":14}],20:[function(require,module,exports){
 (function (global){
 (function(global){
 
@@ -1778,7 +1830,7 @@ Promise.reject = function(reason){
 })(typeof window != 'undefined' ? window : typeof global != 'undefined' ? global : typeof self != 'undefined' ? self : this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
@@ -1802,7 +1854,7 @@ module.exports = function forEach (obj, fn, ctx) {
 };
 
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
 var slice = Array.prototype.slice;
 var toStr = Object.prototype.toString;
@@ -1852,17 +1904,17 @@ module.exports = function bind(that) {
     return bound;
 };
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 var implementation = require('./implementation');
 
 module.exports = Function.prototype.bind || implementation;
 
-},{"./implementation":21}],23:[function(require,module,exports){
+},{"./implementation":22}],24:[function(require,module,exports){
 var bind = require('function-bind');
 
 module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
 
-},{"function-bind":22}],24:[function(require,module,exports){
+},{"function-bind":23}],25:[function(require,module,exports){
 'use strict';
 
 var fnToStr = Function.prototype.toString;
@@ -1903,7 +1955,7 @@ module.exports = function isCallable(value) {
 	return strClass === fnClass || strClass === genClass;
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 var getDay = Date.prototype.getDay;
@@ -1925,7 +1977,7 @@ module.exports = function isDateObject(value) {
 	return hasToStringTag ? tryDateObject(value) : toStr.call(value) === dateClass;
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 var has = require('has');
@@ -1966,7 +2018,7 @@ module.exports = function isRegex(value) {
 	return tryRegexExecCall(value);
 };
 
-},{"has":23}],27:[function(require,module,exports){
+},{"has":24}],28:[function(require,module,exports){
 'use strict';
 
 var toStr = Object.prototype.toString;
@@ -1995,7 +2047,7 @@ if (hasSymbols) {
 	};
 }
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 var range; // Create a range object for efficently rendering strings to elements.
@@ -2670,7 +2722,7 @@ var morphdom = morphdomFactory(morphAttrs);
 
 module.exports = morphdom;
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 // modified from https://github.com/es-shims/es5-shim
@@ -2812,7 +2864,7 @@ keysShim.shim = function shimObjectKeys() {
 
 module.exports = keysShim;
 
-},{"./isArguments":30}],30:[function(require,module,exports){
+},{"./isArguments":31}],31:[function(require,module,exports){
 'use strict';
 
 var toStr = Object.prototype.toString;
@@ -2831,7 +2883,7 @@ module.exports = function isArguments(value) {
 	return isArgs;
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 var smartPhoto = require('../index');
@@ -2856,7 +2908,7 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = applyJQuery;
 
-},{"../index":33}],32:[function(require,module,exports){
+},{"../index":34}],33:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2864,6 +2916,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _aTemplate2 = require('a-template');
 
 var _aTemplate3 = _interopRequireDefault(_aTemplate2);
+
+require('custom-event-polyfill');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4029,12 +4083,12 @@ var smartPhoto = function (_aTemplate) {
 
 module.exports = smartPhoto;
 
-},{"../lib/util":34,"a-template":1,"es6-promise-polyfill":19}],33:[function(require,module,exports){
+},{"../lib/util":35,"a-template":1,"custom-event-polyfill":7,"es6-promise-polyfill":20}],34:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./core/');
 
-},{"./core/":32}],34:[function(require,module,exports){
+},{"./core/":33}],35:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -4134,4 +4188,4 @@ module.exports.removeClass = function (element, className) {
   }
 };
 
-},{}]},{},[31]);
+},{}]},{},[32]);

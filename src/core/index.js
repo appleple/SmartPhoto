@@ -1,5 +1,6 @@
 import aTemplate from 'a-template';
 import template from './viwer.html';
+import 'custom-event-polyfill'
 
 const util = require('../lib/util');
 const Promise = require('es6-promise-polyfill').Promise;
