@@ -46,9 +46,9 @@ const defaults = {
   footerHeight: 60,
   forceInterval: 10,
   registance: 0.5,
-  resizeStyle: 'fill',
+  resizeStyle: 'fit',
   verticalGravity: false,
-  useOrientationApi: true,
+  useOrientationApi: false,
   useHistoryApi: true
 };
 
