@@ -21,9 +21,8 @@
     "watch:sass": "onchange \"scss\" -- npm run build:sass",
     "sync": "browser-sync start --server './' --files './js/*.js' './css/*.css' --startPath '/examples/jquery.html'",
     "start": "npm-run-all -p watch:js watch:sass sync",
-    "patch": "npm run test && npm version patch && npm run build:js && node ./tools/index.js",
-    "minor": "npm run test && npm version minor && npm run build:js && node ./tools/index.js",
-    "major": "npm run test && npm version major && npm run build:js && node ./tools/index.js"
+    "prepublish": "npm run build:js && git add -A && git commit -m \"bumping version\"",
+    "deploy": "np --no-cleanup"
   },
   "repository": {
     "type": "git",
@@ -60,6 +59,7 @@
   "dependencies": {
     "a-template": "^0.3.2",
     "custom-event-polyfill": "^0.3.0",
-    "es6-promise-polyfill": "^1.2.0"
+    "es6-promise-polyfill": "^1.2.0",
+    "np": "^2.16.0"
   }
 }
