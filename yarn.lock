@@ -9,9 +9,9 @@ JSONStream@^1.0.3:
     jsonparse "^1.2.0"
     through ">=2.2.7 <3"
 
-a-template@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/a-template/-/a-template-0.3.2.tgz#b9864c46223a60e54bcac4228f721fff634f4a45"
+a-template@0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/a-template/-/a-template-0.4.4.tgz#0b0034ed953a1bcdea63dcbc67215a7a8c54485a"
   dependencies:
     array.prototype.find "^2.0.4"
     delegate "^3.1.2"

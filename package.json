@@ -57,7 +57,7 @@
     "watchify": "^3.9.0"
   },
   "dependencies": {
-    "a-template": "^0.3.2",
+    "a-template": "0.4.4",
     "babel-plugin-add-module-exports": "^0.2.1",
     "custom-event-polyfill": "^0.3.0",
     "es6-promise-polyfill": "^1.2.0",
