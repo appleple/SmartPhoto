@@ -6,7 +6,7 @@ const applyJQuery = (jQuery) => {
   jQuery.fn.SmartPhoto = function(settings) {
     if (typeof settings === 'strings'){
     } else {
-      new SmartPhoto(this.selector,settings);
+      new SmartPhoto(this, settings);
     }
     return this;
   }

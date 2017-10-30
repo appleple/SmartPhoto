@@ -58,6 +58,7 @@
   },
   "dependencies": {
     "a-template": "^0.3.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "custom-event-polyfill": "^0.3.0",
     "es6-promise-polyfill": "^1.2.0",
     "np": "^2.16.0"

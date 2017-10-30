@@ -1,4 +1,4 @@
-import aTemplate from 'a-template';
+import ATemplate from 'a-template';
 import 'custom-event-polyfill';
 
 import template from './viwer.html';
@@ -52,7 +52,7 @@ const defaults = {
   useHistoryApi: true
 };
 
-class smartPhoto extends aTemplate {
+class SmartPhoto extends ATemplate {
 
   constructor(selector, settings) {
     super();
