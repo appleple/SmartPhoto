@@ -2886,12 +2886,12 @@ module.exports = function isArguments(value) {
 },{}],32:[function(require,module,exports){
 'use strict';
 
-var smartPhoto = require('../index');
+var SmartPhoto = require('../index');
 
 var applyJQuery = function applyJQuery(jQuery) {
-  jQuery.fn.smartPhoto = function (settings) {
+  jQuery.fn.SmartPhoto = function (settings) {
     if (typeof settings === 'strings') {} else {
-      new smartPhoto(this.selector, settings);
+      new SmartPhoto(this.selector, settings);
     }
     return this;
   };
@@ -3002,7 +3002,7 @@ var smartPhoto = function (_aTemplate) {
       virtualPos: _this.virtualPos
     };
     _this.data.groupItems = _this.groupItems;
-    _this.elements = document.querySelectorAll(selector);
+    _this.elements = typeof selector === 'string' ? document.querySelectorAll(selector) : selector;
     var date = new Date();
     _this.tapSecond = date.getTime();
     _this.onListMove = false;
@@ -3296,7 +3296,7 @@ var smartPhoto = function (_aTemplate) {
         }
       } else {
         if (appear.width > appear.height) {
-          if (item.width < screenX) {
+          if (item.height < screenY) {
             scale = item.width / appear.width;
           } else {
             scale = screenY / appear.height;

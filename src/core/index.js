@@ -72,7 +72,7 @@ class smartPhoto extends aTemplate {
       virtualPos: this.virtualPos
     };
     this.data.groupItems = this.groupItems;
-    this.elements = document.querySelectorAll(selector);
+    this.elements = typeof selector === 'string' ? document.querySelectorAll(selector) : selector;
     const date = new Date();
     this.tapSecond = date.getTime();
     this.onListMove = false;
@@ -343,7 +343,7 @@ class smartPhoto extends aTemplate {
       }
     } else {
       if (appear.width > appear.height) {
-        if (item.width < screenX) {
+        if (item.height < screenY) {
           scale = item.width / appear.width;
         } else {
           scale = screenY / appear.height;

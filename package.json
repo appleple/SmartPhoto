@@ -10,7 +10,7 @@
     "build:js": "npm-run-all -p build:lib build:jquery build:global",
     "build:lib": "npm run babel",
     "build:jquery": "browserify ./src/adaptor/jquery.js -t babelify -p licensify -o ./js/jquery-smartphoto.js && npm run build:jquery:min",
-    "build:global": "browserify ./src/index.js -t babelify -p licensify --standalone smartPhoto -o ./js/smartphoto.js && npm run build:global:min",
+    "build:global": "browserify ./src/index.js -t babelify -p licensify --standalone SmartPhoto -o ./js/smartphoto.js && npm run build:global:min",
     "build:jquery:min": "uglifyjs ./js/jquery-smartphoto.js -m -c --comments -o ./js/jquery-smartphoto.min.js",
     "build:global:min": "uglifyjs ./js/smartphoto.js -m -c --comments -o ./js/smartphoto.min.js",
     "build:sass": "npm-run-all -p sass sass:min",

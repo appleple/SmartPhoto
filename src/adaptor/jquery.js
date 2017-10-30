@@ -1,12 +1,12 @@
 'use strict';
 
-const smartPhoto = require('../index');
+const SmartPhoto = require('../index');
 
 const applyJQuery = (jQuery) => {
-  jQuery.fn.smartPhoto = function(settings) {
+  jQuery.fn.SmartPhoto = function(settings) {
     if (typeof settings === 'strings'){
     } else {
-      new smartPhoto(this.selector,settings);
+      new SmartPhoto(this.selector,settings);
     }
     return this;
   }
