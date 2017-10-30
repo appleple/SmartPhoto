@@ -2886,6 +2886,10 @@ module.exports = function isArguments(value) {
 },{}],32:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _aTemplate = require('a-template');
@@ -4056,7 +4060,8 @@ var SmartPhoto = function (_ATemplate) {
   return SmartPhoto;
 }(_aTemplate2.default);
 
-module.exports = smartPhoto;
+exports.default = SmartPhoto;
+module.exports = exports['default'];
 
 },{"../lib/util":34,"a-template":1,"custom-event-polyfill":7,"es6-promise-polyfill":20}],33:[function(require,module,exports){
 'use strict';

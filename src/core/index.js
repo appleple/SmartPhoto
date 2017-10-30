@@ -52,7 +52,7 @@ const defaults = {
   useHistoryApi: true
 };
 
-class SmartPhoto extends ATemplate {
+export default class SmartPhoto extends ATemplate {
 
   constructor(selector, settings) {
     super();
@@ -1078,5 +1078,3 @@ class SmartPhoto extends ATemplate {
   }
 
 }
-
-module.exports = smartPhoto;
