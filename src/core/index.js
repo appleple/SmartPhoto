@@ -226,6 +226,7 @@ export default class SmartPhoto extends ATemplate {
       group[groupId] = [];
     }
     const index = group[groupId].length;
+    const body = document.querySelector('body');
     const item = {
       src: element.getAttribute('href'),
       caption: element.getAttribute('data-caption'),
@@ -258,6 +259,7 @@ export default class SmartPhoto extends ATemplate {
         this.addAppearEffect(element, currentItem);
         this.clicked = true;
         this.update();
+        body.style.overflow = 'hidden';
         this._fireEvent('open');
       } else {
         this._loadItem(currentItem).then(() => {
@@ -265,6 +267,7 @@ export default class SmartPhoto extends ATemplate {
           this.addAppearEffect(element, currentItem);
           this.clicked = true;
           this.update();
+          body.style.overflow = 'hidden';
           this._fireEvent('open');
         });
       }
@@ -376,12 +379,14 @@ export default class SmartPhoto extends ATemplate {
     this.data.scaleSize = 1;
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
+    const body = document.querySelector('body');
     if (location.hash) {
       this._setHash('');
     }
     window.scroll(scrollX, scrollY);
     this._doHideEffect().then(() => {
       this.update();
+      body.style.overflow = '';
       this._fireEvent('close');
     });
   }

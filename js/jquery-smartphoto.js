@@ -3168,6 +3168,7 @@ var SmartPhoto = function (_ATemplate) {
         group[groupId] = [];
       }
       var index = group[groupId].length;
+      var body = document.querySelector('body');
       var item = {
         src: element.getAttribute('href'),
         caption: element.getAttribute('data-caption'),
@@ -3200,6 +3201,7 @@ var SmartPhoto = function (_ATemplate) {
           _this4.addAppearEffect(element, currentItem);
           _this4.clicked = true;
           _this4.update();
+          body.style.overflow = 'hidden';
           _this4._fireEvent('open');
         } else {
           _this4._loadItem(currentItem).then(function () {
@@ -3207,6 +3209,7 @@ var SmartPhoto = function (_ATemplate) {
             _this4.addAppearEffect(element, currentItem);
             _this4.clicked = true;
             _this4.update();
+            body.style.overflow = 'hidden';
             _this4._fireEvent('open');
           });
         }
@@ -3329,12 +3332,14 @@ var SmartPhoto = function (_ATemplate) {
       this.data.scaleSize = 1;
       var scrollX = window.scrollX;
       var scrollY = window.scrollY;
+      var body = document.querySelector('body');
       if (location.hash) {
         this._setHash('');
       }
       window.scroll(scrollX, scrollY);
       this._doHideEffect().then(function () {
         _this7.update();
+        body.style.overflow = '';
         _this7._fireEvent('close');
       });
     }
