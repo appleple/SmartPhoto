@@ -40,17 +40,16 @@ const defaults = {
   },
   arrows: true,
   nav: true,
-  animationSpeed: 300,
-  appearEffect: false,
+  showAnimation: true,
+  verticalGravity: false,
+  useOrientationApi: false,
+  useHistoryApi: true,
   swipeOffset: 100,
   headerHeight: 60,
   footerHeight: 60,
   forceInterval: 10,
   registance: 0.5,
   resizeStyle: 'fit',
-  verticalGravity: false,
-  useOrientationApi: false,
-  useHistoryApi: true
 };
 
 export default class SmartPhoto extends ATemplate {
@@ -257,9 +256,7 @@ export default class SmartPhoto extends ATemplate {
       const currentItem = this._getSelectedItem();
       if (currentItem.loaded) {
         this._initPhoto();
-        if (this.data.appearEffect) {
-          this.addAppearEffect(element, currentItem);
-        }
+        this.addAppearEffect(element, currentItem);
         this.clicked = true;
         this.update();
         body.style.overflow = 'hidden';
@@ -267,9 +264,7 @@ export default class SmartPhoto extends ATemplate {
       } else {
         this._loadItem(currentItem).then(() => {
           this._initPhoto();
-          if (this.data.appearEffect) {
-            this.addAppearEffect(element, currentItem);
-          }
+          this.addAppearEffect(element, currentItem);
           this.clicked = true;
           this.update();
           body.style.overflow = 'hidden';
@@ -328,6 +323,10 @@ export default class SmartPhoto extends ATemplate {
   }
 
   addAppearEffect(element, item) {
+    if (this.data.showAnimation === false) {
+      this.data.appear = true;
+      return;
+    }
     const img = element.querySelector('img');
     const pos = util.getViewPos(img);
     const appear = {};

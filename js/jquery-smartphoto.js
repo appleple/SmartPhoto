@@ -2964,17 +2964,16 @@ var defaults = {
   },
   arrows: true,
   nav: true,
-  animationSpeed: 300,
-  appearEffect: false,
+  showAnimation: true,
+  verticalGravity: false,
+  useOrientationApi: false,
+  useHistoryApi: true,
   swipeOffset: 100,
   headerHeight: 60,
   footerHeight: 60,
   forceInterval: 10,
   registance: 0.5,
-  resizeStyle: 'fit',
-  verticalGravity: false,
-  useOrientationApi: false,
-  useHistoryApi: true
+  resizeStyle: 'fit'
 };
 
 var SmartPhoto = function (_ATemplate) {
@@ -3199,9 +3198,7 @@ var SmartPhoto = function (_ATemplate) {
         var currentItem = _this4._getSelectedItem();
         if (currentItem.loaded) {
           _this4._initPhoto();
-          if (_this4.data.appearEffect) {
-            _this4.addAppearEffect(element, currentItem);
-          }
+          _this4.addAppearEffect(element, currentItem);
           _this4.clicked = true;
           _this4.update();
           body.style.overflow = 'hidden';
@@ -3209,9 +3206,7 @@ var SmartPhoto = function (_ATemplate) {
         } else {
           _this4._loadItem(currentItem).then(function () {
             _this4._initPhoto();
-            if (_this4.data.appearEffect) {
-              _this4.addAppearEffect(element, currentItem);
-            }
+            _this4.addAppearEffect(element, currentItem);
             _this4.clicked = true;
             _this4.update();
             body.style.overflow = 'hidden';
@@ -3278,6 +3273,10 @@ var SmartPhoto = function (_ATemplate) {
   }, {
     key: 'addAppearEffect',
     value: function addAppearEffect(element, item) {
+      if (this.data.showAnimation === false) {
+        this.data.appear = true;
+        return;
+      }
       var img = element.querySelector('img');
       var pos = util.getViewPos(img);
       var appear = {};
