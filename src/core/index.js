@@ -41,6 +41,7 @@ const defaults = {
   arrows: true,
   nav: true,
   animationSpeed: 300,
+  appearEffect: false,
   swipeOffset: 100,
   headerHeight: 60,
   footerHeight: 60,
@@ -256,7 +257,9 @@ export default class SmartPhoto extends ATemplate {
       const currentItem = this._getSelectedItem();
       if (currentItem.loaded) {
         this._initPhoto();
-        this.addAppearEffect(element, currentItem);
+        if (this.data.appearEffect) {
+          this.addAppearEffect(element, currentItem);
+        }
         this.clicked = true;
         this.update();
         body.style.overflow = 'hidden';
@@ -264,7 +267,9 @@ export default class SmartPhoto extends ATemplate {
       } else {
         this._loadItem(currentItem).then(() => {
           this._initPhoto();
-          this.addAppearEffect(element, currentItem);
+          if (this.data.appearEffect) {
+            this.addAppearEffect(element, currentItem);
+          }
           this.clicked = true;
           this.update();
           body.style.overflow = 'hidden';

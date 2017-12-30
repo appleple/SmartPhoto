@@ -2940,6 +2940,7 @@ var defaults = {
   arrows: true,
   nav: true,
   animationSpeed: 300,
+  appearEffect: false,
   swipeOffset: 100,
   headerHeight: 60,
   footerHeight: 60,
@@ -3173,7 +3174,9 @@ var SmartPhoto = function (_ATemplate) {
         var currentItem = _this4._getSelectedItem();
         if (currentItem.loaded) {
           _this4._initPhoto();
-          _this4.addAppearEffect(element, currentItem);
+          if (_this4.data.appearEffect) {
+            _this4.addAppearEffect(element, currentItem);
+          }
           _this4.clicked = true;
           _this4.update();
           body.style.overflow = 'hidden';
@@ -3181,7 +3184,9 @@ var SmartPhoto = function (_ATemplate) {
         } else {
           _this4._loadItem(currentItem).then(function () {
             _this4._initPhoto();
-            _this4.addAppearEffect(element, currentItem);
+            if (_this4.data.appearEffect) {
+              _this4.addAppearEffect(element, currentItem);
+            }
             _this4.clicked = true;
             _this4.update();
             body.style.overflow = 'hidden';
