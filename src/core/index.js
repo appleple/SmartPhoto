@@ -44,6 +44,8 @@ const defaults = {
   verticalGravity: false,
   useOrientationApi: false,
   useHistoryApi: true,
+  swipeTopToClose: false,
+  swipeBottomToClose: true,
   swipeOffset: 100,
   headerHeight: 60,
   footerHeight: 60,
@@ -374,7 +376,7 @@ export default class SmartPhoto extends ATemplate {
     this.data.appearEffect = appear;
   }
 
-  hidePhoto() {
+  hidePhoto(dir = 'bottom') {
     this.data.hide = true;
     this.data.appear = false;
     this.data.appearEffect = null;
@@ -388,14 +390,14 @@ export default class SmartPhoto extends ATemplate {
       this._setHash('');
     }
     window.scroll(scrollX, scrollY);
-    this._doHideEffect().then(() => {
+    this._doHideEffect(dir).then(() => {
       this.update();
       body.style.overflow = '';
       this._fireEvent('close');
     });
   }
 
-  _doHideEffect() {
+  _doHideEffect(dir) {
     return new Promise((resolve) => {
       const classNames = this.data.classNames;
       const photo = this._getElementByClass(classNames.smartPhoto);
@@ -406,7 +408,11 @@ export default class SmartPhoto extends ATemplate {
         resolve();
       };
       photo.style.opacity = 0;
-      img.style.transform = `translateY(${height}px)`;
+      if (dir === 'bottom') {
+        img.style.transform = `translateY(${height}px)`;
+      } else if (dir === 'top') {
+        img.style.transform = `translateY(-${height}px)`;
+      }
       photo.addEventListener('transitionend', handler, true);
     });
   }
@@ -639,8 +645,10 @@ export default class SmartPhoto extends ATemplate {
       this._slideList();
     }
     if (this.moveDir === 'vertical') {
-      if (swipeHeight >= this.data.swipeOffset) {
-        this.hidePhoto();
+      if (this.data.swipeBottomToClose && swipeHeight >= this.data.swipeOffset) {
+        this.hidePhoto('bottom');
+      } else if (this.data.swipeTopToClose && swipeHeight <= - this.data.swipeOffset) {
+        this.hidePhoto('top');
       } else {
         this.data.translateY = 0;
         this._slideList();
@@ -1021,11 +1029,23 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _getWindowWidth() {
-    return document.documentElement.clientWidth;
+    if (document && document.documentElement) {
+      return document.documentElement.clientWidth;
+    } else if (window && window.innerWidth) {
+      return window.innerWidth;
+    } else {
+      return 0;
+    }
   }
 
   _getWindowHeight() {
-    return window.innerHeight;
+    if (document && document.documentElement) {
+      return document.documentElement.clientHeight;
+    } else if (window && window.innerHeight) {
+      return window.innerHeight;
+    } else {
+      return 0;
+    }
   }
 
   _listUpdate() {
