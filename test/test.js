@@ -33,7 +33,7 @@ describe('test',() => {
 
   it('hash', (done) => {
     nightmare.goto(hash_url)
-      .wait(300)
+      .wait(1000)
       .evaluate(() => {
           return document.querySelector('.smartphoto-caption').innerText;
       })
