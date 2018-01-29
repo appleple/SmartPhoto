@@ -647,7 +647,7 @@ export default class SmartPhoto extends ATemplate {
     if (this.moveDir === 'vertical') {
       if (this.data.swipeBottomToClose && swipeHeight >= this.data.swipeOffset) {
         this.hidePhoto('bottom');
-      } else if (this.data.swipeTopToClose && swipeHeight <= - this.data.swipeOffset) {
+      } else if (this.data.swipeTopToClose && swipeHeight <= -this.data.swipeOffset) {
         this.hidePhoto('top');
       } else {
         this.data.translateY = 0;
@@ -1033,9 +1033,8 @@ export default class SmartPhoto extends ATemplate {
       return document.documentElement.clientWidth;
     } else if (window && window.innerWidth) {
       return window.innerWidth;
-    } else {
-      return 0;
     }
+    return 0;
   }
 
   _getWindowHeight() {
@@ -1043,9 +1042,8 @@ export default class SmartPhoto extends ATemplate {
       return document.documentElement.clientHeight;
     } else if (window && window.innerHeight) {
       return window.innerHeight;
-    } else {
-      return 0;
     }
+    return 0;
   }
 
   _listUpdate() {
