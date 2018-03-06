@@ -44,6 +44,7 @@ const defaults = {
   verticalGravity: false,
   useOrientationApi: false,
   useHistoryApi: true,
+  historyApiMethod: 'replace',
   swipeTopToClose: false,
   swipeBottomToClose: true,
   swipeOffset: 100,
@@ -103,6 +104,45 @@ export default class SmartPhoto extends ATemplate {
     setInterval(() => {
       this._doAnim();
     }, this.data.forceInterval);
+
+    // IF history API is enabled
+    // > setup history event listener
+    if(this.data.useHistoryApi && this.data.historyApiMethod === 'push') {
+
+      window.onpopstate = event => {
+
+        // if state is not set - the gallery was hidden in this history state
+        if(!event || !event.state || event.state.group===void 0 || event.state.index === void 0) {
+          this.hidePhoto();
+          return;
+        }
+
+        // geting photo info from state object
+        this.data.currentGroup = event.state.group;
+        this.data.currentIndex = event.state.index;
+        const currentItem = this._getSelectedItem();
+
+        if (currentItem.loaded) {
+          this._initPhoto();
+          this.data.appear = true;
+          this.clicked = true;
+          this.update();
+          body.style.overflow = 'hidden';
+          this._fireEvent('open');
+        } else {
+          this._loadItem(currentItem).then(() => {
+            this._initPhoto();
+            this.data.appear = true;
+            this.clicked = true;
+            this.update();
+            body.style.overflow = 'hidden';
+            this._fireEvent('open');
+          });
+        }
+
+        this.gotoSlide(event.state.index, true); // <- don't update history
+      };
+    }
 
     if (!this.data.isSmartPhone) {
       window.addEventListener('resize', () => {
@@ -387,7 +427,7 @@ export default class SmartPhoto extends ATemplate {
     const scrollY = window.scrollY;
     const body = document.querySelector('body');
     if (location.hash) {
-      this._setHash('');
+      this._setHash();
     }
     window.scroll(scrollX, scrollY);
     this._doHideEffect(dir).then(() => {
@@ -464,19 +504,39 @@ export default class SmartPhoto extends ATemplate {
     const items = this.groupItems();
     const id = items[this.data.currentIndex].id;
     const group = this.data.currentGroup;
-    const hash = `group=${group}&photo=${id}`;
-    this._setHash(hash);
+    this._setHash(group, id, this.data.currentIndex);
     window.scroll(scrollX, scrollY);
   }
 
-  _setHash(hash) {
+  _setHash(group, id, index) {
+
     if (!(window.history && window.history.pushState) || !this.data.useHistoryApi) {
       return;
     }
-    if (hash) {
-      window.history.replaceState(null, null, `${location.pathname}${location.search}#${hash}`);
-    } else {
-      window.history.replaceState(null, null, `${location.pathname}${location.search}`);
+
+    // if the displayed image has not changed
+    // > don't change history
+    if(this.data.oldIndex === index) {
+      return;
+    }
+
+    var newUrl = `${location.pathname}${location.search}`,
+        newState = void 0;
+
+    // if `group` od `id` are not set
+    // > don't construct new state
+    if(group !== void 0 && id !== void 0) {
+        newUrl+=`#group=${group}&photo=${id}`;
+        newState = { group:group, id:id, index:index };
+    }
+
+    switch(this.data.historyApiMethod) {
+      case 'push':
+        window.history.pushState(newState, null, newUrl);
+        break;
+      case 'replace':
+      default:
+        window.history.replaceState(newState, null, newUrl);
     }
   }
 
@@ -537,7 +597,7 @@ export default class SmartPhoto extends ATemplate {
     });
   }
 
-  _slideList() {
+  _slideList(skipHistory) {
     this.data.scaleSize = 1;
     this.isBeingZoomed = false;
     this.data.hideUi = false;
@@ -546,7 +606,11 @@ export default class SmartPhoto extends ATemplate {
     this.data.photoPosY = 0;
     this.data.onMoveClass = true;
     this._setPosByCurrentIndex();
-    this._setHashByCurrentIndex();
+
+    if(!skipHistory) {
+      this._setHashByCurrentIndex();
+    }
+
     this._setSizeByScreen();
     setTimeout(() => {
       this.data.onMoveClass = false;
@@ -559,7 +623,7 @@ export default class SmartPhoto extends ATemplate {
     }, 200);
   }
 
-  gotoSlide(index) {
+  gotoSlide(index, skipHistory) {
     if (this.e && this.e.preventDefault) {
       this.e.preventDefault();
     }
@@ -567,7 +631,7 @@ export default class SmartPhoto extends ATemplate {
     if (!this.data.currentIndex) {
       this.data.currentIndex = 0;
     }
-    this._slideList();
+    this._slideList(skipHistory);
   }
 
   setArrow() {
