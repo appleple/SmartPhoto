@@ -11,20 +11,17 @@
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: steelydylan
- *   maintainers: appleple <info@appleple.com>, steelydylan <ess_president@me.com>
  *   version: 0.5.1
  *
  * array.prototype.find:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Paul Miller <http://paulmillr.com>
- *   maintainers: ljharb <ljharb@gmail.com>, paulmillr <paul@paulmillr.com>
  *   contributors: Duncan Hall <himself@duncanhall.net>
  *   homepage: https://github.com/paulmillr/Array.prototype.find#readme
  *   version: 2.0.4
  *
  * custom-event-polyfill:
  *   license: MIT (http://opensource.org/licenses/MIT)
- *   maintainers: krambuhl <evan.krambuhl@gmail.com>
  *   contributors: Frank Panetta, Mikhail Reenko <reenko@yandex.ru>, Joscha Feth <joscha@feth.com>
  *   homepage: https://github.com/krambuhl/custom-event-polyfill#readme
  *   version: 0.3.0
@@ -32,14 +29,12 @@
  * define-properties:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Jordan Harband
- *   maintainers: ljharb <ljharb@gmail.com>
  *   homepage: https://github.com/ljharb/define-properties#readme
  *   version: 1.1.2
  *
  * es-abstract:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Jordan Harband <ljharb@gmail.com>
- *   maintainers: ljharb <ljharb@gmail.com>
  *   contributors: Jordan Harband <ljharb@gmail.com>
  *   homepage: https://github.com/ljharb/es-abstract#readme
  *   version: 1.10.0
@@ -47,29 +42,25 @@
  * es-to-primitive:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Jordan Harband
- *   maintainers: ljharb <ljharb@gmail.com>
  *   homepage: https://github.com/ljharb/es-to-primitive#readme
  *   version: 1.1.1
  *
  * es6-promise-polyfill:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Roman Dvornov <rdvornov@gmail.com>
- *   maintainers: lahmatiy <rdvornov@gmail.com>
  *   homepage: https://github.com/lahmatiy/es6-promise-polyfill#readme
  *   version: 1.2.0
  *
  * foreach:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Manuel Stofer <manuel@takimata.ch>
- *   maintainers: manuelstofer <manuel@takimata.ch>
  *   contributors: Manuel Stofer, Jordan Harband
- *   homepage: https://github.com/manuelstofer/foreach
+ *   homepage: https://github.com/manuelstofer/foreach#readme
  *   version: 2.0.5
  *
  * function-bind:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Raynos <raynos2@gmail.com>
- *   maintainers: raynos <raynos2@gmail.com>, ljharb <ljharb@gmail.com>
  *   contributors: Raynos, Jordan Harband
  *   homepage: https://github.com/Raynos/function-bind
  *   version: 1.1.1
@@ -77,14 +68,12 @@
  * has:
  *   licenses: MIT (http://opensource.org/licenses/MIT)
  *   author: Thiago de Arruda <tpadilha84@gmail.com>
- *   maintainers: tarruda <tpadilha84@gmail.com>
  *   homepage: https://github.com/tarruda/has
  *   version: 1.0.1
  *
  * is-callable:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Jordan Harband <ljharb@gmail.com>
- *   maintainers: ljharb <ljharb@gmail.com>
  *   contributors: Jordan Harband <ljharb@gmail.com>
  *   homepage: https://github.com/ljharb/is-callable#readme
  *   version: 1.1.3
@@ -92,35 +81,30 @@
  * is-date-object:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Jordan Harband
- *   maintainers: ljharb <ljharb@gmail.com>
  *   homepage: https://github.com/ljharb/is-date-object#readme
  *   version: 1.0.1
  *
  * is-regex:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Jordan Harband
- *   maintainers: ljharb <ljharb@gmail.com>
  *   homepage: https://github.com/ljharb/is-regex
  *   version: 1.0.4
  *
  * is-symbol:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Jordan Harband
- *   maintainers: ljharb <ljharb@gmail.com>
- *   homepage: https://github.com/ljharb/is-symbol
+ *   homepage: https://github.com/ljharb/is-symbol#readme
  *   version: 1.0.1
  *
  * morphdom:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Patrick Steele-Idem <pnidem@gmail.com>
- *   maintainers: mlrawlings <ml.rawlings@gmail.com>, pnidem <pnidem@gmail.com>
  *   homepage: https://github.com/patrick-steele-idem/morphdom#readme
  *   version: 2.3.3
  *
  * object-keys:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Jordan Harband <ljharb@gmail.com>
- *   maintainers: ljharb <ljharb@gmail.com>
  *   contributors: Jordan Harband <ljharb@gmail.com>, Raynos <raynos2@gmail.com>, Nathan Rajlich <nathan@tootallnate.net>, Ivan Starkov <istarkov@gmail.com>, Gary Katsevman <git@gkatsev.com>
  *   homepage: https://github.com/ljharb/object-keys#readme
  *   version: 1.0.11
@@ -3414,6 +3398,7 @@ var defaults = {
   verticalGravity: false,
   useOrientationApi: false,
   useHistoryApi: true,
+  historyApiMethod: 'replace',
   swipeTopToClose: false,
   swipeBottomToClose: true,
   swipeOffset: 100,
@@ -3476,6 +3461,45 @@ var SmartPhoto = function (_ATemplate) {
     setInterval(function () {
       _this._doAnim();
     }, _this.data.forceInterval);
+
+    // IF history API is enabled
+    // > setup history event listener
+    if (_this.data.useHistoryApi && _this.data.historyApiMethod === 'push') {
+
+      window.onpopstate = function (event) {
+
+        // if state is not set - the gallery was hidden in this history state
+        if (!event || !event.state || event.state.group === void 0 || event.state.index === void 0) {
+          _this.hidePhoto();
+          return;
+        }
+
+        // geting photo info from state object
+        _this.data.currentGroup = event.state.group;
+        _this.data.currentIndex = event.state.index;
+        var currentItem = _this._getSelectedItem();
+
+        if (currentItem.loaded) {
+          _this._initPhoto();
+          _this.data.appear = true;
+          _this.clicked = true;
+          _this.update();
+          body.style.overflow = 'hidden';
+          _this._fireEvent('open');
+        } else {
+          _this._loadItem(currentItem).then(function () {
+            _this._initPhoto();
+            _this.data.appear = true;
+            _this.clicked = true;
+            _this.update();
+            body.style.overflow = 'hidden';
+            _this._fireEvent('open');
+          });
+        }
+
+        _this.gotoSlide(event.state.index, true); // <- don't update history
+      };
+    }
 
     if (!_this.data.isSmartPhone) {
       window.addEventListener('resize', function () {
@@ -3788,7 +3812,7 @@ var SmartPhoto = function (_ATemplate) {
       var scrollY = window.scrollY;
       var body = document.querySelector('body');
       if (location.hash) {
-        this._setHash('');
+        this._setHash();
       }
       window.scroll(scrollX, scrollY);
       this._doHideEffect(dir).then(function () {
@@ -3873,20 +3897,40 @@ var SmartPhoto = function (_ATemplate) {
       var items = this.groupItems();
       var id = items[this.data.currentIndex].id;
       var group = this.data.currentGroup;
-      var hash = 'group=' + group + '&photo=' + id;
-      this._setHash(hash);
+      this._setHash(group, id, this.data.currentIndex);
       window.scroll(scrollX, scrollY);
     }
   }, {
     key: '_setHash',
-    value: function _setHash(hash) {
+    value: function _setHash(group, id, index) {
+
       if (!(window.history && window.history.pushState) || !this.data.useHistoryApi) {
         return;
       }
-      if (hash) {
-        window.history.replaceState(null, null, '' + location.pathname + location.search + '#' + hash);
-      } else {
-        window.history.replaceState(null, null, '' + location.pathname + location.search);
+
+      // if the displayed image has not changed
+      // > don't change history
+      if (this.data.oldIndex === index) {
+        return;
+      }
+
+      var newUrl = '' + location.pathname + location.search,
+          newState = void 0;
+
+      // if `group` od `id` are not set
+      // > don't construct new state
+      if (group !== void 0 && id !== void 0) {
+        newUrl += '#group=' + group + '&photo=' + id;
+        newState = { group: group, id: id, index: index };
+      }
+
+      switch (this.data.historyApiMethod) {
+        case 'push':
+          window.history.pushState(newState, null, newUrl);
+          break;
+        case 'replace':
+        default:
+          window.history.replaceState(newState, null, newUrl);
       }
     }
   }, {
@@ -3951,7 +3995,7 @@ var SmartPhoto = function (_ATemplate) {
     }
   }, {
     key: '_slideList',
-    value: function _slideList() {
+    value: function _slideList(skipHistory) {
       var _this10 = this;
 
       this.data.scaleSize = 1;
@@ -3962,7 +4006,11 @@ var SmartPhoto = function (_ATemplate) {
       this.data.photoPosY = 0;
       this.data.onMoveClass = true;
       this._setPosByCurrentIndex();
-      this._setHashByCurrentIndex();
+
+      if (!skipHistory) {
+        this._setHashByCurrentIndex();
+      }
+
       this._setSizeByScreen();
       setTimeout(function () {
         _this10.data.onMoveClass = false;
@@ -3976,7 +4024,7 @@ var SmartPhoto = function (_ATemplate) {
     }
   }, {
     key: 'gotoSlide',
-    value: function gotoSlide(index) {
+    value: function gotoSlide(index, skipHistory) {
       if (this.e && this.e.preventDefault) {
         this.e.preventDefault();
       }
@@ -3984,7 +4032,7 @@ var SmartPhoto = function (_ATemplate) {
       if (!this.data.currentIndex) {
         this.data.currentIndex = 0;
       }
-      this._slideList();
+      this._slideList(skipHistory);
     }
   }, {
     key: 'setArrow',
