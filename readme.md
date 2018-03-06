@@ -110,6 +110,16 @@ document.addEventListener('DOMContentLoaded',function(){
 		<td>frequency to apply force to images</td>
 		<td>10</td>
 	</tr>
+	<tr>
+		<td>useHistoryApi</td>
+		<td>update page URL to reflect currently viewed image</td>
+		<td>true</td>
+	</tr>
+	<tr>
+		<td>historyApiMethod</td>
+		<td>which method to use for HistoryAPI ('replace'=replaces the URL with new one, without affecting history; 'push'=pushing new URL to history</td>
+		<td>'replace'</td>
+	</tr>
 </table>
 
 #### Hide parts
