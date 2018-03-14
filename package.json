@@ -21,7 +21,6 @@
     "watch:sass": "onchange \"scss\" -- npm run build:sass",
     "sync": "browser-sync start --server './' --files './js/*.js' './css/*.css' --startPath '/examples/jquery.html'",
     "start": "npm-run-all -p watch:js watch:sass sync",
-    "prepublish": "npm run build:js && git add -A && git commit -m \"bumping version\"",
     "deploy": "np --no-cleanup"
   },
   "repository": {
