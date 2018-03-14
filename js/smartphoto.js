@@ -4614,9 +4614,11 @@ module.exports.removeElement = function (element) {
 };
 
 module.exports.append = function (element, string) {
-  var parser = new DOMParser();
-  var doc = parser.parseFromString(string, 'text/html');
-  element.appendChild(doc.querySelector('body').childNodes[0]);
+  var div = document.createElement('div');
+  div.innerHTML = string;
+  while (div.children.length > 0) {
+    element.appendChild(div.children[0]);
+  }
 };
 
 module.exports.addClass = function (element, className) {

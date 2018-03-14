@@ -73,10 +73,12 @@ module.exports.removeElement = (element) => {
   }
 }
 
-module.exports.append = (element,string) => {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(string, 'text/html');
-  element.appendChild(doc.querySelector('body').childNodes[0]);
+module.exports.append = (element,　string) => {
+  const div = document.createElement('div');
+  div.innerHTML = string;
+  while (div.children.length > 0) {
+    element.appendChild(div.children[0]);
+  }
 }
 
 module.exports.addClass = (element,className) => {
