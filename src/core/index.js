@@ -310,6 +310,9 @@ export default class SmartPhoto extends ATemplate {
 
   execEffect() {
     return new Promise((resolve) => {
+      if (util.isOldIE()) {
+        resolve();
+      }
       const appearEffect = this.data.appearEffect;
       const classNames = this.data.classNames;
       const effect = this._getElementByClass(classNames.smartPhotoImgClone);
@@ -399,6 +402,9 @@ export default class SmartPhoto extends ATemplate {
 
   _doHideEffect(dir) {
     return new Promise((resolve) => {
+      if (util.isOldIE()) {
+        resolve();
+      }
       const classNames = this.data.classNames;
       const photo = this._getElementByClass(classNames.smartPhoto);
       const img = this._getElementByQuery(`.current .${classNames.smartPhotoImg}`);
