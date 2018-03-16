@@ -353,7 +353,7 @@ export default class SmartPhoto extends ATemplate {
         scale = toX / img.offsetWidth;
       }
     } else {
-      if (appear.width > appear.height) {
+      if (appear.width >= appear.height) {
         if (item.height < screenY) {
           scale = item.width / appear.width;
         } else {
