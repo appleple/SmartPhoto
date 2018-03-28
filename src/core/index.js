@@ -386,8 +386,8 @@ export default class SmartPhoto extends ATemplate {
     this.data.hideUi = false;
     this.data.scale = false;
     this.data.scaleSize = 1;
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
+    const scrollX = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+    const scrollY = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
     const body = document.querySelector('body');
     if (location.hash) {
       this._setHash('');
@@ -465,8 +465,8 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _setHashByCurrentIndex() {
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
+    const scrollX = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+    const scrollY = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
     const items = this.groupItems();
     const id = items[this.data.currentIndex].id;
     const group = this.data.currentGroup;

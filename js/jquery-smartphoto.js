@@ -3787,8 +3787,8 @@ var SmartPhoto = function (_ATemplate) {
       this.data.hideUi = false;
       this.data.scale = false;
       this.data.scaleSize = 1;
-      var scrollX = window.scrollX;
-      var scrollY = window.scrollY;
+      var scrollX = window.pageXOffset !== undefined ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+      var scrollY = window.pageYOffset !== undefined ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
       var body = document.querySelector('body');
       if (location.hash) {
         this._setHash('');
@@ -3874,8 +3874,8 @@ var SmartPhoto = function (_ATemplate) {
   }, {
     key: '_setHashByCurrentIndex',
     value: function _setHashByCurrentIndex() {
-      var scrollX = window.scrollX;
-      var scrollY = window.scrollY;
+      var scrollX = window.pageXOffset !== undefined ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+      var scrollY = window.pageYOffset !== undefined ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
       var items = this.groupItems();
       var id = items[this.data.currentIndex].id;
       var group = this.data.currentGroup;
