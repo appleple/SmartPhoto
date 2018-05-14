@@ -114,8 +114,8 @@ document.addEventListener('DOMContentLoaded',function(){
 
 #### Hide parts
 ```js
-document.addEventListener('DOMContentLoaded',function(){
-    new smartPhoto(".js-smartphoto",{
+window.addEventListener('DOMContentLoaded',function(){
+    new SmartPhoto(".js-smartphoto",{
         arrows: false,
         nav: false
     });
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded',function(){
 You can choose if you want to scale images to fit/fill
 
 ```js
-document.addEventListener('DOMContentLoaded',function(){
+window.addEventListener('DOMContentLoaded',function(){
   new SmartPhoto(".js-smartphoto",{
       resizeStyle: 'fit'
   });
