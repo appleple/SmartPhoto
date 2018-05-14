@@ -39,7 +39,7 @@ const smartPhoto = require('smartphoto');
 
 smartphoto.js
 ```js
-window.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded',function(){
     new SmartPhoto(".js-smartphoto");
 });
 ```
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
 #### Hide parts
 ```js
-window.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded',function(){
     new SmartPhoto(".js-smartphoto",{
         arrows: false,
         nav: false
@@ -127,7 +127,7 @@ window.addEventListener('DOMContentLoaded',function(){
 You can choose if you want to scale images to fit/fill
 
 ```js
-window.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded',function(){
   new SmartPhoto(".js-smartphoto",{
       resizeStyle: 'fit'
   });
