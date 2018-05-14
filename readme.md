@@ -34,7 +34,7 @@ yarn add smartphoto
 ## Usage
 require
 ```js
-const smartPhoto = require('smartphoto');
+const SmartPhoto = require('smartphoto');
 ```
 
 smartphoto.js
