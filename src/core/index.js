@@ -51,6 +51,7 @@ const defaults = {
   footerHeight: 60,
   forceInterval: 10,
   registance: 0.5,
+  loadOffset: 2,
   resizeStyle: 'fit',
 };
 
@@ -92,13 +93,10 @@ export default class SmartPhoto extends ATemplate {
     });
 
     this.update();
-    this._getEachImageSize().then(() => {
-      this._fireEvent('loadall');
-      const currentItem = this._getCurrentItemByHash();
-      if (currentItem) {
-        util.triggerEvent(currentItem.element, 'click');
-      }
-    });
+    const currentItem = this._getCurrentItemByHash();
+    if (currentItem) {
+      util.triggerEvent(currentItem.element, 'click');
+    }
 
     setInterval(() => {
       this._doAnim();
@@ -184,31 +182,6 @@ export default class SmartPhoto extends ATemplate {
 
   groupItems() {
     return this.data.group[this.data.currentGroup];
-  }
-
-  _getEachImageSize() {
-    const arr = [];
-    const group = this.data.group;
-    const loadItems = (item) => {
-      const promise = new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => {
-          item.width = img.width;
-          item.height = img.height;
-          item.loaded = true;
-          resolve();
-        };
-        img.onerror = () => {
-          reject();
-        };
-        img.src = item.src;
-      });
-      arr.push(promise);
-    };
-    Object.keys(group).forEach((key) => {
-      group[key].forEach(loadItems);
-    });
-    return Promise.all(arr);
   }
 
   _resetTranslate() {
@@ -518,6 +491,35 @@ export default class SmartPhoto extends ATemplate {
     });
   }
 
+  _getItemByIndex(index) {
+    const data = this.data;
+    if (data.group[data.currentGroup][index]) {
+      return data.group[data.currentGroup][index];
+    } else {
+      return null;
+    }
+  }
+
+  _loadNeighborItems() {
+    const index = this.data.currentIndex;
+    const loadOffset = this.data.loadOffset;
+    const from = index - loadOffset;
+    const to = index + loadOffset;
+    const promises = [];
+    for (let i = from; i < to; i++) {
+      const item = this._getItemByIndex(i);
+      if (!item.loaded) {
+        promises.push(this._loadItem(item));
+      }
+    }
+    if (promises.length) {
+      Promise.all(promises).then(() => {
+        this._initPhoto();
+        this.update();
+      });
+    }
+  }
+
   _setSizeByScreen() {
     const windowX = this._getWindowWidth();
     const windowY = this._getWindowHeight();
@@ -555,6 +557,7 @@ export default class SmartPhoto extends ATemplate {
     this._setHashByCurrentIndex();
     this._setSizeByScreen();
     setTimeout(() => {
+      const item = this._getSelectedItem();
       this.data.onMoveClass = false;
       this.setArrow();
       this.update();
@@ -562,6 +565,13 @@ export default class SmartPhoto extends ATemplate {
         this._fireEvent('change');
       }
       this.data.oldIndex = this.data.currentIndex;
+      this._loadNeighborItems();
+      if (!item.loaded) {
+        this._loadItem(item).then(() => {
+          this._initPhoto();
+          this.update();
+        });
+      }
     }, 200);
   }
 
