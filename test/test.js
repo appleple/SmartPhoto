@@ -17,6 +17,7 @@ describe('test',() => {
   it('caption', (done) => {
     nightmare.goto(test_url)
       .click('[data-caption="lion"]')
+      .wait(1000)
       .click('.smartphoto-arrow-right a')
       .wait(1000)
       .evaluate(() => {
