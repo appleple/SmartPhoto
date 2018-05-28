@@ -508,7 +508,7 @@ export default class SmartPhoto extends ATemplate {
     const promises = [];
     for (let i = from; i < to; i++) {
       const item = this._getItemByIndex(i);
-      if (!item.loaded) {
+      if (item && !item.loaded) {
         promises.push(this._loadItem(item));
       }
     }

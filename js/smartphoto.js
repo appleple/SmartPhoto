@@ -3452,7 +3452,7 @@ var SmartPhoto = function (_ATemplate) {
       var promises = [];
       for (var i = from; i < to; i++) {
         var item = this._getItemByIndex(i);
-        if (!item.loaded) {
+        if (item && !item.loaded) {
           promises.push(this._loadItem(item));
         }
       }
