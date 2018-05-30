@@ -59,7 +59,6 @@ export default class SmartPhoto extends ATemplate {
 
   constructor(selector, settings) {
     super();
-
     this.data = util.extend({}, defaults, settings);
     this.data.currentIndex = 0;
     this.data.oldIndex = 0;
@@ -202,8 +201,15 @@ export default class SmartPhoto extends ATemplate {
     }
     const index = group[groupId].length;
     const body = document.querySelector('body');
+    const src = element.getAttribute('href');
+    const img = element.querySelector('img');
+    let thumb = src;
+    if (img) {
+      thumb = img.src;
+    }
     const item = {
-      src: element.getAttribute('href'),
+      src,
+      thumb,
       caption: element.getAttribute('data-caption'),
       groupId,
       translateX: this._getWindowWidth() * index,
