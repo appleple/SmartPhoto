@@ -71,7 +71,8 @@ export default class SmartPhoto extends ATemplate {
     this.data.photoPosY = 0;
     this.convert = {
       increment: this.increment,
-      virtualPos: this.virtualPos
+      virtualPos: this.virtualPos,
+      round: this.round
     };
     this.data.groupItems = this.groupItems;
     this.elements = typeof selector === 'string' ? document.querySelectorAll(selector) : selector;
@@ -171,6 +172,11 @@ export default class SmartPhoto extends ATemplate {
 
   increment(item) {
     return item + 1;
+  }
+
+  round(number) {
+    console.log(number);
+    return Math.round(number);
   }
 
   virtualPos(pos) {
