@@ -3085,7 +3085,6 @@ var SmartPhoto = function (_ATemplate) {
   }, {
     key: 'round',
     value: function round(number) {
-      console.log(number);
       return Math.round(number);
     }
   }, {

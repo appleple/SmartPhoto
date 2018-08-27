@@ -175,7 +175,6 @@ export default class SmartPhoto extends ATemplate {
   }
 
   round(number) {
-    console.log(number);
     return Math.round(number);
   }
 
