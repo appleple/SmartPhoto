@@ -58,7 +58,7 @@
     "watchify": "^3.9.0"
   },
   "dependencies": {
-    "a-template": "^0.5.1",
+    "a-template": "^0.5.4",
     "custom-event-polyfill": "^0.3.0",
     "es6-promise-polyfill": "^1.2.0"
   }
