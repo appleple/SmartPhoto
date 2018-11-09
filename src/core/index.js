@@ -145,7 +145,7 @@ export default class SmartPhoto extends ATemplate {
     }
 
     window.addEventListener('deviceorientation', (e) => {
-      const orientation = window.orientation;
+      const { orientation } = window;
       if (!e || !e.gamma || this.data.appearEffect) {
         return;
       }
@@ -197,7 +197,7 @@ export default class SmartPhoto extends ATemplate {
 
   addNewItem(element) {
     const groupId = element.getAttribute('data-group') || 'nogroup';
-    const group = this.data.group;
+    const { group } = this.data;
     if (groupId === 'nogroup') {
       element.setAttribute('data-group', 'nogroup');
     }
@@ -210,7 +210,11 @@ export default class SmartPhoto extends ATemplate {
     const img = element.querySelector('img');
     let thumb = src;
     if (img) {
-      thumb = img.src;
+      if (img.currentSrc) {
+        thumb = img.currentSrc;
+      } else {
+        thumb = img.src;
+      }
     }
     const item = {
       src,
@@ -286,7 +290,7 @@ export default class SmartPhoto extends ATemplate {
     }
     if (this.clicked) {
       this.clicked = false;
-      const classNames = this.data.classNames;
+      const { classNames } = this.data;
       const caption = this._getElementByClass(classNames.smartPhotoCaption);
       caption.focus();
     }
@@ -297,8 +301,7 @@ export default class SmartPhoto extends ATemplate {
       if (util.isOldIE()) {
         resolve();
       }
-      const appearEffect = this.data.appearEffect;
-      const classNames = this.data.classNames;
+      const { appearEffect, classNames } = this.data;
       const effect = this._getElementByClass(classNames.smartPhotoImgClone);
       const handler = () => {
         effect.removeEventListener('transitionend', handler, true);
@@ -373,7 +376,7 @@ export default class SmartPhoto extends ATemplate {
     const scrollX = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
     const scrollY = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
     const body = document.querySelector('body');
-    if (location.hash) {
+    if (window.location.hash) {
       this._setHash('');
     }
     window.scroll(scrollX, scrollY);
@@ -389,7 +392,7 @@ export default class SmartPhoto extends ATemplate {
       if (util.isOldIE()) {
         resolve();
       }
-      const classNames = this.data.classNames;
+      const { classNames } = this.data;
       const photo = this._getElementByClass(classNames.smartPhoto);
       const img = this._getElementByQuery(`.current .${classNames.smartPhotoImg}`);
       const height = this._getWindowHeight();
@@ -503,7 +506,7 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _getItemByIndex(index) {
-    const data = this.data;
+    const { data } = this;
     if (data.group[data.currentGroup][index]) {
       return data.group[data.currentGroup][index];
     } else {
@@ -513,7 +516,7 @@ export default class SmartPhoto extends ATemplate {
 
   _loadNeighborItems() {
     const index = this.data.currentIndex;
-    const loadOffset = this.data.loadOffset;
+    const { loadOffset } = this.data;
     const from = index - loadOffset;
     const to = index + loadOffset;
     const promises = [];

@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 1.3.3
+ *   version: 1.3.4
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -2228,7 +2228,9 @@ var SmartPhoto = function (_ATemplate) {
     }
 
     window.addEventListener('deviceorientation', function (e) {
-      var orientation = window.orientation;
+      var _window = window,
+          orientation = _window.orientation;
+
       if (!e || !e.gamma || _this.data.appearEffect) {
         return;
       }
@@ -2296,6 +2298,7 @@ var SmartPhoto = function (_ATemplate) {
 
       var groupId = element.getAttribute('data-group') || 'nogroup';
       var group = this.data.group;
+
       if (groupId === 'nogroup') {
         element.setAttribute('data-group', 'nogroup');
       }
@@ -2308,7 +2311,11 @@ var SmartPhoto = function (_ATemplate) {
       var img = element.querySelector('img');
       var thumb = src;
       if (img) {
-        thumb = img.src;
+        if (img.currentSrc) {
+          thumb = img.currentSrc;
+        } else {
+          thumb = img.src;
+        }
       }
       var item = {
         src: src,
@@ -2389,6 +2396,7 @@ var SmartPhoto = function (_ATemplate) {
       if (this.clicked) {
         this.clicked = false;
         var classNames = this.data.classNames;
+
         var caption = this._getElementByClass(classNames.smartPhotoCaption);
         caption.focus();
       }
@@ -2402,8 +2410,10 @@ var SmartPhoto = function (_ATemplate) {
         if (util.isOldIE()) {
           resolve();
         }
-        var appearEffect = _this6.data.appearEffect;
-        var classNames = _this6.data.classNames;
+        var _data = _this6.data,
+            appearEffect = _data.appearEffect,
+            classNames = _data.classNames;
+
         var effect = _this6._getElementByClass(classNames.smartPhotoImgClone);
         var handler = function handler() {
           effect.removeEventListener('transitionend', handler, true);
@@ -2484,7 +2494,7 @@ var SmartPhoto = function (_ATemplate) {
       var scrollX = window.pageXOffset !== undefined ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
       var scrollY = window.pageYOffset !== undefined ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
       var body = document.querySelector('body');
-      if (location.hash) {
+      if (window.location.hash) {
         this._setHash('');
       }
       window.scroll(scrollX, scrollY);
@@ -2504,6 +2514,7 @@ var SmartPhoto = function (_ATemplate) {
           resolve();
         }
         var classNames = _this8.data.classNames;
+
         var photo = _this8._getElementByClass(classNames.smartPhoto);
         var img = _this8._getElementByQuery('.current .' + classNames.smartPhotoImg);
         var height = _this8._getWindowHeight();
@@ -2627,6 +2638,7 @@ var SmartPhoto = function (_ATemplate) {
     key: '_getItemByIndex',
     value: function _getItemByIndex(index) {
       var data = this.data;
+
       if (data.group[data.currentGroup][index]) {
         return data.group[data.currentGroup][index];
       } else {
@@ -2640,6 +2652,7 @@ var SmartPhoto = function (_ATemplate) {
 
       var index = this.data.currentIndex;
       var loadOffset = this.data.loadOffset;
+
       var from = index - loadOffset;
       var to = index + loadOffset;
       var promises = [];
