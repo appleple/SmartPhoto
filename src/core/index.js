@@ -328,7 +328,7 @@ export default class SmartPhoto extends ATemplate {
     appear.top = pos.top;
     appear.left = pos.left;
     appear.once = true;
-    appear.img = img.getAttribute('src');
+    appear.img = item.src;
     const toX = this._getWindowWidth();
     const toY = this._getWindowHeight();
     const screenY = toY - this.data.headerHeight - this.data.footerHeight;

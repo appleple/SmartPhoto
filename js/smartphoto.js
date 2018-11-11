@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 1.3.4
+ *   version: 1.3.5
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -2441,7 +2441,7 @@ var SmartPhoto = function (_ATemplate) {
       appear.top = pos.top;
       appear.left = pos.left;
       appear.once = true;
-      appear.img = img.getAttribute('src');
+      appear.img = item.src;
       var toX = this._getWindowWidth();
       var toY = this._getWindowHeight();
       var screenY = toY - this.data.headerHeight - this.data.footerHeight;
