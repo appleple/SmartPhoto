@@ -49,15 +49,15 @@ declare module "smartphoto" {
     registance?: number,
     loadOffset?: number,
     resizeStyle?: 'fit'|'cover',
-  };
+  }
 
   export default class SmartPhoto {
     constructor(selector: string | NodeListOf<HTMLElement>, option?:SmartPhotoOption);
-    on(event: SmartPhotoEvent, eventListener: EventListenerOrEventListenerObject);
-    addNewItem(element: HTMLElement);
-    hidePhoto(dir: 'bottom'|'top');
-    gotoSlide(index: number);
-    zoomPhoto();
-    zoomOutPhoto();
+    on(event: SmartPhotoEvent, eventListener: EventListenerOrEventListenerObject) :void;
+    addNewItem(element: HTMLElement): void;
+    hidePhoto(dir: 'bottom'|'top'): void;
+    gotoSlide(index: number): void;
+    zoomPhoto(): void;
+    zoomOutPhoto(): void;
   }
 }
