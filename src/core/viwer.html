@@ -26,8 +26,8 @@
 				</ul>
 				<!-- BEGIN arrows:exist -->
 				<ul class="\{classNames.smartPhotoArrows\}"<!-- BEGIN hideUi:exist --> aria-hidden="true"<!-- END hideUi:exist --><!-- BEGIN hideUi:exist --> aria-hidden="false"<!-- END hideUi:exist -->>
-					<li class="\{classNames.smartPhotoArrowLeft\}"<!-- BEGIN showPrevArrow:empty --> aria-hidden="true"<!-- END showPrevArrow:empty -->><a href="#" data-action-click="gotoSlide({prev})" role="button"><span class="smartphoto-sr-only">\{message.gotoPrevImage\}</span></a></li>
-					<li class="\{classNames.smartPhotoArrowRight\}"<!-- BEGIN showNextArrow:empty --> aria-hidden="true"<!-- END showNextArrow:empty -->><a href="#" data-action-click="gotoSlide({next})" role="button"><span class="smartphoto-sr-only">\{message.gotoNextImage\}</span></a></li>
+					<li class="\{classNames.smartPhotoArrowLeft\}<!-- BEGIN isSmartPhone:exist --> \{classNames.smartPhotoArrowHideIcon\}<!-- END isSmartPhone:exist -->"<!-- BEGIN showPrevArrow:empty --> aria-hidden="true"<!-- END showPrevArrow:empty -->><a href="#" data-action-click="gotoSlide({prev})" role="button"><span class="smartphoto-sr-only">\{message.gotoPrevImage\}</span></a></li>
+					<li class="\{classNames.smartPhotoArrowRight\}<!-- BEGIN isSmartPhone:exist --> \{classNames.smartPhotoArrowHideIcon\}<!-- END isSmartPhone:exist -->"<!-- BEGIN showNextArrow:empty --> aria-hidden="true"<!-- END showNextArrow:empty -->><a href="#" data-action-click="gotoSlide({next})" role="button"><span class="smartphoto-sr-only">\{message.gotoNextImage\}</span></a></li>
 				</ul>
 				<!-- END arrows:exist -->
 				<!-- BEGIN nav:exist -->

@@ -21,6 +21,7 @@ const defaults = {
     smartPhotoNav: 'smartphoto-nav',
     smartPhotoArrowRight: 'smartphoto-arrow-right',
     smartPhotoArrowLeft: 'smartphoto-arrow-left',
+    smartPhotoArrowHideIcon: 'smartphoto-arrow-hide',
     smartPhotoImgLeft: 'smartphoto-img-left',
     smartPhotoImgRight: 'smartphoto-img-right',
     smartPhotoList: 'smartphoto-list',
