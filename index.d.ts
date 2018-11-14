@@ -3,7 +3,7 @@ declare module "smartphoto" {
   type SmartPhotoEvent = 'open'|'close'|'change'|'swipestart'|'swipeend'|'zoomin'|'zoomout'|'gesturestart'|'gestureend';
 
   interface SmartPhotoOption {
-    classNames: {
+    classNames?: {
       smartPhoto: string,
       smartPhotoClose: string,
       smartPhotoBody: string,
@@ -29,26 +29,26 @@ declare module "smartphoto" {
       smartPhotoLoaderWrap: string,
       smartPhotoImgClone: string
     },
-    message: {
+    message?: {
       gotoNextImage: string,
       gotoPrevImage: string,
       closeDialog: string
     },
-    arrows: boolean,
-    nav: boolean,
-    showAnimation: boolean,
-    verticalGravity: boolean,
-    useOrientationApi: boolean,
-    useHistoryApi: boolean,
-    swipeTopToClose: boolean,
-    swipeBottomToClose: boolean,
-    swipeOffset: number,
-    headerHeight: number,
-    footerHeight: number,
-    forceInterval: number,
-    registance: number,
-    loadOffset: number,
-    resizeStyle: 'fit'|'cover',
+    arrows?: boolean,
+    nav?: boolean,
+    showAnimation?: boolean,
+    verticalGravity?: boolean,
+    useOrientationApi?: boolean,
+    useHistoryApi?: boolean,
+    swipeTopToClose?: boolean,
+    swipeBottomToClose?: boolean,
+    swipeOffset?: number,
+    headerHeight?: number,
+    footerHeight?: number,
+    forceInterval?: number,
+    registance?: number,
+    loadOffset?: number,
+    resizeStyle?: 'fit'|'cover',
   };
 
   export default class SmartPhoto {
