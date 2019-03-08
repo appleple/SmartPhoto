@@ -4,7 +4,7 @@
 [![npm download](http://img.shields.io/npm/dm/smartphoto.svg)](https://www.npmjs.com/package/smartphoto)
 [![GitHub license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://raw.githubusercontent.com/appleple/SmartPhoto/master/LICENSE)
 
-The most easy to use responsive image viwer especially for mobile devices
+The most easy to use responsive image viewer especially for mobile devices
 
 See [https://appleple.github.io/SmartPhoto/](https://appleple.github.io/SmartPhoto/) for complete docs and demos<br/>
 If you are Japasese, See here [https://www.appleple.com/blog/javascript/smartphoto-js.html](https://www.appleple.com/blog/javascript/smartphoto-js.html) instead.
