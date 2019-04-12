@@ -238,6 +238,7 @@
   width: 30px;
   height: 30px;
   margin-top: -20px;
+  box-sizing: content-box;
   animation-duration: 0.3s;
   animation-timing-function: ease-out;
   animation-name: smartphoto-appear;

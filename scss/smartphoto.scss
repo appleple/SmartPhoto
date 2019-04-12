@@ -251,6 +251,7 @@ $header-color: rgba(0, 0, 0, .2);
   width: 30px;
   height: 30px;
   margin-top: -20px;
+  box-sizing: content-box;
   animation-duration: $animation-speed;
   animation-timing-function: $animation-function;
   animation-name: smartphoto-appear;
