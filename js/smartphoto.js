@@ -2092,7 +2092,8 @@ var template = "<div class=\"\\{classNames.smartPhoto\\}\"<!-- BEGIN hide:exist 
 
 var util = require('../lib/util');
 
-var Promise = require('es6-promise-polyfill').Promise;
+var _require = require('es6-promise-polyfill'),
+    Promise = _require.Promise;
 
 var defaults = {
   classNames: {
@@ -2141,7 +2142,8 @@ var defaults = {
   forceInterval: 10,
   registance: 0.5,
   loadOffset: 2,
-  resizeStyle: 'fit'
+  resizeStyle: 'fit',
+  lazyAttribute: 'data-lazy'
 };
 
 var SmartPhoto =
@@ -2348,7 +2350,9 @@ function (_ATemplate) {
       var thumb = src;
 
       if (img) {
-        if (img.currentSrc) {
+        if (img.getAttribute(this.data.lazyAttribute)) {
+          thumb = img.getAttribute(this.data.lazyAttribute);
+        } else if (img.currentSrc) {
           thumb = img.currentSrc;
         } else {
           thumb = img.src;
@@ -2740,9 +2744,9 @@ function (_ATemplate) {
 
       if (data.group[data.currentGroup][index]) {
         return data.group[data.currentGroup][index];
-      } else {
-        return null;
       }
+
+      return null;
     }
   }, {
     key: "_loadNeighborItems",

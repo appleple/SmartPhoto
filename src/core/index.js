@@ -4,7 +4,7 @@ import 'custom-event-polyfill';
 import template from './viwer.html';
 
 const util = require('../lib/util');
-const Promise = require('es6-promise-polyfill').Promise;
+const { Promise } = require('es6-promise-polyfill');
 
 const defaults = {
   classNames: {
@@ -54,10 +54,10 @@ const defaults = {
   registance: 0.5,
   loadOffset: 2,
   resizeStyle: 'fit',
+  lazyAttribute: 'data-lazy'
 };
 
 export default class SmartPhoto extends ATemplate {
-
   constructor(selector, settings) {
     super();
     this.data = util.extend({}, defaults, settings);
@@ -211,7 +211,9 @@ export default class SmartPhoto extends ATemplate {
     const img = element.querySelector('img');
     let thumb = src;
     if (img) {
-      if (img.currentSrc) {
+      if (img.getAttribute(this.data.lazyAttribute)) {
+        thumb = img.getAttribute(this.data.lazyAttribute);
+      } else if (img.currentSrc) {
         thumb = img.currentSrc;
       } else {
         thumb = img.src;
@@ -329,7 +331,11 @@ export default class SmartPhoto extends ATemplate {
     appear.top = pos.top;
     appear.left = pos.left;
     appear.once = true;
-    appear.img = item.src;
+    if (item.getAttribute(this.data.lazyAttribute)) {
+      appear.img = item.getAttribute(this.data.lazyAttribute);
+    } else {
+      appear.img = item.src;
+    }
     const toX = this._getWindowWidth();
     const toY = this._getWindowHeight();
     const screenY = toY - this.data.headerHeight - this.data.footerHeight;
@@ -510,9 +516,8 @@ export default class SmartPhoto extends ATemplate {
     const { data } = this;
     if (data.group[data.currentGroup][index]) {
       return data.group[data.currentGroup][index];
-    } else {
-      return null;
     }
+    return null;
   }
 
   _loadNeighborItems() {
@@ -1133,5 +1138,4 @@ export default class SmartPhoto extends ATemplate {
     this.vy = Math.sin(theta) * force;
     this._photoUpdate();
   }
-
 }
