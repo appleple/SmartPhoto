@@ -2536,7 +2536,12 @@ function (_ATemplate) {
       appear.top = pos.top;
       appear.left = pos.left;
       appear.once = true;
-      appear.img = item.src;
+
+      if (item.getAttribute(this.data.lazyAttribute)) {
+        appear.img = item.getAttribute(this.data.lazyAttribute);
+      } else {
+        appear.img = item.src;
+      }
 
       var toX = this._getWindowWidth();
 
