@@ -331,8 +331,8 @@ export default class SmartPhoto extends ATemplate {
     appear.top = pos.top;
     appear.left = pos.left;
     appear.once = true;
-    if (item.getAttribute(this.data.lazyAttribute)) {
-      appear.img = item.getAttribute(this.data.lazyAttribute);
+    if (img.getAttribute(this.data.lazyAttribute)) {
+      appear.img = img.getAttribute(this.data.lazyAttribute);
     } else {
       appear.img = item.src;
     }

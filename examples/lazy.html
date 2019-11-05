@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="../css/smartphoto.min.css">
+	<title>jquery-smartphoto.js</title>
+	<style>
+	.brick {
+		height: 500px;
+		overflow: hidden;
+	}
+	</style>
+</head>
+<body>
+
+		<div class="brick">
+				<a href="./assets/large-lion.jpg" class="js-img-viwer" data-caption="ライオン" data-id="raion">
+					<img src="https://miro.medium.com/max/1080/0*DqHGYPBA-ANwsma2.gif" class="lazy" data-src="./assets/lion.jpg" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-rakuda.jpg" class="js-img-viwer" data-caption="ラクダ" data-id="rakuda">
+					<img src="https://miro.medium.com/max/1080/0*DqHGYPBA-ANwsma2.gif" class="lazy" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-kaba.jpg" class="js-img-viwer" data-caption="かば" data-id="kaba">
+					<img src="https://miro.medium.com/max/1080/0*DqHGYPBA-ANwsma2.gif" class="lazy" data-src="./assets/kaba.jpg" width="360" />
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-koara.jpg" class="js-img-viwer" data-caption="コアラ" data-id="koara">
+					<img src="https://miro.medium.com/max/1080/0*DqHGYPBA-ANwsma2.gif" class="lazy" data-src="./assets/koara.jpg" width="360" />
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-kuma.jpg" class="js-img-viwer" data-caption="くま" data-id="kuma">
+					<img src="https://miro.medium.com/max/1080/0*DqHGYPBA-ANwsma2.gif" class="lazy" data-src="./assets/kuma.jpg" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-sai.jpg" class="js-img-viwer" data-caption="サイ" data-id="sai">
+					<img src="https://miro.medium.com/max/1080/0*DqHGYPBA-ANwsma2.gif" class="lazy" data-src="./assets/sai.jpg" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/sample.png" class="js-img-viwer" data-caption="サイ" data-id="sai">
+					<img src="https://miro.medium.com/max/1080/0*DqHGYPBA-ANwsma2.gif" class="lazy" data-src="./assets/sample.png" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-kuma.jpg" class="js-img-viwer" data-caption="くま" data-id="kuma">
+					<img src="https://miro.medium.com/max/1080/0*DqHGYPBA-ANwsma2.gif" class="lazy" data-src="./assets/kuma.jpg" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/large-sai.jpg" class="js-img-viwer" data-caption="サイ" data-id="sai">
+					<img class="lazy" data-src="./assets/sai.jpg" width="360"/>
+				</a>
+			</div>
+			<div class="brick">
+				<a href="./assets/sample.png" class="js-img-viwer" data-caption="サイ" data-id="sai">
+					<img src="https://miro.medium.com/max/1080/0*DqHGYPBA-ANwsma2.gif" class="lazy" data-src="./assets/sample.png" width="360"/>
+				</a>
+			</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.3.0/dist/lazyload.min.js"></script>
+	<script src="../js/smartphoto.min.js?v=1"></script>
+	<script>
+
+	new LazyLoad({
+		elements_selector: ".lazy"
+	});
+	new SmartPhoto(".js-img-viwer", {
+		lazyAttribute: "data-src"
+	});
+	</script>
+</body>
+</html>

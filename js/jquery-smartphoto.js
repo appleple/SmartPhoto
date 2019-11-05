@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 1.4.3
+ *   version: 1.5.0
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -2537,8 +2537,8 @@ function (_ATemplate) {
       appear.left = pos.left;
       appear.once = true;
 
-      if (item.getAttribute(this.data.lazyAttribute)) {
-        appear.img = item.getAttribute(this.data.lazyAttribute);
+      if (img.getAttribute(this.data.lazyAttribute)) {
+        appear.img = img.getAttribute(this.data.lazyAttribute);
       } else {
         appear.img = item.src;
       }
