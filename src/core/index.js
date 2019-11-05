@@ -54,7 +54,7 @@ const defaults = {
   registance: 0.5,
   loadOffset: 2,
   resizeStyle: 'fit',
-  lazyAttribute: 'data-lazy'
+  lazyAttribute: 'data-src'
 };
 
 export default class SmartPhoto extends ATemplate {
