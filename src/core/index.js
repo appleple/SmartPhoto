@@ -70,6 +70,7 @@ export default class SmartPhoto extends ATemplate {
     this.pos = { x: 0, y: 0 };
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
+    this.handlers = [];
     this.convert = {
       increment: this.increment,
       virtualPos: this.virtualPos,
@@ -104,7 +105,7 @@ export default class SmartPhoto extends ATemplate {
     }, this.data.forceInterval);
 
     if (!this.data.isSmartPhone) {
-      window.addEventListener('resize', () => {
+      const resizeHandler = () => {
         if (!this.groupItems()) {
           return;
         }
@@ -112,9 +113,8 @@ export default class SmartPhoto extends ATemplate {
         this._setPosByCurrentIndex();
         this._setSizeByScreen();
         this.update();
-      });
-
-      window.addEventListener('keydown', (e) => {
+      };
+      const keydownHandler = (e) => {
         const code = e.keyCode || e.which;
         if (this.data.hide === true) {
           return;
@@ -126,11 +126,15 @@ export default class SmartPhoto extends ATemplate {
         } else if (code === 27) {
           this.hidePhoto();
         }
-      });
+      };
+      window.addEventListener('resize', resizeHandler);
+      window.addEventListener('keydown', keydownHandler);
+      this._registerRemoveEvent(window, 'resize', resizeHandler);
+      this._registerRemoveEvent(window, 'keydown', keydownHandler);
       return;
     }
 
-    window.addEventListener('orientationchange', () => {
+    const orientationChangeHandler = () => {
       if (!this.groupItems()) {
         return;
       }
@@ -139,13 +143,16 @@ export default class SmartPhoto extends ATemplate {
       this._setHashByCurrentIndex();
       this._setSizeByScreen();
       this.update();
-    });
+    };
+
+    window.addEventListener('orientationchange', orientationChangeHandler);
+    this._registerRemoveEvent(window, 'orientationchange', orientationChangeHandler);
 
     if (!this.data.useOrientationApi) {
       return;
     }
 
-    window.addEventListener('deviceorientation', (e) => {
+    const deviceorientationHandler = (e) => {
       const { orientation } = window;
       if (!e || !e.gamma || this.data.appearEffect) {
         return;
@@ -161,13 +168,32 @@ export default class SmartPhoto extends ATemplate {
           this._calcGravity(-e.gamma, -e.beta);
         }
       }
-    });
+    };
+
+    window.addEventListener('deviceorientation', deviceorientationHandler);
+    this._registerRemoveEvent(window, 'deviceorientation', deviceorientationHandler);
   }
 
   on(event, fn) {
     const photo = this._getElementByClass(this.data.classNames.smartPhoto);
-    photo.addEventListener(event, (e) => {
-      fn.call(this, e);
+    const handler = (e) => {
+      fn.call(photo, e);
+    };
+    photo.addEventListener(event, handler);
+    this._registerRemoveEvent(photo, event, handler);
+  }
+
+  _registerRemoveEvent(target, event, handler) {
+    this.handlers.push({
+      target,
+      event,
+      handler
+    });
+  }
+
+  destroy() {
+    this.handlers.forEach((handler) => {
+      handler.target.removeEventListener(handler.event, handler.handler);
     });
   }
 
@@ -241,7 +267,7 @@ export default class SmartPhoto extends ATemplate {
       element.setAttribute('data-id', index);
     }
     element.setAttribute('data-index', index);
-    element.addEventListener('click', (event) => {
+    const clickHandler = (event) => {
       event.preventDefault();
       this.data.currentGroup = element.getAttribute('data-group');
       this.data.currentIndex = parseInt(element.getAttribute('data-index'), 10);
@@ -264,7 +290,9 @@ export default class SmartPhoto extends ATemplate {
           this._fireEvent('open');
         });
       }
-    });
+    };
+    element.addEventListener('click', clickHandler);
+    this._registerRemoveEvent(element, 'click', clickHandler);
   }
 
   _initPhoto() {

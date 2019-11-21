@@ -2197,6 +2197,7 @@ function (_ATemplate) {
     };
     _this.data.photoPosX = 0;
     _this.data.photoPosY = 0;
+    _this.handlers = [];
     _this.convert = {
       increment: _this.increment,
       virtualPos: _this.virtualPos,
@@ -2235,7 +2236,7 @@ function (_ATemplate) {
     }, _this.data.forceInterval);
 
     if (!_this.data.isSmartPhone) {
-      window.addEventListener('resize', function () {
+      var resizeHandler = function resizeHandler() {
         if (!_this.groupItems()) {
           return;
         }
@@ -2247,8 +2248,9 @@ function (_ATemplate) {
         _this._setSizeByScreen();
 
         _this.update();
-      });
-      window.addEventListener('keydown', function (e) {
+      };
+
+      var keydownHandler = function keydownHandler(e) {
         var code = e.keyCode || e.which;
 
         if (_this.data.hide === true) {
@@ -2262,11 +2264,19 @@ function (_ATemplate) {
         } else if (code === 27) {
           _this.hidePhoto();
         }
-      });
+      };
+
+      window.addEventListener('resize', resizeHandler);
+      window.addEventListener('keydown', keydownHandler);
+
+      _this._registerRemoveEvent(window, 'resize', resizeHandler);
+
+      _this._registerRemoveEvent(window, 'keydown', keydownHandler);
+
       return _possibleConstructorReturn(_this);
     }
 
-    window.addEventListener('orientationchange', function () {
+    var orientationChangeHandler = function orientationChangeHandler() {
       if (!_this.groupItems()) {
         return;
       }
@@ -2280,13 +2290,17 @@ function (_ATemplate) {
       _this._setSizeByScreen();
 
       _this.update();
-    });
+    };
+
+    window.addEventListener('orientationchange', orientationChangeHandler);
+
+    _this._registerRemoveEvent(window, 'orientationchange', orientationChangeHandler);
 
     if (!_this.data.useOrientationApi) {
       return _possibleConstructorReturn(_this);
     }
 
-    window.addEventListener('deviceorientation', function (e) {
+    var deviceorientationHandler = function deviceorientationHandler(e) {
       var _window = window,
           orientation = _window.orientation;
 
@@ -2305,19 +2319,42 @@ function (_ATemplate) {
           _this._calcGravity(-e.gamma, -e.beta);
         }
       }
-    });
+    };
+
+    window.addEventListener('deviceorientation', deviceorientationHandler);
+
+    _this._registerRemoveEvent(window, 'deviceorientation', deviceorientationHandler);
+
     return _this;
   }
 
   _createClass(SmartPhoto, [{
     key: "on",
     value: function on(event, fn) {
-      var _this2 = this;
-
       var photo = this._getElementByClass(this.data.classNames.smartPhoto);
 
-      photo.addEventListener(event, function (e) {
-        fn.call(_this2, e);
+      var handler = function handler(e) {
+        fn.call(photo, e);
+      };
+
+      photo.addEventListener(event, handler);
+
+      this._registerRemoveEvent(photo, event, handler);
+    }
+  }, {
+    key: "_registerRemoveEvent",
+    value: function _registerRemoveEvent(target, event, handler) {
+      this.handlers.push({
+        target: target,
+        event: event,
+        handler: handler
+      });
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.handlers.forEach(function (handler) {
+        handler.target.removeEventListener(handler.event, handler.handler);
       });
     }
   }, {
@@ -2347,17 +2384,17 @@ function (_ATemplate) {
   }, {
     key: "_resetTranslate",
     value: function _resetTranslate() {
-      var _this3 = this;
+      var _this2 = this;
 
       var items = this.groupItems();
       items.forEach(function (item, index) {
-        item.translateX = _this3._getWindowWidth() * index;
+        item.translateX = _this2._getWindowWidth() * index;
       });
     }
   }, {
     key: "addNewItem",
     value: function addNewItem(element) {
-      var _this4 = this;
+      var _this3 = this;
 
       var groupId = element.getAttribute('data-group') || 'nogroup';
       var group = this.data.group;
@@ -2410,43 +2447,48 @@ function (_ATemplate) {
       }
 
       element.setAttribute('data-index', index);
-      element.addEventListener('click', function (event) {
+
+      var clickHandler = function clickHandler(event) {
         event.preventDefault();
-        _this4.data.currentGroup = element.getAttribute('data-group');
-        _this4.data.currentIndex = parseInt(element.getAttribute('data-index'), 10);
+        _this3.data.currentGroup = element.getAttribute('data-group');
+        _this3.data.currentIndex = parseInt(element.getAttribute('data-index'), 10);
 
-        _this4._setHashByCurrentIndex();
+        _this3._setHashByCurrentIndex();
 
-        var currentItem = _this4._getSelectedItem();
+        var currentItem = _this3._getSelectedItem();
 
         if (currentItem.loaded) {
-          _this4._initPhoto();
+          _this3._initPhoto();
 
-          _this4.addAppearEffect(element, currentItem);
+          _this3.addAppearEffect(element, currentItem);
 
-          _this4.clicked = true;
+          _this3.clicked = true;
 
-          _this4.update();
+          _this3.update();
 
           body.style.overflow = 'hidden';
 
-          _this4._fireEvent('open');
+          _this3._fireEvent('open');
         } else {
-          _this4._loadItem(currentItem).then(function () {
-            _this4._initPhoto();
+          _this3._loadItem(currentItem).then(function () {
+            _this3._initPhoto();
 
-            _this4.addAppearEffect(element, currentItem);
+            _this3.addAppearEffect(element, currentItem);
 
-            _this4.clicked = true;
+            _this3.clicked = true;
 
-            _this4.update();
+            _this3.update();
 
             body.style.overflow = 'hidden';
 
-            _this4._fireEvent('open');
+            _this3._fireEvent('open');
           });
         }
-      });
+      };
+
+      element.addEventListener('click', clickHandler);
+
+      this._registerRemoveEvent(element, 'click', clickHandler);
     }
   }, {
     key: "_initPhoto",
@@ -2471,15 +2513,15 @@ function (_ATemplate) {
   }, {
     key: "onUpdated",
     value: function onUpdated() {
-      var _this5 = this;
+      var _this4 = this;
 
       if (this.data.appearEffect && this.data.appearEffect.once) {
         this.data.appearEffect.once = false;
         this.execEffect().then(function () {
-          _this5.data.appearEffect = null;
-          _this5.data.appear = true;
+          _this4.data.appearEffect = null;
+          _this4.data.appear = true;
 
-          _this5.update();
+          _this4.update();
         });
       }
 
@@ -2495,18 +2537,18 @@ function (_ATemplate) {
   }, {
     key: "execEffect",
     value: function execEffect() {
-      var _this6 = this;
+      var _this5 = this;
 
       return new Promise(function (resolve) {
         if (util.isOldIE()) {
           resolve();
         }
 
-        var _this6$data = _this6.data,
-            appearEffect = _this6$data.appearEffect,
-            classNames = _this6$data.classNames;
+        var _this5$data = _this5.data,
+            appearEffect = _this5$data.appearEffect,
+            classNames = _this5$data.classNames;
 
-        var effect = _this6._getElementByClass(classNames.smartPhotoImgClone);
+        var effect = _this5._getElementByClass(classNames.smartPhotoImgClone);
 
         var handler = function handler() {
           effect.removeEventListener('transitionend', handler, true);
@@ -2585,7 +2627,7 @@ function (_ATemplate) {
   }, {
     key: "hidePhoto",
     value: function hidePhoto() {
-      var _this7 = this;
+      var _this6 = this;
 
       var dir = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'bottom';
       this.data.hide = true;
@@ -2605,30 +2647,30 @@ function (_ATemplate) {
       window.scroll(scrollX, scrollY);
 
       this._doHideEffect(dir).then(function () {
-        _this7.update();
+        _this6.update();
 
         body.style.overflow = '';
 
-        _this7._fireEvent('close');
+        _this6._fireEvent('close');
       });
     }
   }, {
     key: "_doHideEffect",
     value: function _doHideEffect(dir) {
-      var _this8 = this;
+      var _this7 = this;
 
       return new Promise(function (resolve) {
         if (util.isOldIE()) {
           resolve();
         }
 
-        var classNames = _this8.data.classNames;
+        var classNames = _this7.data.classNames;
 
-        var photo = _this8._getElementByClass(classNames.smartPhoto);
+        var photo = _this7._getElementByClass(classNames.smartPhoto);
 
-        var img = _this8._getElementByQuery(".current .".concat(classNames.smartPhotoImg));
+        var img = _this7._getElementByQuery(".current .".concat(classNames.smartPhotoImg));
 
-        var height = _this8._getWindowHeight();
+        var height = _this7._getWindowHeight();
 
         var handler = function handler() {
           photo.removeEventListener('transitionend', handler, true);
@@ -2691,16 +2733,16 @@ function (_ATemplate) {
   }, {
     key: "_setPosByCurrentIndex",
     value: function _setPosByCurrentIndex() {
-      var _this9 = this;
+      var _this8 = this;
 
       var items = this.groupItems();
       var moveX = -1 * items[this.data.currentIndex].translateX;
       this.pos.x = moveX;
       setTimeout(function () {
-        _this9.data.translateX = moveX;
-        _this9.data.translateY = 0;
+        _this8.data.translateX = moveX;
+        _this8.data.translateY = 0;
 
-        _this9._listUpdate();
+        _this8._listUpdate();
       }, 1);
     }
   }, {
@@ -2783,7 +2825,7 @@ function (_ATemplate) {
   }, {
     key: "_loadNeighborItems",
     value: function _loadNeighborItems() {
-      var _this10 = this;
+      var _this9 = this;
 
       var index = this.data.currentIndex;
       var loadOffset = this.data.loadOffset;
@@ -2801,9 +2843,9 @@ function (_ATemplate) {
 
       if (promises.length) {
         Promise.all(promises).then(function () {
-          _this10._initPhoto();
+          _this9._initPhoto();
 
-          _this10.update();
+          _this9.update();
         });
       }
     }
@@ -2842,7 +2884,7 @@ function (_ATemplate) {
   }, {
     key: "_slideList",
     value: function _slideList() {
-      var _this11 = this;
+      var _this10 = this;
 
       this.data.scaleSize = 1;
       this.isBeingZoomed = false;
@@ -2859,27 +2901,27 @@ function (_ATemplate) {
       this._setSizeByScreen();
 
       setTimeout(function () {
-        var item = _this11._getSelectedItem();
+        var item = _this10._getSelectedItem();
 
-        _this11.data.onMoveClass = false;
+        _this10.data.onMoveClass = false;
 
-        _this11.setArrow();
+        _this10.setArrow();
 
-        _this11.update();
+        _this10.update();
 
-        if (_this11.data.oldIndex !== _this11.data.currentIndex) {
-          _this11._fireEvent('change');
+        if (_this10.data.oldIndex !== _this10.data.currentIndex) {
+          _this10._fireEvent('change');
         }
 
-        _this11.data.oldIndex = _this11.data.currentIndex;
+        _this10.data.oldIndex = _this10.data.currentIndex;
 
-        _this11._loadNeighborItems();
+        _this10._loadNeighborItems();
 
         if (!item.loaded) {
-          _this11._loadItem(item).then(function () {
-            _this11._initPhoto();
+          _this10._loadItem(item).then(function () {
+            _this10._initPhoto();
 
-            _this11.update();
+            _this10.update();
           });
         }
       }, 200);
@@ -3058,7 +3100,7 @@ function (_ATemplate) {
   }, {
     key: "zoomPhoto",
     value: function zoomPhoto() {
-      var _this12 = this;
+      var _this11 = this;
 
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
@@ -3073,11 +3115,11 @@ function (_ATemplate) {
       this._photoUpdate();
 
       setTimeout(function () {
-        _this12.data.scale = true;
+        _this11.data.scale = true;
 
-        _this12._photoUpdate();
+        _this11._photoUpdate();
 
-        _this12._fireEvent('zoomin');
+        _this11._fireEvent('zoomin');
       }, 300);
     }
   }, {
@@ -3329,7 +3371,7 @@ function (_ATemplate) {
   }, {
     key: "_registerElasticForce",
     value: function _registerElasticForce(x, y) {
-      var _this13 = this;
+      var _this12 = this;
 
       var item = this._getSelectedItem();
 
@@ -3352,9 +3394,9 @@ function (_ATemplate) {
       this._photoUpdate();
 
       setTimeout(function () {
-        _this13.data.elastic = false;
+        _this12.data.elastic = false;
 
-        _this13._photoUpdate();
+        _this12._photoUpdate();
       }, 300);
     }
   }, {

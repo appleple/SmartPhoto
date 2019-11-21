@@ -47,9 +47,10 @@
 	<script src="../js/smartphoto.js?v=1"></script>
 	<script>
 	document.addEventListener('DOMContentLoaded',function(){
-		new SmartPhoto(".js-img-viwer", {
+		const sm = new SmartPhoto(".js-img-viwer", {
 			showAnimation: false
 		});
+		// sm.destroy();
 	});
 	</script>
 </body>

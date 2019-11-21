@@ -54,6 +54,7 @@ declare module "smartphoto" {
   export default class SmartPhoto {
     constructor(selector: string | NodeListOf<HTMLElement>, option?:SmartPhotoOption);
     on(event: SmartPhotoEvent, eventListener: EventListenerOrEventListenerObject) :void;
+    destroy(): void;
     addNewItem(element: HTMLElement): void;
     hidePhoto(dir: 'bottom'|'top'): void;
     gotoSlide(index: number): void;
