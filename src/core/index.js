@@ -198,6 +198,7 @@ export default class SmartPhoto extends ATemplate {
     const wrapper = document.querySelector(`[data-id="${this.id}"]`);
     util.removeElement(wrapper);
     clearInterval(this.interval);
+    this.removeTemplateEvents();
   }
 
   increment(item) {
