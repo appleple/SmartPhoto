@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 1.5.1
+ *   version: 1.6.0
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -2204,7 +2204,7 @@ function (_ATemplate) {
       util.triggerEvent(currentItem.element, 'click');
     }
 
-    setInterval(function () {
+    _this.interval = setInterval(function () {
       _this._doAnim();
     }, _this.data.forceInterval);
 
@@ -2329,6 +2329,9 @@ function (_ATemplate) {
       this.handlers.forEach(function (handler) {
         handler.target.removeEventListener(handler.event, handler.handler);
       });
+      var wrapper = document.querySelector("[data-id=\"".concat(this.id, "\"]"));
+      util.removeElement(wrapper);
+      clearInterval(this.interval);
     }
   }, {
     key: "increment",

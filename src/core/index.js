@@ -100,7 +100,7 @@ export default class SmartPhoto extends ATemplate {
       util.triggerEvent(currentItem.element, 'click');
     }
 
-    setInterval(() => {
+    this.interval = setInterval(() => {
       this._doAnim();
     }, this.data.forceInterval);
 
@@ -195,6 +195,9 @@ export default class SmartPhoto extends ATemplate {
     this.handlers.forEach((handler) => {
       handler.target.removeEventListener(handler.event, handler.handler);
     });
+    const wrapper = document.querySelector(`[data-id="${this.id}"]`);
+    util.removeElement(wrapper);
+    clearInterval(this.interval);
   }
 
   increment(item) {
