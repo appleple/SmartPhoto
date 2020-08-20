@@ -1,7 +1,7 @@
-$animation-speed: .3s;
-$animation-function: ease-out;
-$backdrop-color: rgba(0, 0, 0, 1);
-$header-color: rgba(0, 0, 0, .2);
+$animation-speed: .3s !default;
+$animation-function: ease-out !default;
+$backdrop-color: rgba(0, 0, 0, 1) !default;
+$header-color: rgba(0, 0, 0, .2) !default;
 
 @keyframes smartphoto {
   from {
