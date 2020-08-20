@@ -3,7 +3,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const test_url = "file:///"+path.resolve(__dirname,"../examples/vanilla.html");
-const hash_url = test_url + "#group=nogroup&photo=rhinoceros";
+const hash_url = test_url + "#group=nogroup&photo=rhino";
 
 const nightmare = Nightmare({
     webPreferences  : {
@@ -16,7 +16,7 @@ const nightmare = Nightmare({
 describe('test',() => {
   it('caption', (done) => {
     nightmare.goto(test_url)
-      .click('[data-caption="lion"]')
+      .click('[data-caption="Lion"]')
       .wait(1000)
       .click('.smartphoto-arrow-right a')
       .wait(1000)
@@ -24,7 +24,7 @@ describe('test',() => {
         return document.querySelector('.smartphoto-caption').innerText;
       })
       .then((result) => {
-        assert.equal(result,'camel');
+        assert.equal(result,'Camel');
         done();
       })
       .catch((error) => {
@@ -39,7 +39,7 @@ describe('test',() => {
           return document.querySelector('.smartphoto-caption').innerText;
       })
       .then(result => {
-        assert.equal(result,'rhinoceros');
+        assert.equal(result,'Rhino');
         done();
       })
       .catch(error => {
