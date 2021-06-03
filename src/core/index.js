@@ -156,7 +156,7 @@ export default class SmartPhoto extends ATemplate {
           // 5ms秒待機
           setTimeout(() => {
             resolve();
-          }, 5);
+          }, 25);
         }).then(() => {
           if (prevWidth !== this._getWindowWidth()) {
             // windowのサイズが変化したら、画像の配置をリセット
@@ -167,7 +167,7 @@ export default class SmartPhoto extends ATemplate {
             this.update();
           } else if (time <= timeout) {
             // 待機時間内であれば再待機
-            photoResizeAfterWindowSizeChange(time + 1);
+            photoResizeAfterWindowSizeChange(time + 25);
           }
         });
       };
