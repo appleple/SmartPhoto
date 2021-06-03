@@ -6,7 +6,7 @@
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
  *   homepage: http://developer.a-blogcms.jp
- *   version: 1.6.0
+ *   version: 1.6.3
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -2350,7 +2350,8 @@ function (_ATemplate) {
     var orientationChangeHandler = function orientationChangeHandler() {
       if (!_this.groupItems()) {
         return;
-      }
+      } // 画像の配置をリセット
+
 
       _this._resetTranslate();
 
@@ -2360,7 +2361,42 @@ function (_ATemplate) {
 
       _this._setSizeByScreen();
 
-      _this.update();
+      _this.update(); // orientationchangeが発火するタイミングとwindowのサイズが変化するタイミングが違うデバイスが存在する
+      // その対策として、一定時間待機し、windowのサイズが変化しないかどうか確かめる
+      // 変化した場合、もう一度画像の配置をリセットする
+
+
+      var prevWidth = _this._getWindowWidth(); // 現在の画面サイズ
+
+
+      var timeout = 500; // 最大待機時間
+
+      var photoResizeAfterWindowSizeChange = function photoResizeAfterWindowSizeChange(time) {
+        new Promise(function (resolve) {
+          // 5ms秒待機
+          setTimeout(function () {
+            resolve();
+          }, 5);
+        }).then(function () {
+          if (prevWidth !== _this._getWindowWidth()) {
+            // windowのサイズが変化したら、画像の配置をリセット
+            _this._resetTranslate();
+
+            _this._setPosByCurrentIndex();
+
+            _this._setHashByCurrentIndex();
+
+            _this._setSizeByScreen();
+
+            _this.update();
+          } else if (time <= timeout) {
+            // 待機時間内であれば再待機
+            photoResizeAfterWindowSizeChange(time + 1);
+          }
+        });
+      };
+
+      photoResizeAfterWindowSizeChange(0); // 待機開始
     };
 
     window.addEventListener('orientationchange', orientationChangeHandler);
