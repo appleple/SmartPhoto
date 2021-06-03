@@ -138,11 +138,40 @@ export default class SmartPhoto extends ATemplate {
       if (!this.groupItems()) {
         return;
       }
+
+      // 画像の配置をリセット
       this._resetTranslate();
       this._setPosByCurrentIndex();
       this._setHashByCurrentIndex();
       this._setSizeByScreen();
       this.update();
+
+      // orientationchangeが発火するタイミングとwindowのサイズが変化するタイミングが違うデバイスが存在する
+      // その対策として、一定時間待機し、windowのサイズが変化しないかどうか確かめる
+      // 変化した場合、もう一度画像の配置をリセットする
+      const prevWidth = this._getWindowWidth(); // 現在の画面サイズ
+      const timeout = 500; // 最大待機時間
+      const photoResizeAfterWindowSizeChange = (time) => {
+        new Promise((resolve) => {
+          // 5ms秒待機
+          setTimeout(() => {
+            resolve();
+          }, 25);
+        }).then(() => {
+          if (prevWidth !== this._getWindowWidth()) {
+            // windowのサイズが変化したら、画像の配置をリセット
+            this._resetTranslate();
+            this._setPosByCurrentIndex();
+            this._setHashByCurrentIndex();
+            this._setSizeByScreen();
+            this.update();
+          } else if (time <= timeout) {
+            // 待機時間内であれば再待機
+            photoResizeAfterWindowSizeChange(time + 25);
+          }
+        });
+      };
+      photoResizeAfterWindowSizeChange(0); // 待機開始
     };
 
     window.addEventListener('orientationchange', orientationChangeHandler);
