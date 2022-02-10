@@ -49,7 +49,7 @@
     "mocha": "^6.2.0",
     "nightmare": "^2.8.1",
     "node-cmd": "^2.0.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "nodemon": "^1.11.0",
     "np": "^2.16.0",
     "npm-run-all": "^4.0.2",
