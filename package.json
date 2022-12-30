@@ -46,7 +46,7 @@
     "fs-extra": "^2.1.2",
     "http-server": "^0.11.1",
     "licensify": "^3.1.2",
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "nightmare": "^2.8.1",
     "node-cmd": "^2.0.0",
     "node-sass": "^4.12.0",
