@@ -1,0 +1,65 @@
+<div class="\{classNames.smartPhoto\}"<!-- BEGIN hide:exist --> aria-hidden="true"<!-- END hide:exist --><!-- BEGIN hide:empty --> aria-hidden="false"<!-- END hide:empty --> role="dialog" tabindex="-1">
+	<div class="\{classNames.smartPhotoBody\}">
+		<div class="\{classNames.smartPhotoInner\}">
+			<div class="\{classNames.smartPhotoHeader\}">
+				<span class="\{classNames.smartPhotoCount\}">{currentIndex}[increment]/{total}</span>
+				<span class="\{classNames.smartPhotoCaption\}" aria-live="polite"><!-- BEGIN groupItems:loop --><!-- \BEGIN currentIndex:touch#{index} -->{caption}<!-- \END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>
+			</div>
+
+			<div class="\{classNames.smartPhotoContent\}"<!-- BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag(false)"<!-- END isSmartPhone:exist --><!-- BEGIN isSmartPhone:empty --> data-action-click="hidePhoto()"<!-- END isSmartPhone:empty -->>
+			</div>
+
+			<ul style="transform:translate({translateX}[round]px,{translateY}[round]px);" class="\{classNames.smartPhotoList\}<!-- BEGIN onMoveClass:exist --> \{classNames.smartPhotoListOnMove\}<!-- END onMoveClass:exist -->">
+				<!-- BEGIN groupItems:loop -->
+				<li style="transform:translate({translateX}[round]px,{translateY}[round]px);" class="<!-- \BEGIN currentIndex:touch#{index} -->current<!-- \END currentIndex:touch#{index} -->">
+					<!-- BEGIN processed:exist -->
+					<div style="transform:translate({x}[round]px,{y}[round]px) scale({scale});" class="\\{classNames.smartPhotoImgWrap\\}"<!-- \BEGIN isSmartPhone:empty --> data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag"<!-- \END isSmartPhone:empty --><!-- \BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag"<!-- \END isSmartPhone:exist -->>
+						<img style="<!-- \BEGIN currentIndex:touch#{index} -->transform:translate(\{photoPosX\}[virtualPos]px,\{photoPosY\}[virtualPos]px) scale(\{scaleSize\});<!-- \END currentIndex:touch#{index} -->width:{width}px;" src="{src}" class="\\{classNames.smartPhotoImg\\}<!-- \BEGIN scale:exist -->  \\{classNames.smartPhotoImgOnMove\\}<!-- \END scale:exist --><!-- \BEGIN elastic:exist --> \\{classNames.smartPhotoImgElasticMove\\}<!-- \END elastic:exist --><!-- \BEGIN appear:exist --> active<!-- \END appear:exist -->" ondragstart="return false;">
+					</div>
+					<!-- END processed:exist -->
+					<!-- BEGIN processed:empty -->
+					<div class="\\{classNames.smartPhotoLoaderWrap\\}">
+						<span class="\\{classNames.smartPhotoLoader\\}"></span>
+					</div>
+					<!-- END processed:empty -->
+				</li>
+				<!-- END groupItems:loop -->
+			</ul>
+
+			<!-- BEGIN arrows:exist -->
+			<ul
+				class="\{classNames.smartPhotoArrows\}"
+				<!-- BEGIN hideUi:exist --> aria-hidden="true"<!-- END hideUi:exist -->
+				<!-- BEGIN hideUi:exist --> aria-hidden="false"<!-- END hideUi:exist -->
+				tabindex="-1">
+				<li class="\{classNames.smartPhotoArrowLeft\}<!-- BEGIN isSmartPhone:exist --> \{classNames.smartPhotoArrowHideIcon\}<!-- END isSmartPhone:exist -->"<!-- BEGIN showPrevArrow:empty --> aria-hidden="true"<!-- END showPrevArrow:empty -->><a href="#" data-action-click="gotoSlide({prev})" role="button"><span class="smartphoto-sr-only">\{message.gotoPrevImage\}</span></a></li>
+				<li class="\{classNames.smartPhotoArrowRight\}<!-- BEGIN isSmartPhone:exist --> \{classNames.smartPhotoArrowHideIcon\}<!-- END isSmartPhone:exist -->"<!-- BEGIN showNextArrow:empty --> aria-hidden="true"<!-- END showNextArrow:empty -->><a href="#" data-action-click="gotoSlide({next})" role="button"><span class="smartphoto-sr-only">\{message.gotoNextImage\}</span></a></li>
+			</ul>
+			<!-- END arrows:exist -->
+
+			<!-- BEGIN nav:exist -->
+			<nav
+				class="\{classNames.smartPhotoNav\}"
+				<!-- BEGIN hideUi:exist -->aria-hidden="true"<!-- END hideUi:exist -->
+				<!-- BEGIN hideUi:exist --> aria-hidden="false"<!-- END hideUi:exist -->>
+				<ul>
+					<!-- BEGIN groupItems:loop -->
+					<li><a href="#" data-action-click="gotoSlide({index})" class="<!-- \BEGIN currentIndex:touch#{index} -->current<!-- \END currentIndex:touch#{index} -->" style="background-image:url('{thumb}');" role="button"><span class="smartphoto-sr-only">go to {caption}</span></a></li>
+					<!-- END groupItems:loop -->
+				</ul>
+			</nav>
+			<!-- END nav:exist -->
+
+			<button
+				class="\{classNames.smartPhotoDismiss\}"
+				data-action-click="hidePhoto()">
+				<span class="smartphoto-sr-only">\{message.closeDialog\}</span>
+			</button>
+		</div>
+		<!-- BEGIN appearEffect:exist -->
+		<img src=\{appearEffect.img\}
+		class="\{classNames.smartPhotoImgClone\}"
+		style="width:\{appearEffect.width\}px;height:\{appearEffect.height\}px;transform:translate(\{appearEffect.left\}px,\{appearEffect.top\}px) scale(1)" />
+		<!-- END appearEffect:exist -->
+	</div>
+</div>

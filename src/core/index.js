@@ -1,7 +1,7 @@
 import ATemplate from 'a-template';
 import 'custom-event-polyfill';
 
-import template from './viwer.html';
+import template from './viewer.html';
 
 const util = require('../lib/util');
 const { Promise } = require('es6-promise-polyfill');
@@ -32,7 +32,7 @@ const defaults = {
     smartPhotoDismiss: 'smartphoto-dismiss',
     smartPhotoLoader: 'smartphoto-loader',
     smartPhotoLoaderWrap: 'smartphoto-loader-wrap',
-    smartPhotoImgClone: 'smartphoto-img-clone'
+    smartPhotoImgClone: 'smartphoto-img-clone',
   },
   message: {
     gotoNextImage: 'go to the next image',
@@ -103,7 +103,6 @@ export default class SmartPhoto extends ATemplate {
     this.interval = setInterval(() => {
       this._doAnim();
     }, this.data.forceInterval);
-
     if (!this.data.isSmartPhone) {
       const resizeHandler = () => {
         if (!this.groupItems()) {
@@ -306,6 +305,21 @@ export default class SmartPhoto extends ATemplate {
       this.data.currentIndex = parseInt(element.getAttribute('data-index'), 10);
       this._setHashByCurrentIndex();
       const currentItem = this._getSelectedItem();
+
+      const onFocus = (e) => {
+        if(e.keyCode === 9) {
+          const smartPhoto = document.querySelector(`.${this.data.classNames.smartPhoto}`);
+          const arrows = document.querySelector(`.${this.data.classNames.smartPhotoArrows}`);
+          const dismiss = document.querySelector(`.${this.data.classNames.smartPhotoDismiss}`);
+          const curFocus = document.activeElement;
+          if  (curFocus === smartPhoto) {
+            arrows.focus()
+          } else if (curFocus === dismiss) {
+            smartPhoto.focus()
+          }
+        }
+      }
+
       if (currentItem.loaded) {
         this._initPhoto();
         this.addAppearEffect(element, currentItem);
@@ -313,6 +327,11 @@ export default class SmartPhoto extends ATemplate {
         this.update();
         body.style.overflow = 'hidden';
         this._fireEvent('open');
+
+        const smartPhoto = document.querySelector(`.${this.data.classNames.smartPhoto}`);
+        smartPhoto.focus();
+        document.addEventListener('keydown', onFocus);
+        this._registerRemoveEvent(window, 'keydown', onFocus);
       } else {
         this._loadItem(currentItem).then(() => {
           this._initPhoto();
@@ -321,7 +340,12 @@ export default class SmartPhoto extends ATemplate {
           this.update();
           body.style.overflow = 'hidden';
           this._fireEvent('open');
-        });
+
+          const smartPhoto = document.querySelector(`.${this.data.classNames.smartPhoto}`);
+          smartPhoto.focus();
+          document.addEventListener('keydown', onFocus);
+          this._registerRemoveEvent(window, 'keydown', onFocus);
+        });	
       }
     };
     element.addEventListener('click', clickHandler);

@@ -146,6 +146,7 @@
   text-decoration: none;
   cursor: pointer;
   line-height: 1;
+  z-index: 1;
 }
 
 .smartphoto-body {
