@@ -306,27 +306,6 @@ export default class SmartPhoto extends ATemplate {
       this._setHashByCurrentIndex();
       const currentItem = this._getSelectedItem();
 
-      const onFocus = (e) => {
-        const smartPhoto = document.querySelector(`.${this.data.classNames.smartPhoto}`);
-        const arrows = document.querySelector(`.${this.data.classNames.smartPhotoArrows}`);
-        const dismiss = document.querySelector(`.${this.data.classNames.smartPhotoDismiss}`);
-        const curFocus = document.activeElement;
-
-        if (e.key === 9) {
-          if (curFocus === smartPhoto) {
-            arrows.focus();
-          } else if (curFocus === dismiss) {
-            smartPhoto.focus();
-          }
-        } else if (e.key === 9 && e.shiftKey) {
-          if (curFocus === smartPhoto) {
-            dismiss.focus();
-          } else if (curFocus === dismiss) {
-            smartPhoto.focus();
-          }
-        }
-      };
-
       if (currentItem.loaded) {
         this._initPhoto();
         this.addAppearEffect(element, currentItem);
@@ -334,11 +313,6 @@ export default class SmartPhoto extends ATemplate {
         this.update();
         body.style.overflow = 'hidden';
         this._fireEvent('open');
-
-        const smartPhoto = document.querySelector(`.${this.data.classNames.smartPhoto}`);
-        smartPhoto.focus();
-        document.addEventListener('keydown', onFocus);
-        this._registerRemoveEvent(window, 'keydown', onFocus);
       } else {
         this._loadItem(currentItem).then(() => {
           this._initPhoto();
@@ -347,13 +321,10 @@ export default class SmartPhoto extends ATemplate {
           this.update();
           body.style.overflow = 'hidden';
           this._fireEvent('open');
-
-          const smartPhoto = document.querySelector(`.${this.data.classNames.smartPhoto}`);
-          smartPhoto.focus();
-          document.addEventListener('keydown', onFocus);
-          this._registerRemoveEvent(window, 'keydown', onFocus);
         });
       }
+      document.addEventListener('keydown', this._onFocus.bind(this));
+      this._registerRemoveEvent(window, 'keydown', this._onFocus);
     };
     element.addEventListener('click', clickHandler);
     this._registerRemoveEvent(element, 'click', clickHandler);
@@ -1212,6 +1183,10 @@ export default class SmartPhoto extends ATemplate {
   _fireEvent(eventName) {
     const photo = this._getElementByClass(this.data.classNames.smartPhoto);
     util.triggerEvent(photo, eventName);
+    if (eventName === 'open') {
+      const smartPhoto = document.querySelector(`[data-id='${this.data.classNames.smartPhoto}']`);
+      smartPhoto.focus();
+    }
   }
 
   _doAnim() {
@@ -1252,5 +1227,24 @@ export default class SmartPhoto extends ATemplate {
     this.vx = Math.cos(theta) * force;
     this.vy = Math.sin(theta) * force;
     this._photoUpdate();
+  }
+
+  _onFocus(e) {
+    const smartPhoto = document.querySelector(`[data-id='${this.data.classNames.smartPhoto}']`);
+    const dismiss = document.querySelector(`[data-id='${this.data.classNames.smartPhotoDismiss}']`);
+    const curFocus = document.activeElement;
+
+    if (e.key === 'Tab' && !e.shiftKey) {
+      if (curFocus === dismiss) {
+        e.preventDefault();
+        smartPhoto.focus();
+      }
+    }
+    if (e.key === 'Tab' && e.shiftKey) {
+      if (curFocus === smartPhoto) {
+        e.preventDefault();
+        dismiss.focus();
+      }
+    }
   }
 }

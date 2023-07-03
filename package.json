@@ -67,7 +67,6 @@
     "es6-promise-polyfill": "^1.2.0"
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix",
     "*.{js,css}": "prettier --write"
   }
 }

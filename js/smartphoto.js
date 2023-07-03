@@ -15,14 +15,13 @@
  *
  * custom-event-polyfill:
  *   license: MIT (http://opensource.org/licenses/MIT)
- *   contributors: Frank Panetta, Mikhail Reenko <reenko@yandex.ru>, Joscha Feth <joscha@feth.com>
- *   homepage: https://github.com/krambuhl/custom-event-polyfill#readme
+ *   author: NO AUTHOR!
+ *   contributors: Frank Panetta (http://www.savvi.io), Mikhail Reenko <reenko@yandex.ru>, Joscha Feth <joscha@feth.com> (http://www.feth.com)
  *   version: 0.3.0
  *
  * es6-promise-polyfill:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Roman Dvornov <rdvornov@gmail.com>
- *   homepage: https://github.com/lahmatiy/es6-promise-polyfill#readme
  *   version: 1.2.0
  *
  * ie-array-find-polyfill:
@@ -34,18 +33,16 @@
  * morphdom:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Patrick Steele-Idem <pnidem@gmail.com>
- *   homepage: https://github.com/patrick-steele-idem/morphdom#readme
  *   version: 2.5.12
  *
  * process:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Roman Shtylman <shtylman@gmail.com>
- *   homepage: https://github.com/shtylman/node-process#readme
  *   version: 0.11.10
  *
  * timers-browserify:
  *   licenses: MIT (http://opensource.org/licenses/MIT)
- *   author: J. Ryan Stinnett <jryans@gmail.com>
+ *   author: J. Ryan Stinnett <jryans@gmail.com> (http://convolv.es/)
  *   contributors: Guy Bedford <guybedford@gmail.com>, Ionut-Cristian Florescu <ionut.florescu@gmail.com>, James Halliday <mail@substack.net>, Jan Schär <jscissr@gmail.com>, Johannes Ewald <johannes.ewald@peerigon.com>, Jonathan Prins <jon@blip.tv>, Matt Esch <matt@mattesch.info>
  *   homepage: https://github.com/jryans/timers-browserify
  *   version: 1.4.2
@@ -2454,7 +2451,7 @@
           }
 
           var template =
-            '<div class="\\{classNames.smartPhoto\\}"<!-- BEGIN hide:exist --> aria-hidden="true"<!-- END hide:exist --><!-- BEGIN hide:empty --> aria-hidden="false"<!-- END hide:empty --> role="dialog" tabindex="-1">\n\t<div class="\\{classNames.smartPhotoBody\\}">\n\t\t<div class="\\{classNames.smartPhotoInner\\}">\n\t\t\t<div class="\\{classNames.smartPhotoHeader\\}">\n\t\t\t\t<span class="\\{classNames.smartPhotoCount\\}">{currentIndex}[increment]/{total}</span>\n\t\t\t\t<span class="\\{classNames.smartPhotoCaption\\}" aria-live="polite"><!-- BEGIN groupItems:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>\n\t\t\t</div>\n\n\t\t\t<div class="\\{classNames.smartPhotoContent\\}"<!-- BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag(false)"<!-- END isSmartPhone:exist --><!-- BEGIN isSmartPhone:empty --> data-action-click="hidePhoto()"<!-- END isSmartPhone:empty -->>\n\t\t\t</div>\n\n\t\t\t<ul style="transform:translate({translateX}[round]px,{translateY}[round]px);" class="\\{classNames.smartPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.smartPhotoListOnMove\\}<!-- END onMoveClass:exist -->">\n\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t<li style="transform:translate({translateX}[round]px,{translateY}[round]px);" class="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->">\n\t\t\t\t\t<!-- BEGIN processed:exist -->\n\t\t\t\t\t<div style="transform:translate({x}[round]px,{y}[round]px) scale({scale});" class="\\\\{classNames.smartPhotoImgWrap\\\\}"<!-- \\BEGIN isSmartPhone:empty --> data-action-mousemove="onDrag" data-action-mousedown="beforeDrag" data-action-mouseup="afterDrag"<!-- \\END isSmartPhone:empty --><!-- \\BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag"<!-- \\END isSmartPhone:exist -->>\n\t\t\t\t\t\t<img style="<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->width:{width}px;" src="{src}" class="\\\\{classNames.smartPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.smartPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.smartPhotoImgElasticMove\\\\}<!-- \\END elastic:exist --><!-- \\BEGIN appear:exist --> active<!-- \\END appear:exist -->" ondragstart="return false;">\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- END processed:exist -->\n\t\t\t\t\t<!-- BEGIN processed:empty -->\n\t\t\t\t\t<div class="\\\\{classNames.smartPhotoLoaderWrap\\\\}">\n\t\t\t\t\t\t<span class="\\\\{classNames.smartPhotoLoader\\\\}"></span>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- END processed:empty -->\n\t\t\t\t</li>\n\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t</ul>\n\n\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t<ul\n\t\t\t\tclass="\\{classNames.smartPhotoArrows\\}"\n\t\t\t\t<!-- BEGIN hideUi:exist --> aria-hidden="true"<!-- END hideUi:exist -->\n\t\t\t\t<!-- BEGIN hideUi:exist --> aria-hidden="false"<!-- END hideUi:exist -->\n\t\t\t\ttabindex="-1">\n\t\t\t\t<li class="\\{classNames.smartPhotoArrowLeft\\}<!-- BEGIN isSmartPhone:exist --> \\{classNames.smartPhotoArrowHideIcon\\}<!-- END isSmartPhone:exist -->"<!-- BEGIN showPrevArrow:empty --> aria-hidden="true"<!-- END showPrevArrow:empty -->><a href="#" data-action-click="gotoSlide({prev})" role="button"><span class="smartphoto-sr-only">\\{message.gotoPrevImage\\}</span></a></li>\n\t\t\t\t<li class="\\{classNames.smartPhotoArrowRight\\}<!-- BEGIN isSmartPhone:exist --> \\{classNames.smartPhotoArrowHideIcon\\}<!-- END isSmartPhone:exist -->"<!-- BEGIN showNextArrow:empty --> aria-hidden="true"<!-- END showNextArrow:empty -->><a href="#" data-action-click="gotoSlide({next})" role="button"><span class="smartphoto-sr-only">\\{message.gotoNextImage\\}</span></a></li>\n\t\t\t</ul>\n\t\t\t<!-- END arrows:exist -->\n\n\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t<nav\n\t\t\t\tclass="\\{classNames.smartPhotoNav\\}"\n\t\t\t\t<!-- BEGIN hideUi:exist -->aria-hidden="true"<!-- END hideUi:exist -->\n\t\t\t\t<!-- BEGIN hideUi:exist --> aria-hidden="false"<!-- END hideUi:exist -->>\n\t\t\t\t<ul>\n\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t<li><a href="#" data-action-click="gotoSlide({index})" class="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->" style="background-image:url(\'{thumb}\');" role="button"><span class="smartphoto-sr-only">go to {caption}</span></a></li>\n\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t</ul>\n\t\t\t</nav>\n\t\t\t<!-- END nav:exist -->\n\n\t\t\t<button\n\t\t\t\tclass="\\{classNames.smartPhotoDismiss\\}"\n\t\t\t\tdata-action-click="hidePhoto()">\n\t\t\t\t<span class="smartphoto-sr-only">\\{message.closeDialog\\}</span>\n\t\t\t</button>\n\t\t</div>\n\t\t<!-- BEGIN appearEffect:exist -->\n\t\t<img src=\\{appearEffect.img\\}\n\t\tclass="\\{classNames.smartPhotoImgClone\\}"\n\t\tstyle="width:\\{appearEffect.width\\}px;height:\\{appearEffect.height\\}px;transform:translate(\\{appearEffect.left\\}px,\\{appearEffect.top\\}px) scale(1)" />\n\t\t<!-- END appearEffect:exist -->\n\t</div>\n</div>\n';
+            '<div\n\tclass="\\{classNames.smartPhoto\\}"<!-- BEGIN hide:exist -->\n\taria-hidden="true"<!-- END hide:exist --><!-- BEGIN hide:empty -->aria-hidden="false"<!-- END hide:empty -->\n\trole="dialog"\n\tdata-id="\\{classNames.smartPhoto\\}"\n\ttabindex="0">\n\t<div class="\\{classNames.smartPhotoBody\\}">\n\t\t<div class="\\{classNames.smartPhotoInner\\}">\n\t\t\t<div class="\\{classNames.smartPhotoHeader\\}">\n\t\t\t\t<span class="\\{classNames.smartPhotoCount\\}">{currentIndex}[increment]/{total}</span>\n\t\t\t\t<span class="\\{classNames.smartPhotoCaption\\}" aria-live="polite"><!-- BEGIN groupItems:loop --><!-- \\BEGIN currentIndex:touch#{index} -->{caption}<!-- \\END currentIndex:touch#{index} --><!-- END groupItems:loop --></span>\n\t\t\t</div>\n\n\t\t\t<div class="\\{classNames.smartPhotoContent\\}"<!-- BEGIN isSmartPhone:exist --> data-action-touchstart="beforeDrag" data-action-touchmove="onDrag" data-action-touchend="afterDrag(false)"<!-- END isSmartPhone:exist --><!-- BEGIN isSmartPhone:empty --> data-action-click="hidePhoto()"<!-- END isSmartPhone:empty -->>\n\t\t\t</div>\n\n\t\t\t<ul\n\t\t\t\tstyle="transform:translate({translateX}[round]px,{translateY}[round]px);"\n\t\t\t\tclass="\\{classNames.smartPhotoList\\}<!-- BEGIN onMoveClass:exist --> \\{classNames.smartPhotoListOnMove\\}<!-- END onMoveClass:exist -->">\n\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t<li style="transform:translate({translateX}[round]px,{translateY}[round]px);" class="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->">\n\t\t\t\t\t<!-- BEGIN processed:exist -->\n\t\t\t\t\t<div\n\t\t\t\t\t\tstyle="transform:translate({x}[round]px,{y}[round]px) scale({scale});"\n\t\t\t\t\t\tclass="\\\\{classNames.smartPhotoImgWrap\\\\}"<!-- \\BEGIN isSmartPhone:empty -->\n\t\t\t\t\t\tdata-action-mousemove="onDrag"\n\t\t\t\t\t\tdata-action-mousedown="beforeDrag"\n\t\t\t\t\t\tdata-action-mouseup="afterDrag"<!-- \\END isSmartPhone:empty --><!-- \\BEGIN isSmartPhone:exist -->\n\t\t\t\t\t\tdata-action-touchstart="beforeDrag"\n\t\t\t\t\t\tdata-action-touchmove="onDrag"\n\t\t\t\t\t\tdata-action-touchend="afterDrag"<!-- \\END isSmartPhone:exist -->>\n\t\t\t\t\t\t<img style="<!-- \\BEGIN currentIndex:touch#{index} -->transform:translate(\\{photoPosX\\}[virtualPos]px,\\{photoPosY\\}[virtualPos]px) scale(\\{scaleSize\\});<!-- \\END currentIndex:touch#{index} -->width:{width}px;" src="{src}" class="\\\\{classNames.smartPhotoImg\\\\}<!-- \\BEGIN scale:exist -->  \\\\{classNames.smartPhotoImgOnMove\\\\}<!-- \\END scale:exist --><!-- \\BEGIN elastic:exist --> \\\\{classNames.smartPhotoImgElasticMove\\\\}<!-- \\END elastic:exist --><!-- \\BEGIN appear:exist --> active<!-- \\END appear:exist -->" ondragstart="return false;">\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- END processed:exist -->\n\t\t\t\t\t<!-- BEGIN processed:empty -->\n\t\t\t\t\t<div class="\\\\{classNames.smartPhotoLoaderWrap\\\\}">\n\t\t\t\t\t\t<span class="\\\\{classNames.smartPhotoLoader\\\\}"></span>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!-- END processed:empty -->\n\t\t\t\t</li>\n\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t</ul>\n\n\t\t\t<!-- BEGIN arrows:exist -->\n\t\t\t<ul\n\t\t\t\tclass="\\{classNames.smartPhotoArrows\\}"<!-- BEGIN hideUi:exist -->\n\t\t\t\taria-hidden="true"<!-- END hideUi:exist --><!-- BEGIN hideUi:exist -->\n\t\t\t\taria-hidden="false"<!-- END hideUi:exist -->>\n\t\t\t\t<li\n\t\t\t\t\tclass="\\{classNames.smartPhotoArrowLeft\\}<!-- BEGIN isSmartPhone:exist --> \\{classNames.smartPhotoArrowHideIcon\\}<!-- END isSmartPhone:exist -->"<!-- BEGIN showPrevArrow:empty -->\n\t\t\t\t\taria-hidden="true"<!-- END showPrevArrow:empty -->>\n\t\t\t\t\t<a\n\t\t\t\t\t\thref="#"\n\t\t\t\t\t\tdata-id="\\{classNames.smartPhotoArrowLeft\\}"\n\t\t\t\t\t\tdata-action-click="gotoSlide({prev})"\n\t\t\t\t\t\trole="button">\n\t\t\t\t\t\t<span class="smartphoto-sr-only">\\{message.gotoPrevImage\\}</span>\n\t\t\t\t\t</a>\n\t\t\t\t</li>\n\t\t\t\t<li\n\t\t\t\t\tclass="\\{classNames.smartPhotoArrowRight\\}<!-- BEGIN isSmartPhone:exist --> \\{classNames.smartPhotoArrowHideIcon\\}<!-- END isSmartPhone:exist -->"<!-- BEGIN showNextArrow:empty -->\n\t\t\t\t\taria-hidden="true"<!-- END showNextArrow:empty -->>\n\t\t\t\t\t<a\n\t\t\t\t\t\thref="#"\n\t\t\t\t\t\tdata-id="\\{classNames.smartPhotoArrowRight\\}"\n\t\t\t\t\t\tdata-action-click="gotoSlide({next})"\n\t\t\t\t\t\trole="button">\n\t\t\t\t\t\t<span class="smartphoto-sr-only">\\{message.gotoNextImage\\}</span>\n\t\t\t\t\t</a>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t\t<!-- END arrows:exist -->\n\n\t\t\t<!-- BEGIN nav:exist -->\n\t\t\t<nav\n\t\t\t\tclass="\\{classNames.smartPhotoNav\\}"\n\t\t\t\t<!-- BEGIN hideUi:exist -->aria-hidden="true"<!-- END hideUi:exist -->\n\t\t\t\t<!-- BEGIN hideUi:exist --> aria-hidden="false"<!-- END hideUi:exist -->>\n\t\t\t\t<ul>\n\t\t\t\t\t<!-- BEGIN groupItems:loop -->\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<a\n\t\t\t\t\t\t\thref="#"\n\t\t\t\t\t\t\tdata-action-click="gotoSlide({index})"\n\t\t\t\t\t\t\tclass="<!-- \\BEGIN currentIndex:touch#{index} -->current<!-- \\END currentIndex:touch#{index} -->"\n\t\t\t\t\t\t\tstyle="background-image:url(\'{thumb}\');"\n\t\t\t\t\t\t\trole="button">\n\t\t\t\t\t\t\t<span class="smartphoto-sr-only">go to {caption}</span>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\t\t\t\t\t<!-- END groupItems:loop -->\n\t\t\t\t</ul>\n\t\t\t</nav>\n\t\t\t<!-- END nav:exist -->\n\n\t\t\t<button\n\t\t\t\tclass="\\{classNames.smartPhotoDismiss\\}"\n\t\t\t\tdata-id="\\{classNames.smartPhotoDismiss\\}"\n\t\t\t\tdata-action-click="hidePhoto()">\n\t\t\t\t<span class="smartphoto-sr-only">\\{message.closeDialog\\}</span>\n\t\t\t</button>\n\t\t</div>\n\t\t<!-- BEGIN appearEffect:exist -->\n\t\t<img src=\\{appearEffect.img\\}\n\t\tclass="\\{classNames.smartPhotoImgClone\\}"\n\t\tstyle="width:\\{appearEffect.width\\}px;height:\\{appearEffect.height\\}px;transform:translate(\\{appearEffect.left\\}px,\\{appearEffect.top\\}px) scale(1)" />\n\t\t<!-- END appearEffect:exist -->\n\t</div>\n</div>\n';
 
           var util = require('../lib/util');
 
@@ -2850,33 +2847,6 @@
 
                       var currentItem = _this3._getSelectedItem();
 
-                      var onFocus = function onFocus(e) {
-                        var smartPhoto = document.querySelector(
-                          '.'.concat(_this3.data.classNames.smartPhoto)
-                        );
-                        var arrows = document.querySelector(
-                          '.'.concat(_this3.data.classNames.smartPhotoArrows)
-                        );
-                        var dismiss = document.querySelector(
-                          '.'.concat(_this3.data.classNames.smartPhotoDismiss)
-                        );
-                        var curFocus = document.activeElement;
-
-                        if (e.key === 9) {
-                          if (curFocus === smartPhoto) {
-                            arrows.focus();
-                          } else if (curFocus === dismiss) {
-                            smartPhoto.focus();
-                          }
-                        } else if (e.key === 9 && e.shiftKey) {
-                          if (curFocus === smartPhoto) {
-                            dismiss.focus();
-                          } else if (curFocus === dismiss) {
-                            smartPhoto.focus();
-                          }
-                        }
-                      };
-
                       if (currentItem.loaded) {
                         _this3._initPhoto();
 
@@ -2889,14 +2859,6 @@
                         body.style.overflow = 'hidden';
 
                         _this3._fireEvent('open');
-
-                        var smartPhoto = document.querySelector(
-                          '.'.concat(_this3.data.classNames.smartPhoto)
-                        );
-                        smartPhoto.focus();
-                        document.addEventListener('keydown', onFocus);
-
-                        _this3._registerRemoveEvent(window, 'keydown', onFocus);
                       } else {
                         _this3._loadItem(currentItem).then(function () {
                           _this3._initPhoto();
@@ -2910,16 +2872,12 @@
                           body.style.overflow = 'hidden';
 
                           _this3._fireEvent('open');
-
-                          var smartPhoto = document.querySelector(
-                            '.'.concat(_this3.data.classNames.smartPhoto)
-                          );
-                          smartPhoto.focus();
-                          document.addEventListener('keydown', onFocus);
-
-                          _this3._registerRemoveEvent(window, 'keydown', onFocus);
                         });
                       }
+
+                      document.addEventListener('keydown', _this3._onFocus.bind(_this3));
+
+                      _this3._registerRemoveEvent(window, 'keydown', _this3._onFocus);
                     };
 
                     element.addEventListener('click', clickHandler);
@@ -4114,6 +4072,13 @@
                     var photo = this._getElementByClass(this.data.classNames.smartPhoto);
 
                     util.triggerEvent(photo, eventName);
+
+                    if (eventName === 'open') {
+                      var smartPhoto = document.querySelector(
+                        "[data-id='".concat(this.data.classNames.smartPhoto, "']")
+                      );
+                      smartPhoto.focus();
+                    }
                   },
                 },
                 {
@@ -4166,6 +4131,32 @@
                     this.vy = Math.sin(theta) * force;
 
                     this._photoUpdate();
+                  },
+                },
+                {
+                  key: '_onFocus',
+                  value: function _onFocus(e) {
+                    var smartPhoto = document.querySelector(
+                      "[data-id='".concat(this.data.classNames.smartPhoto, "']")
+                    );
+                    var dismiss = document.querySelector(
+                      "[data-id='".concat(this.data.classNames.smartPhotoDismiss, "']")
+                    );
+                    var curFocus = document.activeElement;
+
+                    if (e.key === 'Tab' && !e.shiftKey) {
+                      if (curFocus === dismiss) {
+                        e.preventDefault();
+                        smartPhoto.focus();
+                      }
+                    }
+
+                    if (e.key === 'Tab' && e.shiftKey) {
+                      if (curFocus === smartPhoto) {
+                        e.preventDefault();
+                        dismiss.focus();
+                      }
+                    }
                   },
                 },
               ]);
