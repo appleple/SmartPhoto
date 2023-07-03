@@ -37,7 +37,7 @@ const defaults = {
   message: {
     gotoNextImage: 'go to the next image',
     gotoPrevImage: 'go to the previous image',
-    closeDialog: 'close the image dialog'
+    closeDialog: 'close the image dialog',
   },
   arrows: true,
   nav: true,
@@ -54,7 +54,7 @@ const defaults = {
   registance: 0.5,
   loadOffset: 2,
   resizeStyle: 'fit',
-  lazyAttribute: 'data-src'
+  lazyAttribute: 'data-src',
 };
 
 export default class SmartPhoto extends ATemplate {
@@ -74,7 +74,7 @@ export default class SmartPhoto extends ATemplate {
     this.convert = {
       increment: this.increment,
       virtualPos: this.virtualPos,
-      round: this.round
+      round: this.round,
     };
     this.data.groupItems = this.groupItems;
     this.elements = typeof selector === 'string' ? document.querySelectorAll(selector) : selector;
@@ -215,7 +215,7 @@ export default class SmartPhoto extends ATemplate {
     this.handlers.push({
       target,
       event,
-      handler
+      handler,
     });
   }
 
@@ -290,7 +290,7 @@ export default class SmartPhoto extends ATemplate {
       id: element.getAttribute('data-id') || index,
       loaded: false,
       processed: false,
-      element
+      element,
     };
     group[groupId].push(item);
     this.data.currentGroup = groupId;
@@ -307,18 +307,25 @@ export default class SmartPhoto extends ATemplate {
       const currentItem = this._getSelectedItem();
 
       const onFocus = (e) => {
-        if(e.keyCode === 9) {
-          const smartPhoto = document.querySelector(`.${this.data.classNames.smartPhoto}`);
-          const arrows = document.querySelector(`.${this.data.classNames.smartPhotoArrows}`);
-          const dismiss = document.querySelector(`.${this.data.classNames.smartPhotoDismiss}`);
-          const curFocus = document.activeElement;
-          if  (curFocus === smartPhoto) {
-            arrows.focus()
+        const smartPhoto = document.querySelector(`.${this.data.classNames.smartPhoto}`);
+        const arrows = document.querySelector(`.${this.data.classNames.smartPhotoArrows}`);
+        const dismiss = document.querySelector(`.${this.data.classNames.smartPhotoDismiss}`);
+        const curFocus = document.activeElement;
+
+        if (e.key === 9) {
+          if (curFocus === smartPhoto) {
+            arrows.focus();
           } else if (curFocus === dismiss) {
-            smartPhoto.focus()
+            smartPhoto.focus();
+          }
+        } else if (e.key === 9 && e.shiftKey) {
+          if (curFocus === smartPhoto) {
+            dismiss.focus();
+          } else if (curFocus === dismiss) {
+            smartPhoto.focus();
           }
         }
-      }
+      };
 
       if (currentItem.loaded) {
         this._initPhoto();
@@ -345,7 +352,7 @@ export default class SmartPhoto extends ATemplate {
           smartPhoto.focus();
           document.addEventListener('keydown', onFocus);
           this._registerRemoveEvent(window, 'keydown', onFocus);
-        });	
+        });
       }
     };
     element.addEventListener('click', clickHandler);
@@ -450,8 +457,8 @@ export default class SmartPhoto extends ATemplate {
       }
     }
 
-    const x = (scale - 1) / 2 * img.offsetWidth + (toX - (img.offsetWidth * scale)) / 2;
-    const y = (scale - 1) / 2 * img.offsetHeight + (toY - (img.offsetHeight * scale)) / 2;
+    const x = ((scale - 1) / 2) * img.offsetWidth + (toX - img.offsetWidth * scale) / 2;
+    const y = ((scale - 1) / 2) * img.offsetHeight + (toY - img.offsetHeight * scale) / 2;
     appear.afterX = x;
     appear.afterY = y;
     appear.scale = scale;
@@ -465,8 +472,14 @@ export default class SmartPhoto extends ATemplate {
     this.data.hideUi = false;
     this.data.scale = false;
     this.data.scaleSize = 1;
-    const scrollX = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
-    const scrollY = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+    const scrollX =
+      window.pageXOffset !== undefined
+        ? window.pageXOffset
+        : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+    const scrollY =
+      window.pageYOffset !== undefined
+        ? window.pageYOffset
+        : (document.documentElement || document.body.parentNode || document.body).scrollTop;
     const body = document.querySelector('body');
     if (window.location.hash) {
       this._setHash('');
@@ -528,7 +541,7 @@ export default class SmartPhoto extends ATemplate {
     const touches = e.touches;
     return [
       { x: touches[0].pageX, y: touches[0].pageY },
-      { x: touches[1].pageX, y: touches[1].pageY }
+      { x: touches[1].pageX, y: touches[1].pageY },
     ];
   }
 
@@ -544,8 +557,14 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _setHashByCurrentIndex() {
-    const scrollX = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
-    const scrollY = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+    const scrollX =
+      window.pageXOffset !== undefined
+        ? window.pageXOffset
+        : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+    const scrollY =
+      window.pageYOffset !== undefined
+        ? window.pageYOffset
+        : (document.documentElement || document.body.parentNode || document.body).scrollTop;
     const items = this.groupItems();
     const id = items[this.data.currentIndex].id;
     const group = this.data.currentGroup;
@@ -641,11 +660,11 @@ export default class SmartPhoto extends ATemplate {
       if (item.height < screenY) {
         item.scale = 1;
       }
-      item.x = (item.scale - 1) / 2 * item.width + (windowX - (item.width * item.scale)) / 2;
-      item.y = (item.scale - 1) / 2 * item.height + (windowY - (item.height * item.scale)) / 2;
+      item.x = ((item.scale - 1) / 2) * item.width + (windowX - item.width * item.scale) / 2;
+      item.y = ((item.scale - 1) / 2) * item.height + (windowY - item.height * item.scale) / 2;
       if (item.width * item.scale > windowX) {
         item.scale = windowX / item.width;
-        item.x = (item.scale - 1) / 2 * item.width;
+        item.x = ((item.scale - 1) / 2) * item.width;
       }
     });
   }
@@ -760,7 +779,10 @@ export default class SmartPhoto extends ATemplate {
     if (this.moveDir === 'horizontal') {
       if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
         this.data.currentIndex -= 1;
-      } else if (swipeWidth <= -this.data.swipeOffset && this.data.currentIndex !== items.length - 1) {
+      } else if (
+        swipeWidth <= -this.data.swipeOffset &&
+        this.data.currentIndex !== items.length - 1
+      ) {
         this.data.currentIndex += 1;
       }
       this._slideList();
@@ -908,7 +930,10 @@ export default class SmartPhoto extends ATemplate {
         return;
       }
 
-      if (bound.minX - this.data.photoPosX > offset && this.data.currentIndex + 1 !== this.data.total) {
+      if (
+        bound.minX - this.data.photoPosX > offset &&
+        this.data.currentIndex + 1 !== this.data.total
+      ) {
         this.gotoSlide(this.data.next);
         return;
       }
@@ -981,8 +1006,8 @@ export default class SmartPhoto extends ATemplate {
 
   _getForceAndTheta(vx, vy) {
     return {
-      force: Math.sqrt((vx * vx) + (vy * vy)),
-      theta: Math.atan2(vy, vx)
+      force: Math.sqrt(vx * vx + vy * vy),
+      theta: Math.atan2(vy, vx),
     };
   }
 
@@ -1026,7 +1051,7 @@ export default class SmartPhoto extends ATemplate {
       minX: this._round(minX, 6) * this.data.scaleSize,
       minY: this._round(minY, 6) * this.data.scaleSize,
       maxX: this._round(maxX, 6) * this.data.scaleSize,
-      maxY: this._round(maxY, 6) * this.data.scaleSize
+      maxY: this._round(maxY, 6) * this.data.scaleSize,
     };
   }
 
@@ -1064,7 +1089,7 @@ export default class SmartPhoto extends ATemplate {
   _getDistance(point1, point2) {
     const x = point1.x - point2.x;
     const y = point1.y - point2.y;
-    return Math.sqrt((x * x) + (y * y));
+    return Math.sqrt(x * x + y * y);
   }
 
   _round(val, precision) {
@@ -1091,8 +1116,12 @@ export default class SmartPhoto extends ATemplate {
 
   _isSmartPhone() {
     const agent = navigator.userAgent;
-    if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0
-        || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
+    if (
+      agent.indexOf('iPhone') > 0 ||
+      agent.indexOf('iPad') > 0 ||
+      agent.indexOf('ipod') > 0 ||
+      agent.indexOf('Android') > 0
+    ) {
       return true;
     }
     return false;
@@ -1186,11 +1215,12 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _doAnim() {
-    if (this.isBeingZoomed ||
-        this.isSwipable ||
-        this.photoSwipable ||
-        this.data.elastic ||
-        !this.data.scale
+    if (
+      this.isBeingZoomed ||
+      this.isSwipable ||
+      this.photoSwipable ||
+      this.data.elastic ||
+      !this.data.scale
     ) {
       return;
     }
