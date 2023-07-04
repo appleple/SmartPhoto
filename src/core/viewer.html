@@ -2,7 +2,6 @@
 	class="\{classNames.smartPhoto\}"<!-- BEGIN hide:exist -->
 	aria-hidden="true"<!-- END hide:exist --><!-- BEGIN hide:empty -->aria-hidden="false"<!-- END hide:empty -->
 	role="dialog"
-	data-id="\{classNames.smartPhoto\}"
 	tabindex="0">
 	<div class="\{classNames.smartPhotoBody\}">
 		<div class="\{classNames.smartPhotoInner\}">
@@ -51,7 +50,6 @@
 					aria-hidden="true"<!-- END showPrevArrow:empty -->>
 					<a
 						href="#"
-						data-id="\{classNames.smartPhotoArrowLeft\}"
 						data-action-click="gotoSlide({prev})"
 						role="button">
 						<span class="smartphoto-sr-only">\{message.gotoPrevImage\}</span>
@@ -62,7 +60,6 @@
 					aria-hidden="true"<!-- END showNextArrow:empty -->>
 					<a
 						href="#"
-						data-id="\{classNames.smartPhotoArrowRight\}"
 						data-action-click="gotoSlide({next})"
 						role="button">
 						<span class="smartphoto-sr-only">\{message.gotoNextImage\}</span>
@@ -95,7 +92,6 @@
 
 			<button
 				class="\{classNames.smartPhotoDismiss\}"
-				data-id="\{classNames.smartPhotoDismiss\}"
 				data-action-click="hidePhoto()">
 				<span class="smartphoto-sr-only">\{message.closeDialog\}</span>
 			</button>

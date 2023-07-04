@@ -1184,7 +1184,7 @@ export default class SmartPhoto extends ATemplate {
     const photo = this._getElementByClass(this.data.classNames.smartPhoto);
     util.triggerEvent(photo, eventName);
     if (eventName === 'open') {
-      const smartPhoto = document.querySelector(`[data-id='${this.data.classNames.smartPhoto}']`);
+      const smartPhoto = this._getElementByClass(`[data-id='${this.data.classNames.smartPhoto}']`);
       smartPhoto.focus();
     }
   }
@@ -1230,8 +1230,10 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _onFocus(e) {
-    const smartPhoto = document.querySelector(`[data-id='${this.data.classNames.smartPhoto}']`);
-    const dismiss = document.querySelector(`[data-id='${this.data.classNames.smartPhotoDismiss}']`);
+    const smartPhoto = this._getElementByClass(`[data-id='${this.data.classNames.smartPhoto}']`);
+    const dismiss = this._getElementByClass(
+      `[data-id='${this.data.classNames.smartPhotoDismiss}']`
+    );
     const curFocus = document.activeElement;
 
     if (e.key === 'Tab' && !e.shiftKey) {
