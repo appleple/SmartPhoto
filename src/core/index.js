@@ -299,6 +299,7 @@ export default class SmartPhoto extends ATemplate {
       element.setAttribute('data-id', index);
     }
     element.setAttribute('data-index', index);
+
     const clickHandler = (event) => {
       event.preventDefault();
       this.data.currentGroup = element.getAttribute('data-group');
@@ -323,8 +324,12 @@ export default class SmartPhoto extends ATemplate {
           this._fireEvent('open');
         });
       }
-      document.addEventListener('keydown', this._onFocus.bind(this));
-      this._registerRemoveEvent(window, 'keydown', this._onFocus);
+
+      const smartPhoto = this._getElementByClass(`${this.data.classNames.smartPhoto}`);
+      smartPhoto.focus();
+      const focusHandler = this._onFocus.bind(this);
+      document.addEventListener('keydown', focusHandler);
+      this._registerRemoveEvent(window, 'keydown', focusHandler);
     };
     element.addEventListener('click', clickHandler);
     this._registerRemoveEvent(element, 'click', clickHandler);
@@ -1183,10 +1188,6 @@ export default class SmartPhoto extends ATemplate {
   _fireEvent(eventName) {
     const photo = this._getElementByClass(this.data.classNames.smartPhoto);
     util.triggerEvent(photo, eventName);
-    if (eventName === 'open') {
-      const smartPhoto = this._getElementByClass(`[data-id='${this.data.classNames.smartPhoto}']`);
-      smartPhoto.focus();
-    }
   }
 
   _doAnim() {
@@ -1230,14 +1231,15 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _onFocus(e) {
-    const smartPhoto = this._getElementByClass(`[data-id='${this.data.classNames.smartPhoto}']`);
-    const dismiss = this._getElementByClass(
-      `[data-id='${this.data.classNames.smartPhotoDismiss}']`
-    );
+    const smartPhoto = this._getElementByClass(`${this.data.classNames.smartPhoto}`);
+    const focusableTags =
+      'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), object, embed, *[tabindex], *[contenteditable]';
+    const focusableElements = smartPhoto.querySelectorAll(focusableTags);
+    const last = focusableElements[focusableElements.length - 1];
     const curFocus = document.activeElement;
 
     if (e.key === 'Tab' && !e.shiftKey) {
-      if (curFocus === dismiss) {
+      if (curFocus === last) {
         e.preventDefault();
         smartPhoto.focus();
       }
@@ -1245,7 +1247,7 @@ export default class SmartPhoto extends ATemplate {
     if (e.key === 'Tab' && e.shiftKey) {
       if (curFocus === smartPhoto) {
         e.preventDefault();
-        dismiss.focus();
+        last.focus();
       }
     }
   }

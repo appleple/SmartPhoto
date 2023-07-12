@@ -2875,9 +2875,17 @@
                         });
                       }
 
-                      document.addEventListener('keydown', _this3._onFocus.bind(_this3));
+                      var smartPhoto = _this3._getElementByClass(
+                        ''.concat(_this3.data.classNames.smartPhoto)
+                      );
 
-                      _this3._registerRemoveEvent(window, 'keydown', _this3._onFocus);
+                      smartPhoto.focus();
+
+                      var focusHandler = _this3._onFocus.bind(_this3);
+
+                      document.addEventListener('keydown', focusHandler);
+
+                      _this3._registerRemoveEvent(window, 'keydown', focusHandler);
                     };
 
                     element.addEventListener('click', clickHandler);
@@ -4072,14 +4080,6 @@
                     var photo = this._getElementByClass(this.data.classNames.smartPhoto);
 
                     util.triggerEvent(photo, eventName);
-
-                    if (eventName === 'open') {
-                      var smartPhoto = this._getElementByClass(
-                        "[data-id='".concat(this.data.classNames.smartPhoto, "']")
-                      );
-
-                      smartPhoto.focus();
-                    }
                   },
                 },
                 {
@@ -4138,17 +4138,17 @@
                   key: '_onFocus',
                   value: function _onFocus(e) {
                     var smartPhoto = this._getElementByClass(
-                      "[data-id='".concat(this.data.classNames.smartPhoto, "']")
+                      ''.concat(this.data.classNames.smartPhoto)
                     );
 
-                    var dismiss = this._getElementByClass(
-                      "[data-id='".concat(this.data.classNames.smartPhotoDismiss, "']")
-                    );
-
+                    var focusableTags =
+                      'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), object, embed, *[tabindex], *[contenteditable]';
+                    var focusableElements = smartPhoto.querySelectorAll(focusableTags);
+                    var last = focusableElements[focusableElements.length - 1];
                     var curFocus = document.activeElement;
 
                     if (e.key === 'Tab' && !e.shiftKey) {
-                      if (curFocus === dismiss) {
+                      if (curFocus === last) {
                         e.preventDefault();
                         smartPhoto.focus();
                       }
@@ -4157,7 +4157,7 @@
                     if (e.key === 'Tab' && e.shiftKey) {
                       if (curFocus === smartPhoto) {
                         e.preventDefault();
-                        dismiss.focus();
+                        last.focus();
                       }
                     }
                   },
