@@ -27,7 +27,7 @@
 
 @keyframes smartphoto-loader {
   0% {
-    opacity: .4;
+    opacity: 0.4;
     transform: rotate(0deg);
   }
   50% {
@@ -35,7 +35,7 @@
     transform: rotate(180deg);
   }
   100% {
-    opacity: .4;
+    opacity: 0.4;
     transform: rotate(360deg);
   }
 }
@@ -93,7 +93,7 @@
   animation-timing-function: ease-out;
 }
 
-.smartphoto[aria-hidden="true"] {
+.smartphoto[aria-hidden='true'] {
   display: none;
 }
 
@@ -103,7 +103,7 @@
 
 .smartphoto-count {
   display: inline-block;
-  color: #FFF;
+  color: #fff;
   font-size: 16px;
 }
 
@@ -140,12 +140,13 @@
   border: none;
   background-color: transparent;
   background-image: url(data:image/svg+xml;base64,PHN2ZyBpZD0i44Os44Kk44Ok44O8XzEiIGRhdGEtbmFtZT0i44Os44Kk44Ok44O8IDEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDI4MzQuNjUgMjgzNC42NSIgZmlsbD0iI0ZGRiI+PHRpdGxlPmljb248L3RpdGxlPjxwYXRoIGQ9Ik0xNTc2LjQyLDE0MDYuNzYsMjc4NCwxOTkuMTlhNTYuODYsNTYuODYsMCwwLDAsMC04MC4xOGwtNzguOTItNzguOTJhNTYuODYsNTYuODYsMCwwLDAtODAuMTgsMEwxNDE3LjMyLDEyNDcuNjYsMjA5Ljc1LDQwLjA5YTU2Ljg2LDU2Ljg2LDAsMCwwLTgwLjE4LDBMNTAuNjUsMTE5YTU2Ljg2LDU2Ljg2LDAsMCwwLDAsODAuMThMMTI1OC4yMywxNDA2Ljc2LDUwLjY1LDI2MTQuMzRhNTYuODYsNTYuODYsMCwwLDAsMCw4MC4xOGw3OC45Miw3OC45MmE1Ni44Niw1Ni44NiwwLDAsMCw4MC4xOCwwTDE0MTcuMzIsMTU2NS44NiwyNjI0LjksMjc3My40NGE1Ni44Niw1Ni44NiwwLDAsMCw4MC4xOCwwbDc4LjkyLTc4LjkyYTU2Ljg2LDU2Ljg2LDAsMCwwLDAtODAuMThaIi8+PC9zdmc+);
-  text-shadow: 0 1px 0 #FFF;
-  color: #FFF;
+  text-shadow: 0 1px 0 #fff;
+  color: #fff;
   font-size: 30px;
   text-decoration: none;
   cursor: pointer;
   line-height: 1;
+  z-index: 102;
 }
 
 .smartphoto-body {
@@ -226,7 +227,7 @@
   animation-timing-function: ease-out;
 }
 
-.smartphoto-arrows[aria-hidden="true"] {
+.smartphoto-arrows[aria-hidden='true'] {
   animation-name: smartphoto-hide;
   display: none;
 }
@@ -248,7 +249,7 @@
   outline: none;
 }
 
-.smartphoto-arrows [aria-hidden="true"] {
+.smartphoto-arrows [aria-hidden='true'] {
   animation-name: smartphoto-hide;
   display: none;
 }
@@ -295,7 +296,7 @@
   animation-timing-function: ease-out;
 }
 
-.smartphoto-nav[aria-hidden="true"] {
+.smartphoto-nav[aria-hidden='true'] {
   animation-name: smartphoto-hide;
   display: none;
 }
@@ -322,14 +323,14 @@
   display: block;
   width: 100%;
   height: 100%;
-  background-color: #FFF;
+  background-color: #fff;
   background-position: center center;
   background-size: cover;
-  opacity: .5;
+  opacity: 0.5;
 }
 
 .smartphoto-nav a:focus {
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .smartphoto-nav a.current {
@@ -379,7 +380,7 @@
   width: 100%;
   height: 50px;
   padding: 0 50px;
-  color: #FFF;
+  color: #fff;
   font-size: 12px;
   text-align: center;
   line-height: 50px;
@@ -409,10 +410,10 @@
   height: 30px;
   margin-top: -25px;
   margin-left: -25px;
-  border: 8px solid #17CDDD;
+  border: 8px solid #17cddd;
   border-right-color: transparent;
   border-radius: 50%;
-  animation: smartphoto-loader .5s infinite linear;
+  animation: smartphoto-loader 0.5s infinite linear;
 }
 
 .smartphoto-img-clone {

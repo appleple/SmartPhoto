@@ -21,7 +21,8 @@
     "watch:sass": "onchange \"scss\" -- npm run build:sass",
     "sync": "browser-sync start --server './' --files './js/*.js' './css/*.css' --startPath '/examples/jquery.html'",
     "start": "npm-run-all -p watch:js watch:sass sync",
-    "deploy": "np --no-cleanup"
+    "deploy": "np --no-cleanup",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -40,21 +41,23 @@
     "browserify": "^16.5.0",
     "chokidar": "^2.0.4",
     "co": "^4.6.0",
-    "eslint": "^6.2.0",
-    "eslint-config-airbnb": "^14.1.0",
-    "eslint-plugin-import": "^2.2.0",
+    "eslint": "^8.44.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.27.5",
     "fs-extra": "^2.1.2",
     "http-server": "^0.11.1",
+    "husky": "^8.0.3",
     "licensify": "^3.1.2",
+    "lint-staged": "^13.2.3",
     "mocha": "^6.2.0",
     "nightmare": "^2.8.1",
     "node-cmd": "^2.0.0",
-    "node-sass": "^4.12.0",
     "nodemon": "^1.11.0",
     "np": "^2.16.0",
     "npm-run-all": "^4.0.2",
     "onchange": "^6.0.0",
     "power-assert": "^1.4.2",
+    "prettier": "^2.8.8",
     "uglify-js": "^2.8.22",
     "watchify": "^3.11.1"
   },
@@ -62,5 +65,8 @@
     "a-template": "^0.6.1",
     "custom-event-polyfill": "^0.3.0",
     "es6-promise-polyfill": "^1.2.0"
+  },
+  "lint-staged": {
+    "*.{js}": "prettier --write"
   }
 }
