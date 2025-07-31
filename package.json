@@ -40,12 +40,11 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "biome check --write",
-      "biome format --write"
+    "./src/**/*.{js,jsx,ts,tsx}": [
+      "biome check --write"
     ],
     "*.{json,md}": [
-      "biome format --write"
+      "biome check --write"
     ]
   },
   "repository": {
