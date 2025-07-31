@@ -41,7 +41,7 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "./src/**/*.{js,jsx,ts,tsx}": [
+    "./{src,test}/**/*.{js,jsx,ts,tsx}": [
       "biome check --write"
     ],
     "*.{json,md}": [
