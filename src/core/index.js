@@ -1,43 +1,39 @@
-import ATemplate from 'a-template';
-import 'custom-event-polyfill';
-
-import template from './viwer.html';
-
-const util = require('../lib/util');
-const { Promise } = require('es6-promise-polyfill');
+import ATemplate from "a-template";
+import * as util from "../lib/util";
+import template from "./viwer.html?raw";
 
 const defaults = {
   classNames: {
-    smartPhoto: 'smartphoto',
-    smartPhotoClose: 'smartphoto-close',
-    smartPhotoBody: 'smartphoto-body',
-    smartPhotoInner: 'smartphoto-inner',
-    smartPhotoContent: 'smartphoto-content',
-    smartPhotoImg: 'smartphoto-img',
-    smartPhotoImgOnMove: 'smartphoto-img-onmove',
-    smartPhotoImgElasticMove: 'smartphoto-img-elasticmove',
-    smartPhotoImgWrap: 'smartphoto-img-wrap',
-    smartPhotoArrows: 'smartphoto-arrows',
-    smartPhotoNav: 'smartphoto-nav',
-    smartPhotoArrowRight: 'smartphoto-arrow-right',
-    smartPhotoArrowLeft: 'smartphoto-arrow-left',
-    smartPhotoArrowHideIcon: 'smartphoto-arrow-hide',
-    smartPhotoImgLeft: 'smartphoto-img-left',
-    smartPhotoImgRight: 'smartphoto-img-right',
-    smartPhotoList: 'smartphoto-list',
-    smartPhotoListOnMove: 'smartphoto-list-onmove',
-    smartPhotoHeader: 'smartphoto-header',
-    smartPhotoCount: 'smartphoto-count',
-    smartPhotoCaption: 'smartphoto-caption',
-    smartPhotoDismiss: 'smartphoto-dismiss',
-    smartPhotoLoader: 'smartphoto-loader',
-    smartPhotoLoaderWrap: 'smartphoto-loader-wrap',
-    smartPhotoImgClone: 'smartphoto-img-clone'
+    smartPhoto: "smartphoto",
+    smartPhotoClose: "smartphoto-close",
+    smartPhotoBody: "smartphoto-body",
+    smartPhotoInner: "smartphoto-inner",
+    smartPhotoContent: "smartphoto-content",
+    smartPhotoImg: "smartphoto-img",
+    smartPhotoImgOnMove: "smartphoto-img-onmove",
+    smartPhotoImgElasticMove: "smartphoto-img-elasticmove",
+    smartPhotoImgWrap: "smartphoto-img-wrap",
+    smartPhotoArrows: "smartphoto-arrows",
+    smartPhotoNav: "smartphoto-nav",
+    smartPhotoArrowRight: "smartphoto-arrow-right",
+    smartPhotoArrowLeft: "smartphoto-arrow-left",
+    smartPhotoArrowHideIcon: "smartphoto-arrow-hide",
+    smartPhotoImgLeft: "smartphoto-img-left",
+    smartPhotoImgRight: "smartphoto-img-right",
+    smartPhotoList: "smartphoto-list",
+    smartPhotoListOnMove: "smartphoto-list-onmove",
+    smartPhotoHeader: "smartphoto-header",
+    smartPhotoCount: "smartphoto-count",
+    smartPhotoCaption: "smartphoto-caption",
+    smartPhotoDismiss: "smartphoto-dismiss",
+    smartPhotoLoader: "smartphoto-loader",
+    smartPhotoLoaderWrap: "smartphoto-loader-wrap",
+    smartPhotoImgClone: "smartphoto-img-clone",
   },
   message: {
-    gotoNextImage: 'go to the next image',
-    gotoPrevImage: 'go to the previous image',
-    closeDialog: 'close the image dialog'
+    gotoNextImage: "go to the next image",
+    gotoPrevImage: "go to the previous image",
+    closeDialog: "close the image dialog",
   },
   arrows: true,
   nav: true,
@@ -53,8 +49,8 @@ const defaults = {
   forceInterval: 10,
   registance: 0.5,
   loadOffset: 2,
-  resizeStyle: 'fit',
-  lazyAttribute: 'data-src'
+  resizeStyle: "fit",
+  lazyAttribute: "data-src",
 };
 
 export default class SmartPhoto extends ATemplate {
@@ -74,10 +70,13 @@ export default class SmartPhoto extends ATemplate {
     this.convert = {
       increment: this.increment,
       virtualPos: this.virtualPos,
-      round: this.round
+      round: this.round,
     };
     this.data.groupItems = this.groupItems;
-    this.elements = typeof selector === 'string' ? document.querySelectorAll(selector) : selector;
+    this.elements =
+      typeof selector === "string"
+        ? document.querySelectorAll(selector)
+        : selector;
     const date = new Date();
     this.tapSecond = date.getTime();
     this.onListMove = false;
@@ -88,7 +87,7 @@ export default class SmartPhoto extends ATemplate {
     this.data.appearEffect = null;
     this.addTemplate(this.id, template);
     this.data.isSmartPhone = this._isSmartPhone();
-    const body = document.querySelector('body');
+    const body = document.querySelector("body");
     util.append(body, `<div data-id='${this.id}'></div>`);
     [].forEach.call(this.elements, (element) => {
       this.addNewItem(element);
@@ -97,7 +96,7 @@ export default class SmartPhoto extends ATemplate {
     this.update();
     const currentItem = this._getCurrentItemByHash();
     if (currentItem) {
-      util.triggerEvent(currentItem.element, 'click');
+      util.triggerEvent(currentItem.element, "click");
     }
 
     this.interval = setInterval(() => {
@@ -127,10 +126,10 @@ export default class SmartPhoto extends ATemplate {
           this.hidePhoto();
         }
       };
-      window.addEventListener('resize', resizeHandler);
-      window.addEventListener('keydown', keydownHandler);
-      this._registerRemoveEvent(window, 'resize', resizeHandler);
-      this._registerRemoveEvent(window, 'keydown', keydownHandler);
+      window.addEventListener("resize", resizeHandler);
+      window.addEventListener("keydown", keydownHandler);
+      this._registerRemoveEvent(window, "resize", resizeHandler);
+      this._registerRemoveEvent(window, "keydown", keydownHandler);
       return;
     }
 
@@ -174,8 +173,12 @@ export default class SmartPhoto extends ATemplate {
       photoResizeAfterWindowSizeChange(0); // 待機開始
     };
 
-    window.addEventListener('orientationchange', orientationChangeHandler);
-    this._registerRemoveEvent(window, 'orientationchange', orientationChangeHandler);
+    window.addEventListener("orientationchange", orientationChangeHandler);
+    this._registerRemoveEvent(
+      window,
+      "orientationchange",
+      orientationChangeHandler,
+    );
 
     if (!this.data.useOrientationApi) {
       return;
@@ -186,7 +189,12 @@ export default class SmartPhoto extends ATemplate {
       if (!e || !e.gamma || this.data.appearEffect) {
         return;
       }
-      if (!this.isBeingZoomed && !this.photoSwipable && !this.data.elastic && this.data.scale) {
+      if (
+        !this.isBeingZoomed &&
+        !this.photoSwipable &&
+        !this.data.elastic &&
+        this.data.scale
+      ) {
         if (orientation === 0) {
           this._calcGravity(e.gamma, e.beta);
         } else if (orientation === 90) {
@@ -199,8 +207,12 @@ export default class SmartPhoto extends ATemplate {
       }
     };
 
-    window.addEventListener('deviceorientation', deviceorientationHandler);
-    this._registerRemoveEvent(window, 'deviceorientation', deviceorientationHandler);
+    window.addEventListener("deviceorientation", deviceorientationHandler);
+    this._registerRemoveEvent(
+      window,
+      "deviceorientation",
+      deviceorientationHandler,
+    );
   }
 
   on(event, fn) {
@@ -216,7 +228,7 @@ export default class SmartPhoto extends ATemplate {
     this.handlers.push({
       target,
       event,
-      handler
+      handler,
     });
   }
 
@@ -256,18 +268,18 @@ export default class SmartPhoto extends ATemplate {
   }
 
   addNewItem(element) {
-    const groupId = element.getAttribute('data-group') || 'nogroup';
+    const groupId = element.getAttribute("data-group") || "nogroup";
     const { group } = this.data;
-    if (groupId === 'nogroup') {
-      element.setAttribute('data-group', 'nogroup');
+    if (groupId === "nogroup") {
+      element.setAttribute("data-group", "nogroup");
     }
     if (!group[groupId]) {
       group[groupId] = [];
     }
     const index = group[groupId].length;
-    const body = document.querySelector('body');
-    const src = element.getAttribute('href');
-    const img = element.querySelector('img');
+    const body = document.querySelector("body");
+    const src = element.getAttribute("href");
+    const img = element.querySelector("img");
     let thumb = src;
     if (img) {
       if (img.getAttribute(this.data.lazyAttribute)) {
@@ -281,29 +293,29 @@ export default class SmartPhoto extends ATemplate {
     const item = {
       src,
       thumb,
-      caption: element.getAttribute('data-caption'),
+      caption: element.getAttribute("data-caption"),
       groupId,
       translateX: this._getWindowWidth() * index,
       index,
       translateY: 0,
       width: 50,
       height: 50,
-      id: element.getAttribute('data-id') || index,
+      id: element.getAttribute("data-id") || index,
       loaded: false,
       processed: false,
-      element
+      element,
     };
     group[groupId].push(item);
     this.data.currentGroup = groupId;
-    const id = element.getAttribute('data-id');
+    const id = element.getAttribute("data-id");
     if (!id) {
-      element.setAttribute('data-id', index);
+      element.setAttribute("data-id", index);
     }
-    element.setAttribute('data-index', index);
+    element.setAttribute("data-index", index);
     const clickHandler = (event) => {
       event.preventDefault();
-      this.data.currentGroup = element.getAttribute('data-group');
-      this.data.currentIndex = parseInt(element.getAttribute('data-index'), 10);
+      this.data.currentGroup = element.getAttribute("data-group");
+      this.data.currentIndex = parseInt(element.getAttribute("data-index"), 10);
       this._setHashByCurrentIndex();
       const currentItem = this._getSelectedItem();
       if (currentItem.loaded) {
@@ -311,21 +323,21 @@ export default class SmartPhoto extends ATemplate {
         this.addAppearEffect(element, currentItem);
         this.clicked = true;
         this.update();
-        body.style.overflow = 'hidden';
-        this._fireEvent('open');
+        body.style.overflow = "hidden";
+        this._fireEvent("open");
       } else {
         this._loadItem(currentItem).then(() => {
           this._initPhoto();
           this.addAppearEffect(element, currentItem);
           this.clicked = true;
           this.update();
-          body.style.overflow = 'hidden';
-          this._fireEvent('open');
+          body.style.overflow = "hidden";
+          this._fireEvent("open");
         });
       }
     };
-    element.addEventListener('click', clickHandler);
-    this._registerRemoveEvent(element, 'click', clickHandler);
+    element.addEventListener("click", clickHandler);
+    this._registerRemoveEvent(element, "click", clickHandler);
   }
 
   _initPhoto() {
@@ -336,7 +348,7 @@ export default class SmartPhoto extends ATemplate {
     this._setPosByCurrentIndex();
     this._setSizeByScreen();
     this.setArrow();
-    if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
+    if (this.data.resizeStyle === "fill" && this.data.isSmartPhone) {
       this.data.scale = true;
       this.data.hideUi = true;
       this.data.scaleSize = this._getScaleBoarder();
@@ -344,7 +356,7 @@ export default class SmartPhoto extends ATemplate {
   }
 
   onUpdated() {
-    if (this.data.appearEffect && this.data.appearEffect.once) {
+    if (this.data.appearEffect?.once) {
       this.data.appearEffect.once = false;
       this.execEffect().then(() => {
         this.data.appearEffect = null;
@@ -368,10 +380,10 @@ export default class SmartPhoto extends ATemplate {
       const { appearEffect, classNames } = this.data;
       const effect = this._getElementByClass(classNames.smartPhotoImgClone);
       const handler = () => {
-        effect.removeEventListener('transitionend', handler, true);
+        effect.removeEventListener("transitionend", handler, true);
         resolve();
       };
-      effect.addEventListener('transitionend', handler, true);
+      effect.addEventListener("transitionend", handler, true);
       setTimeout(() => {
         effect.style.transform = `translate(${appearEffect.afterX}px, ${appearEffect.afterY}px) scale(${appearEffect.scale})`;
       }, 10);
@@ -383,7 +395,7 @@ export default class SmartPhoto extends ATemplate {
       this.data.appear = true;
       return;
     }
-    const img = element.querySelector('img');
+    const img = element.querySelector("img");
     const pos = util.getViewPos(img);
     const appear = {};
     let scale = 1;
@@ -401,7 +413,7 @@ export default class SmartPhoto extends ATemplate {
     const toY = this._getWindowHeight();
     const screenY = toY - this.data.headerHeight - this.data.footerHeight;
 
-    if (this.data.resizeStyle === 'fill' && this.data.isSmartPhone) {
+    if (this.data.resizeStyle === "fill" && this.data.isSmartPhone) {
       if (img.offsetWidth > img.offsetHeight) {
         scale = toY / img.offsetHeight;
       } else {
@@ -426,32 +438,49 @@ export default class SmartPhoto extends ATemplate {
       }
     }
 
-    const x = (scale - 1) / 2 * img.offsetWidth + (toX - (img.offsetWidth * scale)) / 2;
-    const y = (scale - 1) / 2 * img.offsetHeight + (toY - (img.offsetHeight * scale)) / 2;
+    const x =
+      ((scale - 1) / 2) * img.offsetWidth + (toX - img.offsetWidth * scale) / 2;
+    const y =
+      ((scale - 1) / 2) * img.offsetHeight +
+      (toY - img.offsetHeight * scale) / 2;
     appear.afterX = x;
     appear.afterY = y;
     appear.scale = scale;
     this.data.appearEffect = appear;
   }
 
-  hidePhoto(dir = 'bottom') {
+  hidePhoto(dir = "bottom") {
     this.data.hide = true;
     this.data.appear = false;
     this.data.appearEffect = null;
     this.data.hideUi = false;
     this.data.scale = false;
     this.data.scaleSize = 1;
-    const scrollX = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
-    const scrollY = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-    const body = document.querySelector('body');
+    const scrollX =
+      window.pageXOffset !== undefined
+        ? window.pageXOffset
+        : (
+            document.documentElement ||
+            document.body.parentNode ||
+            document.body
+          ).scrollLeft;
+    const scrollY =
+      window.pageYOffset !== undefined
+        ? window.pageYOffset
+        : (
+            document.documentElement ||
+            document.body.parentNode ||
+            document.body
+          ).scrollTop;
+    const body = document.querySelector("body");
     if (window.location.hash) {
-      this._setHash('');
+      this._setHash("");
     }
     window.scroll(scrollX, scrollY);
     this._doHideEffect(dir).then(() => {
       this.update();
-      body.style.overflow = '';
-      this._fireEvent('close');
+      body.style.overflow = "";
+      this._fireEvent("close");
     });
   }
 
@@ -462,19 +491,21 @@ export default class SmartPhoto extends ATemplate {
       }
       const { classNames } = this.data;
       const photo = this._getElementByClass(classNames.smartPhoto);
-      const img = this._getElementByQuery(`.current .${classNames.smartPhotoImg}`);
+      const img = this._getElementByQuery(
+        `.current .${classNames.smartPhotoImg}`,
+      );
       const height = this._getWindowHeight();
       const handler = () => {
-        photo.removeEventListener('transitionend', handler, true);
+        photo.removeEventListener("transitionend", handler, true);
         resolve();
       };
       photo.style.opacity = 0;
-      if (dir === 'bottom') {
+      if (dir === "bottom") {
         img.style.transform = `translateY(${height}px)`;
-      } else if (dir === 'top') {
+      } else if (dir === "top") {
         img.style.transform = `translateY(-${height}px)`;
       }
-      photo.addEventListener('transitionend', handler, true);
+      photo.addEventListener("transitionend", handler, true);
     });
   }
 
@@ -489,7 +520,7 @@ export default class SmartPhoto extends ATemplate {
   _getTouchPos() {
     let x = 0;
     let y = 0;
-    const e = typeof event === 'undefined' ? this.e : event;
+    const e = typeof event === "undefined" ? this.e : event;
     if (this._isTouched(e)) {
       x = e.touches[0].pageX;
       y = e.touches[0].pageY;
@@ -504,7 +535,7 @@ export default class SmartPhoto extends ATemplate {
     const touches = e.touches;
     return [
       { x: touches[0].pageX, y: touches[0].pageY },
-      { x: touches[1].pageX, y: touches[1].pageY }
+      { x: touches[1].pageX, y: touches[1].pageY },
     ];
   }
 
@@ -520,8 +551,22 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _setHashByCurrentIndex() {
-    const scrollX = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
-    const scrollY = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+    const scrollX =
+      window.pageXOffset !== undefined
+        ? window.pageXOffset
+        : (
+            document.documentElement ||
+            document.body.parentNode ||
+            document.body
+          ).scrollLeft;
+    const scrollY =
+      window.pageYOffset !== undefined
+        ? window.pageYOffset
+        : (
+            document.documentElement ||
+            document.body.parentNode ||
+            document.body
+          ).scrollTop;
     const items = this.groupItems();
     const id = items[this.data.currentIndex].id;
     const group = this.data.currentGroup;
@@ -531,13 +576,21 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _setHash(hash) {
-    if (!(window.history && window.history.pushState) || !this.data.useHistoryApi) {
+    if (!window.history?.pushState || !this.data.useHistoryApi) {
       return;
     }
     if (hash) {
-      window.history.replaceState(null, null, `${location.pathname}${location.search}#${hash}`);
+      window.history.replaceState(
+        null,
+        null,
+        `${location.pathname}${location.search}#${hash}`,
+      );
     } else {
-      window.history.replaceState(null, null, `${location.pathname}${location.search}`);
+      window.history.replaceState(
+        null,
+        null,
+        `${location.pathname}${location.search}`,
+      );
     }
   }
 
@@ -617,11 +670,15 @@ export default class SmartPhoto extends ATemplate {
       if (item.height < screenY) {
         item.scale = 1;
       }
-      item.x = (item.scale - 1) / 2 * item.width + (windowX - (item.width * item.scale)) / 2;
-      item.y = (item.scale - 1) / 2 * item.height + (windowY - (item.height * item.scale)) / 2;
+      item.x =
+        ((item.scale - 1) / 2) * item.width +
+        (windowX - item.width * item.scale) / 2;
+      item.y =
+        ((item.scale - 1) / 2) * item.height +
+        (windowY - item.height * item.scale) / 2;
       if (item.width * item.scale > windowX) {
         item.scale = windowX / item.width;
-        item.x = (item.scale - 1) / 2 * item.width;
+        item.x = ((item.scale - 1) / 2) * item.width;
       }
     });
   }
@@ -643,7 +700,7 @@ export default class SmartPhoto extends ATemplate {
       this.setArrow();
       this.update();
       if (this.data.oldIndex !== this.data.currentIndex) {
-        this._fireEvent('change');
+        this._fireEvent("change");
       }
       this.data.oldIndex = this.data.currentIndex;
       this._loadNeighborItems();
@@ -657,7 +714,7 @@ export default class SmartPhoto extends ATemplate {
   }
 
   gotoSlide(index) {
-    if (this.e && this.e.preventDefault) {
+    if (this.e?.preventDefault) {
       this.e.preventDefault();
     }
     this.data.currentIndex = parseInt(index, 10);
@@ -732,20 +789,29 @@ export default class SmartPhoto extends ATemplate {
       return;
     }
     this.tapSecond = tapSecond;
-    this._fireEvent('swipeend');
-    if (this.moveDir === 'horizontal') {
+    this._fireEvent("swipeend");
+    if (this.moveDir === "horizontal") {
       if (swipeWidth >= this.data.swipeOffset && this.data.currentIndex !== 0) {
         this.data.currentIndex -= 1;
-      } else if (swipeWidth <= -this.data.swipeOffset && this.data.currentIndex !== items.length - 1) {
+      } else if (
+        swipeWidth <= -this.data.swipeOffset &&
+        this.data.currentIndex !== items.length - 1
+      ) {
         this.data.currentIndex += 1;
       }
       this._slideList();
     }
-    if (this.moveDir === 'vertical') {
-      if (this.data.swipeBottomToClose && swipeHeight >= this.data.swipeOffset) {
-        this.hidePhoto('bottom');
-      } else if (this.data.swipeTopToClose && swipeHeight <= -this.data.swipeOffset) {
-        this.hidePhoto('top');
+    if (this.moveDir === "vertical") {
+      if (
+        this.data.swipeBottomToClose &&
+        swipeHeight >= this.data.swipeOffset
+      ) {
+        this.hidePhoto("bottom");
+      } else if (
+        this.data.swipeTopToClose &&
+        swipeHeight <= -this.data.swipeOffset
+      ) {
+        this.hidePhoto("top");
       } else {
         this.data.translateY = 0;
         this._slideList();
@@ -775,16 +841,16 @@ export default class SmartPhoto extends ATemplate {
     const y = pos.y - this.firstPos.y;
 
     if (this.dragStart) {
-      this._fireEvent('swipestart');
+      this._fireEvent("swipestart");
       this.dragStart = false;
       if (Math.abs(x) > Math.abs(y)) {
-        this.moveDir = 'horizontal';
+        this.moveDir = "horizontal";
       } else {
-        this.moveDir = 'vertical';
+        this.moveDir = "vertical";
       }
     }
 
-    if (this.moveDir === 'horizontal') {
+    if (this.moveDir === "horizontal") {
       this.pos.x += x;
       this.data.translateX = this.pos.x;
     } else {
@@ -807,7 +873,7 @@ export default class SmartPhoto extends ATemplate {
     setTimeout(() => {
       this.data.scale = true;
       this._photoUpdate();
-      this._fireEvent('zoomin');
+      this._fireEvent("zoomin");
     }, 300);
   }
 
@@ -819,7 +885,7 @@ export default class SmartPhoto extends ATemplate {
     this.data.photoPosX = 0;
     this.data.photoPosY = 0;
     this._photoUpdate();
-    this._fireEvent('zoomout');
+    this._fireEvent("zoomout");
   }
 
   beforePhotoDrag() {
@@ -845,11 +911,11 @@ export default class SmartPhoto extends ATemplate {
     const y = pos.y - this.oldPhotoPos.y;
     const moveX = this._round(this.data.scaleSize * x, 6);
     const moveY = this._round(this.data.scaleSize * y, 6);
-    if (typeof moveX === 'number') {
+    if (typeof moveX === "number") {
       this.data.photoPosX += moveX;
       this.photoVX = moveX;
     }
-    if (typeof moveY === 'number') {
+    if (typeof moveY === "number") {
       this.data.photoPosY += moveY;
       this.photoVY = moveY;
     }
@@ -879,12 +945,18 @@ export default class SmartPhoto extends ATemplate {
         flagY = 1;
       }
 
-      if (this.data.photoPosX - bound.maxX > offset && this.data.currentIndex !== 0) {
+      if (
+        this.data.photoPosX - bound.maxX > offset &&
+        this.data.currentIndex !== 0
+      ) {
         this.gotoSlide(this.data.prev);
         return;
       }
 
-      if (bound.minX - this.data.photoPosX > offset && this.data.currentIndex + 1 !== this.data.total) {
+      if (
+        bound.minX - this.data.photoPosX > offset &&
+        this.data.currentIndex + 1 !== this.data.total
+      ) {
         this.gotoSlide(this.data.next);
         return;
       }
@@ -905,7 +977,7 @@ export default class SmartPhoto extends ATemplate {
   }
 
   beforeGesture() {
-    this._fireEvent('gesturestart');
+    this._fireEvent("gesturestart");
     const pos = this._getGesturePos(this.e);
     const distance = this._getDistance(pos[0], pos[1]);
     this.isBeingZoomed = true;
@@ -932,7 +1004,10 @@ export default class SmartPhoto extends ATemplate {
       this.data.photoPosY = (1 + this.data.scaleSize - oldScaleSize) * posY;
     }
 
-    if (this.data.scaleSize < 1 || this.data.scaleSize > this._getScaleBoarder()) {
+    if (
+      this.data.scaleSize < 1 ||
+      this.data.scaleSize > this._getScaleBoarder()
+    ) {
       this.data.hideUi = true;
     } else {
       this.data.hideUi = false;
@@ -951,14 +1026,14 @@ export default class SmartPhoto extends ATemplate {
     this.data.scale = false;
     this.data.scaleSize = 1;
     this.data.hideUi = false;
-    this._fireEvent('gestureend');
+    this._fireEvent("gestureend");
     this._photoUpdate();
   }
 
   _getForceAndTheta(vx, vy) {
     return {
-      force: Math.sqrt((vx * vx) + (vy * vy)),
-      theta: Math.atan2(vy, vx)
+      force: Math.sqrt(vx * vx + vy * vy),
+      theta: Math.atan2(vy, vx),
     };
   }
 
@@ -1002,7 +1077,7 @@ export default class SmartPhoto extends ATemplate {
       minX: this._round(minX, 6) * this.data.scaleSize,
       minY: this._round(minY, 6) * this.data.scaleSize,
       maxX: this._round(maxX, 6) * this.data.scaleSize,
-      maxY: this._round(maxY, 6) * this.data.scaleSize
+      maxY: this._round(maxY, 6) * this.data.scaleSize,
     };
   }
 
@@ -1034,17 +1109,19 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _getUniqId() {
-    return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+    return (
+      Date.now().toString(36) + Math.random().toString(36).substr(2, 5)
+    ).toUpperCase();
   }
 
   _getDistance(point1, point2) {
     const x = point1.x - point2.x;
     const y = point1.y - point2.y;
-    return Math.sqrt((x * x) + (y * y));
+    return Math.sqrt(x * x + y * y);
   }
 
   _round(val, precision) {
-    const digit = Math.pow(10, precision);
+    const digit = 10 ** precision;
     val *= digit;
     val = Math.round(val);
     val /= digit;
@@ -1052,14 +1129,14 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _isTouched(e) {
-    if (e && e.touches) {
+    if (e?.touches) {
       return true;
     }
     return false;
   }
 
   _isGestured(e) {
-    if (e && e.touches && e.touches.length > 1) {
+    if (e?.touches && e.touches.length > 1) {
       return true;
     }
     return false;
@@ -1067,8 +1144,12 @@ export default class SmartPhoto extends ATemplate {
 
   _isSmartPhone() {
     const agent = navigator.userAgent;
-    if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0
-        || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
+    if (
+      agent.indexOf("iPhone") > 0 ||
+      agent.indexOf("iPad") > 0 ||
+      agent.indexOf("ipod") > 0 ||
+      agent.indexOf("Android") > 0
+    ) {
       return true;
     }
     return false;
@@ -1088,7 +1169,7 @@ export default class SmartPhoto extends ATemplate {
 
   _photoUpdate() {
     const classNames = this.data.classNames;
-    const current = this._getElementByQuery('.current');
+    const current = this._getElementByQuery(".current");
     const img = current.querySelector(`.${classNames.smartPhotoImg}`);
     const nav = this._getElementByQuery(`.${classNames.smartPhotoNav}`);
     const arrows = this._getElementByQuery(`.${classNames.smartPhotoArrows}`);
@@ -1110,34 +1191,34 @@ export default class SmartPhoto extends ATemplate {
     }
     if (this.data.hideUi) {
       if (nav) {
-        nav.setAttribute('aria-hidden', 'true');
+        nav.setAttribute("aria-hidden", "true");
       }
       if (arrows) {
-        arrows.setAttribute('aria-hidden', 'true');
+        arrows.setAttribute("aria-hidden", "true");
       }
     } else {
       if (nav) {
-        nav.setAttribute('aria-hidden', 'false');
+        nav.setAttribute("aria-hidden", "false");
       }
       if (arrows) {
-        arrows.setAttribute('aria-hidden', 'false');
+        arrows.setAttribute("aria-hidden", "false");
       }
     }
   }
 
   _getWindowWidth() {
-    if (document && document.documentElement) {
+    if (document?.documentElement) {
       return document.documentElement.clientWidth;
-    } else if (window && window.innerWidth) {
+    } else if (window?.innerWidth) {
       return window.innerWidth;
     }
     return 0;
   }
 
   _getWindowHeight() {
-    if (document && document.documentElement) {
+    if (document?.documentElement) {
       return document.documentElement.clientHeight;
-    } else if (window && window.innerHeight) {
+    } else if (window?.innerHeight) {
       return window.innerHeight;
     }
     return 0;
@@ -1162,11 +1243,12 @@ export default class SmartPhoto extends ATemplate {
   }
 
   _doAnim() {
-    if (this.isBeingZoomed ||
-        this.isSwipable ||
-        this.photoSwipable ||
-        this.data.elastic ||
-        !this.data.scale
+    if (
+      this.isBeingZoomed ||
+      this.isSwipable ||
+      this.photoSwipable ||
+      this.data.elastic ||
+      !this.data.scale
     ) {
       return;
     }

@@ -6,7 +6,6 @@
     opacity: 1;
   }
 }
-
 @keyframes smartphoto-img-wrap {
   from {
     opacity: 0;
@@ -15,7 +14,6 @@
     opacity: 1;
   }
 }
-
 @keyframes smartphoto-inner {
   from {
     transform: translate(0, 100px);
@@ -24,10 +22,9 @@
     transform: translate(0, 0);
   }
 }
-
 @keyframes smartphoto-loader {
   0% {
-    opacity: .4;
+    opacity: 0.4;
     transform: rotate(0deg);
   }
   50% {
@@ -35,11 +32,10 @@
     transform: rotate(180deg);
   }
   100% {
-    opacity: .4;
+    opacity: 0.4;
     transform: rotate(360deg);
   }
 }
-
 @keyframes smartphoto-appear {
   0% {
     display: none;
@@ -54,7 +50,6 @@
     opacity: 1;
   }
 }
-
 @keyframes smartphoto-hide {
   0% {
     display: block;
@@ -69,7 +64,6 @@
     opacity: 0;
   }
 }
-
 .smartphoto {
   position: fixed;
   z-index: 100;
@@ -78,7 +72,7 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: black;
+  background-color: rgb(0, 0, 0);
   opacity: 1;
   font-family: sans-serif;
   cursor: pointer;
@@ -93,7 +87,7 @@
   animation-timing-function: ease-out;
 }
 
-.smartphoto[aria-hidden="true"] {
+.smartphoto[aria-hidden=true] {
   display: none;
 }
 
@@ -226,7 +220,7 @@
   animation-timing-function: ease-out;
 }
 
-.smartphoto-arrows[aria-hidden="true"] {
+.smartphoto-arrows[aria-hidden=true] {
   animation-name: smartphoto-hide;
   display: none;
 }
@@ -243,12 +237,11 @@
   animation-timing-function: ease-out;
   animation-name: smartphoto-appear;
 }
-
 .smartphoto-arrows li:focus {
   outline: none;
 }
 
-.smartphoto-arrows [aria-hidden="true"] {
+.smartphoto-arrows [aria-hidden=true] {
   animation-name: smartphoto-hide;
   display: none;
 }
@@ -265,7 +258,6 @@
   padding: 5px 0;
   background-color: rgba(0, 0, 0, 0.5);
 }
-
 .smartphoto-arrow-right a {
   background-image: url(data:image/svg+xml;base64,PHN2ZyBpZD0i44Os44Kk44Ok44O8XzEiIGRhdGEtbmFtZT0i44Os44Kk44Ok44O8IDEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDI4MzQuNjUgMjgzNC42NSIgZmlsbD0iI0ZGRiAiPjx0aXRsZT5pY29uPC90aXRsZT48cGF0aCBkPSJNMTgzNy44OCwxNDE3LjMyLDY0My41OSwyMjNhNzIuMjEsNzIuMjEsMCwwLDEsMC0xMDEuODJMNzQzLjgyLDIxYTcyLjIxLDcyLjIxLDAsMCwxLDEwMS44MiwwTDIwOTAuODMsMTI2Ni4xOWwxMDAuMjMsMTAwLjIzYTcyLjIxLDcyLjIxLDAsMCwxLDAsMTAxLjgyTDg0NS42NCwyODEzLjY1YTcyLjIxLDcyLjIxLDAsMCwxLTEwMS44MiwwTDY0My41OSwyNzEzLjQyYTcyLjIxLDcyLjIxLDAsMCwxLDAtMTAxLjgyWiIvPjwvc3ZnPg==);
 }
@@ -275,7 +267,6 @@
   padding: 5px 0;
   background-color: rgba(0, 0, 0, 0.5);
 }
-
 .smartphoto-arrow-left a {
   background-image: url(data:image/svg+xml;base64,PHN2ZyBpZD0i44Os44Kk44Ok44O8XzEiIGRhdGEtbmFtZT0i44Os44Kk44Ok44O8IDEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDI4MzQuNjUgMjgzNC42NSIgZmlsbD0iI0ZGRiI+PHRpdGxlPmljb248L3RpdGxlPjxwYXRoIGQ9Ik05OTYuNzcsMTQxNy4zMiwyMTkxLjA2LDIyM2E3Mi4yMSw3Mi4yMSwwLDAsMCwwLTEwMS44MkwyMDkwLjgzLDIxQTcyLjIxLDcyLjIxLDAsMCwwLDE5ODksMjFMNzQzLjgyLDEyNjYuMTksNjQzLjU5LDEzNjYuNDJhNzIuMjEsNzIuMjEsMCwwLDAsMCwxMDEuODJMMTk4OSwyODEzLjY1YTcyLjIxLDcyLjIxLDAsMCwwLDEwMS44MiwwbDEwMC4yMy0xMDAuMjNhNzIuMjEsNzIuMjEsMCwwLDAsMC0xMDEuODJaIi8+PC9zdmc+);
 }
@@ -295,7 +286,7 @@
   animation-timing-function: ease-out;
 }
 
-.smartphoto-nav[aria-hidden="true"] {
+.smartphoto-nav[aria-hidden=true] {
   animation-name: smartphoto-hide;
   display: none;
 }
@@ -325,11 +316,10 @@
   background-color: #FFF;
   background-position: center center;
   background-size: cover;
-  opacity: .5;
+  opacity: 0.5;
 }
-
 .smartphoto-nav a:focus {
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .smartphoto-nav a.current {
@@ -351,7 +341,6 @@
   padding: 0;
   white-space: nowrap;
 }
-
 .smartphoto-list li {
   display: block;
   position: absolute;
@@ -361,7 +350,6 @@
   height: 100%;
   transition: all 0.3s ease-out;
 }
-
 .smartphoto-list li:focus {
   outline: none;
 }
@@ -386,7 +374,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-
 .smartphoto-caption:focus {
   outline: none;
 }
@@ -412,7 +399,7 @@
   border: 8px solid #17CDDD;
   border-right-color: transparent;
   border-radius: 50%;
-  animation: smartphoto-loader .5s infinite linear;
+  animation: smartphoto-loader 0.5s infinite linear;
 }
 
 .smartphoto-img-clone {
@@ -433,3 +420,5 @@
   border: 0;
   clip: rect(0, 0, 0, 0);
 }
+
+/*# sourceMappingURL=smartphoto.css.map */

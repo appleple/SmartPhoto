@@ -1,0 +1,30 @@
+# Source files
+src/
+scss/
+_js/
+examples/
+test/
+tools/
+
+# Configuration files
+.git/
+.gitignore
+.npmignore
+.editorconfig
+vite.config.mjs
+biome.json
+
+# Development files
+node_modules/
+.DS_Store
+*.log
+coverage/
+
+# Build files
+dist/
+lib/*.js
+lib/*.min.js
+js/*.js
+js/*.min.js
+css/*.css
+css/*.min.css

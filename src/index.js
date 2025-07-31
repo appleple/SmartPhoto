@@ -1,3 +1,2 @@
-'use strict';
-
-module.exports = require('./core/');
+import SmartPhoto from "./core";
+export default SmartPhoto;
