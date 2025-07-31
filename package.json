@@ -26,7 +26,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome check --write ./src",
-    "lint:check": "biome check ./src",
+    "lint:ci": "biome ci ./src",
     "build:js": "npm-run-all -p build:lib build:jquery build:global",
     "build:lib": "vite build --mode lib",
     "build:jquery": "vite build --mode jquery",

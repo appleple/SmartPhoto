@@ -34,9 +34,9 @@ global.TouchEvent = TouchEventMock;
 class DeviceOrientationEventMock {
   constructor(type, options = {}) {
     this.type = type;
-    this.alpha = options.alpha || 0;
-    this.beta = options.beta || 0;
-    this.gamma = options.gamma || 0;
+    this.alpha = options.alpha || null;
+    this.beta = options.beta || null;
+    this.gamma = options.gamma || null;
   }
 }
 
@@ -55,6 +55,13 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }));
+
+// requestAnimationFrameのモック
+global.requestAnimationFrame = vi.fn((cb) => setTimeout(cb, 0));
+global.cancelAnimationFrame = vi.fn();
+
+// Element.prototype.scrollIntoViewのモック
+Element.prototype.scrollIntoView = vi.fn();
 
 // window.pageXOffsetとwindow.pageYOffsetのモック
 Object.defineProperty(window, 'pageXOffset', {
