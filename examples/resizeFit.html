@@ -4,8 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<link rel="stylesheet" href="../css/smartphoto.min.css">
-    <link rel="stylesheet" href="./assets/style.css">
+    <link rel="stylesheet" href="/style.css">
 	<title>SmartPhoto.js</title>
 </head>
 <body>
@@ -13,44 +12,37 @@
 		<h1 class="title">SmartPhoto.js</h1>
 		<div class="masonry">
 			<div class="brick">
-				<a href="./assets/large-lion.jpg" class="js-img-viewer" data-caption="Lion" data-id="lion">
-					<img src="./assets/lion.jpg" width="360" alt=""/>
+				<a href="/large-lion.jpg" class="js-img-viewer" data-caption="Lion" data-id="lion">
+					<img src="/lion.jpg" width="360" alt=""/>
 				</a>
 			</div>
 			<div class="brick">
-				<a href="./assets/large-camel.jpg" class="js-img-viewer" data-caption="Camel" data-id="camel">
-					<img src="./assets/camel.jpg" width="360" alt=""/>
+				<a href="/large-camel.jpg" class="js-img-viewer" data-caption="Camel" data-id="camel">
+					<img src="/camel.jpg" width="360" alt=""/>
 				</a>
 			</div>
 			<div class="brick">
-				<a href="./assets/large-hippo.jpg" class="js-img-viewer" data-caption="Hippo" data-id="hippo">
-					<img src="./assets/hippo.jpg" width="360" alt="" />
+				<a href="/large-hippo.jpg" class="js-img-viewer" data-caption="Hippo" data-id="hippo">
+					<img src="/hippo.jpg" width="360" alt="" />
 				</a>
 			</div>
 			<div class="brick">
-				<a href="./assets/large-koala.jpg" class="js-img-viewer" data-caption="Koala" data-id="koala">
-					<img src="./assets/koala.jpg" width="360" alt="" />
+				<a href="/large-koala.jpg" class="js-img-viewer" data-caption="Koala" data-id="koala">
+					<img src="/koala.jpg" width="360" alt="" />
 				</a>
 			</div>
 			<div class="brick">
-				<a href="./assets/large-bear.jpg" class="js-img-viewer" data-caption="Bear" data-id="bear">
-					<img src="./assets/bear.jpg" width="360" alt=""/>
+				<a href="/large-bear.jpg" class="js-img-viewer" data-caption="Bear" data-id="bear">
+					<img src="/bear.jpg" width="360" alt=""/>
 				</a>
 			</div>
 			<div class="brick">
-				<a href="./assets/large-rhino.jpg" class="js-img-viewer" data-caption="Rhino" data-id="rhino">
-					<img src="./assets/rhino.jpg" width="360" alt=""/>
+				<a href="/large-rhino.jpg" class="js-img-viewer" data-caption="Rhino" data-id="rhino">
+					<img src="/rhino.jpg" width="360" alt=""/>
 				</a>
 			</div>
 		</div>
 	</div>
-	<script src="../js/smartphoto.js?v=1"></script>
-	<script>
-	document.addEventListener('DOMContentLoaded',function(){
-		new SmartPhoto(".js-img-viewer",{
-            resizeStyle:'fit'
-        });
-	});
-	</script>
+	<script type="module" src="./src/resizeFit.js"></script>
 </body>
 </html>

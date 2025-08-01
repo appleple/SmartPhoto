@@ -68,6 +68,15 @@ const configs = {
   }),
 };
 
-export default defineConfig(({ mode }) => {
-  return configs[mode] || configs.umd;
+export default defineConfig(({ command, mode }) => {
+  if (command === 'build') {
+    return configs[mode] || configs.umd;
+  }
+  return defineConfig({
+    root: './',
+    publicDir: 'examples/assets',
+    server: {
+      open: '/examples/index.html',
+    },
+  })
 });
