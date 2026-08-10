@@ -357,37 +357,41 @@ photo.on('zoomout',function(){
 	</tr>
 </table>
 
-### SCSS
+### CSS Custom Properties
 
 <table>
 	<tr>
-		<th>variable</th>
+		<th>property</th>
 		<th>description</th>
 		<th>default</th>
 	</tr>
     <tr>
-        <td>$animation-speed</td>
-        <td>animation speed when switching images</td>
-        <td>.3s</td>
+        <td>--smartphoto-animation-speed</td>
+        <td>animation speed when switching/opening/closing images. Overridden per-instance by the <code>animationSpeed</code> JS option</td>
+        <td>300ms</td>
     </tr>
     <tr>
-        <td>$backdrop-color</td>
+        <td>--smartphoto-animation-function</td>
+        <td>easing function used for animations</td>
+        <td>ease-out</td>
+    </tr>
+    <tr>
+        <td>--smartphoto-backdrop-color</td>
         <td>backdrop color when viewing images</td>
         <td>rgba(0, 0, 0, 1)</td>
     </tr>
     <tr>
-        <td>$header-color</td>
+        <td>--smartphoto-header-color</td>
         <td>header color</td>
         <td>rgba(0, 0, 0, .2)</td>
     </tr>
 </table>
 
-`$animation-speed` is the SCSS build-time default. At runtime it is overridden per-instance by the `animationSpeed` JS option via the `--smartphoto-animation-speed` CSS custom property set on the `dialog` element.
-
-Every SCSS variable above is also exposed as a CSS custom property (`--smartphoto-animation-speed`, `--smartphoto-animation-function`, `--smartphoto-backdrop-color`, `--smartphoto-header-color`), so they can be overridden without recompiling SCSS, e.g.:
+Set these on `.smartphoto` (or `:root`) to override the defaults, no rebuild required:
 
 ```css
 .smartphoto {
+  --smartphoto-animation-speed: 500ms;
   --smartphoto-animation-function: ease-in-out;
   --smartphoto-backdrop-color: rgba(0, 0, 0, 0.9);
   --smartphoto-header-color: rgba(0, 0, 0, 0.4);
