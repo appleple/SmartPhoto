@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="/style.css">
+	<title>SmartPhoto.js - Programmatic API (data source mode)</title>
+</head>
+<body>
+	<div class="wrapper">
+		<h1 class="title">SmartPhoto.js - Programmatic API</h1>
+		<p>
+			This page opens SmartPhoto from a plain JS array of slides (no <code>&lt;a&gt;</code>
+			elements are scanned). See <code>examples/src/programmatic.js</code>.
+		</p>
+		<p>
+			<button type="button" class="js-open-index">show(0)</button>
+			<button type="button" class="js-open-id">show("koala")</button>
+			<button type="button" class="js-next">next()</button>
+			<button type="button" class="js-prev">prev()</button>
+			<button type="button" class="js-hide">hide()</button>
+		</p>
+		<div class="masonry">
+			<div class="brick">
+				<img src="/lion.jpg" width="360" alt="Lion" class="js-thumb" data-index="0" />
+			</div>
+			<div class="brick">
+				<img src="/camel.jpg" width="360" alt="Camel" class="js-thumb" data-index="1" />
+			</div>
+			<div class="brick">
+				<img src="/koala.jpg" width="360" alt="Koala" class="js-thumb" data-index="2" />
+			</div>
+		</div>
+	</div>
+
+	<script type="module" src="./src/programmatic.js"></script>
+</body>
+</html>
