@@ -558,6 +558,70 @@ describe("View Transitions API 経由で開く", () => {
   });
 });
 
+describe("--smartphoto-vh(実測ビューポート高さのCSS変数化)", () => {
+  it("構築時に dialog へ実測した高さを設定する", () => {
+    const smartPhoto = track(new SmartPhoto([]));
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    expect(dialog.style.getPropertyValue("--smartphoto-vh")).toBe(
+      `${document.documentElement.clientHeight}px`,
+    );
+  });
+
+  it("resize 時(visualViewport 非対応環境)に再計算する", () => {
+    const smartPhoto = track(new SmartPhoto([]));
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 480,
+      configurable: true,
+    });
+    fireEvent(window, new Event("resize"));
+    expect(dialog.style.getPropertyValue("--smartphoto-vh")).toBe("480px");
+    delete (document.documentElement as { clientHeight?: number }).clientHeight;
+    void smartPhoto;
+  });
+
+  it("スマートフォンでも resize(visualViewport 非対応環境)で再計算する", () => {
+    withStubbedUserAgent(
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    );
+    const smartPhoto = track(new SmartPhoto([]));
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 550,
+      configurable: true,
+    });
+    fireEvent(window, new Event("resize"));
+    expect(dialog.style.getPropertyValue("--smartphoto-vh")).toBe("550px");
+    delete (document.documentElement as { clientHeight?: number }).clientHeight;
+    void smartPhoto;
+  });
+
+  it("visualViewport 対応環境では clientHeight より visualViewport.height を優先する", () => {
+    // iOS Safari 等では document.documentElement.clientHeight が URL バーの
+    // 表示/非表示に追従せず、実際に見えている領域より大きい値を返すことがある
+    // (§scss)。visualViewport.height の方が実測値として信頼できるため優先する
+    const stubViewport = {
+      height: 400,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    } as unknown as VisualViewport;
+    Object.defineProperty(window, "visualViewport", {
+      value: stubViewport,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 800,
+      configurable: true,
+    });
+    const smartPhoto = track(new SmartPhoto([]));
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    expect(dialog.style.getPropertyValue("--smartphoto-vh")).toBe("400px");
+    delete (document.documentElement as { clientHeight?: number }).clientHeight;
+    delete (window as { visualViewport?: VisualViewport }).visualViewport;
+    void smartPhoto;
+  });
+});
+
 describe("resize/orientationchange: アイテムが無い場合", () => {
   it("resize は何もしない(デスクトップ・空ギャラリー)", () => {
     const smartPhoto = track(new SmartPhoto([]));

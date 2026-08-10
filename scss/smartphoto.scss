@@ -98,11 +98,14 @@ $header-color: rgba(0, 0, 0, 0.2) !default;
   // 合わせて完全に固定表示にする
   overflow: hidden;
   // モバイルでスクロールに伴いアドレスバーが表示/非表示になり可視領域が変化しても
-  // 追従するよう、対応ブラウザでは dvh (動的ビューポート高さ) を優先する。
-  // 未対応ブラウザは直前の height:100%/max-height:100% がそのまま使われる
-  // (see: https://github.com/appleple/SmartPhoto/issues/90)
-  height: 100dvh;
-  max-height: 100dvh;
+  // 追従するよう、dvh (動的ビューポート高さ) を優先する
+  // (see: https://github.com/appleple/SmartPhoto/issues/90)。
+  // dvh はブラウザによってはアドレスバーの伸縮への追従が実装依存で不安定なため、
+  // JS で実測して設定する --smartphoto-vh (updateViewportHeight() 参照) があれば
+  // それを優先し、JS 無効時やブラウザ未対応時は height:100%/max-height:100% に
+  // フォールバックする
+  height: var(--smartphoto-vh, 100dvh);
+  max-height: var(--smartphoto-vh, 100dvh);
   background-color: var(--smartphoto-backdrop-color, $backdrop-color);
   opacity: 1;
   font-family: sans-serif;
@@ -123,6 +126,18 @@ $header-color: rgba(0, 0, 0, 0.2) !default;
   &::backdrop {
     background-color: var(--smartphoto-backdrop-color, $backdrop-color);
   }
+}
+
+// View Transition(openPhotoWithViewTransition() 参照)の疑似要素ツリーは document の
+// ルート要素(html)の子として扱われ、dialog に設定した --smartphoto-animation-speed を
+// 継承しない。そのため JS 側では document.documentElement にも同じ変数を設定しており、
+// ここではその値を参照する。指定がなければブラウザ既定(実装依存, 概ね0.25s前後で
+// 速すぎるとの声があった)の代わりに $animation-speed を使う
+::view-transition-group(smartphoto-hero),
+::view-transition-old(smartphoto-hero),
+::view-transition-new(smartphoto-hero) {
+  animation-duration: var(--smartphoto-animation-speed, $animation-speed);
+  animation-timing-function: var(--smartphoto-animation-function, $animation-function);
 }
 
 .smartphoto-close {
@@ -443,8 +458,10 @@ $header-color: rgba(0, 0, 0, 0.2) !default;
   height: 0;
   transform: translate(50vw, 50vh);
   // dvh 対応ブラウザでは動的ビューポート高さを基準に中央寄せする
-  // (see: https://github.com/appleple/SmartPhoto/issues/90)
+  // (see: https://github.com/appleple/SmartPhoto/issues/90)。
+  // --smartphoto-vh (updateViewportHeight() 参照) が設定されていればそちらを優先する(§)
   transform: translate(50vw, 50dvh);
+  transform: translate(50vw, calc(var(--smartphoto-vh, 100dvh) / 2));
 }
 
 .smartphoto-loader {

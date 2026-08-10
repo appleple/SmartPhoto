@@ -47,8 +47,11 @@ function getWindowWidth(): number {
   return document.documentElement.clientWidth;
 }
 
+// iOS Safari 等では document.documentElement.clientHeight が URL バーの表示/非表示に
+// 追従せず、実際に見えている領域より大きい値を返すことがある(§scss の --smartphoto-vh)。
+// visualViewport.height の方が実測値として信頼できるため、対応環境ではそちらを優先する
 function getWindowHeight(): number {
-  return document.documentElement.clientHeight;
+  return window.visualViewport?.height ?? document.documentElement.clientHeight;
 }
 
 // $().get() や Array.from(NodeList) 等で渡される「DOM要素の配列」は Array.isArray()
@@ -143,6 +146,25 @@ export default class SmartPhoto {
       } else {
         this.openPhoto(restored, null);
       }
+    }
+
+    // 100dvh は iOS Safari 等でアドレスバーの表示/非表示に伴うリサイズへの追従が
+    // 実装依存で不安定(§scss)なため、実測した高さを --smartphoto-vh として明示的に
+    // 設定し、dialog の height/中央寄せ計算をそちらに合わせるフォールバックにする。
+    // visualViewport は URL バーの伸縮も resize として発火するため、対応環境では
+    // window の resize より優先する(スマートフォンで window.resize を購読しない
+    // 既存方針(下記)とは独立した、この変数専用の軽量な購読)
+    this.updateViewportHeight();
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener(
+        "resize",
+        this.updateViewportHeight,
+        { signal: this.abortController.signal },
+      );
+    } else {
+      window.addEventListener("resize", this.updateViewportHeight, {
+        signal: this.abortController.signal,
+      });
     }
 
     if (!this.isSmartPhoneFlag) {
@@ -512,6 +534,14 @@ export default class SmartPhoto {
   }
 
   private openPhotoWithViewTransition(trigger: HTMLElement | null): void {
+    // ::view-transition-group 等の疑似要素は document のルート要素(html)の子として
+    // 扱われ、dialog に設定した --smartphoto-animation-speed を継承しない(§scss)。
+    // 開く直前に html へも同じ値を設定することで、複数インスタンスが異なる
+    // animationSpeed を持つ場合でも「実際に開くインスタンスの値」が確実に使われる
+    document.documentElement.style.setProperty(
+      "--smartphoto-animation-speed",
+      `${this.state.options.animationSpeed}ms`,
+    );
     const transitionName = "smartphoto-hero";
     const thumbImg = trigger?.querySelector("img") ?? null;
     if (thumbImg) {
@@ -840,6 +870,13 @@ export default class SmartPhoto {
   }
 
   // ---- 内部: window イベント ----
+
+  private updateViewportHeight = (): void => {
+    this.view.refs.dialog.style.setProperty(
+      "--smartphoto-vh",
+      `${getWindowHeight()}px`,
+    );
+  };
 
   private handleResize = (): void => {
     if (!currentItems(this.state)) {
