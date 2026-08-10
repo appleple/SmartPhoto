@@ -1026,5 +1026,36 @@ describe("gestures", () => {
       vi.advanceTimersByTime(100);
       expect(callbacks.onPhotoDragMove).not.toHaveBeenCalled();
     });
+
+    it("ピンチ中に保留していたフレームもキャンセルする", () => {
+      const { gestures, callbacks, imgWrap } = buildHarness();
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", {
+          pointerId: 1,
+          clientX: 100,
+          clientY: 100,
+        }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", {
+          pointerId: 2,
+          clientX: 120,
+          clientY: 100,
+        }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointermove", {
+          pointerId: 2,
+          clientX: 220,
+          clientY: 100,
+        }),
+      );
+      // rAFはまだ発火していない(保留中)状態でdetachする
+      expect(() => gestures.detach()).not.toThrow();
+      callbacks.onGestureMove.mockClear();
+      vi.advanceTimersByTime(16);
+      // キャンセルされているため、detach後にonGestureMoveは呼ばれない
+      expect(callbacks.onGestureMove).not.toHaveBeenCalled();
+    });
   });
 });
