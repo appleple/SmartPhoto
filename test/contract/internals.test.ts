@@ -602,6 +602,7 @@ describe("--smartphoto-vh(実測ビューポート高さのCSS変数化)", () =>
     // (§css)。visualViewport.height の方が実測値として信頼できるため優先する
     const stubViewport = {
       height: 400,
+      scale: 1,
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
     } as unknown as VisualViewport;
@@ -617,6 +618,28 @@ describe("--smartphoto-vh(実測ビューポート高さのCSS変数化)", () =>
     const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
     expect(dialog.style.getPropertyValue("--smartphoto-vh")).toBe("400px");
     delete (document.documentElement as { clientHeight?: number }).clientHeight;
+    delete (window as { visualViewport?: VisualViewport }).visualViewport;
+    void smartPhoto;
+  });
+
+  it("ネイティブのピンチズームでvisualViewport.scaleが変化してもscaleで相殺した高さを使う", () => {
+    // 2本指ピンチが touch-action:none をすり抜けてブラウザ本体のページズームも
+    // 誘発した場合、visualViewport.height はズーム倍率(scale)分だけ縮んだ値になる。
+    // scale を掛けずに --smartphoto-vh へ入れてしまうと、その縮んだ値がdialogの
+    // 高さに固定され、ズーム後にdialog下側が余って背景が見えてしまう(実際の不具合)
+    const stubViewport = {
+      height: 400,
+      scale: 2,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    } as unknown as VisualViewport;
+    Object.defineProperty(window, "visualViewport", {
+      value: stubViewport,
+      configurable: true,
+    });
+    const smartPhoto = track(new SmartPhoto([]));
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    expect(dialog.style.getPropertyValue("--smartphoto-vh")).toBe("800px");
     delete (window as { visualViewport?: VisualViewport }).visualViewport;
     void smartPhoto;
   });
