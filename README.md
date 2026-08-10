@@ -17,7 +17,6 @@ If you are Japasese, See here [https://www.appleple.com/blog/javascript/smartpho
 
 ## Installation
 - [npm](https://www.npmjs.com/package/smartphoto)
-- [standalone](https://raw.githubusercontent.com/appleple/smart-photo/master/js/smartphoto.js)
 
 via npm
 ```shell
