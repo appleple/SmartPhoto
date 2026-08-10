@@ -18,7 +18,6 @@
       "require": "./lib/smartphoto.js"
     },
     "./css/*": "./css/*",
-    "./js/*": "./js/*",
     "./package.json": "./package.json"
   },
   "publishConfig": {
