@@ -1,6 +1,6 @@
 {
   "name": "smartphoto",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "smartphoto",
   "homepage": "https://developer.a-blogcms.jp",
   "main": "./lib/smartphoto.js",
@@ -16,7 +16,10 @@
       "types": "./lib/types/index.d.ts",
       "import": "./lib/smartphoto.mjs",
       "require": "./lib/smartphoto.js"
-    }
+    },
+    "./css/*": "./css/*",
+    "./js/*": "./js/*",
+    "./package.json": "./package.json"
   },
   "publishConfig": {
     "access": "public"
