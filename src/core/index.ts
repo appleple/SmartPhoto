@@ -48,7 +48,7 @@ function getWindowWidth(): number {
 }
 
 // iOS Safari 等では document.documentElement.clientHeight が URL バーの表示/非表示に
-// 追従せず、実際に見えている領域より大きい値を返すことがある(§scss の --smartphoto-vh)。
+// 追従せず、実際に見えている領域より大きい値を返すことがある(§css の --smartphoto-vh)。
 // visualViewport.height の方が実測値として信頼できるため、対応環境ではそちらを優先する
 function getWindowHeight(): number {
   return window.visualViewport?.height ?? document.documentElement.clientHeight;
@@ -149,7 +149,7 @@ export default class SmartPhoto {
     }
 
     // 100dvh は iOS Safari 等でアドレスバーの表示/非表示に伴うリサイズへの追従が
-    // 実装依存で不安定(§scss)なため、実測した高さを --smartphoto-vh として明示的に
+    // 実装依存で不安定(§css)なため、実測した高さを --smartphoto-vh として明示的に
     // 設定し、dialog の height/中央寄せ計算をそちらに合わせるフォールバックにする。
     // visualViewport は URL バーの伸縮も resize として発火するため、対応環境では
     // window の resize より優先する(スマートフォンで window.resize を購読しない
@@ -535,7 +535,7 @@ export default class SmartPhoto {
 
   private openPhotoWithViewTransition(trigger: HTMLElement | null): void {
     // ::view-transition-group 等の疑似要素は document のルート要素(html)の子として
-    // 扱われ、dialog に設定した --smartphoto-animation-speed を継承しない(§scss)。
+    // 扱われ、dialog に設定した --smartphoto-animation-speed を継承しない(§css)。
     // 開く直前に html へも同じ値を設定することで、複数インスタンスが異なる
     // animationSpeed を持つ場合でも「実際に開くインスタンスの値」が確実に使われる
     document.documentElement.style.setProperty(

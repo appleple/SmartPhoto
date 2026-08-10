@@ -1,5 +1,5 @@
 import SmartPhoto from '../../src/index';
-import '../../scss/smartphoto.scss';
+import '../../styles/smartphoto.css';
 
 // LazyLoad is loaded from CDN in the HTML
 new LazyLoad({

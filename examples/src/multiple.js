@@ -1,5 +1,5 @@
 import SmartPhoto from '../../src/index';
-import '../../scss/smartphoto.scss';
+import '../../styles/smartphoto.css';
 
 window.addEventListener('load', function () {
   new SmartPhoto('.js-img-viewer');

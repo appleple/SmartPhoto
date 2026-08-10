@@ -1,5 +1,5 @@
 import '../../src/adaptor/jquery';
-import '../../scss/smartphoto.scss';
+import '../../styles/smartphoto.css';
 
 $(function () {
   $('.js-img-viewer').SmartPhoto();

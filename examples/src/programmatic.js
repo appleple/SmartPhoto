@@ -1,5 +1,5 @@
 import SmartPhoto from '../../src/index';
-import '../../scss/smartphoto.scss';
+import '../../styles/smartphoto.css';
 
 // データソースモード(§3): HTML の <a> を一切読み取らず、配列を直接渡して構築する
 const slides = [

@@ -599,7 +599,7 @@ describe("--smartphoto-vh(実測ビューポート高さのCSS変数化)", () =>
   it("visualViewport 対応環境では clientHeight より visualViewport.height を優先する", () => {
     // iOS Safari 等では document.documentElement.clientHeight が URL バーの
     // 表示/非表示に追従せず、実際に見えている領域より大きい値を返すことがある
-    // (§scss)。visualViewport.height の方が実測値として信頼できるため優先する
+    // (§css)。visualViewport.height の方が実測値として信頼できるため優先する
     const stubViewport = {
       height: 400,
       addEventListener: vi.fn(),
