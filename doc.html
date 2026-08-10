@@ -10,13 +10,13 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="./assets/css/style.css?v=96c482a683ca3d2e8dd0d3c3a74134ace03a6260">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="https://unpkg.com/smartphoto@2.1.0/css/smartphoto.min.css">
+	<link rel="stylesheet" href="https://unpkg.com/smartphoto@2.1.1/css/smartphoto.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
   </head>
   <body>
     <header class="page-header-top" style="position:static">
         <div class="container">
-            <span class="page-header-brand"><a href="./">SmartPhoto.js<small>v2.1.0</small></a></span>
+            <span class="page-header-brand"><a href="./">SmartPhoto.js<small>v2.1.1</small></a></span>
             <ul class="page-header-navi">
                 <li><a href="./">Home</a></li>
                 <li><a href="./demo.html">Demos</a></li>
@@ -48,7 +48,7 @@
                     <h2 class="sidelist-title">Development</h2>
                     <ul class="sidelist">
 						<li><a href="https://github.com/appleple/SmartPhoto" class="sidelist-item">GitHub</a></li>
-                        <li><a href="#scss" class="sidelist-item">SCSS</a></li>
+                        <li><a href="#css-custom-properties" class="sidelist-item">CSS Custom Properties</a></li>
                         <li><a href="#dependencies" class="sidelist-item">Dependencies</a></li>
                     </ul>
                 </section>
@@ -62,8 +62,8 @@
                 <h3 id="installation">Installation</h3>
                 <h4>Via CDN</h4>
                 <p>Link directly to SmartPhoto files on <a href="https://unpkg.com/">unpkg</a>.</p>
-                <pre><code class="html">&lt;script src="https://unpkg.com/smartphoto@2.1.0/js/smartphoto.min.js"&gt;&lt/script&gt;
-&lt;link rel="stylesheet" href="https://unpkg.com/smartphoto@2.1.0/css/smartphoto.min.css" /&gt;</code></pre>
+                <pre><code class="html">&lt;script src="https://unpkg.com/smartphoto@2.1.1/js/smartphoto.min.js"&gt;&lt/script&gt;
+&lt;link rel="stylesheet" href="https://unpkg.com/smartphoto@2.1.1/css/smartphoto.min.css" /&gt;</code></pre>
                 <h4>via npm</h4>
                 npm
                 <pre><code class="shell">npm install smartphoto --save</code></pre>
@@ -266,36 +266,37 @@ mySmartPhoto.show("bear");</code></pre>
     console.log('zoomout');
 });</code></pre>
                 <h2>Development</h2>
-                <h3 id="scss">SCSS</h3>
+                <h3 id="css-custom-properties">CSS Custom Properties</h3>
                 <table style="margin-bottom:20px;">
                     <tr>
-                        <th>variable</th>
+                        <th>property</th>
                         <th>description</th>
                         <th>default</th>
                     </tr>
                     <tr>
-                        <td>$animation-speed</td>
-                        <td>animation speed when switching images</td>
-                        <td>.3s</td>
+                        <td>--smartphoto-animation-speed</td>
+                        <td>animation speed when switching/opening/closing images. Overridden per-instance by the <code>animationSpeed</code> JS option</td>
+                        <td>300ms</td>
                     </tr>
                     <tr>
-                        <td>$animation-function</td>
+                        <td>--smartphoto-animation-function</td>
                         <td>easing function used for animations</td>
                         <td>ease-out</td>
                     </tr>
                     <tr>
-                        <td>$backdrop-color</td>
+                        <td>--smartphoto-backdrop-color</td>
                         <td>backdrop color when viewing images</td>
                         <td>rgba(0, 0, 0, 1)</td>
                     </tr>
                     <tr>
-                        <td>$header-color</td>
+                        <td>--smartphoto-header-color</td>
                         <td>header color</td>
                         <td>rgba(0, 0, 0, .2)</td>
                     </tr>
                 </table>
-                <p>Every SCSS variable above is also exposed as a CSS custom property (<code>--smartphoto-animation-speed</code>, <code>--smartphoto-animation-function</code>, <code>--smartphoto-backdrop-color</code>, <code>--smartphoto-header-color</code>), so they can be overridden without recompiling SCSS:</p>
+                <p>Set these on <code>.smartphoto</code> (or <code>:root</code>) to override the defaults, no rebuild required:</p>
 <pre><code class="css">.smartphoto {
+  --smartphoto-animation-speed: 500ms;
   --smartphoto-animation-function: ease-in-out;
   --smartphoto-backdrop-color: rgba(0, 0, 0, 0.9);
   --smartphoto-header-color: rgba(0, 0, 0, 0.4);
