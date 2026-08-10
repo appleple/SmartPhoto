@@ -1,3 +1,4 @@
+import { waitFor } from "@testing-library/dom";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import SmartPhoto from "../../src/index";
 import ImportedDefault from "../../src/index";
@@ -44,6 +45,31 @@ describe("constructor(HTMLソースモード)", () => {
   it("NodeList を受け取れる", () => {
     smartPhoto = new SmartPhoto(document.querySelectorAll(".js-smartphoto"));
     expect(document.querySelector("dialog.smartphoto")).toBeInTheDocument();
+  });
+
+  it("DOM 要素のプレーン配列(jQueryの $().get() 相当)を受け取れる", () => {
+    const elements = Array.from(
+      container.querySelectorAll(".js-smartphoto"),
+    ) as HTMLElement[];
+    smartPhoto = new SmartPhoto(elements);
+    expect(document.querySelector("dialog.smartphoto")).toBeInTheDocument();
+    expect(document.querySelectorAll(".smartphoto-list > li").length).toBe(2);
+  });
+
+  it("DOM 要素のプレーン配列で構築した場合もサムネイルクリックで開ける", async () => {
+    const elements = Array.from(
+      container.querySelectorAll(".js-smartphoto"),
+    ) as HTMLElement[];
+    smartPhoto = new SmartPhoto(elements);
+    elements[0].click();
+    await waitFor(() => {
+      expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+        "open",
+      );
+    });
+    expect(document.querySelector(".smartphoto-caption")?.textContent).toBe(
+      "A",
+    );
   });
 
   it("既定オプションで矢印・ナビが有効になる", () => {

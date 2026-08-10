@@ -51,6 +51,12 @@ function getWindowHeight(): number {
   return document.documentElement.clientHeight;
 }
 
+// $().get() や Array.from(NodeList) 等で渡される「DOM要素の配列」は Array.isArray()
+// では Slide[] と区別できない。先頭要素が Element かどうかで実データを見て判別する
+function isElementArray(source: unknown[]): source is Element[] {
+  return source.length > 0 && source[0] instanceof Element;
+}
+
 function getUniqId(): string {
   return (
     Date.now().toString(36) + Math.random().toString(36).substring(2, 7)
@@ -329,7 +335,7 @@ export default class SmartPhoto {
   // ---- 内部: ソース取り込み ----
 
   private ingestSource(source: SmartPhotoSource): void {
-    if (Array.isArray(source)) {
+    if (Array.isArray(source) && !isElementArray(source)) {
       source.forEach((slide) => {
         this.addSlideItem(slide);
       });
@@ -338,7 +344,7 @@ export default class SmartPhoto {
     const elements =
       typeof source === "string"
         ? Array.from(document.querySelectorAll(source))
-        : Array.from(source);
+        : Array.from(source as NodeListOf<Element> | Element[]);
     elements.forEach((el) => {
       this.addElementItem(el as HTMLElement);
     });

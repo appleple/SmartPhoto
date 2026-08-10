@@ -146,7 +146,11 @@ export interface Slide {
   height?: number;
 }
 
-export type SmartPhotoSource = string | NodeListOf<Element> | Slide[];
+export type SmartPhotoSource =
+  | string
+  | NodeListOf<Element>
+  | Element[]
+  | Slide[];
 
 export type SmartPhotoEvent =
   | "open"
