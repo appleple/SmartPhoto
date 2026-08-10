@@ -142,6 +142,38 @@ describe("dialog ライフサイクル", () => {
     );
   });
 
+  it("transitionend発火後にフォールバックのタイムアウトが後から発火しても二重に後始末しない", async () => {
+    const handler = vi.fn();
+    await openViewer(container);
+    const dialog = document.querySelector(
+      "dialog.smartphoto",
+    ) as HTMLDialogElement;
+    dialog.addEventListener("close", (e) => {
+      if (e instanceof CustomEvent) {
+        handler();
+      }
+    });
+    fireEvent.click(
+      document.querySelector(".smartphoto-dismiss") as HTMLElement,
+    );
+    await waitFor(() => {
+      expect(document.querySelector("dialog.smartphoto")).not.toHaveAttribute(
+        "open",
+      );
+    });
+    const img = document.querySelector(".smartphoto-img") as HTMLImageElement;
+    // 実ブラウザの通常経路: transitionend が先に発火して後始末が完了する
+    fireEvent.transitionEnd(dialog);
+    await waitFor(() => {
+      expect(img.style.transform).not.toContain("translateY");
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+    // フォールバックのタイムアウトが後から発火しても、finishHideEffect による
+    // ガードのおかげで後始末は再実行されず close も増えない
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    expect(handler).toHaveBeenCalledTimes(1);
+  });
+
   it("dialog.showModal() の二重呼び出しで例外が起きない(open→open)", async () => {
     await openViewer(container);
     const dialog = document.querySelector(
