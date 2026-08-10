@@ -380,6 +380,16 @@ photo.on('zoomout',function(){
 
 `$animation-speed` is the SCSS build-time default. At runtime it is overridden per-instance by the `animationSpeed` JS option via the `--smartphoto-animation-speed` CSS custom property set on the `dialog` element.
 
+Every SCSS variable above is also exposed as a CSS custom property (`--smartphoto-animation-speed`, `--smartphoto-animation-function`, `--smartphoto-backdrop-color`, `--smartphoto-header-color`), so they can be overridden without recompiling SCSS, e.g.:
+
+```css
+.smartphoto {
+  --smartphoto-animation-function: ease-in-out;
+  --smartphoto-backdrop-color: rgba(0, 0, 0, 0.9);
+  --smartphoto-header-color: rgba(0, 0, 0, 0.4);
+}
+```
+
 
 ## Download
 [Download ZIP](https://github.com/appleple/SmartPhoto/archive/master.zip)
