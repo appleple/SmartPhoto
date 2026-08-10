@@ -3,9 +3,9 @@ node_modules/
 
 # Build outputs
 dist/
-lib/
-js/
-css/
+/lib/
+/js/
+/css/
 
 # IDE and editor files
 .idea/
