@@ -316,6 +316,10 @@ photo.on('zoomout',function(){
 		<td>remove the viewer and all of its event listeners</td>
 	</tr>
 	<tr>
+		<td><code>[Symbol.dispose]()</code></td>
+		<td>same as <code>destroy()</code>. Lets a <code>using</code> declaration destroy the instance automatically when it goes out of scope: <code>{ using photo = new SmartPhoto(...); }</code></td>
+	</tr>
+	<tr>
 		<td><code>gotoSlide(index)</code></td>
 		<td>go to the slide at <code>index</code> within the current group</td>
 	</tr>

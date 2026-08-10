@@ -184,6 +184,11 @@ export default class SmartPhoto {
     this.view.destroy();
   }
 
+  // using宣言でスコープを離脱した際に destroy() を自動実行できるようにする
+  [Symbol.dispose](): void {
+    this.destroy();
+  }
+
   gotoSlide(index: number): void {
     this.state.viewer.currentIndex = Number.parseInt(String(index), 10);
     if (!this.state.viewer.currentIndex) {

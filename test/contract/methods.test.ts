@@ -102,4 +102,18 @@ describe("公開メソッド契約", () => {
     smartPhoto?.destroy();
     expect(() => smartPhoto?.destroy()).not.toThrow();
   });
+
+  it("[Symbol.dispose]() は destroy() と同じ後始末を行う", () => {
+    smartPhoto?.[Symbol.dispose]();
+    expect(document.querySelector("dialog.smartphoto")).not.toBeInTheDocument();
+  });
+
+  it("using宣言でスコープを離脱すると自動的に destroy() が呼ばれる", () => {
+    {
+      using scoped = new SmartPhoto(".js-smartphoto");
+      expect(document.querySelectorAll("dialog.smartphoto")).toHaveLength(2);
+      void scoped;
+    }
+    expect(document.querySelectorAll("dialog.smartphoto")).toHaveLength(1);
+  });
 });
