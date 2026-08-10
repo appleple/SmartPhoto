@@ -10,13 +10,13 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="./assets/css/style.css?v=96c482a683ca3d2e8dd0d3c3a74134ace03a6260">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="https://unpkg.com/smartphoto@1.1.0/css/smartphoto.min.css">
+	<link rel="stylesheet" href="https://unpkg.com/smartphoto@2.1.0/css/smartphoto.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
   </head>
   <body>
     <header class="page-header-top" style="position:static">
         <div class="container">
-            <span class="page-header-brand"><a href="./">SmartPhoto.js<small>v1.1.0</small></a></span>
+            <span class="page-header-brand"><a href="./">SmartPhoto.js<small>v2.1.0</small></a></span>
             <ul class="page-header-navi">
                 <li><a href="./">Home</a></li>
                 <li><a href="./demo.html">Demos</a></li>
@@ -38,6 +38,7 @@
                 <section class="sidelist-section">
                     <h2 class="sidelist-title">API</h2>
                     <ul class="sidelist">
+                        <li><a href="#programmatic" class="sidelist-item">Programmatic API</a></li>
                         <li><a href="#options" class="sidelist-item">Options</a></li>
                         <li><a href="#methods" class="sidelist-item">Methods</a></li>
                         <li><a href="#events" class="sidelist-item">Events</a></li>
@@ -61,14 +62,27 @@
                 <h3 id="installation">Installation</h3>
                 <h4>Via CDN</h4>
                 <p>Link directly to SmartPhoto files on <a href="https://unpkg.com/">unpkg</a>.</p>
-                <pre><code class="html">&lt;script src="https://unpkg.com/smartphoto@1.1.0/js/smartphoto.min.js"&gt;&lt/script&gt;
-&ltlink rel="stylesheet" href="https://unpkg.com/smartphoto@1.1.0/css/smartphoto.min.css" /&gt;</code></pre>
+                <pre><code class="html">&lt;script src="https://unpkg.com/smartphoto@2.1.0/js/smartphoto.min.js"&gt;&lt/script&gt;
+&lt;link rel="stylesheet" href="https://unpkg.com/smartphoto@2.1.0/css/smartphoto.min.css" /&gt;</code></pre>
                 <h4>via npm</h4>
                 npm
                 <pre><code class="shell">npm install smartphoto --save</code></pre>
                 or yarn
                 <pre><code class="shell">yarn add smartphoto</code></pre>
                 <h2>API</h2>
+                <h3 id="programmatic">Programmatic API (data source mode)</h3>
+                <p>Instead of scanning <code>&lt;a&gt;</code> elements in the page, you can pass an array of slide objects directly. This is useful when your images come from an API or a JS-rendered list.</p>
+<pre><code class="js">const photo = new SmartPhoto([
+  { src: "/img/bear-large.jpg", thumb: "/img/bear.jpg", caption: "bear", id: "bear" },
+  { src: "/img/camel-large.jpg", thumb: "/img/camel.jpg", caption: "camel", id: "camel" }
+]);
+
+photo.show(0);        // open by index
+photo.show("camel");  // or by id
+photo.next();
+photo.prev();
+photo.hide();</code></pre>
+                <p>Both HTML mode and data source mode share the exact same public API, options, and events.</p>
                 <h3 id="options">Options</h3>
                 <p>Eg. If you want the each image to be the largest size such that both its width and its height can fit inside the content area</p>
 <pre><code class="js">document.addEventListener('DOMContentLoaded',function(){
@@ -99,24 +113,89 @@
                         <td>true</td>
                     </tr>
                     <tr>
-                        <td>useOrientationApi</td>
-                        <td>use accelerometer to move images</td>
+                        <td>showAnimation</td>
+                        <td>animate the open/close transition</td>
                         <td>true</td>
+                    </tr>
+                    <tr>
+                        <td>verticalGravity</td>
+                        <td>apply device-tilt gravity to the vertical axis too (in addition to horizontal)</td>
+                        <td>false</td>
+                    </tr>
+                    <tr>
+                        <td>useOrientationApi</td>
+                        <td>use the accelerometer (deviceorientation) to move a zoomed image</td>
+                        <td>false</td>
+                    </tr>
+                    <tr>
+                        <td>useHistoryApi</td>
+                        <td>update the URL hash (#group=&hellip;&amp;photo=&hellip;) via the History API</td>
+                        <td>true</td>
+                    </tr>
+                    <tr>
+                        <td>swipeTopToClose</td>
+                        <td>close the viewer on an upward swipe</td>
+                        <td>false</td>
+                    </tr>
+                    <tr>
+                        <td>swipeBottomToClose</td>
+                        <td>close the viewer on a downward swipe</td>
+                        <td>true</td>
+                    </tr>
+                    <tr>
+                        <td>swipeOffset</td>
+                        <td>minimum swipe distance (px) to trigger navigation/close</td>
+                        <td>100</td>
+                    </tr>
+                    <tr>
+                        <td>headerHeight</td>
+                        <td>height (px) reserved for the header when fitting images</td>
+                        <td>60</td>
+                    </tr>
+                    <tr>
+                        <td>footerHeight</td>
+                        <td>height (px) reserved for the footer when fitting images</td>
+                        <td>60</td>
                     </tr>
                     <tr>
                         <td>resizeStyle</td>
                         <td>resize images to fill/fit on the screen</td>
-                        <td>'fill'</td>
+                        <td>'fit'</td>
                     </tr>
                     <tr>
                         <td>animationSpeed</td>
-                        <td>animation speed when switching images</td>
+                        <td>animation speed (ms) when switching/opening/closing images</td>
                         <td>300</td>
                     </tr>
                     <tr>
                         <td>forceInterval</td>
-                        <td>frequency to apply force to images</td>
+                        <td>frequency (ms) to apply force to images</td>
                         <td>10</td>
+                    </tr>
+                    <tr>
+                        <td>registance</td>
+                        <td>friction applied to the inertia scroll of a zoomed image</td>
+                        <td>0.5</td>
+                    </tr>
+                    <tr>
+                        <td>loadOffset</td>
+                        <td>number of neighboring slides to preload around the current one</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>lazyAttribute</td>
+                        <td>attribute read for a lazy-loaded thumbnail (HTML mode only)</td>
+                        <td>'data-src'</td>
+                    </tr>
+                    <tr>
+                        <td>classNames</td>
+                        <td>override any of the generated CSS class names</td>
+                        <td>see source</td>
+                    </tr>
+                    <tr>
+                        <td>message</td>
+                        <td>override screen-reader text (gotoNextImage / gotoPrevImage / closeDialog / carouselLabel)</td>
+                        <td>see source</td>
                     </tr>
                 </table>
                 <h3 id="methods">Methods</h3>
@@ -131,8 +210,28 @@
                 <p>slide to the 6th image</p>
                 <pre><code class="js">mySmartPhoto.gotoSlide(6);</code></pre>
 
+                <p>go to the next/previous slide (no-op at the start/end of the group)</p>
+                <pre><code class="js">mySmartPhoto.next();
+mySmartPhoto.prev();</code></pre>
+
+                <p>open the viewer, by index or id (works in both HTML mode and data source mode)</p>
+                <pre><code class="js">mySmartPhoto.show(0);
+mySmartPhoto.show("bear");</code></pre>
+
+                <p>close the viewer (<code>hide()</code> is an alias of <code>hidePhoto()</code>)</p>
+                <pre><code class="js">mySmartPhoto.hide();</code></pre>
+
                 <p>add new image to your gallery</p>
                 <pre><code class="js">mySmartPhoto.addNewItem(element);</code></pre>
+
+                <p>remove the viewer and all of its event listeners</p>
+                <pre><code class="js">mySmartPhoto.destroy();</code></pre>
+
+                <p><code>SmartPhoto</code> also implements <code>[Symbol.dispose]()</code>, so a <code>using</code> declaration destroys the instance automatically when it goes out of scope</p>
+                <pre><code class="js">{
+  using photo = new SmartPhoto(".js-smartPhoto");
+  // destroy() is called automatically here
+}</code></pre>
                 <h3 id="events">Events</h3>
                 <p>when the modal opened</p>
 <pre><code class="js">mySmartPhoto.on('open',function(){
@@ -180,6 +279,11 @@
                         <td>.3s</td>
                     </tr>
                     <tr>
+                        <td>$animation-function</td>
+                        <td>easing function used for animations</td>
+                        <td>ease-out</td>
+                    </tr>
+                    <tr>
                         <td>$backdrop-color</td>
                         <td>backdrop color when viewing images</td>
                         <td>rgba(0, 0, 0, 1)</td>
@@ -190,8 +294,14 @@
                         <td>rgba(0, 0, 0, .2)</td>
                     </tr>
                 </table>
+                <p>Every SCSS variable above is also exposed as a CSS custom property (<code>--smartphoto-animation-speed</code>, <code>--smartphoto-animation-function</code>, <code>--smartphoto-backdrop-color</code>, <code>--smartphoto-header-color</code>), so they can be overridden without recompiling SCSS:</p>
+<pre><code class="css">.smartphoto {
+  --smartphoto-animation-function: ease-in-out;
+  --smartphoto-backdrop-color: rgba(0, 0, 0, 0.9);
+  --smartphoto-header-color: rgba(0, 0, 0, 0.4);
+}</code></pre>
                 <h3 id="dependencies">Dependencies</h3>
-                a-template.js
+                No runtime dependencies.
             </div>
         </div>
     </div>
