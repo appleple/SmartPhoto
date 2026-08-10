@@ -1,7 +1,7 @@
-$animation-speed: .3s !default;
+$animation-speed: 0.3s !default;
 $animation-function: ease-out !default;
 $backdrop-color: rgba(0, 0, 0, 1) !default;
-$header-color: rgba(0, 0, 0, .2) !default;
+$header-color: rgba(0, 0, 0, 0.2) !default;
 
 @keyframes smartphoto {
   from {
@@ -35,7 +35,7 @@ $header-color: rgba(0, 0, 0, .2) !default;
 
 @keyframes smartphoto-loader {
   0% {
-    opacity: .4;
+    opacity: 0.4;
     transform: rotate(0deg);
   }
   50% {
@@ -43,68 +43,86 @@ $header-color: rgba(0, 0, 0, .2) !default;
     transform: rotate(180deg);
   }
   100% {
-    opacity: .4;
+    opacity: 0.4;
     transform: rotate(360deg);
   }
 }
 
+// display の切り替えをキーフレーム内でアニメーションさせていた版は、閉じている間
+// (dialog が display:none)にアニメーションのタイムラインが進まなくなり、再度開いた
+// 際に 0%/1% の display:none で止まったままになる実機バグがあった(矢印/ナビが
+// クリック不能になり、その下の背景をタップしたと判定されてモーダルが閉じてしまう)。
+// 表示/非表示そのものは常に aria-hidden 属性のセレクタ側(下記)で確定させ、
+// ここでは opacity のフェードのみをアニメーションする
 @keyframes smartphoto-appear {
   0% {
-    display: none;
-    opacity: 0;
-  }
-
-  1% {
-    display: block;
     opacity: 0;
   }
 
   100% {
-    display: block;
     opacity: 1;
   }
 }
 
 @keyframes smartphoto-hide {
   0% {
-    display: block;
     opacity: 1;
   }
-  99% {
-    display: block;
-    opacity: 0;
-  }
   100% {
-    display: none;
     opacity: 0;
   }
 }
 
+:root:has(dialog.smartphoto[open]) {
+  overflow: hidden;
+}
+
+// dialogタグの表示制御
 .smartphoto {
+  // dialogタグのデフォルトスタイルをリセット
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  // 既存のスタイルを適用
   position: fixed;
-  z-index: 100;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  // dialog 自体には overflow の既定値が無く、子要素(nav/arrows 等)が僅かに
+  // ボックスを超えるだけで dialog 自身がスクロール可能になってしまう。
+  // 内側のスクロールは常に禁止し、外側の背景スクロール抑制(:root:has())と
+  // 合わせて完全に固定表示にする
   overflow: hidden;
+  // モバイルでスクロールに伴いアドレスバーが表示/非表示になり可視領域が変化しても
+  // 追従するよう、対応ブラウザでは dvh (動的ビューポート高さ) を優先する。
+  // 未対応ブラウザは直前の height:100%/max-height:100% がそのまま使われる
+  // (see: https://github.com/appleple/SmartPhoto/issues/90)
+  height: 100dvh;
+  max-height: 100dvh;
   background-color: $backdrop-color;
   opacity: 1;
   font-family: sans-serif;
   cursor: pointer;
-  -webkit-transition: opacity $animation-speed $animation-function;
-     -moz-transition: opacity $animation-speed $animation-function;
-      -ms-transition: opacity $animation-speed $animation-function;
-       -o-transition: opacity $animation-speed $animation-function;
-          transition: opacity $animation-speed $animation-function;
-          transition: all .3s $animation-function;
-  animation-name: smartphoto;
-  animation-duration: $animation-speed;
-  animation-timing-function: $animation-function;
-}
+  // close() は [open] 属性を外すと同時にネイティブに display:none / トップレイヤー
+  // からの除外を行う(§8)。display・overlay を allow-discrete で transition
+  // 対象に加えることで、opacity のフェードが完了するまでその適用を1フレーム分
+  // 遅らせ、閉じる瞬間に「ぱっと」消えず滑らかにフェードアウトするようにする
+  transition:
+    opacity var(--smartphoto-animation-speed, $animation-speed) $animation-function,
+    display var(--smartphoto-animation-speed, $animation-speed) $animation-function allow-discrete,
+    overlay var(--smartphoto-animation-speed, $animation-speed) $animation-function allow-discrete;
 
-.smartphoto[aria-hidden="true"] {
-  display: none;
+  &:not([open]) {
+    opacity: 0;
+  }
+
+  &::backdrop {
+    background-color: $backdrop-color;
+  }
 }
 
 .smartphoto-close {
@@ -113,7 +131,7 @@ $header-color: rgba(0, 0, 0, .2) !default;
 
 .smartphoto-count {
   display: inline-block;
-  color: #FFF;
+  color: #fff;
   font-size: 16px;
 }
 
@@ -137,6 +155,8 @@ $header-color: rgba(0, 0, 0, .2) !default;
   left: 0;
   width: 100%;
   height: 100%;
+  // Pointer Events(swipe/pinch)がブラウザ既定のスクロール・ズームと衝突しないようにする
+  touch-action: none;
 }
 
 .smartphoto-dismiss {
@@ -150,14 +170,13 @@ $header-color: rgba(0, 0, 0, .2) !default;
   border: none;
   background-color: transparent;
   background-image: url(data:image/svg+xml;base64,PHN2ZyBpZD0i44Os44Kk44Ok44O8XzEiIGRhdGEtbmFtZT0i44Os44Kk44Ok44O8IDEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDI4MzQuNjUgMjgzNC42NSIgZmlsbD0iI0ZGRiI+PHRpdGxlPmljb248L3RpdGxlPjxwYXRoIGQ9Ik0xNTc2LjQyLDE0MDYuNzYsMjc4NCwxOTkuMTlhNTYuODYsNTYuODYsMCwwLDAsMC04MC4xOGwtNzguOTItNzguOTJhNTYuODYsNTYuODYsMCwwLDAtODAuMTgsMEwxNDE3LjMyLDEyNDcuNjYsMjA5Ljc1LDQwLjA5YTU2Ljg2LDU2Ljg2LDAsMCwwLTgwLjE4LDBMNTAuNjUsMTE5YTU2Ljg2LDU2Ljg2LDAsMCwwLDAsODAuMThMMTI1OC4yMywxNDA2Ljc2LDUwLjY1LDI2MTQuMzRhNTYuODYsNTYuODYsMCwwLDAsMCw4MC4xOGw3OC45Miw3OC45MmE1Ni44Niw1Ni44NiwwLDAsMCw4MC4xOCwwTDE0MTcuMzIsMTU2NS44NiwyNjI0LjksMjc3My40NGE1Ni44Niw1Ni44NiwwLDAsMCw4MC4xOCwwbDc4LjkyLTc4LjkyYTU2Ljg2LDU2Ljg2LDAsMCwwLDAtODAuMThaIi8+PC9zdmc+);
-  text-shadow: 0 1px 0 #FFF;
-  color: #FFF;
+  text-shadow: 0 1px 0 #fff;
+  color: #fff;
   font-size: 30px;
   text-decoration: none;
   cursor: pointer;
   line-height: 1;
 }
-
 
 .smartphoto-body {
   position: relative;
@@ -182,10 +201,10 @@ $header-color: rgba(0, 0, 0, .2) !default;
   height: auto;
   cursor: zoom-in;
   -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  transition: transform .3s $animation-function;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  transition: transform var(--smartphoto-animation-speed, $animation-speed) $animation-function;
 
   -webkit-user-drag: none;
 }
@@ -195,25 +214,27 @@ $header-color: rgba(0, 0, 0, .2) !default;
 }
 
 .smartphoto-img-onmove {
-  cursor:         grab;
+  cursor: grab;
   cursor: -webkit-grab;
   transition: none;
 }
 
 .smartphoto-img-elasticmove {
-  transition: transform .3s $animation-function;
+  transition: transform var(--smartphoto-animation-speed, $animation-speed) $animation-function;
 }
 
 .smartphoto-img-wrap {
   display: inline-block;
   opacity: 1;
-  -webkit-transition: opacity $animation-speed $animation-function;
-     -moz-transition: opacity $animation-speed $animation-function;
-      -ms-transition: opacity $animation-speed $animation-function;
-       -o-transition: opacity $animation-speed $animation-function;
-          transition: opacity $animation-speed $animation-function;
+  // Pointer Events(ピンチ/ドラッグ)がブラウザ既定のスクロール・ズームと衝突しないようにする
+  touch-action: none;
+  -webkit-transition: opacity var(--smartphoto-animation-speed, $animation-speed) $animation-function;
+  -moz-transition: opacity var(--smartphoto-animation-speed, $animation-speed) $animation-function;
+  -ms-transition: opacity var(--smartphoto-animation-speed, $animation-speed) $animation-function;
+  -o-transition: opacity var(--smartphoto-animation-speed, $animation-speed) $animation-function;
+  transition: opacity var(--smartphoto-animation-speed, $animation-speed) $animation-function;
   animation-name: smartphoto-img-wrap;
-  animation-duration: $animation-speed;
+  animation-duration: var(--smartphoto-animation-speed, $animation-speed);
   animation-timing-function: $animation-function;
 }
 
@@ -235,11 +256,11 @@ $header-color: rgba(0, 0, 0, .2) !default;
   left: 0;
   opacity: 1;
   animation-name: smartphoto-appear;
-  animation-duration: $animation-speed;
+  animation-duration: var(--smartphoto-animation-speed, $animation-speed);
   animation-timing-function: $animation-function;
 }
 
-.smartphoto-arrows[aria-hidden="true"] {
+.smartphoto-arrows[aria-hidden='true'] {
   animation-name: smartphoto-hide;
   display: none;
 }
@@ -252,7 +273,7 @@ $header-color: rgba(0, 0, 0, .2) !default;
   height: 30px;
   margin-top: -20px;
   box-sizing: content-box;
-  animation-duration: $animation-speed;
+  animation-duration: var(--smartphoto-animation-speed, $animation-speed);
   animation-timing-function: $animation-function;
   animation-name: smartphoto-appear;
   &:focus {
@@ -260,23 +281,30 @@ $header-color: rgba(0, 0, 0, .2) !default;
   }
 }
 
-.smartphoto-arrows [aria-hidden="true"] {
+.smartphoto-arrows [aria-hidden='true'] {
   animation-name: smartphoto-hide;
-  display: none;  
+  display: none;
 }
 
-.smartphoto-arrows a {
+.smartphoto-arrows button {
+  // <button> の UA デフォルト(border/padding/背景/appearance)をリセットし、
+  // 旧 <a> と同じ「全面クリック領域 + 背景 SVG アイコン」の見た目を維持する
+  appearance: none;
   display: block;
   width: 100%;
   height: 100%;
-  text-decoration: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 .smartphoto-arrow-right {
   right: 0;
   padding: 5px 0;
-  background-color: rgba(0, 0, 0, .5);
-  a {
+  background-color: rgba(0, 0, 0, 0.5);
+  button {
     background-image: url(data:image/svg+xml;base64,PHN2ZyBpZD0i44Os44Kk44Ok44O8XzEiIGRhdGEtbmFtZT0i44Os44Kk44Ok44O8IDEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDI4MzQuNjUgMjgzNC42NSIgZmlsbD0iI0ZGRiAiPjx0aXRsZT5pY29uPC90aXRsZT48cGF0aCBkPSJNMTgzNy44OCwxNDE3LjMyLDY0My41OSwyMjNhNzIuMjEsNzIuMjEsMCwwLDEsMC0xMDEuODJMNzQzLjgyLDIxYTcyLjIxLDcyLjIxLDAsMCwxLDEwMS44MiwwTDIwOTAuODMsMTI2Ni4xOWwxMDAuMjMsMTAwLjIzYTcyLjIxLDcyLjIxLDAsMCwxLDAsMTAxLjgyTDg0NS42NCwyODEzLjY1YTcyLjIxLDcyLjIxLDAsMCwxLTEwMS44MiwwTDY0My41OSwyNzEzLjQyYTcyLjIxLDcyLjIxLDAsMCwxLDAtMTAxLjgyWiIvPjwvc3ZnPg==);
   }
 }
@@ -284,8 +312,8 @@ $header-color: rgba(0, 0, 0, .2) !default;
 .smartphoto-arrow-left {
   left: 0;
   padding: 5px 0;
-  background-color: rgba(0, 0, 0, .5);
-  a {
+  background-color: rgba(0, 0, 0, 0.5);
+  button {
     background-image: url(data:image/svg+xml;base64,PHN2ZyBpZD0i44Os44Kk44Ok44O8XzEiIGRhdGEtbmFtZT0i44Os44Kk44Ok44O8IDEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDI4MzQuNjUgMjgzNC42NSIgZmlsbD0iI0ZGRiI+PHRpdGxlPmljb248L3RpdGxlPjxwYXRoIGQ9Ik05OTYuNzcsMTQxNy4zMiwyMTkxLjA2LDIyM2E3Mi4yMSw3Mi4yMSwwLDAsMCwwLTEwMS44MkwyMDkwLjgzLDIxQTcyLjIxLDcyLjIxLDAsMCwwLDE5ODksMjFMNzQzLjgyLDEyNjYuMTksNjQzLjU5LDEzNjYuNDJhNzIuMjEsNzIuMjEsMCwwLDAsMCwxMDEuODJMMTk4OSwyODEzLjY1YTcyLjIxLDcyLjIxLDAsMCwwLDEwMS44MiwwbDEwMC4yMy0xMDAuMjNhNzIuMjEsNzIuMjEsMCwwLDAsMC0xMDEuODJaIi8+PC9zdmc+);
   }
 }
@@ -301,11 +329,11 @@ $header-color: rgba(0, 0, 0, .2) !default;
   width: 100%;
   opacity: 1;
   animation-name: smartphoto-appear;
-  animation-duration: $animation-speed;
+  animation-duration: var(--smartphoto-animation-speed, $animation-speed);
   animation-timing-function: $animation-function;
 }
 
-.smartphoto-nav[aria-hidden="true"] {
+.smartphoto-nav[aria-hidden='true'] {
   animation-name: smartphoto-hide;
   display: none;
 }
@@ -329,20 +357,27 @@ $header-color: rgba(0, 0, 0, .2) !default;
   height: 50px;
 }
 
-.smartphoto-nav a {
+.smartphoto-nav button {
+  // <button> の UA デフォルト(border/padding/appearance)をリセットし、
+  // 旧 <a> と同じサムネイル背景画像ボタンの見た目を維持する
+  appearance: none;
   display: block;
   width: 100%;
   height: 100%;
-  background-color: #FFF;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: #fff;
   background-position: center center;
   background-size: cover;
-  opacity: .5;
+  opacity: 0.5;
+  cursor: pointer;
   &:focus {
-    opacity: .8;
+    opacity: 0.8;
   }
 }
 
-.smartphoto-nav a.current {
+.smartphoto-nav button.current {
   opacity: 1;
 }
 
@@ -367,7 +402,7 @@ $header-color: rgba(0, 0, 0, .2) !default;
     left: 0;
     width: 100%;
     height: 100%;
-    transition: all .3s $animation-function;
+    transition: all var(--smartphoto-animation-speed, $animation-speed) $animation-function;
     &:focus {
       outline: none;
     }
@@ -375,7 +410,7 @@ $header-color: rgba(0, 0, 0, .2) !default;
 }
 
 .smartphoto-list-onmove {
-  transition: all .3s $animation-function;
+  transition: all 0.3s $animation-function;
 }
 
 .smartphoto-caption {
@@ -387,12 +422,14 @@ $header-color: rgba(0, 0, 0, .2) !default;
   width: 100%;
   height: 50px;
   padding: 0 50px;
-  color: #FFF;
+  color: #fff;
   font-size: 12px;
   text-align: center;
   line-height: 50px;
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin: 0;
+  font-weight: normal;
   &:focus {
     outline: none;
   }
@@ -404,7 +441,10 @@ $header-color: rgba(0, 0, 0, .2) !default;
   z-index: 103;
   width: 0;
   height: 0;
-  transform: translate(50vw,50vh);
+  transform: translate(50vw, 50vh);
+  // dvh 対応ブラウザでは動的ビューポート高さを基準に中央寄せする
+  // (see: https://github.com/appleple/SmartPhoto/issues/90)
+  transform: translate(50vw, 50dvh);
 }
 
 .smartphoto-loader {
@@ -416,10 +456,10 @@ $header-color: rgba(0, 0, 0, .2) !default;
   height: 30px;
   margin-top: -25px;
   margin-left: -25px;
-  border: 8px solid #17CDDD;
+  border: 8px solid #17cddd;
   border-right-color: transparent;
   border-radius: 50%;
-  animation: smartphoto-loader .5s infinite linear;
+  animation: smartphoto-loader 0.5s infinite linear;
 }
 
 .smartphoto-img-clone {
@@ -427,7 +467,7 @@ $header-color: rgba(0, 0, 0, .2) !default;
   z-index: 100;
   top: 0;
   left: 0;
-  transition: all $animation-speed $animation-function;
+  transition: all var(--smartphoto-animation-speed, $animation-speed) $animation-function;
 }
 
 .smartphoto-sr-only {
@@ -438,5 +478,5 @@ $header-color: rgba(0, 0, 0, .2) !default;
   margin: -1px;
   padding: 0;
   border: 0;
-  clip: rect(0,0,0,0);
+  clip: rect(0, 0, 0, 0);
 }

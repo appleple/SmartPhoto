@@ -1,4 +1,4 @@
-import SmartPhoto from '../../src/index.js';
+import SmartPhoto from '../../src/index';
 import '../../scss/smartphoto.scss';
 
 // LazyLoad is loaded from CDN in the HTML

@@ -1,4 +1,4 @@
-import '../../src/adaptor/jquery.js';
+import '../../src/adaptor/jquery';
 import '../../scss/smartphoto.scss';
 
 $(function () {

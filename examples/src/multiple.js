@@ -1,4 +1,4 @@
-import SmartPhoto from '../../src/index.js';
+import SmartPhoto from '../../src/index';
 import '../../scss/smartphoto.scss';
 
 window.addEventListener('load', function () {
