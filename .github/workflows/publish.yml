@@ -26,6 +26,12 @@ jobs:
         run: npm run prepack
         env:
           CI: true
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Run Playwright E2E tests
+        run: npm run test:e2e
+        env:
+          CI: true
       - name: Publish to npm
         # Trusted Publishing (OIDC): no NPM_TOKEN needed. Requires the
         # "id-token: write" permission above and a Trusted Publisher
