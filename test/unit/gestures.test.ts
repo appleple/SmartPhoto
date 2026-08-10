@@ -139,7 +139,7 @@ describe("gestures", () => {
       expect(callbacks.onSwipeEnd).toHaveBeenCalledWith("stay");
     });
 
-    it("しきい値未満なら stay になる", () => {
+    it("しきい値未満の movement でもゆっくりなら stay になる", () => {
       const { imgWrap, callbacks } = buildHarness();
       imgWrap.dispatchEvent(
         pointerEvent("pointerdown", { clientX: 100, clientY: 100 }),
@@ -147,8 +147,41 @@ describe("gestures", () => {
       imgWrap.dispatchEvent(
         pointerEvent("pointermove", { clientX: 110, clientY: 100 }),
       );
+      // 実際のゆっくりしたドラッグを模してフリック判定に入らないようにする
+      vi.advanceTimersByTime(200);
       imgWrap.dispatchEvent(
         pointerEvent("pointerup", { clientX: 110, clientY: 100 }),
+      );
+      expect(callbacks.onSwipeEnd).toHaveBeenCalledWith("stay");
+    });
+
+    it("しきい値未満でも素早いフリックなら next になる", () => {
+      const { imgWrap, callbacks } = buildHarness();
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", { clientX: 300, clientY: 100 }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointermove", { clientX: 260, clientY: 100 }),
+      );
+      // 40px の移動を 40ms で行う速いフリック(0.5px/ms 以上)を模す
+      vi.advanceTimersByTime(40);
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerup", { clientX: 260, clientY: 100 }),
+      );
+      expect(callbacks.onSwipeEnd).toHaveBeenCalledWith("next");
+    });
+
+    it("しきい値未満で移動距離が最小フリック距離未満なら stay になる", () => {
+      const { imgWrap, callbacks } = buildHarness();
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", { clientX: 300, clientY: 100 }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointermove", { clientX: 295, clientY: 100 }),
+      );
+      vi.advanceTimersByTime(1);
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerup", { clientX: 295, clientY: 100 }),
       );
       expect(callbacks.onSwipeEnd).toHaveBeenCalledWith("stay");
     });
@@ -291,8 +324,39 @@ describe("gestures", () => {
           clientY: 100,
         }),
       );
-      expect(callbacks.onGestureMove).toHaveBeenCalled();
       expect(state.viewer.scaleSize).toBeGreaterThan(1);
+      vi.advanceTimersByTime(16);
+      expect(callbacks.onGestureMove).toHaveBeenCalled();
+    });
+
+    it("複数回のpointermoveでもonGestureMoveは1フレームに1回だけ呼ばれる", () => {
+      const { callbacks, imgWrap } = buildHarness();
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", {
+          pointerId: 1,
+          clientX: 100,
+          clientY: 100,
+        }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", {
+          pointerId: 2,
+          clientX: 120,
+          clientY: 100,
+        }),
+      );
+      for (let i = 0; i < 5; i += 1) {
+        imgWrap.dispatchEvent(
+          pointerEvent("pointermove", {
+            pointerId: 2,
+            clientX: 120 + i,
+            clientY: 100,
+          }),
+        );
+      }
+      expect(callbacks.onGestureMove).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(16);
+      expect(callbacks.onGestureMove).toHaveBeenCalledTimes(1);
     });
 
     it("scaleSize は 0.2 未満にならない", () => {
@@ -399,6 +463,40 @@ describe("gestures", () => {
       );
       expect(callbacks.onGestureEnd).not.toHaveBeenCalled();
       expect(state.viewer.scale).toBe(true);
+    });
+
+    it("指を離した瞬間、保留中だった最終フレームのonGestureMoveが同期的に反映される", () => {
+      const { imgWrap, callbacks } = buildHarness();
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", {
+          pointerId: 1,
+          clientX: 100,
+          clientY: 100,
+        }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", {
+          pointerId: 2,
+          clientX: 500,
+          clientY: 100,
+        }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointermove", {
+          pointerId: 2,
+          clientX: 1000,
+          clientY: 100,
+        }),
+      );
+      // rAFはまだ発火していない(フレームを進めていない)ため、この時点では未反映
+      expect(callbacks.onGestureMove).not.toHaveBeenCalled();
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerup", { pointerId: 1, clientX: 100, clientY: 100 }),
+      );
+      // 指を離した瞬間、保留中のフレームが即時反映され、見た目が最終stateに追従する
+      // (単にcancelしていた旧実装では、ここでonGestureMoveが呼ばれず、
+      // ズーム後の画像が1フレーム前の位置/スケールのまま固定される不整合があった)
+      expect(callbacks.onGestureMove).toHaveBeenCalledTimes(1);
     });
   });
 

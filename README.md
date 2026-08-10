@@ -189,6 +189,11 @@ Slide fields:
 		<td>100</td>
 	</tr>
 	<tr>
+		<td>swipeVelocity</td>
+		<td>minimum swipe speed (px/ms) that triggers navigation even below swipeOffset (fast flicks)</td>
+		<td>0.5</td>
+	</tr>
+	<tr>
 		<td>headerHeight</td>
 		<td>height (px) reserved for the header when fitting images</td>
 		<td>60</td>

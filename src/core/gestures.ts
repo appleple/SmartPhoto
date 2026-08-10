@@ -20,6 +20,12 @@ function distance(
   return Math.sqrt(x * x + y * y);
 }
 
+// トラックパッドの慎重な操作はポインタ加速度の影響で移動距離が伸びにくく、
+// swipeOffset(絶対距離)だけでは「最後までドラッグしないと切り替わらない」と
+// 感じさせてしまう(§V1由来の既知の使いづらさ)。距離が短くても素早い操作
+// (フリック)なら切り替えを許可するための最小移動距離。
+const MIN_FLICK_DISTANCE = 10;
+
 function getForceAndTheta(
   x: number,
   y: number,
@@ -61,6 +67,7 @@ export function createGestures(
   let firstPos: { x: number; y: number } | null = null;
   let oldPos: { x: number; y: number } | null = null;
   let moveDir: "horizontal" | "vertical" | null = null;
+  let swipeStartTime = 0;
 
   let photoSwipable = false;
   let firstPhotoPos: { x: number; y: number } | null = null;
@@ -70,6 +77,7 @@ export function createGestures(
 
   let pinching = false;
   let oldDistance = 0;
+  let pinchMoveFrame: number | null = null;
 
   let vx = 0;
   let vy = 0;
@@ -217,6 +225,7 @@ export function createGestures(
     dragStart = true;
     firstPos = pos;
     oldPos = pos;
+    swipeStartTime = Date.now();
   }
 
   function startPhotoDrag(e: PointerEvent): void {
@@ -247,6 +256,33 @@ export function createGestures(
     startSwipe(e);
   }
 
+  // PCトラックパッドの2本指ピンチは合成pointermoveの発火頻度が実タッチより高く不規則な
+  // ことがあり、毎イベント同期でDOM更新するとフレーム内で複数回のstyle再計算が発生して
+  // カクつく。state更新は毎イベント同期のまま行い、DOMに触れるコールバックだけを1フレームに
+  // 1回へ間引く。
+  function scheduleGestureMove(): void {
+    if (pinchMoveFrame !== null) {
+      return;
+    }
+    pinchMoveFrame = requestAnimationFrame(() => {
+      pinchMoveFrame = null;
+      callbacks.onGestureMove();
+    });
+  }
+
+  // 保留中のフレームを単に cancel すると、指を離した瞬間の最終フレーム分の
+  // DOM更新(img.style.transform)が失われ、内部stateは最終値なのに見た目だけ
+  // 1フレーム前のまま固定される(ズームで下部に隙間が見える不整合の原因になる)。
+  // cancel した分は同期的に onGestureMove を呼んで必ず反映してから終える。
+  function flushGestureMove(): void {
+    if (pinchMoveFrame === null) {
+      return;
+    }
+    cancelAnimationFrame(pinchMoveFrame);
+    pinchMoveFrame = null;
+    callbacks.onGestureMove();
+  }
+
   function movePinch(): void {
     const points = Array.from(activePointers.values());
     const dist = distance(
@@ -274,7 +310,7 @@ export function createGestures(
         state.viewer.scaleSize < 1 || state.viewer.scaleSize > border;
     }
     oldDistance = dist;
-    callbacks.onGestureMove();
+    scheduleGestureMove();
   }
 
   // oldPos/firstPos は swiping=true になる直前の startSwipe で必ず設定されるため、
@@ -332,6 +368,7 @@ export function createGestures(
 
   function endPinch(): void {
     pinching = false;
+    flushGestureMove();
     const item = currentItem(state);
     if (!item) {
       return;
@@ -372,13 +409,21 @@ export function createGestures(
     const items = currentItems(state) ?? [];
     if (moveDir === "horizontal") {
       let result: "prev" | "next" | "stay" = "stay";
+      // トラックパッド操作は移動距離が伸びにくいため、swipeOffset未満でも
+      // 素早いフリック(速度がswipeVelocityを超える)なら切り替えを許可する
+      const elapsedMs = Math.max(now - swipeStartTime, 1);
+      const isFlick =
+        Math.abs(swipeWidth) >= MIN_FLICK_DISTANCE &&
+        Math.abs(swipeWidth) / elapsedMs >= state.options.swipeVelocity;
       if (
-        swipeWidth >= state.options.swipeOffset &&
+        (swipeWidth >= state.options.swipeOffset ||
+          (isFlick && swipeWidth > 0)) &&
         state.viewer.currentIndex !== 0
       ) {
         result = "prev";
       } else if (
-        swipeWidth <= -state.options.swipeOffset &&
+        (swipeWidth <= -state.options.swipeOffset ||
+          (isFlick && swipeWidth < 0)) &&
         state.viewer.currentIndex !== items.length - 1
       ) {
         result = "next";
@@ -497,6 +542,10 @@ export function createGestures(
 
   function detach(): void {
     clearInterval(interval);
+    if (pinchMoveFrame !== null) {
+      cancelAnimationFrame(pinchMoveFrame);
+      pinchMoveFrame = null;
+    }
   }
 
   return { attach, detach };

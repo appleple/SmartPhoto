@@ -47,6 +47,7 @@ export interface SmartPhotoOptions {
   swipeTopToClose: boolean;
   swipeBottomToClose: boolean;
   swipeOffset: number;
+  swipeVelocity: number;
   headerHeight: number;
   footerHeight: number;
   forceInterval: number;

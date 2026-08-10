@@ -52,6 +52,7 @@ export const defaults: SmartPhotoOptions = {
   swipeTopToClose: false,
   swipeBottomToClose: true,
   swipeOffset: 100,
+  swipeVelocity: 0.5,
   headerHeight: 60,
   footerHeight: 60,
   forceInterval: 10,
