@@ -1,30 +1,38 @@
 # Source files
 src/
 scss/
-_js/
 examples/
 test/
-tools/
 
 # Configuration files
 .git/
+.github/
+.husky/
 .gitignore
 .npmignore
 .editorconfig
-vite.config.mjs
+.node-version
 biome.json
+tsconfig.json
+tsconfig.build.json
+tsup.config.mts
+vite.config.mts
+vitest.config.mts
+vitest.setup.ts
+playwright.config.mts
 
 # Development files
 node_modules/
 .DS_Store
 *.log
 coverage/
+test-results/
+playwright-report/
+blob-report/
 
-# Build files
-dist/
-lib/*.js
-lib/*.min.js
-js/*.js
-js/*.min.js
-css/*.css
-css/*.min.css
+# AI
+.claude/
+.cursor/
+.codex/
+.gemini/
+*.local.md
