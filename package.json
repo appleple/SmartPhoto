@@ -35,7 +35,7 @@
     "build:js": "tsup",
     "build:types": "tsc -p tsconfig.build.json",
     "build:css": "npm run clean:css && npm run css:copy && npm run css:min",
-    "clean:css": "rm -rf ./css/*",
+    "clean:css": "rm -rf ./css && mkdir -p ./css",
     "css:copy": "cp ./styles/smartphoto.css ./css/smartphoto.css",
     "css:min": "postcss ./styles/smartphoto.css -o ./css/smartphoto.min.css",
     "dev": "vite",
