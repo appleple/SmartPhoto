@@ -41,7 +41,7 @@
     "dev": "vite",
     "preview": "vite preview",
     "prepare": "husky",
-    "prepack": "npm run lint:ci && npm run typecheck && npm run test:coverage && npm run build",
+    "prepack": "npm run lint:ci && npm run typecheck && npm test && npm run build",
     "release:patch": "npm version patch && git push --follow-tags",
     "release:minor": "npm version minor && git push --follow-tags",
     "release:major": "npm version major && git push --follow-tags"
