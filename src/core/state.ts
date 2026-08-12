@@ -2,14 +2,14 @@ import * as util from "../lib/util";
 import type {
   Bound,
   Item,
-  Slide,
+  ResolvedSmartPhotoOptions,
+  SlideData,
   SmartPhotoOptions,
-  SmartPhotoSettings,
   State,
   ViewerState,
 } from "./types";
 
-export const defaults: SmartPhotoOptions = {
+export const defaults: ResolvedSmartPhotoOptions = {
   classNames: {
     smartPhoto: "smartphoto",
     smartPhotoClose: "smartphoto-close",
@@ -73,10 +73,14 @@ function deepFreeze<T>(obj: T): Readonly<T> {
   return Object.freeze(obj);
 }
 
-export function createState(settings: SmartPhotoSettings): State {
+export function createState(settings: SmartPhotoOptions): State {
   return {
     options: deepFreeze(
-      util.extend({}, defaults, settings) as unknown as SmartPhotoOptions,
+      util.extend(
+        {},
+        defaults,
+        settings,
+      ) as unknown as ResolvedSmartPhotoOptions,
     ),
     viewer: {
       isOpen: false,
@@ -108,14 +112,14 @@ export function groupIdFromElement(element: Element): string {
   return element.getAttribute("data-group") || "nogroup";
 }
 
-export function groupIdFromSlide(slide: Slide): string {
+export function groupIdFromSlide(slide: SlideData): string {
   return slide.group || "nogroup";
 }
 
 // 旧 addNewItem の thumb/alt/id 決定ロジックをそのまま移植(behavior 互換の要)
 export function itemFromElement(
   element: Element,
-  options: Pick<SmartPhotoOptions, "lazyAttribute">,
+  options: Pick<ResolvedSmartPhotoOptions, "lazyAttribute">,
   index: number,
   winWidth: number,
 ): Item {
@@ -164,7 +168,7 @@ export function itemFromElement(
 
 // データソースモード用ファクトリ(§3.5): width/height 指定時は計測プリロードをスキップする
 export function itemFromSlide(
-  slide: Slide,
+  slide: SlideData,
   index: number,
   winWidth: number,
 ): Item {

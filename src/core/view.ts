@@ -1,4 +1,9 @@
-import type { AppearEffect, Item, SmartPhotoOptions, State } from "./types";
+import type {
+  AppearEffect,
+  Item,
+  ResolvedSmartPhotoOptions,
+  State,
+} from "./types";
 
 interface SlideRefs {
   li: HTMLLIElement;
@@ -67,7 +72,7 @@ function escapeCssUrl(value: string): string {
 // DOM 構造は §6.2 の現行構造を維持する(CSS 契約)。動的な値は textContent/setAttribute/
 // style.* だけで設定し、HTML 文字列連結は使わない(§6.4 XSS 方針)
 export function createView(
-  { id, options }: { id: string; options: SmartPhotoOptions },
+  { id, options }: { id: string; options: ResolvedSmartPhotoOptions },
   handlers: ViewHandlers,
   { signal }: { signal: AbortSignal },
 ): View {

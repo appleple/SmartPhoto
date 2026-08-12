@@ -22,9 +22,10 @@ import type {
   GestureCallbacks,
   Item,
   ItemId,
-  Slide,
+  SlideData,
   SmartPhotoEvent,
-  SmartPhotoSettings,
+  SmartPhotoItem,
+  SmartPhotoOptions,
   SmartPhotoSource,
   State,
 } from "./types";
@@ -64,7 +65,7 @@ function getWindowHeight(): number {
 }
 
 // $().get() や Array.from(NodeList) 等で渡される「DOM要素の配列」は Array.isArray()
-// では Slide[] と区別できない。先頭要素が Element かどうかで実データを見て判別する
+// では SlideData[] と区別できない。先頭要素が Element かどうかで実データを見て判別する
 function isElementArray(source: unknown[]): source is Element[] {
   return source.length > 0 && source[0] instanceof Element;
 }
@@ -112,7 +113,7 @@ export default class SmartPhoto {
   private loadAllFired = new Set<string>();
   private syncedGroupId: string | null = null;
 
-  constructor(source: SmartPhotoSource, settings?: SmartPhotoSettings) {
+  constructor(source: SmartPhotoSource, settings?: SmartPhotoOptions) {
     this.state = createState(settings ?? {});
     this.view = createView(
       { id: this.id, options: this.state.options },
@@ -302,7 +303,7 @@ export default class SmartPhoto {
     this.fireEvent("zoomout");
   }
 
-  addNewItem(element: HTMLElement): Item {
+  addNewItem(element: HTMLElement): SmartPhotoItem {
     return this.addItem(element);
   }
 
@@ -350,9 +351,9 @@ export default class SmartPhoto {
     this.gotoSlide(this.state.viewer.prev);
   }
 
-  addItem(slideOrElement: Slide | HTMLElement): Item {
+  addItem(slideOrElement: SlideData | HTMLElement): SmartPhotoItem {
     const item =
-      slideOrElement instanceof Element
+      slideOrElement instanceof HTMLElement
         ? this.addElementItem(slideOrElement)
         : this.addSlideItem(slideOrElement);
     this.syncCurrentGroupView();
@@ -396,7 +397,7 @@ export default class SmartPhoto {
     return item;
   }
 
-  private addSlideItem(slide: Slide): Item {
+  private addSlideItem(slide: SlideData): Item {
     const groupId = groupIdFromSlide(slide);
     const index = this.state.groups.get(groupId)?.length ?? 0;
     const item = itemFromSlide(slide, index, getWindowWidth());

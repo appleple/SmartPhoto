@@ -35,7 +35,11 @@ export interface Messages {
   carouselLabel: string;
 }
 
-export interface SmartPhotoOptions {
+// state.options に格納される、デフォルト適用済みの完全形(内部専用)。公開する
+// コンストラクタ引数は全プロパティ任意の SmartPhotoOptions であり、他社ライトボックス
+// (PhotoSwipe の PhotoSwipeOptions/PreparedPhotoSwipeOptions 等)と同様、
+// 完全形と公開設定型を分けて命名する
+export interface ResolvedSmartPhotoOptions {
   classNames: ClassNames;
   message: Messages;
   arrows: boolean;
@@ -58,8 +62,10 @@ export interface SmartPhotoOptions {
   animationSpeed: number;
 }
 
-export type SmartPhotoSettings = Partial<
-  Omit<SmartPhotoOptions, "classNames" | "message">
+// コンストラクタに渡す公開設定型。PhotoSwipeOptions/SwiperOptions 同様、
+// クラス名 + Options という命名にする(全プロパティ任意)
+export type SmartPhotoOptions = Partial<
+  Omit<ResolvedSmartPhotoOptions, "classNames" | "message">
 > & {
   classNames?: Partial<ClassNames>;
   message?: Partial<Messages>;
@@ -67,24 +73,30 @@ export type SmartPhotoSettings = Partial<
 
 export type ItemId = string | number;
 
-export interface Item {
+// addItem()/addNewItem() が返す公開アイテム情報。レイアウト計算用の内部フィールド
+// (translateX 等)は Item 側にのみ持たせ、公開型には含めない
+export interface SmartPhotoItem {
   src: string | null;
   thumb: string | null;
   caption: string | null;
   alt: string | null;
   groupId: string;
-  translateX: number;
-  translateY: number;
   index: number;
   width: number;
   height: number;
+  id: ItemId;
+  loaded: boolean;
+  element: HTMLElement | null;
+}
+
+// 内部専用の完全形。レイアウト計算(translateX/scale/x/y)と処理済みフラグを追加で持つ
+export interface Item extends SmartPhotoItem {
+  translateX: number;
+  translateY: number;
   scale: number;
   x: number;
   y: number;
-  id: ItemId;
-  loaded: boolean;
   processed: boolean;
-  element: HTMLElement | null;
 }
 
 export interface AppearEffect {
@@ -123,7 +135,7 @@ export interface ViewerState {
 }
 
 export interface State {
-  options: SmartPhotoOptions;
+  options: ResolvedSmartPhotoOptions;
   viewer: ViewerState;
   groups: Map<string, Item[]>;
 }
@@ -136,7 +148,8 @@ export interface Bound {
 }
 
 // プログラマブル API(データソースモード)で渡すスライド定義。§3.2
-export interface Slide {
+// PhotoSwipe の SlideData に合わせた命名
+export interface SlideData {
   src: string;
   thumb?: string;
   caption?: string;
@@ -151,7 +164,7 @@ export type SmartPhotoSource =
   | string
   | NodeListOf<Element>
   | Element[]
-  | Slide[];
+  | SlideData[];
 
 export type SmartPhotoEvent =
   | "open"
