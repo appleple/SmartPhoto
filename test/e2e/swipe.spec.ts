@@ -9,9 +9,10 @@ import { expect, test } from "@playwright/test";
 // open 直後は View Transition のセットアップが安定するまでの短い間、実イベント
 // パイプラインを介さない/待ちのない操作(生の mouse.move/down/up シーケンス)を
 // 取りこぼすことがあるため、既定の animationSpeed(450ms) 分待って安定させてから
-// boundingBox を取得する
+// boundingBox を取得する。CI(GitHub Actions)はローカルより遅く、animationSpeed
+// 分ぎりぎりの待ちだと不足することがあるため、余裕を持った倍量を待つ
 async function stableBoundingBox(locator: Locator) {
-  await locator.page().waitForTimeout(600);
+  await locator.page().waitForTimeout(900);
   const box = await locator.boundingBox();
   if (!box) {
     throw new Error("content area not found");
@@ -103,7 +104,7 @@ test.describe("スワイプ操作 (vanilla.html)", () => {
     const box = await stableBoundingBox(img);
 
     await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(700);
 
     await expect(img).toHaveClass(/smartphoto-img-onmove/);
   });
