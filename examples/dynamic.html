@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="/style.css">
+	<title>SmartPhoto.js - Dynamic (Ajax-like) content</title>
+</head>
+<body>
+	<div class="wrapper">
+		<h1 class="title">SmartPhoto.js - Dynamic content</h1>
+		<p>
+			SmartPhoto is constructed once with a CSS selector string (<code>".js-smartphoto"</code>).
+			Click <strong>"Load more (simulate Ajax)"</strong> to append new thumbnails to the DOM
+			<em>after</em> construction, without calling <code>addItem()</code>/<code>addNewItem()</code>.
+			The newly added thumbnails still open just by clicking them. See <code>examples/src/dynamic.js</code>.
+		</p>
+		<p>
+			Click <strong>"Remove first thumbnail"</strong> to simulate an element disappearing from the DOM
+			(e.g. after an Ajax refresh). The removal is only picked up the next time <em>any</em> thumbnail
+			in the same group is opened (SmartPhoto reconciles the group against the current DOM right before
+			opening a photo) — it is not tracked in real time while the viewer is already open.
+		</p>
+		<p>
+			<button type="button" class="js-load-more">Load more (simulate Ajax)</button>
+			<button type="button" class="js-remove-first">Remove first thumbnail (simulate Ajax)</button>
+		</p>
+		<div class="masonry js-gallery">
+			<div class="brick">
+				<a href="/large-bear.jpg" class="js-smartphoto" data-caption="Bear" data-id="bear" data-group="gallery">
+					<img src="/bear.jpg" width="360" alt="Bear" />
+				</a>
+			</div>
+			<div class="brick">
+				<a href="/large-camel.jpg" class="js-smartphoto" data-caption="Camel" data-id="camel" data-group="gallery">
+					<img src="/camel.jpg" width="360" alt="Camel" />
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<script type="module" src="./src/dynamic.js"></script>
+</body>
+</html>

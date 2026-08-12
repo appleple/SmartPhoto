@@ -112,8 +112,15 @@ export default class SmartPhoto {
   private timeouts: number[] = [];
   private loadAllFired = new Set<string>();
   private syncedGroupId: string | null = null;
+  // 文字列セレクタで構築された場合のみ設定される。Ajax等で後から追加された
+  // 要素をクリック時に動的検出するための再スキャン起点(§discoverGroupElements)
+  private rootSelector: string | null = null;
+  // クリックされた要素(またはその祖先)から登録済み Item を逆引きするための
+  // キャッシュ。documentへのイベントデリゲーションで祖先チェーンを辿る際に使う
+  private readonly itemsByElement = new Map<Element, Item>();
 
   constructor(source: SmartPhotoSource, settings?: SmartPhotoOptions) {
+    this.rootSelector = typeof source === "string" ? source : null;
     this.state = createState(settings ?? {});
     this.view = createView(
       { id: this.id, options: this.state.options },
@@ -146,16 +153,21 @@ export default class SmartPhoto {
       { signal: this.abortController.signal },
     );
 
+    // サムネイルのクリックは個別バインドではなく document への1本のデリゲーション
+    // リスナーで受ける(§handleDocumentClick)。これにより、文字列セレクタで構築
+    // した場合は初期化後にAjax等で追加された要素もクリック時に自動検出できる
+    document.addEventListener("click", this.handleDocumentClick, {
+      signal: this.abortController.signal,
+    });
+
     this.ingestSource(source);
     this.syncCurrentGroupView();
 
     const restored = this.restoreFromHash();
     if (restored) {
-      if (restored.element) {
-        util.triggerEvent(restored.element, "click");
-      } else {
-        this.openPhoto(restored, null);
-      }
+      // 個別バインドを廃止した(document委任のみ)ため、クリックの疑似発火では
+      // 届かない(util.triggerEvent は bubbles: false)。openPhoto() を直接呼ぶ
+      this.openPhoto(restored, restored.element);
     }
 
     // 100dvh は iOS Safari 等でアドレスバーの表示/非表示に伴うリサイズへの追従が
@@ -218,6 +230,7 @@ export default class SmartPhoto {
       clearTimeout(id);
     });
     this.timeouts = [];
+    this.itemsByElement.clear();
     this.gestures.detach();
     this.view.destroy();
   }
@@ -393,7 +406,7 @@ export default class SmartPhoto {
     );
     addItemToGroup(this.state, item);
     this.loadAllFired.delete(groupId);
-    this.bindThumbnailClick(element, item);
+    this.itemsByElement.set(element, item);
     return item;
   }
 
@@ -406,16 +419,119 @@ export default class SmartPhoto {
     return item;
   }
 
-  private bindThumbnailClick(element: HTMLElement, item: Item): void {
-    element.addEventListener(
-      "click",
-      (e) => {
-        e.preventDefault();
-        this.openPhoto(item, element);
-      },
-      { signal: this.abortController.signal },
-    );
+  // クリックされた要素(またはその祖先。<a><img></a> の img がクリックされる
+  // ケースを含む)から、登録済み Item を持つ要素まで祖先チェーンを遡って探す
+  private findRegisteredAncestor(target: Element): Element | null {
+    let node: Element | null = target;
+    while (node) {
+      if (this.itemsByElement.has(node)) {
+        return node;
+      }
+      node = node.parentElement;
+    }
+    return null;
   }
+
+  // rootSelector(文字列セレクタで構築した場合のみ設定される)を再スキャンし、
+  // 指定グループを現在のDOM状態に合わせて丸ごと再構築する(追加・削除・並び順の
+  // 変化を一度に反映)。既知要素は既存の Item オブジェクトをそのまま再利用する
+  // ため loaded/width/height は保持され、DOM から消えた要素だけ itemsByElement
+  // からも除去する。index/translateX は resetTranslate() で再計算する。
+  // 呼び出し元(openPhoto)がこの結果を使い、変化があった場合のみ view を
+  // 再同期する(§ダイアログを開く瞬間に整合を取る。開いている間の next()/prev()
+  // では呼ばれないため、この間の追加/削除は次に開き直すまで反映されない)
+  private resyncGroupFromDom(groupId: string): boolean {
+    if (!this.rootSelector) {
+      return false;
+    }
+    const domElements = Array.from(
+      document.querySelectorAll(this.rootSelector),
+    ).filter((el) => groupIdFromElement(el) === groupId) as HTMLElement[];
+    const domElementSet = new Set<HTMLElement>(domElements);
+
+    const previous = this.state.groups.get(groupId) ?? [];
+    const previousByElement = new Map<HTMLElement, Item>();
+    previous.forEach((it) => {
+      if (it.element) {
+        previousByElement.set(it.element, it);
+      }
+    });
+
+    let changed = domElements.length !== previous.length;
+    const rebuilt = domElements.map((el, index) => {
+      const existing = previousByElement.get(el);
+      if (existing) {
+        if (existing.index !== index) {
+          changed = true;
+          existing.index = index;
+        }
+        return existing;
+      }
+      changed = true;
+      const item = itemFromElement(
+        el,
+        this.state.options,
+        index,
+        getWindowWidth(),
+      );
+      this.itemsByElement.set(el, item);
+      return item;
+    });
+
+    previous.forEach((it) => {
+      if (it.element && !domElementSet.has(it.element)) {
+        this.itemsByElement.delete(it.element);
+      }
+    });
+
+    resetTranslate(rebuilt, getWindowWidth());
+    this.state.groups.set(groupId, rebuilt);
+    if (changed) {
+      this.loadAllFired.delete(groupId);
+    }
+    return changed;
+  }
+
+  // サムネイルクリックはこの1本の document デリゲーションリスナーだけで処理する
+  // (個別バインドは廃止)。同じクリックイベントを複数の SmartPhoto インスタンスが
+  // 二重処理しないよう、処理済みマーカーをイベント自体に立てて後続インスタンスに
+  // 早期returnさせる(セレクタが重複するインスタンスが同時に存在するケース)
+  private handleDocumentClick = (e: MouseEvent): void => {
+    if (!(e.target instanceof Element)) {
+      return;
+    }
+    const marker = e as MouseEvent & { __smartphotoClaimed?: boolean };
+    if (marker.__smartphotoClaimed) {
+      return;
+    }
+
+    let matched = this.findRegisteredAncestor(e.target);
+    if (!matched && this.rootSelector) {
+      matched = e.target.closest(this.rootSelector);
+    }
+    if (!matched) {
+      return;
+    }
+
+    e.preventDefault();
+    marker.__smartphotoClaimed = true;
+
+    // 未登録の新規要素の場合、openPhoto() へ渡す Item を得るためにここで先に
+    // グループを解決する。openPhoto() 内でも resyncGroupFromDom() が走るが、
+    // その時点ではもう解決済みで「変化なし」と判定されてしまうため、view の
+    // 再同期(syncCurrentGroupView)はこの呼び出し側で行う必要がある
+    if (!this.itemsByElement.has(matched) && this.rootSelector) {
+      const groupId = groupIdFromElement(matched);
+      if (this.resyncGroupFromDom(groupId)) {
+        this.syncCurrentGroupView();
+      }
+    }
+
+    const item = this.itemsByElement.get(matched);
+    if (item) {
+      this.openPhoto(item, matched as HTMLElement);
+    }
+  };
 
   private syncCurrentGroupView(): void {
     const items = currentItems(this.state);
@@ -725,12 +841,19 @@ export default class SmartPhoto {
   }
 
   private openPhoto(item: Item, trigger: HTMLElement | null): void {
+    // 文字列セレクタで構築した場合、開く直前に必ずグループをDOMの現在状態に
+    // 合わせて再構築する(Ajax等による追加・削除・並び順の変化を反映)。
+    // item.index はこの中で正しい値に更新される可能性がある
+    const groupChanged = this.rootSelector
+      ? this.resyncGroupFromDom(item.groupId)
+      : false;
     this.lastTriggerElement = trigger;
     this.state.viewer.currentGroup = item.groupId;
     this.state.viewer.currentIndex = item.index;
-    // グループを切り替えて開く場合、view 側のスライド DOM は前回同期したグループのままなので、
-    // ここで同期し直す(§6: syncSlides はグループ切替・addItem 時に呼ぶ)
-    if (this.syncedGroupId !== item.groupId) {
+    // グループを切り替えて開く場合、または resync でグループの中身が変わった場合、
+    // view 側のスライド DOM は古いままなのでここで同期し直す
+    // (§6: syncSlides はグループ切替・addItem 時に呼ぶ)
+    if (this.syncedGroupId !== item.groupId || groupChanged) {
       this.syncCurrentGroupView();
     }
     this.setHashByCurrentIndex();

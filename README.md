@@ -70,6 +70,14 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 ```
 
+When SmartPhoto is constructed with a CSS selector string (as above), clicks are handled via a single delegated listener, so elements added to the page **after** construction (e.g. by Ajax/infinite scroll) are picked up automatically just by clicking them — no need to call `addItem()`/`addNewItem()` manually. Right before a photo is opened, SmartPhoto also reconciles that photo's group against the current DOM: newly appended matching elements are added, and elements that have since been removed from the DOM are dropped from the group (remaining indices are recalculated). This auto-detection only applies to the selector-string form; when a `NodeList`/`Element[]` is passed (or in data source mode below), add/remove items explicitly via `addItem()`/`addNewItem()`.
+
+A few things to keep in mind:
+- Reconciliation only happens **right before a photo is opened** (via a click, `show()`, or hash restoration) — not continuously. If an element disappears from the DOM while the viewer is already open and you `next()`/`prev()` through the same session, that removal isn't reflected until the viewer is opened again.
+- It does not support replacing an entire container's `innerHTML` (which recreates existing elements too, as brand-new DOM nodes) — that produces duplicate items, since the old and new elements aren't recognized as the same one. Only *appending*/*removing* individual elements is supported; if you regenerate the whole container, call `destroy()` and construct a new instance instead.
+- Changing `data-group` on an element that has already been opened/registered has no effect (the group is fixed at first registration). Changing it before the element is first interacted with is picked up correctly.
+- If multiple instances are built with overlapping selectors, avoid relying on distinguishing exactly which instance handles a click for elements that could match either.
+
 ### Programmatic usage (data source mode)
 
 Instead of scanning `<a>` elements in the page, you can pass an array of slide objects directly (inspired by [yet-another-react-lightbox](https://yet-another-react-lightbox.com/)). This is useful when your images come from an API or a JS-rendered list.
@@ -337,7 +345,7 @@ photo.on('zoomout',function(){
 	</tr>
 	<tr>
 		<td><code>addNewItem(element)</code></td>
-		<td>register a new <code>&lt;a&gt;</code> thumbnail element (HTML mode)</td>
+		<td>register a new <code>&lt;a&gt;</code> thumbnail element (HTML mode). Only needed when constructed with a <code>NodeList</code>/<code>Element[]</code> or otherwise not using a selector string — with a selector string, elements added later are auto-detected on click (see above)</td>
 	</tr>
 	<tr>
 		<td><code>show(indexOrId?, options?)</code></td>
@@ -353,7 +361,7 @@ photo.on('zoomout',function(){
 	</tr>
 	<tr>
 		<td><code>addItem(slideOrElement)</code></td>
-		<td>add a new item. Accepts a slide object (data source mode) or an <code>Element</code> (HTML mode, same as <code>addNewItem</code>)</td>
+		<td>add a new item. Accepts a slide object (data source mode, where explicit registration is always required) or an <code>Element</code> (HTML mode, same caveat as <code>addNewItem</code>)</td>
 	</tr>
 	<tr>
 		<td><code>currentIndex</code></td>
