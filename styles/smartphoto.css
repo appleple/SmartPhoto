@@ -110,9 +110,9 @@
    * 対象に加えることで、opacity のフェードが完了するまでその適用を1フレーム分
    * 遅らせ、閉じる瞬間に「ぱっと」消えず滑らかにフェードアウトするようにする */
   transition:
-    opacity var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out),
-    display var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out) allow-discrete,
-    overlay var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out) allow-discrete;
+    opacity var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out),
+    display var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out) allow-discrete,
+    overlay var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out) allow-discrete;
 }
 
 .smartphoto:not([open]) {
@@ -127,11 +127,11 @@
  * ルート要素(html)の子として扱われ、dialog に設定した --smartphoto-animation-speed を
  * 継承しない。そのため JS 側では document.documentElement にも同じ変数を設定しており、
  * ここではその値を参照する。指定がなければブラウザ既定(実装依存, 概ね0.25s前後で
- * 速すぎるとの声があった)の代わりに 0.3s を使う */
+ * 速すぎるとの声があった)の代わりに 0.45s を使う */
 ::view-transition-group(smartphoto-hero),
 ::view-transition-old(smartphoto-hero),
 ::view-transition-new(smartphoto-hero) {
-  animation-duration: var(--smartphoto-animation-speed, 0.3s);
+  animation-duration: var(--smartphoto-animation-speed, 0.45s);
   animation-timing-function: var(--smartphoto-animation-function, ease-out);
 }
 
@@ -213,7 +213,7 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  transition: transform var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out);
+  transition: transform var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out);
 
   -webkit-user-drag: none;
 }
@@ -229,7 +229,7 @@
 }
 
 .smartphoto-img-elasticmove {
-  transition: transform var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out);
+  transition: transform var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out);
 }
 
 .smartphoto-img-wrap {
@@ -237,13 +237,13 @@
   opacity: 1;
   /* Pointer Events(ピンチ/ドラッグ)がブラウザ既定のスクロール・ズームと衝突しないようにする */
   touch-action: none;
-  -webkit-transition: opacity var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out);
-  -moz-transition: opacity var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out);
-  -ms-transition: opacity var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out);
-  -o-transition: opacity var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out);
-  transition: opacity var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out);
+  -webkit-transition: opacity var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out);
+  -moz-transition: opacity var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out);
+  -ms-transition: opacity var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out);
+  -o-transition: opacity var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out);
+  transition: opacity var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out);
   animation-name: smartphoto-img-wrap;
-  animation-duration: var(--smartphoto-animation-speed, 0.3s);
+  animation-duration: var(--smartphoto-animation-speed, 0.45s);
   animation-timing-function: var(--smartphoto-animation-function, ease-out);
 }
 
@@ -265,7 +265,7 @@
   left: 0;
   opacity: 1;
   animation-name: smartphoto-appear;
-  animation-duration: var(--smartphoto-animation-speed, 0.3s);
+  animation-duration: var(--smartphoto-animation-speed, 0.45s);
   animation-timing-function: var(--smartphoto-animation-function, ease-out);
 }
 
@@ -282,7 +282,7 @@
   height: 30px;
   margin-top: -20px;
   box-sizing: content-box;
-  animation-duration: var(--smartphoto-animation-speed, 0.3s);
+  animation-duration: var(--smartphoto-animation-speed, 0.45s);
   animation-timing-function: var(--smartphoto-animation-function, ease-out);
   animation-name: smartphoto-appear;
 }
@@ -341,7 +341,7 @@
   width: 100%;
   opacity: 1;
   animation-name: smartphoto-appear;
-  animation-duration: var(--smartphoto-animation-speed, 0.3s);
+  animation-duration: var(--smartphoto-animation-speed, 0.45s);
   animation-timing-function: var(--smartphoto-animation-function, ease-out);
 }
 
@@ -417,7 +417,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  transition: all var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out);
+  transition: all var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out);
 }
 
 .smartphoto-list li:focus {
@@ -485,7 +485,7 @@
   z-index: 100;
   top: 0;
   left: 0;
-  transition: all var(--smartphoto-animation-speed, 0.3s) var(--smartphoto-animation-function, ease-out);
+  transition: all var(--smartphoto-animation-speed, 0.45s) var(--smartphoto-animation-function, ease-out);
 }
 
 .smartphoto-sr-only {

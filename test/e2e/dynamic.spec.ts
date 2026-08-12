@@ -33,7 +33,7 @@ test.describe("Ajax等による動的なDOM追加 (dynamic.html)", () => {
     await page.locator('a[data-id="bear"]').click();
     await expect(dialog).toHaveJSProperty("open", true);
     await expect(caption).toHaveText("Bear");
-    await page.waitForTimeout(350);
+    await page.waitForTimeout(500);
 
     // showModal() 中は背後要素(Load moreボタン)への実クリックがネイティブに
     // 遮断されるため、element.click() を直接呼び出してハンドラを起動する
@@ -74,7 +74,7 @@ test.describe("Ajax等による動的なDOM追加 (dynamic.html)", () => {
     await page.locator('a[data-id="bear"]').click();
     await expect(dialog).toHaveJSProperty("open", true);
     await expect(caption).toHaveText("Bear");
-    await page.waitForTimeout(350);
+    await page.waitForTimeout(500);
 
     await page
       .getByRole("button", { name: "Remove first thumbnail (simulate Ajax)" })

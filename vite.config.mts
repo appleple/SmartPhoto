@@ -7,5 +7,8 @@ export default defineConfig({
   publicDir: 'examples/assets',
   server: {
     open: '/examples/index.html',
+    // 0.0.0.0 にバインドし、同一Wi-Fi/LAN内の実機からも
+    // `npm run dev` 起動時に表示される Network の URL でアクセスできるようにする
+    host: true,
   },
 });

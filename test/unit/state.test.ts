@@ -9,15 +9,15 @@ describe("state", () => {
       expect(s.options.nav).toBe(true);
       expect(s.options.resizeStyle).toBe("fit");
       expect(s.options.useOrientationApi).toBe(false);
-      expect(s.options.animationSpeed).toBe(300);
+      expect(s.options.animationSpeed).toBe(450);
       expect(Object.isFrozen(s.options)).toBe(true);
       expect(Object.isFrozen(s.options.classNames)).toBe(true);
     });
 
     it("settings でデフォルトを上書きできる", () => {
-      const s = state.createState({ arrows: false, animationSpeed: 500 });
+      const s = state.createState({ arrows: false, animationSpeed: 800 });
       expect(s.options.arrows).toBe(false);
-      expect(s.options.animationSpeed).toBe(500);
+      expect(s.options.animationSpeed).toBe(800);
     });
 
     it("viewer の初期状態を持つ", () => {

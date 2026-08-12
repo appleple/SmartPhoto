@@ -28,8 +28,8 @@ test.describe("スライド送り (vanilla.html)", () => {
 
     // open 直後は View Transition のセットアップが安定するまでの短い間、
     // キーボード入力のような「実イベントパイプラインを介さない/待ちのない」操作が
-    // 取りこぼされることがある。既定の animationSpeed(300ms) 分待って安定させる
-    await page.waitForTimeout(350);
+    // 取りこぼされることがある。既定の animationSpeed(450ms) 分待って安定させる
+    await page.waitForTimeout(500);
     await page.keyboard.press("ArrowRight");
     await expect(caption).toHaveText("Camel");
 

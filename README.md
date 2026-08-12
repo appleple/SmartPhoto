@@ -219,7 +219,7 @@ Slide fields:
 	<tr>
 		<td>animationSpeed</td>
 		<td>animation speed (ms) when switching/opening/closing images</td>
-		<td>300</td>
+		<td>450</td>
 	</tr>
 	<tr>
 		<td>forceInterval</td>
@@ -380,7 +380,7 @@ photo.on('zoomout',function(){
     <tr>
         <td>--smartphoto-animation-speed</td>
         <td>animation speed when switching/opening/closing images. Overridden per-instance by the <code>animationSpeed</code> JS option</td>
-        <td>300ms</td>
+        <td>450ms</td>
     </tr>
     <tr>
         <td>--smartphoto-animation-function</td>
@@ -403,7 +403,7 @@ Set these on `.smartphoto` (or `:root`) to override the defaults, no rebuild req
 
 ```css
 .smartphoto {
-  --smartphoto-animation-speed: 500ms;
+  --smartphoto-animation-speed: 450ms;
   --smartphoto-animation-function: ease-in-out;
   --smartphoto-backdrop-color: rgba(0, 0, 0, 0.9);
   --smartphoto-header-color: rgba(0, 0, 0, 0.4);

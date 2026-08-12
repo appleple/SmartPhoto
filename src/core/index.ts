@@ -969,6 +969,12 @@ export default class SmartPhoto {
     this.state.viewer.photoPosX = 0;
     this.state.viewer.photoPosY = 0;
     this.state.viewer.onMove = true;
+    // モバイルではアドレスバーの表示/非表示に伴うビューポート変化が、矢印タップ等
+    // による送りの直後・最中に非同期(visualViewportのresizeイベント)で起こることがある。
+    // --smartphoto-vh(dialogの実高さ、CSS側)の更新タイミングとこの直後の
+    // setSizeByScreen()(getWindowHeight()を都度計算、JS側)の間で高さがズレると、
+    // 画像の中央配置が崩れて下寄り/上寄りに表示されるため、ここで明示的に同期する
+    this.updateViewportHeight();
     this.setPosByCurrentIndex();
     this.setHashByCurrentIndex();
     this.setSizeByScreen();
@@ -1015,6 +1021,9 @@ export default class SmartPhoto {
     if (!currentItems(this.state)) {
       return;
     }
+    // visualViewport 非対応環境では window の resize にこのハンドラを直接バインドしている
+    // (§コンストラクタ)ため、--smartphoto-vh 側の更新をここでも保証する
+    this.updateViewportHeight();
     this.resetTranslateCurrent();
     this.setPosByCurrentIndex();
     this.setSizeByScreen();
@@ -1039,6 +1048,7 @@ export default class SmartPhoto {
     if (!currentItems(this.state)) {
       return;
     }
+    this.updateViewportHeight();
     this.resetTranslateCurrent();
     this.setPosByCurrentIndex();
     this.setHashByCurrentIndex();
@@ -1050,6 +1060,7 @@ export default class SmartPhoto {
     const poll = (time: number): void => {
       this.scheduleTimeout(() => {
         if (prevWidth !== getWindowWidth()) {
+          this.updateViewportHeight();
           this.resetTranslateCurrent();
           this.setPosByCurrentIndex();
           this.setHashByCurrentIndex();

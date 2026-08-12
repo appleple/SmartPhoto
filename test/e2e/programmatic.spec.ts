@@ -31,8 +31,8 @@ test.describe("データソースモード (programmatic.html)", () => {
 
     // open 直後は View Transition のセットアップが安定するまでの短い間、
     // 実イベントパイプラインを介さない操作(下記の evaluate 経由クリック)を
-    // 取りこぼすことがあるため、既定の animationSpeed(300ms) 分待って安定させる
-    await page.waitForTimeout(350);
+    // 取りこぼすことがあるため、既定の animationSpeed(450ms) 分待って安定させる
+    await page.waitForTimeout(500);
 
     // showModal() 中はネイティブ dialog のトップレイヤーが背後の要素へのポインタイベントを
     // 遮断する(仕様どおりの挙動)。ボタン自身のクリックハンドラの結線を検証したいだけなので
@@ -54,7 +54,8 @@ test.describe("データソースモード (programmatic.html)", () => {
 
     await page.getByRole("button", { name: "show(0)" }).click();
     await expect(dialog).toHaveJSProperty("open", true);
-    await page.waitForTimeout(350);
+    // 既定の animationSpeed(450ms) 分待って安定させる
+    await page.waitForTimeout(500);
 
     // 同上: showModal() 中は背後のボタンへの実クリックがネイティブに遮断されるため
     // element.click() で直接ハンドラを起動する

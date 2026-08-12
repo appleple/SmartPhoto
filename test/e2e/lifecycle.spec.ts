@@ -54,7 +54,7 @@ test.describe("開閉ライフサイクル (vanilla.html)", () => {
     // (smartphoto-list, z-index:101)がいずれもコンテンツ領域の上に重なっているため、
     // クリック位置はそれらの外側になる左端寄りにする
     const content = dialog.locator(".smartphoto-content");
-    await page.waitForTimeout(350);
+    await page.waitForTimeout(500);
     const box = await content.boundingBox();
     if (!box) {
       throw new Error("content area not found");
@@ -103,7 +103,7 @@ test.describe("開閉ライフサイクル (vanilla.html)", () => {
 
     await trigger.click();
     await expect(dialog).toHaveJSProperty("open", true);
-    await page.waitForTimeout(350);
+    await page.waitForTimeout(500);
     await page.getByRole("button", { name: "close the image dialog" }).click();
     await expect(dialog).toHaveJSProperty("open", false);
     // 閉じるアニメーション(既定 300ms)の完了を待たずに即座に再オープンする
@@ -150,7 +150,7 @@ test.describe("開閉ライフサイクル (vanilla.html)", () => {
     await page.locator('a[data-id="lion"]').click();
     const dialog = page.locator("dialog.smartphoto");
     await expect(dialog).toHaveJSProperty("open", true);
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(500);
 
     await expect(dialog).toHaveCSS("overflow", "hidden");
     const before = await dialog.evaluate((d) => d.scrollTop);
