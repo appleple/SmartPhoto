@@ -84,6 +84,11 @@ export function createView(
   const dialog = document.createElement("dialog");
   dialog.className = classNames.smartPhoto;
   dialog.setAttribute("aria-labelledby", `smartphoto-${id}-title`);
+  // ホスト側 CSS の `dialog { display: block; }` 系ルール(Bootstrap4 の
+  // reboot.css 等)が dialog:not([open]) の display:none を上書きするケースに
+  // 備え、生成直後(未 showModal = 閉じている)の時点から明示的に隠しておく。
+  // syncDialog() が開閉のたびにこの style.display を管理する
+  dialog.style.display = "none";
   dialog.style.setProperty(
     "--smartphoto-animation-speed",
     `${options.animationSpeed}ms`,

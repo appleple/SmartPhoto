@@ -610,10 +610,16 @@ export default class SmartPhoto {
   private syncDialog(): void {
     const { dialog, caption } = this.view.refs;
     if (this.state.viewer.isOpen && !dialog.open) {
+      // ホスト側 CSS の `dialog { display: block; }` 系ルールが
+      // dialog:not([open]) の display:none を上書きしてしまっているケースの保険
+      // として、閉じている間だけ style.display を直接 "none" にしている(下記)。
+      // 開く際はそれを取り除き、ネイティブの表示制御に戻す
+      dialog.style.removeProperty("display");
       dialog.showModal();
       caption.focus();
     } else if (!this.state.viewer.isOpen && dialog.open) {
       dialog.close();
+      dialog.style.display = "none";
     }
   }
 

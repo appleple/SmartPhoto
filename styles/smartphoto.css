@@ -119,6 +119,17 @@
   opacity: 0;
 }
 
+/* ブラウザ標準の dialog:not([open]) { display: none } は、Bootstrap4 系の
+ * reboot.css 等が互換性維持のために `dialog { display: block; }` のような
+ * 要素セレクタ単体のルールを読み込んでいる場合、後勝ちで上書きされてしまう。
+ * 上書きされると閉じている dialog(position:fixed; inset:0)が画面全体に
+ * 残ったままクリックを吸収し続けるため、クラスセレクタを含めて詳細度を上げた
+ * フォールバックを明示しておく(要素セレクタ単体より詳細度が高いため、
+ * 読み込み順に関係なく確実に勝てる) */
+dialog.smartphoto:not([open]) {
+  display: none !important;
+}
+
 .smartphoto::backdrop {
   background-color: var(--smartphoto-backdrop-color, rgba(0, 0, 0, 1));
 }

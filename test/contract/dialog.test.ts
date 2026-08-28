@@ -186,6 +186,41 @@ describe("dialog ライフサイクル", () => {
     }).not.toThrow();
   });
 
+  // ホスト側 CSS に `dialog { display: block; }` のような Bootstrap4 reboot.css
+  // 系の互換ルールが読み込まれていると、ブラウザ標準の dialog:not([open]) の
+  // display:none が上書きされ、閉じている dialog が画面全体に残ってクリックを
+  // 吸収し続ける不具合があった。CSS 側のフォールバック(詳細度を上げた
+  // dialog.smartphoto:not([open]))に加え、JS 側でも style.display を
+  // 開閉に合わせて管理していることを保証する
+  it("初期化直後(閉じている状態)は style.display が none になっている", () => {
+    const dialog = document.querySelector(
+      "dialog.smartphoto",
+    ) as HTMLDialogElement;
+    expect(dialog.style.display).toBe("none");
+  });
+
+  it("開いている間は style.display の none が解除される", async () => {
+    await openViewer(container);
+    const dialog = document.querySelector(
+      "dialog.smartphoto",
+    ) as HTMLDialogElement;
+    expect(dialog.style.display).not.toBe("none");
+  });
+
+  it("閉じると style.display が none に戻る", async () => {
+    await openViewer(container);
+    const dialog = document.querySelector(
+      "dialog.smartphoto",
+    ) as HTMLDialogElement;
+    fireEvent.click(
+      document.querySelector(".smartphoto-dismiss") as HTMLElement,
+    );
+    await waitFor(() => {
+      expect(dialog).not.toHaveAttribute("open");
+    });
+    expect(dialog.style.display).toBe("none");
+  });
+
   it("open イベントが発火する", async () => {
     const handler = vi.fn();
     smartPhoto?.on("open", handler);
