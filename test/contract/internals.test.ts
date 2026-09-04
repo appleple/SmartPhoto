@@ -865,6 +865,53 @@ describe("スマートフォンでの window イベント", () => {
     fireEvent(window, new Event("orientationchange"));
     await new Promise((r) => setTimeout(r, 600));
   });
+
+  it("開いている間の visualViewport resize でもレイアウトを再計算する(#95)", async () => {
+    // iOS Safari はアドレスバーの表示/非表示に伴う visualViewport の変化を
+    // orientationchange なしで resize として発火する。スマートフォンでは window の
+    // resize を購読しないため、この resize を拾わないと item.x/y が古い高さの
+    // ままインラインスタイルに残り続け、表示中のスライドだけ位置がずれて見える
+    withStubbedUserAgent(
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    );
+    let resizeHandler: (() => void) | null = null;
+    const stubViewport = {
+      height: 800,
+      scale: 1,
+      addEventListener: vi.fn((type: string, handler: () => void) => {
+        if (type === "resize") {
+          resizeHandler = handler;
+        }
+      }),
+      removeEventListener: vi.fn(),
+    } as unknown as VisualViewport;
+    Object.defineProperty(window, "visualViewport", {
+      value: stubViewport,
+      configurable: true,
+    });
+
+    const smartPhoto = track(
+      new SmartPhoto([{ src: "/a.jpg", width: 100, height: 700 }]),
+    );
+    smartPhoto.show(0);
+    await waitFor(() => {
+      expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+        "open",
+      );
+    });
+
+    const imgWrap = document.querySelector(
+      ".current .smartphoto-img-wrap",
+    ) as HTMLElement;
+    const beforeTransform = imgWrap.style.transform;
+
+    stubViewport.height = 500;
+    resizeHandler?.();
+
+    expect(imgWrap.style.transform).not.toBe(beforeTransform);
+
+    delete (window as { visualViewport?: VisualViewport }).visualViewport;
+  });
 });
 
 describe("デスクトップでの resize/keydown", () => {

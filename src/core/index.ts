@@ -180,7 +180,7 @@ export default class SmartPhoto {
     if (window.visualViewport) {
       window.visualViewport.addEventListener(
         "resize",
-        this.updateViewportHeight,
+        this.handleVisualViewportResize,
         { signal: this.abortController.signal },
       );
     } else {
@@ -1021,6 +1021,27 @@ export default class SmartPhoto {
       "--smartphoto-vh",
       `${getWindowHeight()}px`,
     );
+  };
+
+  // iOS Safari 等ではアドレスバーの表示/非表示に伴う visualViewport の変化が
+  // orientationchange を伴わず resize としてのみ発火する。スマートフォンでは
+  // window の resize を購読していない(§コンストラクタ)ため、ここで拾わないと
+  // 開いている間ずっと古い高さで計算された item.x/y がインラインスタイルに
+  // 残り続け、表示中のスライドだけ位置がずれて見える(§Issue #95: スワイプ
+  // ダウンで閉じて再度開いた際、閉じた瞬間表示していたスライドだけ縦位置がずれる)
+  private handleVisualViewportResize = (): void => {
+    this.updateViewportHeight();
+    if (
+      !this.isSmartPhoneFlag ||
+      !this.state.viewer.isOpen ||
+      !currentItems(this.state)
+    ) {
+      return;
+    }
+    this.resetTranslateCurrent();
+    this.setPosByCurrentIndex();
+    this.setSizeByScreen();
+    this.commit();
   };
 
   private handleResize = (): void => {
