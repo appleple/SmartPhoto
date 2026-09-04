@@ -288,7 +288,7 @@ dialog.smartphoto:not([open]) {
 .smartphoto-arrows li {
   display: block;
   position: absolute;
-  top: 50%;
+  top: var(--smartphoto-arrow-top, 50%);
   width: 30px;
   height: 30px;
   margin-top: -20px;
@@ -350,6 +350,10 @@ dialog.smartphoto:not([open]) {
   bottom: 0;
   left: 0;
   width: 100%;
+  /* iOS Safari 等ではホームインジケーター/ツールバーの分だけ底面が隠れる
+   * ため、その領域を避けてサムネイルを表示する(§Issue #96) */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-sizing: border-box;
   opacity: 1;
   animation-name: smartphoto-appear;
   animation-duration: var(--smartphoto-animation-speed, 0.45s);

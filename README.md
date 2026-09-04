@@ -397,6 +397,11 @@ photo.on('zoomout',function(){
         <td>header color</td>
         <td>rgba(0, 0, 0, .2)</td>
     </tr>
+    <tr>
+        <td>--smartphoto-arrow-top</td>
+        <td>vertical position of the prev/next arrows, e.g. move them off the image on narrow screens with a media query</td>
+        <td>50%</td>
+    </tr>
 </table>
 
 Set these on `.smartphoto` (or `:root`) to override the defaults, no rebuild required:
@@ -408,7 +413,15 @@ Set these on `.smartphoto` (or `:root`) to override the defaults, no rebuild req
   --smartphoto-backdrop-color: rgba(0, 0, 0, 0.9);
   --smartphoto-header-color: rgba(0, 0, 0, 0.4);
 }
+
+@media (max-width: 480px) {
+  .smartphoto {
+    --smartphoto-arrow-top: 85%;
+  }
+}
 ```
+
+The bottom thumbnail nav (`.smartphoto-nav`) also reserves `env(safe-area-inset-bottom)` automatically so it isn't hidden behind the iOS home indicator/toolbar.
 
 
 ## Download
