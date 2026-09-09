@@ -558,6 +558,47 @@ describe("View Transitions API 経由で開く", () => {
   });
 });
 
+describe("--smartphoto-icon-color(背景色に対する自動コントラスト計算)", () => {
+  afterEach(() => {
+    document.documentElement.style.removeProperty(
+      "--smartphoto-backdrop-color",
+    );
+  });
+
+  it("ホスト側が --smartphoto-backdrop-color を指定していなければ何もしない(既定の白のまま)", () => {
+    const smartPhoto = track(new SmartPhoto([]));
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    expect(dialog.style.getPropertyValue("--smartphoto-icon-color")).toBe("");
+    void smartPhoto;
+  });
+
+  it("背景色が白系のとき、アイコン色を黒として自動算出する", () => {
+    document.documentElement.style.setProperty(
+      "--smartphoto-backdrop-color",
+      "#fff",
+    );
+    const smartPhoto = track(new SmartPhoto([]));
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    expect(dialog.style.getPropertyValue("--smartphoto-icon-color")).toBe(
+      "#000",
+    );
+    void smartPhoto;
+  });
+
+  it("背景色が黒系(既定と同じ値を明示指定)のとき、アイコン色を白として自動算出する", () => {
+    document.documentElement.style.setProperty(
+      "--smartphoto-backdrop-color",
+      "rgba(0, 0, 0, 1)",
+    );
+    const smartPhoto = track(new SmartPhoto([]));
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    expect(dialog.style.getPropertyValue("--smartphoto-icon-color")).toBe(
+      "#fff",
+    );
+    void smartPhoto;
+  });
+});
+
 describe("--smartphoto-vh(実測ビューポート高さのCSS変数化)", () => {
   it("構築時に dialog へ実測した高さを設定する", () => {
     const smartPhoto = track(new SmartPhoto([]));
@@ -642,6 +683,34 @@ describe("--smartphoto-vh(実測ビューポート高さのCSS変数化)", () =>
     expect(dialog.style.getPropertyValue("--smartphoto-vh")).toBe("800px");
     delete (window as { visualViewport?: VisualViewport }).visualViewport;
     void smartPhoto;
+  });
+
+  it("構築後にビューポート高さが変わってから開いた場合、開く時点の高さを反映する(#97)", async () => {
+    // --smartphoto-vh は構築時と resize/orientationchange 時にのみ更新しており、
+    // 「開く」タイミングでは再計算していなかった。構築後にページスクロール等で
+    // アドレスバーが引っ込み実ビューポートが広がった状態で開くと、dialog の高さ
+    // (height: var(--smartphoto-vh)) が実際より小さいまま残り、下側の隙間から
+    // 背景ページの内容が透けて見える不具合があった
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 800,
+      configurable: true,
+    });
+    const smartPhoto = track(
+      new SmartPhoto([{ src: "/a.jpg", width: 800, height: 600 }]),
+    );
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 900,
+      configurable: true,
+    });
+    smartPhoto.show(0);
+    await waitFor(() => {
+      expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+        "open",
+      );
+    });
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    expect(dialog.style.getPropertyValue("--smartphoto-vh")).toBe("900px");
+    delete (document.documentElement as { clientHeight?: number }).clientHeight;
   });
 });
 

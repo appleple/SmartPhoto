@@ -127,6 +127,23 @@ describe("util", () => {
     });
   });
 
+  describe("getContrastColor", () => {
+    it.each([
+      ["#000", "#fff"],
+      ["#fff", "#000"],
+      ["rgba(0, 0, 0, 1)", "#fff"],
+      ["rgb(255, 255, 255)", "#000"],
+      ["white", "#000"],
+      ["black", "#fff"],
+    ])("背景色 %s に対してコントラストの高い色 %s を返す", (bg, expected) => {
+      expect(util.getContrastColor(bg)).toBe(expected);
+    });
+
+    it("パースできない値では白を返す", () => {
+      expect(util.getContrastColor("not-a-color")).toBe("#fff");
+    });
+  });
+
   describe("removeElement", () => {
     it("親要素があれば DOM から取り除く", () => {
       const parent = document.createElement("div");

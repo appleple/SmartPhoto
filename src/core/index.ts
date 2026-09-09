@@ -177,6 +177,7 @@ export default class SmartPhoto {
     // window の resize より優先する(スマートフォンで window.resize を購読しない
     // 既存方針(下記)とは独立した、この変数専用の軽量な購読)
     this.updateViewportHeight();
+    this.applyAutoIconContrast();
     if (window.visualViewport) {
       window.visualViewport.addEventListener(
         "resize",
@@ -636,6 +637,12 @@ export default class SmartPhoto {
     // 直前の hidePhoto() のフェードアウトが transitionend 前に中断された場合に備え、
     // doHideEffect() の後始末(画像の translateY 除去など)を開く前に必ず完了させる
     this.finishHideEffect?.();
+    // --smartphoto-vh はコンストラクタ時点と resize/orientationchange でのみ更新され、
+    // 「開く」タイミングでは再計算していなかった。構築後にページスクロール等で
+    // アドレスバーが引っ込み実ビューポートが広がった状態で開くと、dialog の高さ
+    // (height: var(--smartphoto-vh)) が実際より小さいまま残り、下側の隙間から
+    // 背景ページの内容が透けて見えていた。開く直前に必ず実測し直す
+    this.updateViewportHeight();
     this.view.refs.dialog.style.opacity = "";
     const items = currentItems(this.state) as Item[];
     this.state.viewer.total = items.length;
@@ -1015,6 +1022,24 @@ export default class SmartPhoto {
   }
 
   // ---- 内部: window イベント ----
+
+  // --smartphoto-backdrop-color をホスト側 CSS が明示指定している場合のみ、
+  // その背景色に対してコントラストの高い文字色/アイコン色(#000 or #fff)を
+  // --smartphoto-icon-color として自動算出する。未指定(デフォルトの黒背景)の
+  // ときは何もせず、CSS 側のフォールバック(既存の白固定)のままにする
+  private applyAutoIconContrast(): void {
+    const dialog = this.view.refs.dialog;
+    const backdropColor = getComputedStyle(dialog)
+      .getPropertyValue("--smartphoto-backdrop-color")
+      .trim();
+    if (!backdropColor) {
+      return;
+    }
+    dialog.style.setProperty(
+      "--smartphoto-icon-color",
+      util.getContrastColor(backdropColor),
+    );
+  }
 
   private updateViewportHeight = (): void => {
     this.view.refs.dialog.style.setProperty(
