@@ -563,6 +563,7 @@ describe("--smartphoto-icon-color(背景色に対する自動コントラスト�
     document.documentElement.style.removeProperty(
       "--smartphoto-backdrop-color",
     );
+    document.documentElement.style.removeProperty("--smartphoto-icon-color");
   });
 
   it("ホスト側が --smartphoto-backdrop-color を指定していなければ何もしない(既定の白のまま)", () => {
@@ -595,6 +596,25 @@ describe("--smartphoto-icon-color(背景色に対する自動コントラスト�
     expect(dialog.style.getPropertyValue("--smartphoto-icon-color")).toBe(
       "#fff",
     );
+    void smartPhoto;
+  });
+
+  it("ホスト側が --smartphoto-icon-color 自体を明示指定していれば、自動算出せずその指定を優先する(誤検知時の最終防衛ライン)", () => {
+    // 白背景なら自動算出は #000 になるはずだが、ホスト側が明示的に赤を
+    // 指定しているケースを再現する。dialog へインラインスタイルで書き込むと
+    // 通常の CSS ルール(!important なし)では後から上書きできなくなるため、
+    // 明示指定があるときは自動算出そのものをスキップしなければならない
+    document.documentElement.style.setProperty(
+      "--smartphoto-backdrop-color",
+      "#fff",
+    );
+    document.documentElement.style.setProperty(
+      "--smartphoto-icon-color",
+      "red",
+    );
+    const smartPhoto = track(new SmartPhoto([]));
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    expect(dialog.style.getPropertyValue("--smartphoto-icon-color")).toBe("");
     void smartPhoto;
   });
 });

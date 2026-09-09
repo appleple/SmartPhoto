@@ -1026,10 +1026,18 @@ export default class SmartPhoto {
   // --smartphoto-backdrop-color をホスト側 CSS が明示指定している場合のみ、
   // その背景色に対してコントラストの高い文字色/アイコン色(#000 or #fff)を
   // --smartphoto-icon-color として自動算出する。未指定(デフォルトの黒背景)の
-  // ときは何もせず、CSS 側のフォールバック(既存の白固定)のままにする
+  // ときは何もせず、CSS 側のフォールバック(既存の白固定)のままにする。
+  // ホスト側 CSS が --smartphoto-icon-color 自体を明示指定している場合は、
+  // 自動判定が誤検知したときの最終防衛ラインとしてその指定を必ず優先し、
+  // 自動算出では上書きしない(dialog 要素へインラインスタイルで設定すると、
+  // 後から通常の CSS ルールで !important なしに上書きできなくなるため)
   private applyAutoIconContrast(): void {
     const dialog = this.view.refs.dialog;
-    const backdropColor = getComputedStyle(dialog)
+    const computed = getComputedStyle(dialog);
+    if (computed.getPropertyValue("--smartphoto-icon-color").trim()) {
+      return;
+    }
+    const backdropColor = computed
       .getPropertyValue("--smartphoto-backdrop-color")
       .trim();
     if (!backdropColor) {
