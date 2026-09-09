@@ -871,6 +871,19 @@ export default class SmartPhoto {
       const height = getWindowHeight();
       const applied =
         dir === "top" ? `translateY(-${height}px)` : `translateY(${height}px)`;
+      // dialog 自体のフェードアウトは scss 側の :not([open]) + allow-discrete
+      // transition(§8)で CSS だけで完結させている。ここでは画像のスライド
+      // アウトだけを JS で担当する
+      if (img) {
+        img.style.transform = applied;
+      }
+      // 後始末の判定に applied をそのまま使わないのは、CSSOM が数値を丸めて
+      // シリアライズする(Blink は有効6桁、WebKit は小数第6位)ため。height
+      // (= visualViewport.height × scale)が長い小数になる iOS 実機などでは
+      // setter に渡した文字列と getter の読み戻しが一致せず、translateY が残留
+      // して「閉じた瞬間のスライドだけ再オープン後に画面外へずれる」不具合に
+      // なっていた。丸めの往復を一度通した値を比較の基準に保持する
+      const stored = img ? img.style.transform : "";
       const finish = () => {
         if (this.finishHideEffect !== finish) {
           return;
@@ -883,18 +896,12 @@ export default class SmartPhoto {
         // style を暗黙に消していたが、その相当処理はここで明示的に行う必要がある)。
         // フォールバック実行までの間に再オープン後のピンチ操作などが transform を
         // 上書きしている場合は、その値を消さないようここで設定した値のときだけ戻す
-        if (img && img.style.transform === applied) {
+        if (img && img.style.transform === stored) {
           img.style.transform = "";
         }
         resolve();
       };
       this.finishHideEffect = finish;
-      // dialog 自体のフェードアウトは scss 側の :not([open]) + allow-discrete
-      // transition(§8)で CSS だけで完結させている。ここでは画像のスライド
-      // アウトだけを JS で担当する
-      if (img) {
-        img.style.transform = applied;
-      }
       dialog.addEventListener("transitionend", finish, true);
       // transitionend はトランジションが中断されると発火しない(閉じた直後の
       // 再オープンによる反転、タブ非表示、reduced-motion 等で transitioncancel に

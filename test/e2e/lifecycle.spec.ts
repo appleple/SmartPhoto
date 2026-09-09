@@ -116,6 +116,51 @@ test.describe("開閉ライフサイクル (vanilla.html)", () => {
     expect(transform).not.toContain("translateY(");
   });
 
+  test("visualViewport の高さが長い小数でも、閉じ演出の translateY が画像に残らない", async ({
+    page,
+  }) => {
+    // doHideEffect() は画像へ直接設定した translateY(ウィンドウ高さ) を、後始末の際に
+    // 「自分が設定した値のままか」を確認してから除去する。CSSOM は数値を丸めて
+    // シリアライズする(Blink は有効6桁、WebKit は小数第6位)ため、ウィンドウ高さ
+    // (visualViewport.height × scale)が長い小数になる iOS 実機などでは、設定した
+    // 文字列と読み戻した文字列が一致しない。その場合でも translateY が除去されること
+    // を固定する(残留すると、閉じた瞬間に表示していたスライドだけが再オープン後に
+    // 画面高さぶん下へずれて見える)
+    await page.addInitScript(() => {
+      Object.defineProperty(window, "visualViewport", {
+        value: {
+          height: 553.9999877929688, // 小数13桁 → シリアライズの丸めで必ず文字列が変わる
+          width: 980,
+          scale: 1,
+          offsetTop: 0,
+          offsetLeft: 0,
+          pageTop: 0,
+          pageLeft: 0,
+          addEventListener() {},
+          removeEventListener() {},
+        },
+        configurable: true,
+      });
+    });
+    await page.goto("/examples/vanilla.html");
+    const dialog = page.locator("dialog.smartphoto");
+    const trigger = page.locator('a[data-id="lion"]');
+
+    await trigger.click();
+    await expect(dialog).toHaveJSProperty("open", true);
+    const currentImg = dialog.locator("li.current img.smartphoto-img");
+    await expect(currentImg).toBeVisible();
+
+    await page.getByRole("button", { name: "close the image dialog" }).click();
+    await expect(dialog).toHaveJSProperty("open", false);
+
+    // 後始末は transitionend またはフォールバックタイマー(animationSpeed + 100ms)で
+    // 実行されるため、poll で完了を待ってから残留がないことを確認する
+    await expect
+      .poll(() => currentImg.evaluate((el) => el.style.transform))
+      .toBe("");
+  });
+
   test("閉じた後、背景スクロールが確実に復帰する", async ({ page }) => {
     // 背景スクロールの抑制は :root:has(dialog.smartphoto[open]) という CSS の
     // みで行っている(§)。以前は JS 側でも document.body.style.overflow を
