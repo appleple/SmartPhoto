@@ -465,6 +465,72 @@ describe("gestures", () => {
       expect(state.viewer.scale).toBe(true);
     });
 
+    it("ボーダー判定は clientHeight より visualViewport.height を優先する", () => {
+      // iOS Safari ではアドレスバーの表示/非表示で実ビューポートが変わるが、
+      // documentElement.clientHeight は追従しない。ファサード側の zoomPhoto()
+      // (getWindowHeight = visualViewport 優先)と同じ基準で判定しないと、
+      // タップズームとピンチ終了で「ズームを維持できる倍率」が食い違う
+      const { state, imgWrap, callbacks } = buildHarness(
+        {},
+        { smartPhone: true },
+      );
+      // 横長画像: border = winHeight / (item.height * item.scale)
+      state.groups.get("g1")?.forEach((item) => {
+        item.width = 400;
+        item.height = 300;
+      });
+      // clientHeight(768) 基準なら border=2.56 で scaleSize 2.2 は解除、
+      // visualViewport(600) 基準なら border=2.0 で維持されるはず
+      Object.defineProperty(document.documentElement, "clientHeight", {
+        value: 768,
+        configurable: true,
+      });
+      Object.defineProperty(window, "visualViewport", {
+        value: { height: 600, scale: 1 },
+        configurable: true,
+        writable: true,
+      });
+      try {
+        imgWrap.dispatchEvent(
+          pointerEvent("pointerdown", {
+            pointerId: 1,
+            clientX: 100,
+            clientY: 100,
+          }),
+        );
+        imgWrap.dispatchEvent(
+          pointerEvent("pointerdown", {
+            pointerId: 2,
+            clientX: 110,
+            clientY: 100,
+          }),
+        );
+        // 距離 10 → 130: scaleSize 1 + 1.2 = 2.2
+        imgWrap.dispatchEvent(
+          pointerEvent("pointermove", {
+            pointerId: 2,
+            clientX: 230,
+            clientY: 100,
+          }),
+        );
+        expect(state.viewer.scaleSize).toBeCloseTo(2.2, 5);
+        imgWrap.dispatchEvent(
+          pointerEvent("pointerup", {
+            pointerId: 1,
+            clientX: 100,
+            clientY: 100,
+          }),
+        );
+        expect(callbacks.onGestureEnd).not.toHaveBeenCalled();
+        expect(state.viewer.scale).toBe(true);
+      } finally {
+        delete (window as { visualViewport?: unknown }).visualViewport;
+        delete (
+          document.documentElement as unknown as { clientHeight?: number }
+        ).clientHeight;
+      }
+    });
+
     it("指を離した瞬間、保留中だった最終フレームのonGestureMoveが同期的に反映される", () => {
       const { imgWrap, callbacks } = buildHarness();
       imgWrap.dispatchEvent(

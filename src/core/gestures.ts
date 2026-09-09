@@ -33,10 +33,14 @@ function getForceAndTheta(
   return { force: Math.sqrt(x * x + y * y), theta: Math.atan2(y, x) };
 }
 
+// ファサード側(zoomPhoto 等)の getWindowHeight と同じ基準(visualViewport 優先)で
+// 計測する。基準が食い違うと、iOS のアドレスバー表示/非表示で clientHeight と実
+// ビューポートが乖離した際、タップズームとピンチ終了で「ズームを維持できる倍率」や
+// ドラッグ可動域(makeBound)がズレる
 function windowSize(): { width: number; height: number } {
   return {
-    width: document.documentElement.clientWidth,
-    height: document.documentElement.clientHeight,
+    width: util.getWindowWidth(),
+    height: util.getWindowHeight(),
   };
 }
 

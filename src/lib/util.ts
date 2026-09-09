@@ -67,6 +67,26 @@ export const parseQuery = (query: string): Record<string, string> => {
   return data;
 };
 
+export const getWindowWidth = (): number => {
+  return document.documentElement.clientWidth;
+};
+
+// iOS Safari 等では document.documentElement.clientHeight が URL バーの表示/非表示に
+// 追従せず、実際に見えている領域より大きい値を返すことがある(§css の --smartphoto-vh)。
+// visualViewport.height の方が実測値として信頼できるため、対応環境ではそちらを優先する。
+// ただし visualViewport.height はネイティブのピンチズーム(ブラウザ自体のページ拡大)が
+// 掛かっている間、scale分だけ縮んだ値になる(2本指ピンチが touch-action:none を
+// すり抜けてブラウザ本体のズームも誘発するケースがある)。scale を掛けて相殺しないと、
+// そのタイミングの縮んだ値が --smartphoto-vh に固定され、ズーム後にdialogの下側が
+// 余って背景(黒)が見えてしまう
+export const getWindowHeight = (): number => {
+  const visualViewport = window.visualViewport;
+  if (visualViewport) {
+    return visualViewport.height * visualViewport.scale;
+  }
+  return document.documentElement.clientHeight;
+};
+
 export const getViewPos = (element: Element): { left: number; top: number } => {
   return {
     left: element.getBoundingClientRect().left,

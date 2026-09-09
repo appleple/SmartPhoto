@@ -44,25 +44,10 @@ interface ShowOptions {
   trigger?: HTMLElement;
 }
 
-function getWindowWidth(): number {
-  return document.documentElement.clientWidth;
-}
-
-// iOS Safari 等では document.documentElement.clientHeight が URL バーの表示/非表示に
-// 追従せず、実際に見えている領域より大きい値を返すことがある(§css の --smartphoto-vh)。
-// visualViewport.height の方が実測値として信頼できるため、対応環境ではそちらを優先する。
-// ただし visualViewport.height はネイティブのピンチズーム(ブラウザ自体のページ拡大)が
-// 掛かっている間、scale分だけ縮んだ値になる(2本指ピンチが touch-action:none を
-// すり抜けてブラウザ本体のズームも誘発するケースがある)。scale を掛けて相殺しないと、
-// そのタイミングの縮んだ値が --smartphoto-vh に固定され、ズーム後にdialogの下側が
-// 余って背景(黒)が見えてしまう
-function getWindowHeight(): number {
-  const visualViewport = window.visualViewport;
-  if (visualViewport) {
-    return visualViewport.height * visualViewport.scale;
-  }
-  return document.documentElement.clientHeight;
-}
+// ジェスチャー側の境界計算(gestures.ts の windowSize)と同じ基準で計測するため
+// util に集約している(visualViewport 優先の理由も util.getWindowHeight 参照)
+const getWindowWidth = util.getWindowWidth;
+const getWindowHeight = util.getWindowHeight;
 
 // $().get() や Array.from(NodeList) 等で渡される「DOM要素の配列」は Array.isArray()
 // では SlideData[] と区別できない。先頭要素が Element かどうかで実データを見て判別する
