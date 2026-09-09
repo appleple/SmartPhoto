@@ -91,6 +91,70 @@ describe("dialog ライフサイクル", () => {
     await openViewer(container);
   });
 
+  // スライドを送ると、その200ms後に近傍画像のプリロードが走る。ユーザーが
+  // 送った直後(プリロード完了前)にスワイプや背景クリックで閉じた場合、遅れて
+  // 解決したプリロードによってビューアが勝手に開き直らないことを保証する
+  // (「最後のスライドまで送って閉じても閉じられない」として報告された不具合)
+  it("送りの直後に閉じたら、遅れて完了する画像プリロードでビューアが再オープンしない", async () => {
+    await openViewer(container);
+
+    // 実機のレース(閉じた後にプリロードが解決する)を再現するため、
+    // 以降の画像ロードは完了タイミングを手動で制御する
+    const pending: Array<() => void> = [];
+    class DeferredImage {
+      onload: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      width = 0;
+      height = 0;
+      #src = "";
+      get src(): string {
+        return this.#src;
+      }
+      set src(value: string) {
+        this.#src = value;
+        if (!value) {
+          return;
+        }
+        pending.push(() => {
+          this.width = 800;
+          this.height = 600;
+          this.onload?.();
+        });
+      }
+    }
+    vi.stubGlobal("Image", DeferredImage);
+
+    try {
+      smartPhoto?.next();
+      // slideList() のプリロード開始(200ms後)を待つ
+      await waitFor(() => {
+        expect(pending.length).toBeGreaterThan(0);
+      });
+
+      smartPhoto?.hide();
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).not.toHaveAttribute(
+          "open",
+        );
+      });
+
+      // 閉じた後にプリロードを完了させる
+      for (const resolve of pending.splice(0)) {
+        resolve();
+      }
+      // Promise.all().then() の再オープン処理が走りうるところまでキューを進める
+      await new Promise((resolve) => {
+        setTimeout(resolve, 0);
+      });
+
+      expect(document.querySelector("dialog.smartphoto")).not.toHaveAttribute(
+        "open",
+      );
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   // jsdom は CSS トランジションを実行しないため transitionend は一切発火しない。
   // これは実ブラウザで閉じる演出が中断されるケース(閉じた直後の再オープン、
   // タブ非表示、reduced-motion 等)と同じ状況であり、その際に doHideEffect() が

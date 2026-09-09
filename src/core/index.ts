@@ -952,6 +952,12 @@ export default class SmartPhoto {
     }
     if (promises.length) {
       Promise.all(promises).then(() => {
+        // プリロードの解決前にユーザーが閉じている場合がある。initPhoto() は
+        // isOpen を true に戻すため、ガードなしでは syncDialog() の showModal()
+        // で閉じたビューアが復活してしまう(§resyncSizeAfterOpen と同じ方針)
+        if (!this.state.viewer.isOpen) {
+          return;
+        }
         this.initPhoto();
         this.commit();
       });
@@ -988,6 +994,9 @@ export default class SmartPhoto {
       this.loadNeighborItems();
       if (item && !item.loaded) {
         this.loadItem(item).then(() => {
+          if (!this.state.viewer.isOpen) {
+            return;
+          }
           this.initPhoto();
           this.commit();
         });
