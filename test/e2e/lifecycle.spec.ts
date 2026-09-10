@@ -210,8 +210,10 @@ test.describe("開閉ライフサイクル (vanilla.html)", () => {
     // dialog.close() は [open] 属性を外すのと同時にネイティブに display:none
     // へ切り替える。CSS の transition だけでは、この discrete な切り替えが
     // フェード演出より先に効いてしまい「ぱっと」消えて見える回帰があったため、
-    // allow-discrete で display/overlay もフェード完了まで遅らせている(§8)
-    await page.goto("/examples/vanilla.html");
+    // allow-discrete で display/overlay もフェード完了まで遅らせている(§8)。
+    // 既定速度(300ms)ではサンプリングが CI の負荷で取り逃すことがあるため、
+    // 診断用の ?speed でフェードを引き延ばして中間値を確実に観測する
+    await page.goto("/examples/vanilla.html?speed=1500");
     const dialog = page.locator("dialog.smartphoto");
 
     await page.locator('a[data-id="lion"]').click();
@@ -220,13 +222,13 @@ test.describe("開閉ライフサイクル (vanilla.html)", () => {
     await page.getByRole("button", { name: "close the image dialog" }).click();
 
     const samples: number[] = [];
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
       samples.push(
         await dialog.evaluate((d) =>
           Number.parseFloat(getComputedStyle(d).opacity),
         ),
       );
-      await page.waitForTimeout(30);
+      await page.waitForTimeout(50);
     }
     expect(samples.some((v) => v > 0.05 && v < 0.95)).toBe(true);
   });

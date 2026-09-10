@@ -142,6 +142,13 @@ describe("util", () => {
     it("パースできない値では白を返す", () => {
       expect(util.getContrastColor("not-a-color")).toBe("#fff");
     });
+
+    it("代入は有効でも rgb() へ正規化できない値では白を返す", () => {
+      // 未解決の CSS 変数参照は CSSOM への代入は通る(空文字にならない)が、
+      // getComputedStyle でも rgb() へ解決されない。その場合も安全側(白)へ
+      // フォールバックする
+      expect(util.getContrastColor("var(--undefined-color)")).toBe("#fff");
+    });
   });
 
   describe("removeElement", () => {
