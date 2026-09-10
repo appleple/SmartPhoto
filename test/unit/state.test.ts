@@ -9,7 +9,7 @@ describe("state", () => {
       expect(s.options.nav).toBe(true);
       expect(s.options.resizeStyle).toBe("fit");
       expect(s.options.useOrientationApi).toBe(false);
-      expect(s.options.animationSpeed).toBe(450);
+      expect(s.options.animationSpeed).toBe(300);
       expect(Object.isFrozen(s.options)).toBe(true);
       expect(Object.isFrozen(s.options.classNames)).toBe(true);
     });

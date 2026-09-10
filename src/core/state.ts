@@ -61,7 +61,7 @@ export const defaults: ResolvedSmartPhotoOptions = {
   loadOffset: 2,
   resizeStyle: "fit",
   lazyAttribute: "data-src",
-  animationSpeed: 450,
+  animationSpeed: 300,
 };
 
 function deepFreeze<T>(obj: T): Readonly<T> {

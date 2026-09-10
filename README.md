@@ -224,7 +224,7 @@ Slide fields:
 	<tr>
 		<td>animationSpeed</td>
 		<td>animation speed (ms) when switching/opening/closing images</td>
-		<td>450</td>
+		<td>300</td>
 	</tr>
 	<tr>
 		<td>forceInterval</td>
@@ -385,7 +385,7 @@ photo.on('zoomout',function(){
     <tr>
         <td>--smartphoto-animation-speed</td>
         <td>animation speed when switching/opening/closing images. Overridden per-instance by the <code>animationSpeed</code> JS option</td>
-        <td>450ms</td>
+        <td>300ms</td>
     </tr>
     <tr>
         <td>--smartphoto-animation-function</td>

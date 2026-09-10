@@ -51,7 +51,7 @@ describe("view", () => {
       expect(view.refs.caption.id).toBe("smartphoto-T1-title");
       expect(
         view.refs.dialog.style.getPropertyValue("--smartphoto-animation-speed"),
-      ).toBe("450ms");
+      ).toBe("300ms");
     });
 
     it("arrows/nav が有効なら構築する", () => {
