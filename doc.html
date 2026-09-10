@@ -16,7 +16,7 @@
   <body>
     <header class="page-header-top" style="position:static">
         <div class="container">
-            <span class="page-header-brand"><a href="./">SmartPhoto.js<small>v2.1.1</small></a></span>
+            <span class="page-header-brand"><a href="./">SmartPhoto.js<small>v2.1.12</small></a></span>
             <ul class="page-header-navi">
                 <li><a href="./">Home</a></li>
                 <li><a href="./demo.html">Demos</a></li>
@@ -96,6 +96,12 @@ photo.hide();</code></pre>
     useOrientationApi: false
   });
 });</code></pre>
+				<p>Eg. if the View Transition API misbehaves on a given browser, you can turn it off and fall back to the classic clone-based open animation</p>
+<pre><code class="js">document.addEventListener('DOMContentLoaded',function(){
+  new SmartPhoto(".js-smartPhoto",{
+    useViewTransitionApi: false
+  });
+});</code></pre>
                 <table style="margin-bottom:20px;">
                     <tr>
                         <th>variable</th>
@@ -133,6 +139,11 @@ photo.hide();</code></pre>
                         <td>true</td>
                     </tr>
                     <tr>
+                        <td>useViewTransitionApi</td>
+                        <td>use the View Transition API for the open animation when the browser supports it (falls back to the clone-based animation when disabled or unsupported)</td>
+                        <td>true</td>
+                    </tr>
+                    <tr>
                         <td>swipeTopToClose</td>
                         <td>close the viewer on an upward swipe</td>
                         <td>false</td>
@@ -146,6 +157,11 @@ photo.hide();</code></pre>
                         <td>swipeOffset</td>
                         <td>minimum swipe distance (px) to trigger navigation/close</td>
                         <td>100</td>
+                    </tr>
+                    <tr>
+                        <td>swipeVelocity</td>
+                        <td>minimum swipe speed (px/ms) that triggers navigation even below swipeOffset (fast flicks)</td>
+                        <td>0.5</td>
                     </tr>
                     <tr>
                         <td>headerHeight</td>
@@ -165,7 +181,7 @@ photo.hide();</code></pre>
                     <tr>
                         <td>animationSpeed</td>
                         <td>animation speed (ms) when switching/opening/closing images</td>
-                        <td>300</td>
+                        <td>450</td>
                     </tr>
                     <tr>
                         <td>forceInterval</td>
@@ -214,15 +230,23 @@ photo.hide();</code></pre>
                 <pre><code class="js">mySmartPhoto.next();
 mySmartPhoto.prev();</code></pre>
 
-                <p>open the viewer, by index or id (works in both HTML mode and data source mode)</p>
+                <p>open the viewer, by index or id (works in both HTML mode and data source mode). <code>options.group</code> picks the group; <code>options.trigger</code> sets the element to animate from and to return focus to</p>
                 <pre><code class="js">mySmartPhoto.show(0);
-mySmartPhoto.show("bear");</code></pre>
+mySmartPhoto.show("bear");
+mySmartPhoto.show(0, { group: "animals", trigger: element });</code></pre>
 
-                <p>close the viewer (<code>hide()</code> is an alias of <code>hidePhoto()</code>)</p>
-                <pre><code class="js">mySmartPhoto.hide();</code></pre>
+                <p>close the viewer (<code>hide()</code> is an alias of <code>hidePhoto()</code>). <code>dir</code> is <code>'bottom'</code> (default) or <code>'top'</code> and controls the close animation direction</p>
+                <pre><code class="js">mySmartPhoto.hide();
+mySmartPhoto.hidePhoto('top');</code></pre>
 
-                <p>add new image to your gallery</p>
+                <p>add new image to your gallery (HTML mode)</p>
                 <pre><code class="js">mySmartPhoto.addNewItem(element);</code></pre>
+
+                <p>add a new item (data source mode; also accepts an <code>Element</code> in HTML mode, same caveat as <code>addNewItem</code>)</p>
+                <pre><code class="js">mySmartPhoto.addItem({ src: "/img/bear-large.jpg", thumb: "/img/bear.jpg", caption: "bear", id: "bear" });</code></pre>
+
+                <p>the index currently displayed within its group (getter)</p>
+                <pre><code class="js">mySmartPhoto.currentIndex;</code></pre>
 
                 <p>remove the viewer and all of its event listeners</p>
                 <pre><code class="js">mySmartPhoto.destroy();</code></pre>
@@ -276,7 +300,7 @@ mySmartPhoto.show("bear");</code></pre>
                     <tr>
                         <td>--smartphoto-animation-speed</td>
                         <td>animation speed when switching/opening/closing images. Overridden per-instance by the <code>animationSpeed</code> JS option</td>
-                        <td>300ms</td>
+                        <td>450ms</td>
                     </tr>
                     <tr>
                         <td>--smartphoto-animation-function</td>
