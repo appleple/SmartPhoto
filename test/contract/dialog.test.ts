@@ -158,52 +158,73 @@ describe("dialog ライフサイクル", () => {
   // jsdom は CSS トランジションを実行しないため transitionend は一切発火しない。
   // これは実ブラウザで閉じる演出が中断されるケース(閉じた直後の再オープン、
   // タブ非表示、reduced-motion 等)と同じ状況であり、その際に doHideEffect() が
-  // 設定した translateY が画像に残留しないことを保証する
-  it("閉じる演出が中断されても、再度開いたときに画像へ閉じ演出の transform が残らない", async () => {
-    await openViewer(container);
-    fireEvent.click(
-      document.querySelector(".smartphoto-dismiss") as HTMLElement,
-    );
-    await waitFor(() => {
-      expect(document.querySelector("dialog.smartphoto")).not.toHaveAttribute(
-        "open",
-      );
+  // li(fit/fillのスケールが掛からない、スライド送り用の外側要素)に設定した
+  // translateY が残留しないことを保証する
+  it("閉じる演出が中断されても、再度開いたときに li へ閉じ演出の transform が残らない", async () => {
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 800,
+      configurable: true,
     });
-    await openViewer(container);
-    const img = document.querySelector(".smartphoto-img") as HTMLImageElement;
-    expect(img.style.transform).not.toContain("translateY");
+    try {
+      await openViewer(container);
+      fireEvent.click(
+        document.querySelector(".smartphoto-dismiss") as HTMLElement,
+      );
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).not.toHaveAttribute(
+          "open",
+        );
+      });
+      await openViewer(container);
+      const li = document.querySelector(
+        ".smartphoto-list li.current",
+      ) as HTMLElement;
+      // 閉じ演出の Y オフセット(800px)が残らず、通常の(Y=0の)位置に戻っている
+      expect(li.style.transform).toBe("translate(0px,0px)");
+    } finally {
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
   });
 
   it("transitionend が発火しなくても、閉じた後にフォールバックで transform が解除され close イベントが発火する", async () => {
-    const handler = vi.fn();
-    await openViewer(container);
-    const dialog = document.querySelector(
-      "dialog.smartphoto",
-    ) as HTMLDialogElement;
-    // dialog.close() モックが発するネイティブ close イベントと区別するため、
-    // 公開 CustomEvent(detail を持つ)だけを数える
-    dialog.addEventListener("close", (e) => {
-      if (e instanceof CustomEvent) {
-        handler();
-      }
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 800,
+      configurable: true,
     });
-    fireEvent.click(
-      document.querySelector(".smartphoto-dismiss") as HTMLElement,
-    );
-    await waitFor(() => {
-      expect(document.querySelector("dialog.smartphoto")).not.toHaveAttribute(
-        "open",
+    try {
+      const handler = vi.fn();
+      await openViewer(container);
+      const dialog = document.querySelector(
+        "dialog.smartphoto",
+      ) as HTMLDialogElement;
+      // dialog.close() モックが発するネイティブ close イベントと区別するため、
+      // 公開 CustomEvent(detail を持つ)だけを数える
+      dialog.addEventListener("close", (e) => {
+        if (e instanceof CustomEvent) {
+          handler();
+        }
+      });
+      const li = document.querySelector(
+        ".smartphoto-list li.current",
+      ) as HTMLElement;
+      fireEvent.click(
+        document.querySelector(".smartphoto-dismiss") as HTMLElement,
       );
-    });
-    const img = document.querySelector(".smartphoto-img") as HTMLImageElement;
-    expect(img.style.transform).toContain("translateY");
-    await waitFor(
-      () => {
-        expect(img.style.transform).not.toContain("translateY");
-        expect(handler).toHaveBeenCalledTimes(1);
-      },
-      { timeout: 2000 },
-    );
+      expect(li.style.transform).toBe("translate(0px,800px)");
+      await waitFor(
+        () => {
+          expect(
+            document.querySelector("dialog.smartphoto"),
+          ).not.toHaveAttribute("open");
+          expect(handler).toHaveBeenCalledTimes(1);
+        },
+        { timeout: 2000 },
+      );
+    } finally {
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
   });
 
   it("transitionend発火後にフォールバックのタイムアウトが後から発火しても二重に後始末しない", async () => {
@@ -225,11 +246,9 @@ describe("dialog ライフサイクル", () => {
         "open",
       );
     });
-    const img = document.querySelector(".smartphoto-img") as HTMLImageElement;
     // 実ブラウザの通常経路: transitionend が先に発火して後始末が完了する
     fireEvent.transitionEnd(dialog);
     await waitFor(() => {
-      expect(img.style.transform).not.toContain("translateY");
       expect(handler).toHaveBeenCalledTimes(1);
     });
     // フォールバックのタイムアウトが後から発火しても、finishHideEffect による

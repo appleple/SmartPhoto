@@ -1,4 +1,4 @@
-import { waitFor } from "@testing-library/dom";
+import { fireEvent, waitFor } from "@testing-library/dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import SmartPhoto from "../../src/index";
 
@@ -171,7 +171,24 @@ describe("スワイプ(実結線)", () => {
     });
   });
 
-  it("タップ(移動0)で onTap 経由の zoomPhoto が呼ばれる", async () => {
+  it("写真の上のタップ(移動0)で onTap 経由の zoomPhoto が呼ばれる", async () => {
+    await buildAndOpen(zoomSlides);
+    const zoomin = vi.fn();
+    activeInstances[0].on("zoomin", zoomin);
+    const img = document.querySelector(".current .smartphoto-img") as Element;
+    img.dispatchEvent(
+      pointerEvent("pointerdown", { clientX: 50, clientY: 50 }),
+    );
+    img.dispatchEvent(pointerEvent("pointerup", { clientX: 50, clientY: 50 }));
+    await waitFor(() => expect(zoomin).toHaveBeenCalledTimes(1));
+  });
+
+  it("写真の外(背景)のタップではズームせず、ビューアが閉じる", async () => {
+    // 主要ライトボックス(PhotoSwipe: bgClickAction 'close'、Fancybox:
+    // backdropClick 'close'、GLightbox: closeOnOutsideClick、lightGallery:
+    // closable)のデファクトスタンダードに合わせ、写真の外側のタップは
+    // 「閉じる」。以前はタップ位置を区別せず常に zoomPhoto() が呼ばれ、
+    // 「閉じようとして背景をクリックしたらズームが始まる」動線になっていた
     const { content } = await buildAndOpen(zoomSlides);
     const zoomin = vi.fn();
     activeInstances[0].on("zoomin", zoomin);
@@ -181,7 +198,38 @@ describe("スワイプ(実結線)", () => {
     content.dispatchEvent(
       pointerEvent("pointerup", { clientX: 50, clientY: 50 }),
     );
-    await waitFor(() => expect(zoomin).toHaveBeenCalledTimes(1));
+    await waitFor(() => {
+      expect(document.querySelector("dialog.smartphoto")).not.toHaveAttribute(
+        "open",
+      );
+    });
+    expect(zoomin).not.toHaveBeenCalled();
+    fireEvent.transitionEnd(
+      document.querySelector("dialog.smartphoto") as Element,
+    );
+  });
+
+  it("ズームできない(画面に収まる)写真の上のタップではビューアが閉じる(zoom-or-close)", async () => {
+    // PhotoSwipe の imageClickAction: 'zoom-or-close'(デフォルト)に合わせ、
+    // scaleBorder <= 1 でズームの余地がない写真へのタップは「閉じる」。
+    // 以前は zoomPhoto() が早期 return するだけで、タップしても何も
+    // 起きない(反応しない UI になる)だけだった
+    await buildAndOpen(slides3);
+    const img = document.querySelector(".current .smartphoto-img") as Element;
+    img.dispatchEvent(
+      pointerEvent("pointerdown", { clientX: 512, clientY: 384 }),
+    );
+    img.dispatchEvent(
+      pointerEvent("pointerup", { clientX: 512, clientY: 384 }),
+    );
+    await waitFor(() => {
+      expect(document.querySelector("dialog.smartphoto")).not.toHaveAttribute(
+        "open",
+      );
+    });
+    fireEvent.transitionEnd(
+      document.querySelector("dialog.smartphoto") as Element,
+    );
   });
 });
 
@@ -234,7 +282,8 @@ describe("ズーム中の画像ドラッグ(実結線)", () => {
   const openZoomed = async () => {
     const { smartPhoto, content } = await buildAndOpen(zoomSlides);
     smartPhoto.zoomPhoto();
-    await new Promise((r) => setTimeout(r, 350));
+    // scale 状態への移行はズームアニメーション完了(animationSpeed=450ms)後
+    await new Promise((r) => setTimeout(r, 500));
     return { smartPhoto, content };
   };
 
@@ -278,7 +327,8 @@ describe("ズーム中の画像ドラッグ(実結線)", () => {
       );
     });
     smartPhoto.zoomPhoto();
-    await new Promise((r) => setTimeout(r, 350));
+    // scale 状態への移行はズームアニメーション完了(animationSpeed=450ms)後
+    await new Promise((r) => setTimeout(r, 500));
     content.dispatchEvent(
       pointerEvent("pointerdown", { clientX: 0, clientY: 100 }),
     );

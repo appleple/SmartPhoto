@@ -191,7 +191,9 @@ export interface GestureCallbacks {
   onSwipeStart(): void;
   onSwipeMove(): void;
   onSwipeEnd(result: SwipeEndResult): void;
-  onTap(): void;
+  // target はタップ開始時(pointerdown)に実際にヒットした要素。写真の上か
+  // 背景かでファサード側がズーム/クローズを分岐する(§7)
+  onTap(target: EventTarget | null): void;
   onGestureStart(): void;
   onGestureMove(): void;
   onGestureEnd(): void;

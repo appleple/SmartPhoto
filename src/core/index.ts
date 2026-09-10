@@ -94,6 +94,13 @@ export default class SmartPhoto {
   // doHideEffect() の後始末(画像に設定した translateY の除去と promise 解決)を
   // transitionend を待たずに即時実行するための関数。後始末が済むと null に戻る
   private finishHideEffect: (() => void) | null = null;
+  // 開く View Transition が進行中かどうか。進行中にリサイズ由来の再計算(commit)が
+  // 走ると、モーフの目標位置は古いビューポート基準のままなのに実要素だけ新しい
+  // 位置へ動いて「一旦ずれた位置に出てから正位置へ戻る」ように見え、さらに
+  // モーフ用レイアウト(applyViewTransitionLayout)も巻き戻されてしまう。
+  // そのため進行中はリサイズ再計算を保留し、finished 後にまとめて実行する
+  private isViewTransitionActive = false;
+  private pendingViewTransitionResync = false;
   private timeouts: number[] = [];
   private loadAllFired = new Set<string>();
   private syncedGroupId: string | null = null;
@@ -286,16 +293,37 @@ export default class SmartPhoto {
     this.state.viewer.photoPosY = 0;
     this.view.updatePhotoTransform(this.state);
     this.scheduleTimeout(() => {
-      // isOpen のガードがないと、ズーム操作直後(300ms以内)に閉じた場合、
-      // この遅延処理が閉じるアニメーション中に実行され、doHideEffect() が
-      // 設定した閉じるスライド(translateY)を上書きしてしまう
+      // isOpen のガードがないと、ズーム操作直後に閉じた場合、この遅延処理が
+      // 閉じるアニメーション中に実行され、doHideEffect() が設定した
+      // 閉じるスライド(translateY)を上書きしてしまう
       if (!this.state.viewer.isOpen) {
         return;
       }
       this.state.viewer.scale = true;
       this.view.updatePhotoTransform(this.state);
       this.fireEvent("zoomin");
-    }, 300);
+      // 待ち時間が transition より短い固定値(旧: 300ms)だと、scale=true が付ける
+      // smartphoto-img-onmove(transition: none)が進行中のズームアニメーションを
+      // 途中で打ち切り、最終倍率へスナップして「拡大時のカクつき」になる。
+      // scale 状態への移行は必ずアニメーション完了後に行う
+    }, this.state.options.animationSpeed);
+  }
+
+  // zoomPhoto() と同じ「ズームの余地があるか」の判定(scaleBorder <= 1 なら
+  // ズームしても見た目が変わらない)。zoomPhoto() 自体は公開 API の契約
+  // (ズームできなければ何もしない)を保つ必要があるため、タップの
+  // zoom-or-close 分岐(§7)用に判定だけを切り出している
+  private canZoomCurrentPhoto(): boolean {
+    const item = currentItem(this.state);
+    return (
+      !!item &&
+      scaleBorder(
+        item,
+        getWindowWidth(),
+        getWindowHeight(),
+        this.isSmartPhoneFlag,
+      ) > 1
+    );
   }
 
   zoomOutPhoto(): void {
@@ -581,6 +609,11 @@ export default class SmartPhoto {
       this.state.options.headerHeight,
       this.state.options.footerHeight,
     );
+    // fill の拡大率(viewer.scaleSize)はここで再計算した item.scale に依存する。
+    // 再計算箇所ごとに個別へ呼ばせると漏れる(スライド送り・orientationchange・
+    // visualViewport リサイズで漏れており、送った先が fit サイズのまま表示され
+    // 後から fill へ跳ねる不具合があった)ため、ここで必ず同期する
+    this.syncFillScale();
   }
 
   // resize/orientationchange ハンドラは呼び出し前に currentItems の存在を確認済み
@@ -592,6 +625,15 @@ export default class SmartPhoto {
     for (const [item, slideRefs] of this.view.refs.slides) {
       if (item.index === this.state.viewer.currentIndex) {
         return slideRefs.img;
+      }
+    }
+    return null;
+  }
+
+  private currentLiElement(): HTMLLIElement | null {
+    for (const [item, slideRefs] of this.view.refs.slides) {
+      if (item.index === this.state.viewer.currentIndex) {
+        return slideRefs.li;
       }
     }
     return null;
@@ -655,18 +697,19 @@ export default class SmartPhoto {
     this.setPosByCurrentIndex();
     this.setSizeByScreen();
     setArrow(this.state);
-    this.syncFillScale();
   }
 
   // resizeStyle: 'fill' はスマートフォンでのみ、画面を隙間なく覆うよう
-  // scaleBorder() の倍率を viewer.scaleSize に適用する。setSizeByScreen()
-  // (fit用の item.scale/x/y)を再計算する箇所では、その結果に依存する
-  // この fill 倍率も併せて再計算しないと、直後に古い倍率のまま固定されてしまう
+  // scaleBorder() の倍率を viewer.scaleSize に適用する。fit用の item.scale に
+  // 依存するため、setSizeByScreen() の末尾から必ず呼ばれる(個別に呼ぶ必要はない)
   private syncFillScale(): void {
     if (this.state.options.resizeStyle !== "fill" || !this.isSmartPhoneFlag) {
       return;
     }
-    const item = currentItem(this.state) as Item;
+    const item = currentItem(this.state);
+    if (!item) {
+      return;
+    }
     this.state.viewer.scale = true;
     this.state.viewer.hideUi = true;
     this.state.viewer.scaleSize = scaleBorder(
@@ -681,7 +724,13 @@ export default class SmartPhoto {
     return (
       this.state.options.useViewTransitionApi &&
       typeof (document as DocumentWithViewTransition).startViewTransition ===
-        "function"
+        "function" &&
+      // WebKit には「view-transition-name 付き要素が root スナップショットから
+      // 除外されず、モーフ中に最終位置へ二重描画される」実装バグがあり、開く演出が
+      // 「一旦ずれた位置に出てから正位置へ戻る」ように乱れる。API 対応の有無では
+      // 検出できないため、WebKit ではクローン演出(addAppearEffect)へフォールバック
+      // する(§util.isWebKit)
+      !util.isWebKit()
     );
   }
 
@@ -702,7 +751,8 @@ export default class SmartPhoto {
     // transition.finished が解決する頃には、その間の next()/prev() 操作により
     // currentIndex が変わっていることがある(§3.5 の前提が崩れるケース)ため、
     // currentImgElement() が見つからない場合は何もしない
-    const clearNames = () => {
+    const cleanup = () => {
+      this.isViewTransitionActive = false;
       if (thumbImg) {
         thumbImg.style.viewTransitionName = "";
       }
@@ -710,6 +760,28 @@ export default class SmartPhoto {
       if (img) {
         img.style.viewTransitionName = "";
       }
+      // モーフ用に差し替えたレイアウト(applyViewTransitionLayout)を通常描画へ戻す。
+      // commit() を常用しないのは、閉じるアニメーション中(isOpen=false)に render()
+      // が doHideEffect() の設定したスライドアウトを上書きしてしまうため。
+      // 閉じている場合は復元せず、次に開く際の commit() の書き直しに任せる
+      if (!this.state.viewer.isOpen) {
+        this.pendingViewTransitionResync = false;
+        return;
+      }
+      if (this.pendingViewTransitionResync && currentItems(this.state)) {
+        // トランジション中に保留したリサイズ再計算(§isViewTransitionActive)を
+        // ここで実行する。commit() が新しいビューポート基準の width/transform を
+        // 全スライドへ書き直すため、モーフ用レイアウトの復元も兼ねる
+        this.pendingViewTransitionResync = false;
+        this.updateViewportHeight();
+        this.resetTranslateCurrent();
+        this.setPosByCurrentIndex();
+        this.setSizeByScreen();
+        this.commit();
+        return;
+      }
+      this.pendingViewTransitionResync = false;
+      this.view.render(this.state);
     };
     const transition = (
       document as DocumentWithViewTransition
@@ -730,13 +802,21 @@ export default class SmartPhoto {
       // この直後の時点では currentImgElement() は必ず見つかる(§3.5)
       (this.currentImgElement() as HTMLImageElement).style.viewTransitionName =
         transitionName;
+      // 新しい状態のスナップショットが取られる前に、原寸レイアウト + 縮小 transform を
+      // 表示寸法のレイアウトへ差し替え、ビューポート外相当部分の切り取り(WebKit で
+      // モーフ中に画像の右側が黒く欠ける)を防ぐ(§view.ts applyViewTransitionLayout)
+      this.view.applyViewTransitionLayout(this.state);
     });
-    transition?.ready.catch(() => {
+    if (!transition) {
+      return;
+    }
+    this.isViewTransitionActive = true;
+    transition.ready.catch(() => {
       // 名前の重複などで setup に失敗した場合、ready は reject されるが
       // 実際の DOM 更新はコールバック内で既に完了しているため、後始末だけ行えばよい
-      clearNames();
+      cleanup();
     });
-    transition?.finished.then(clearNames, clearNames);
+    transition.finished.then(cleanup, cleanup);
   }
 
   // doOpen() の呼び出し元でこの分岐に来る時点で showAnimation !== false が保証されている
@@ -859,10 +939,13 @@ export default class SmartPhoto {
       ) {
         return;
       }
+      if (this.isViewTransitionActive) {
+        this.pendingViewTransitionResync = true;
+        return;
+      }
       this.resetTranslateCurrent();
       this.setPosByCurrentIndex();
       this.setSizeByScreen();
-      this.syncFillScale();
       this.commit();
     });
   }
@@ -903,50 +986,43 @@ export default class SmartPhoto {
         return;
       }
       const dialog = this.view.refs.dialog;
-      const img = this.currentImgElement();
-      const height = getWindowHeight();
-      // hidePhoto() は doHideEffect() 呼び出し前に viewer.scaleSize を 1 に
-      // リセットしているが、まだ再描画(updatePhotoTransform)前のため img の
-      // 現在の transform には resizeStyle: 'fill' 等で付いていた scale(...) が
-      // まだ残っている。ここで translateY だけの transform に上書きすると
-      // その scale が消え、閉じた瞬間に一旦「元の大きさ」へスナップしてから
-      // スライドアウトするように見えてしまうため、現在の scale を引き継ぐ
-      const currentScale =
-        img?.style.transform.match(/scale\(([^)]+)\)/)?.[1] ?? "1";
-      // img の translateY は親(imgWrap)の scale(item.scale) の内側で計算される
-      // ため、画面上での実際の移動量は「指定した値 × item.scale」に縮小される。
-      // 素の height をそのまま指定すると、item.scale が小さい(=フィットのため
-      // 大きく縮小されている縦長画像など)ほど画面上ではほとんど動かず、代わりに
-      // 巨大化された画像の別の部分(例: ライオンの口の奥側)が露出してしまい、
-      // 「スライドして消える」はずが「別の被写体が迫ってくる」ように見えていた。
-      // item.scale で割り、画面上での移動量が常に height になるよう補正する
       const item = currentItem(this.state);
-      const itemScale = item?.scale ?? 1;
-      const distance = height / itemScale;
-      const applied =
-        dir === "top"
-          ? `translateY(-${distance}px) scale(${currentScale})`
-          : `translateY(${distance}px) scale(${currentScale})`;
-      // dialog 自体のフェードアウトは scss 側の :not([open]) + allow-discrete
-      // transition(§8)で CSS だけで完結させている。ここでは画像のスライド
-      // アウトだけを JS で担当する
+      const li = item ? this.currentLiElement() : null;
+      const height = getWindowHeight();
+      // タップ(zoomPhoto)やズーム解除(zoomOutPhoto)が開始した img の transform
+      // transition が進行中のまま閉じると、閉じ演出(li のスライド + フェード)の
+      // 間もズームが目標倍率へ向かって動き続け、「下に落ちる」はずの写真が
+      // 「こちらへ迫ってくる」ように見える。updatePhotoTransform() で state の
+      // 値(scaleSize=1)を再適用しないのは、それ自体が新たな transition となって
+      // 縮小アニメーションが閉じ演出に重なってしまうため。代わりに、その時点で
+      // 実際に描画されている値(補間途中なら matrix)をインラインへ書き戻すことで
+      // transition をその場で打ち切り、現在の見た目のまま固定する
+      const img = this.currentImgElement();
+      // 後始末(finish)で凍結値を比較するための基準。setter に渡した文字列ではなく
+      // CSSOM から読み戻した値を保持するのは、丸めの往復を一度通した canonical な
+      // 文字列同士で比較するため(getComputedStyle 由来の matrix は既に canonical
+      // だが、読み戻しで揃えておけばシリアライズ差異の影響を受けない)
+      let frozenTransform: string | null = null;
       if (img) {
-        // resizeStyle: 'fill' 等でズーム中(viewer.scale=true)だった場合、
-        // img には .smartphoto-img-onmove(transition: none)が付いたままで、
-        // これが残っていると上の transform 変更が transition なしで即座に
-        // 適用されてしまう。巨大に拡大された画像を瞬時に translateY へ切り替える
-        // と、スライドではなく「一瞬別の位置(=別の切り取り範囲)へワープした
-        // ように見える(縮んだように錯覚する)」ため、ここで確実に外しておく
-        img.classList.remove(this.state.options.classNames.smartPhotoImgOnMove);
-        img.style.transform = applied;
+        const rendered = getComputedStyle(img).transform;
+        if (rendered && rendered !== "none") {
+          img.style.transform = rendered;
+          frozenTransform = img.style.transform;
+        }
       }
-      // 後始末の判定に applied をそのまま使わないのは、CSSOM が数値を丸めて
-      // シリアライズする(Blink は有効6桁、WebKit は小数第6位)ため。height
-      // (= visualViewport.height × scale)が長い小数になる iOS 実機などでは
-      // setter に渡した文字列と getter の読み戻しが一致せず、translateY が残留
-      // して「閉じた瞬間のスライドだけ再オープン後に画面外へずれる」不具合に
-      // なっていた。丸めの往復を一度通した値を比較の基準に保持する
-      const stored = img ? img.style.transform : "";
+      // img/imgWrap には fit(item.scale)・fill(viewer.scaleSize)の拡大率が
+      // 掛かっているため、そちらへ translateY を設定すると「画面上の実際の
+      // 移動量が縮小される(item.scale が小さいほどほとんど動かない)」
+      // 「拡大率を引き継がないと一瞬元の大きさへスナップする」といった問題が
+      // 起きる上、巨大化された画像の中を垂直移動することになり、途中で別の
+      // 部分(例: 口の奥)が露出して「被写体が迫ってくる」ように見えてしまう。
+      // li はそれらのスケールが一切掛からない外側の要素なので、ここへ
+      // translateY を適用すれば現在の見た目(拡大率・切り取り範囲)を一切
+      // 変えずに、画面上をちょうど height ぶんだけ単純に垂直移動できる
+      if (li && item) {
+        const offsetY = dir === "top" ? -height : height;
+        li.style.transform = `translate(${item.translateX}px,${item.translateY + offsetY}px)`;
+      }
       const finish = (e?: Event) => {
         if (this.finishHideEffect !== finish) {
           return;
@@ -962,13 +1038,15 @@ export default class SmartPhoto {
         }
         this.finishHideEffect = null;
         dialog.removeEventListener("transitionend", finish, true);
-        // render() は translateX/Y や current クラスなど state 由来の値しか
-        // 触らないため、ここで直接設定した transform は次に開くまでインライン
-        // スタイルに残り続ける(旧 morphdom は毎回のテンプレート再生成で未知の
-        // style を暗黙に消していたが、その相当処理はここで明示的に行う必要がある)。
-        // フォールバック実行までの間に再オープン後のピンチ操作などが transform を
-        // 上書きしている場合は、その値を消さないようここで設定した値のときだけ戻す
-        if (img && img.style.transform === stored) {
+        // li.style.transform は hidePhoto() の呼び出し元である render()
+        // (translateX/Y は state 由来)が直後に必ず正しい位置へ上書きするため、
+        // ここで個別にリセットする必要はない。一方、transition の打ち切り用に
+        // 凍結した img の transform(上記)は render() では上書きされない
+        // (updatePhotoTransform 専任)ため、ここで除去する。無条件にクリア
+        // しないのは、フォールバックタイマー実行までの間に再オープン後の
+        // ズーム操作などが transform を上書きしている場合、その値を消して
+        // しまわないようにするため
+        if (img && frozenTransform && img.style.transform === frozenTransform) {
           img.style.transform = "";
         }
         resolve();
@@ -1151,6 +1229,10 @@ export default class SmartPhoto {
     ) {
       return;
     }
+    if (this.isViewTransitionActive) {
+      this.pendingViewTransitionResync = true;
+      return;
+    }
     this.resetTranslateCurrent();
     this.setPosByCurrentIndex();
     this.setSizeByScreen();
@@ -1164,6 +1246,10 @@ export default class SmartPhoto {
     // visualViewport 非対応環境では window の resize にこのハンドラを直接バインドしている
     // (§コンストラクタ)ため、--smartphoto-vh 側の更新をここでも保証する
     this.updateViewportHeight();
+    if (this.isViewTransitionActive) {
+      this.pendingViewTransitionResync = true;
+      return;
+    }
     this.resetTranslateCurrent();
     this.setPosByCurrentIndex();
     this.setSizeByScreen();
@@ -1186,6 +1272,10 @@ export default class SmartPhoto {
 
   private handleOrientationChange = (): void => {
     if (!this.state.viewer.isOpen || !currentItems(this.state)) {
+      return;
+    }
+    if (this.isViewTransitionActive) {
+      this.pendingViewTransitionResync = true;
       return;
     }
     this.updateViewportHeight();
@@ -1256,7 +1346,21 @@ export default class SmartPhoto {
         }
         this.slideList();
       },
-      onTap: () => this.zoomPhoto(),
+      // 主要ライトボックスのデファクトスタンダード(PhotoSwipe: bgClickAction
+      // 'close' / imageClickAction 'zoom-or-close'、Fancybox: backdropClick
+      // 'close'、GLightbox: closeOnOutsideClick、lightGallery: closable)に合わせ、
+      // 写真の上のタップはズーム、写真の外(背景)のタップは閉じる。ズームの
+      // 余地がない(scaleBorder <= 1 で zoomPhoto() が何もしない)写真の上の
+      // タップも、無反応にせず 'zoom-or-close' に倣って閉じる
+      onTap: (target) => {
+        const img = this.currentImgElement();
+        const onPhoto = !!img && target instanceof Node && img.contains(target);
+        if (onPhoto && this.canZoomCurrentPhoto()) {
+          this.zoomPhoto();
+        } else {
+          this.hidePhoto();
+        }
+      },
       onGestureStart: () => {
         this.fireEvent("gesturestart");
         this.view.updatePhotoTransform(this.state);

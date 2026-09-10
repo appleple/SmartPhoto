@@ -8,6 +8,19 @@ export const isSmartPhone = (): boolean => {
   );
 };
 
+// WebKit エンジン(macOS Safari と、WKWebView を強制される iOS 上の全ブラウザ)の判定。
+// UA 文字列は Chrome 系も "AppleWebKit" を含み偽装も多いため使わず、
+// WebKit にしか実装されていない API の有無で判定する
+export const isWebKit = (): boolean => {
+  return (
+    typeof (
+      window as {
+        webkitConvertPointFromNodeToPage?: unknown;
+      }
+    ).webkitConvertPointFromNodeToPage === "function"
+  );
+};
+
 function deepExtend(
   out: Record<string, unknown>,
   ...args: unknown[]

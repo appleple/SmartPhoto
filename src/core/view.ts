@@ -43,6 +43,7 @@ export interface View {
   render(state: State): void;
   syncSlides(items: Item[], state: State): void;
   updatePhotoTransform(state: State): void;
+  applyViewTransitionLayout(state: State): void;
   updateListTransform(state: State): void;
   showAppearEffect(effect: AppearEffect): void;
   removeAppearEffect(): void;
@@ -326,6 +327,14 @@ export function createView(
       if (slideRefs.imgWrap && slideRefs.img) {
         slideRefs.imgWrap.style.transform = `translate(${item.x}px,${item.y}px) scale(${item.scale})`;
         slideRefs.img.style.width = `${item.width}px`;
+        // photoPosX/Y・scaleSize(fill/タップズーム)はカレント専用の viewer 状態。
+        // updatePhotoTransform() はカレントの img しか更新しないため、スライドを
+        // 送った際に前のスライドの img へズームの transform がインラインで残留し、
+        // li から大きくはみ出した拡大画像の断片が現在のスライドの余白に見えて
+        // しまう。非カレントの img はここで必ず素の transform に戻す
+        if (!isCurrent) {
+          slideRefs.img.style.transform = "translate(0px,0px) scale(1)";
+        }
         slideRefs.img.classList.toggle("active", viewer.appear);
         slideRefs.img.classList.toggle(
           classNames.smartPhotoImgOnMove,
@@ -414,6 +423,36 @@ export function createView(
     refs.list.classList.toggle(classNames.smartPhotoListOnMove, viewer.onMove);
   }
 
+  // View Transition のスナップショットは、レイアウト寸法が巨大で transform で
+  // 縮小表示している要素だとビューポート付近で切り取られることがある(仕様上も
+  // ビューポート外のラスタライズは保証されない。
+  // see: https://github.com/w3c/csswg-drafts/issues/8561)。WebKit は実際に
+  // 切り取るため、原寸幅がビューポートより大きい画像は開くモーフ中に右側が
+  // 黒く欠けていた。レイアウトを常時表示寸法にする方法を取らないのは、
+  // ピンチズーム/fill の座標計算が「原寸レイアウト + scale(item.scale)」を
+  // 前提にしているため。トランジションの間だけレイアウト幅を表示幅に一致させ、
+  // 画面上の矩形は getBoundingClientRect の実測差分で厳密に維持する
+  // (translate → scale(origin: 中央) の合成を計算で再現するより確実)。
+  // 終了後の復元は render() が state 由来の width/transform を毎回書き直す
+  // ことに任せる(§index.ts openPhotoWithViewTransition の後始末)
+  function applyViewTransitionLayout(state: State): void {
+    for (const [item, slideRefs] of refs.slides) {
+      if (item.index !== state.viewer.currentIndex) {
+        continue;
+      }
+      const { img, imgWrap } = slideRefs;
+      if (!img || !imgWrap || !item.width || !item.scale || item.scale >= 1) {
+        return;
+      }
+      const before = img.getBoundingClientRect();
+      img.style.width = `${item.width * item.scale}px`;
+      imgWrap.style.transform = `translate(${item.x}px,${item.y}px) scale(1)`;
+      const after = img.getBoundingClientRect();
+      imgWrap.style.transform = `translate(${item.x + before.left - after.left}px,${item.y + before.top - after.top}px) scale(1)`;
+      return;
+    }
+  }
+
   function showAppearEffect(effect: AppearEffect): void {
     const clone = document.createElement("img");
     clone.className = classNames.smartPhotoImgClone;
@@ -440,6 +479,7 @@ export function createView(
     render,
     syncSlides,
     updatePhotoTransform,
+    applyViewTransitionLayout,
     updateListTransform,
     showAppearEffect,
     removeAppearEffect,

@@ -252,7 +252,10 @@ describe("gestures", () => {
   });
 
   describe("タップ判定", () => {
-    it("デスクトップでは移動0のリリースで onTap が呼ばれる", () => {
+    it("デスクトップでは移動0のリリースで、pointerdown のヒット要素を添えて onTap が呼ばれる", () => {
+      // setPointerCapture 後の pointerup はキャプチャ要素へ再ターゲットされる
+      // ため、タップが写真の上か背景かの判定に使うヒット要素は pointerdown の
+      // ものを引き渡す契約(ファサード側がズーム/クローズを分岐する)
       const { imgWrap, callbacks } = buildHarness();
       imgWrap.dispatchEvent(
         pointerEvent("pointerdown", { clientX: 100, clientY: 100 }),
@@ -261,6 +264,7 @@ describe("gestures", () => {
         pointerEvent("pointerup", { clientX: 100, clientY: 100 }),
       );
       expect(callbacks.onTap).toHaveBeenCalledTimes(1);
+      expect(callbacks.onTap).toHaveBeenCalledWith(imgWrap);
       expect(callbacks.onSwipeEnd).not.toHaveBeenCalled();
     });
 

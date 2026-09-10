@@ -122,72 +122,88 @@ describe("hidePhoto の transitionend 完了", () => {
     // ため、dialog 自身の opacity transition だけでなく、配下の任意の要素
     // (list のスライド送りアニメーション等)の transitionend も拾ってしまう。
     // 直前にスライド送り操作をした直後に閉じた場合など、無関係な子要素の
-    // transitionend で閉じるアニメーション(img の translateY)が早期に
+    // transitionend で閉じるアニメーション(li の translateY)が早期に
     // リセットされてしまう不具合があった
-    const container = buildGallery();
-    const smartPhoto = track(new SmartPhoto(".js-smartphoto"));
-    await openViewer(container);
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 700,
+      configurable: true,
+    });
+    try {
+      const container = buildGallery();
+      const smartPhoto = track(new SmartPhoto(".js-smartphoto"));
+      await openViewer(container);
 
-    smartPhoto.hidePhoto();
-    const img = document.querySelector(
-      ".current .smartphoto-img",
-    ) as HTMLElement;
-    const transformDuringClose = img.style.transform;
-    expect(transformDuringClose).toContain("translateY(");
+      smartPhoto.hidePhoto();
+      const li = document.querySelector(
+        ".smartphoto-list li.current",
+      ) as HTMLElement;
+      const transformDuringClose = li.style.transform;
+      expect(transformDuringClose).toBe("translate(0px,700px)");
 
-    // dialog 自身ではない、配下の list 要素で transitionend が発火しても
-    // finish() の後始末(transform リセット)が走ってはいけない
-    const list = document.querySelector(".smartphoto-list") as Element;
-    fireEvent.transitionEnd(list);
-    expect(img.style.transform).toBe(transformDuringClose);
+      // dialog 自身ではない、配下の list 要素で transitionend が発火しても
+      // finish() の後始末(次の render() での位置リセット)が走ってはいけない
+      const list = document.querySelector(".smartphoto-list") as Element;
+      fireEvent.transitionEnd(list);
+      expect(li.style.transform).toBe(transformDuringClose);
 
-    // dialog 自身の transitionend で初めて後始末(transform リセット)が走る
-    fireEvent.transitionEnd(
-      document.querySelector("dialog.smartphoto") as Element,
-    );
-    await waitFor(() => expect(img.style.transform).toBe(""));
+      // dialog 自身の transitionend で初めて後始末(close イベント発火 → render())が走る
+      const close = vi.fn();
+      smartPhoto.on("close", close);
+      fireEvent.transitionEnd(
+        document.querySelector("dialog.smartphoto") as Element,
+      );
+      await waitFor(() => expect(close).toHaveBeenCalledTimes(1));
+    } finally {
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
   });
 
   it("スライド送り直後(200ms以内)に閉じても、slideList() の遅延 commit で閉じるスライドが上書きされない", async () => {
     // slideList() は送り操作のたびに 200ms 後の scheduleTimeout で commit()
     // (render() + updatePhotoTransform())を実行するが、isOpen のガードがない。
     // 送り直後にすぐ閉じると、この遅延 commit が「閉じた後」に実行され、
-    // updatePhotoTransform() が viewer.photoPosX/Y=0, scaleSize=1 を img の
-    // transform へ再適用してしまい、doHideEffect() が設定した閉じるスライド
-    // (translateY)を消してしまう不具合があった
-    const container = buildGallery();
-    const smartPhoto = track(new SmartPhoto(".js-smartphoto"));
-    await openViewer(container);
-
-    vi.useFakeTimers();
+    // li の transform(translateX/Y)を再適用してしまい、doHideEffect() が
+    // 設定した閉じるスライド(translateY オフセット)を消してしまう不具合があった。
+    // li は img と違い未ロードのスライドでも必ず存在するため、next() による
+    // 実際の送り先(次のスライド)への close をそのまま再現できる
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 700,
+      configurable: true,
+    });
     try {
-      // gotoSlide(0): 表示中と同じスライドへの送り(矢印の連打や nav クリック等でも
-      // 起こりうる)。すでに読み込み済みの img を使うため、send先が未ロードで
-      // img 自体が存在しないケース(その場合はそもそも close アニメーションが
-      // 掛からないだけで、以下の上書きの問題は起きない)を避けて検証する
-      smartPhoto.gotoSlide(0);
-      smartPhoto.hidePhoto();
-      const img = document.querySelector(
-        ".current .smartphoto-img",
-      ) as HTMLElement;
-      const transformDuringClose = img.style.transform;
-      expect(transformDuringClose).toContain("translateY(");
+      const container = buildGallery();
+      const smartPhoto = track(new SmartPhoto(".js-smartphoto"));
+      await openViewer(container);
 
-      // slideList() の 200ms 遅延 commit を発火させる
-      vi.advanceTimersByTime(200);
+      vi.useFakeTimers();
+      try {
+        smartPhoto.next();
+        smartPhoto.hidePhoto();
+        const li = document.querySelector(
+          ".smartphoto-list li:nth-child(2)",
+        ) as HTMLElement;
+        const transformDuringClose = li.style.transform;
+        expect(transformDuringClose).toBe("translate(0px,700px)");
 
-      expect(img.style.transform).toBe(transformDuringClose);
+        // slideList() の 200ms 遅延 commit を発火させる
+        vi.advanceTimersByTime(200);
+
+        expect(li.style.transform).toBe(transformDuringClose);
+      } finally {
+        vi.useRealTimers();
+      }
     } finally {
-      vi.useRealTimers();
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
     }
   });
 
-  it("zoomPhoto() 直後(300ms以内)に閉じても、遅延 updatePhotoTransform で閉じるスライドが上書きされない", async () => {
+  it("zoomPhoto() 直後(300ms以内)に閉じると、遅延 updatePhotoTransform は実行されず zoomin も発火しない", async () => {
     // zoomPhoto() は 300ms 後の scheduleTimeout で updatePhotoTransform() を
-    // 直接呼ぶが、isOpen のガードがない。ズーム操作直後にすぐ閉じると、この
-    // 遅延処理が「閉じた後」に実行され、viewer.photoPosX/Y・scaleSize を img の
-    // transform へ再適用してしまい、doHideEffect() が設定した閉じるスライド
-    // (translateY)を上書きしてしまう不具合があった
+    // 直接呼び、"zoomin" イベントを発火するが、isOpen のガードがなかった。
+    // ズーム操作直後にすぐ閉じると、この遅延処理が閉じた後に実行され、
+    // 既に閉じたビューアに対して zoomin イベントが発火してしまっていた
     Object.defineProperty(document.documentElement, "clientWidth", {
       value: 1024,
       configurable: true,
@@ -209,18 +225,69 @@ describe("hidePhoto の transitionend 完了", () => {
 
       vi.useFakeTimers();
       try {
+        const zoomin = vi.fn();
+        smartPhoto.on("zoomin", zoomin);
         smartPhoto.zoomPhoto();
         smartPhoto.hidePhoto();
+
+        // zoomPhoto() の遅延処理(アニメーション完了後)を発火させる
+        vi.advanceTimersByTime(1000);
+
+        expect(zoomin).not.toHaveBeenCalled();
+      } finally {
+        vi.useRealTimers();
+      }
+    } finally {
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
+  });
+
+  it("zoomPhoto() の scale 状態への移行(zoomin)は、ズームアニメーション完了後に行われる", async () => {
+    // zoomPhoto() は img の transform transition(animationSpeed=450ms)で
+    // ズームをアニメーションさせるが、scale 状態への移行(ドラッグ可能化 +
+    // smartphoto-img-onmove クラス = transition: none)が固定 300ms 後だった
+    // ため、進行中のアニメーションが 300ms 時点で打ち切られて最終倍率へ
+    // スナップし、「拡大時のカクつき」として見えていた。移行はアニメーション
+    // 完了(animationSpeed)後に行うことを保証する
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 1024,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 768,
+      configurable: true,
+    });
+    try {
+      const smartPhoto = track(
+        new SmartPhoto([{ src: "/a.jpg", width: 2000, height: 2000 }]),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+
+      vi.useFakeTimers();
+      try {
+        const zoomin = vi.fn();
+        smartPhoto.on("zoomin", zoomin);
+        smartPhoto.zoomPhoto();
         const img = document.querySelector(
           ".current .smartphoto-img",
         ) as HTMLElement;
-        const transformDuringClose = img.style.transform;
-        expect(transformDuringClose).toContain("translateY(");
 
-        // zoomPhoto() の 300ms 遅延 updatePhotoTransform を発火させる
-        vi.advanceTimersByTime(300);
+        // アニメーション完了前(450ms 未満)は transition を打ち切らない
+        vi.advanceTimersByTime(449);
+        expect(zoomin).not.toHaveBeenCalled();
+        expect(img.classList.contains("smartphoto-img-onmove")).toBe(false);
 
-        expect(img.style.transform).toBe(transformDuringClose);
+        // 完了後に scale 状態へ移行する
+        vi.advanceTimersByTime(1);
+        expect(zoomin).toHaveBeenCalledTimes(1);
+        expect(img.classList.contains("smartphoto-img-onmove")).toBe(true);
       } finally {
         vi.useRealTimers();
       }
@@ -259,26 +326,35 @@ describe("hidePhoto の transitionend 完了", () => {
     expect(dialog.open).toBe(true);
   });
 
-  it("hidePhoto(top) では画像が上方向へ移動する", async () => {
-    const container = buildGallery();
-    const smartPhoto = track(new SmartPhoto(".js-smartphoto"));
-    await openViewer(container);
-    smartPhoto.hidePhoto("top");
-    const img = document.querySelector(
-      ".current .smartphoto-img",
-    ) as HTMLElement;
-    expect(img.style.transform).toContain("translateY(-");
-    fireEvent.transitionEnd(
-      document.querySelector("dialog.smartphoto") as Element,
-    );
+  it("hidePhoto(top) では li が上方向へ移動する", async () => {
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 700,
+      configurable: true,
+    });
+    try {
+      const container = buildGallery();
+      const smartPhoto = track(new SmartPhoto(".js-smartphoto"));
+      await openViewer(container);
+      smartPhoto.hidePhoto("top");
+      const li = document.querySelector(
+        ".smartphoto-list li.current",
+      ) as HTMLElement;
+      expect(li.style.transform).toBe("translate(0px,-700px)");
+      fireEvent.transitionEnd(
+        document.querySelector("dialog.smartphoto") as Element,
+      );
+    } finally {
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
   });
 
-  it("フィットのため大きく縮小された縦長画像でも、閉じるスライドが画面の高さ分きちんと移動する", async () => {
-    // img の translateY は親(imgWrap)の scale(item.scale) の内側で計算されるため、
-    // 素の height をそのまま指定すると画面上では height×item.scale しか動かない。
-    // item.scale が小さい(=フィットのため大きく縮小された縦長画像)ほど画面上では
-    // ほとんど動かず、代わりに巨大化された画像の別の部分が露出してしまい、
-    // 「スライドして消える」はずが「別の被写体が迫ってくる」ように見える不具合があった
+  it("フィットのため大きく縮小された縦長画像でも、閉じるスライドは画面の高さ分だけ単純に移動する(拡大率の影響を受けない)", async () => {
+    // li は fit(item.scale)/fill(viewer.scaleSize)のいずれのスケールも
+    // 掛からない外側の要素のため、item.scale がどれだけ小さくても
+    // (フィットのため大きく縮小された縦長画像でも)閉じるスライドの移動量は
+    // 常に画面の高さそのものになり、巨大化された画像内の別の部分が露出して
+    // 「被写体が迫ってくる」ように見えることがない
     Object.defineProperty(document.documentElement, "clientWidth", {
       value: 390,
       configurable: true,
@@ -297,20 +373,13 @@ describe("hidePhoto の transitionend 完了", () => {
           "open",
         );
       });
-      // screenY = 700 - (60+60) = 580 → item.scale = 580/1997 ≈ 0.290436
-      const itemScale = 580 / 1997;
 
       smartPhoto.hidePhoto();
 
-      const img = document.querySelector(
-        ".current .smartphoto-img",
+      const li = document.querySelector(
+        ".smartphoto-list li.current",
       ) as HTMLElement;
-      const translateY = Number(
-        img.style.transform.match(/translateY\(([^)]+)px\)/)?.[1],
-      );
-      // 画面上での実際の移動量(translateY × item.scale)が画面の高さ(700)分に
-      // なっていること = 補正なしの単純な 700px 指定になっていないことを確認する
-      expect(translateY * itemScale).toBeCloseTo(700, 1);
+      expect(li.style.transform).toBe("translate(0px,700px)");
       fireEvent.transitionEnd(
         document.querySelector("dialog.smartphoto") as Element,
       );
@@ -322,61 +391,117 @@ describe("hidePhoto の transitionend 完了", () => {
   });
 
   it("resizeStyle: fill でズームされた状態のまま閉じても、閉じた瞬間に等倍へスナップしない", async () => {
-    // hidePhoto() は doHideEffect() の前に viewer.scaleSize を 1 にリセットするが、
-    // img の実際の transform(DOM)にはまだ fill 倍率が残っている。ここで
-    // translateY だけの transform に上書きすると scale が消え、閉じた瞬間に
-    // 一旦「元の大きさ」へスナップしてからスライドアウトする不具合があった
+    // 閉じるスライドは li(fit/fillのスケールが掛からない外側の要素)に
+    // 適用するため、img 自身の transform(fill の scale)は閉じる間も一切
+    // 変更されない。以前は img に直接 translateY を上書き設定しており、
+    // その際 scale が消えて一瞬「元の大きさ」へスナップする不具合があった
     withStubbedUserAgent(
       "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
     );
-    const container = buildGallery();
-    const smartPhoto = track(
-      new SmartPhoto(".js-smartphoto", { resizeStyle: "fill" }),
-    );
-    await openViewer(container);
-    const img = document.querySelector(
-      ".current .smartphoto-img",
-    ) as HTMLElement;
-    const scaleBeforeClose = Number(
-      img.style.transform.match(/scale\(([^)]+)\)/)?.[1],
-    );
-    expect(scaleBeforeClose).not.toBe(1);
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 390,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 700,
+      configurable: true,
+    });
+    try {
+      const smartPhoto = track(
+        new SmartPhoto([{ src: "/a.jpg", width: 867, height: 1997 }], {
+          resizeStyle: "fill",
+        }),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+      const img = document.querySelector(
+        ".current .smartphoto-img",
+      ) as HTMLElement;
+      const scaleBeforeClose = Number(
+        img.style.transform.match(/scale\(([^)]+)\)/)?.[1],
+      );
+      expect(Number.isNaN(scaleBeforeClose)).toBe(false);
+      expect(scaleBeforeClose).not.toBe(1);
 
-    smartPhoto.hidePhoto();
+      smartPhoto.hidePhoto();
 
-    const scaleDuringClose = Number(
-      img.style.transform.match(/scale\(([^)]+)\)/)?.[1],
-    );
-    expect(scaleDuringClose).toBeCloseTo(scaleBeforeClose, 5);
-    fireEvent.transitionEnd(
-      document.querySelector("dialog.smartphoto") as Element,
-    );
+      const scaleDuringClose = Number(
+        img.style.transform.match(/scale\(([^)]+)\)/)?.[1],
+      );
+      expect(scaleDuringClose).toBeCloseTo(scaleBeforeClose, 5);
+      fireEvent.transitionEnd(
+        document.querySelector("dialog.smartphoto") as Element,
+      );
+    } finally {
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
   });
 
-  it("resizeStyle: fill でズーム中に閉じると、transition を止める smartphoto-img-onmove を外してからスライドさせる", async () => {
-    // viewer.scale=true の間 img には .smartphoto-img-onmove(transition: none)
-    // が付いたままで、これが残っていると closeで設定する translateY が
-    // transition なしで即座に適用され、巨大化された画像が一瞬別の切り取り
-    // 範囲へワープしたように見える(縮んだような錯覚を起こす)不具合があった
-    withStubbedUserAgent(
-      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
-    );
-    const container = buildGallery();
-    const smartPhoto = track(
-      new SmartPhoto(".js-smartphoto", { resizeStyle: "fill" }),
-    );
-    await openViewer(container);
-    const img = document.querySelector(
-      ".current .smartphoto-img",
-    ) as HTMLElement;
-    expect(img).toHaveClass("smartphoto-img-onmove");
+  it("ズームの transition 進行中に閉じると、img の transform がその時点の描画値で固定される", async () => {
+    // タップ(zoomPhoto)は img の transform を scale(scaleBorder) へ変更し、
+    // CSS transition(0.45s)でアニメーションさせる。この transition の進行中に
+    // 閉じると、閉じ演出(li の下スライド + dialog のフェード)の間もズームが
+    // 目標倍率へ向かって動き続け、「下に落ちる」はずの写真が「こちらへ迫って
+    // くる」ように見えていた(縦長画像は scaleBorder > 1 のため顕在化し、
+    // 画面幅に近い横長画像は zoomPhoto が早期 return するため起きない)。
+    // 閉じ演出の開始時に、その時点で実際に描画されている値(補間途中の matrix)
+    // をインラインへ書き戻して transition を打ち切ることを保証する
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 1024,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 768,
+      configurable: true,
+    });
+    try {
+      const smartPhoto = track(
+        new SmartPhoto([{ src: "/a.jpg", width: 2000, height: 2000 }]),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+      const img = document.querySelector(
+        ".current .smartphoto-img",
+      ) as HTMLElement;
 
-    smartPhoto.hidePhoto();
+      smartPhoto.zoomPhoto();
+      // ズームの目標値がセットされ、実ブラウザではここから transition が始まる
+      expect(img.style.transform).toContain("scale(");
 
-    expect(img).not.toHaveClass("smartphoto-img-onmove");
-    fireEvent.transitionEnd(
-      document.querySelector("dialog.smartphoto") as Element,
-    );
+      // jsdom は transition を実行しないため、「補間途中の描画値」を
+      // getComputedStyle のスタブで再現する
+      const midTransition = "matrix(1.4, 0, 0, 1.4, 0, 0)";
+      const origGetComputedStyle = window.getComputedStyle.bind(window);
+      vi.spyOn(window, "getComputedStyle").mockImplementation(
+        (el: Element, pseudo?: string | null) => {
+          if (el === img) {
+            return { transform: midTransition } as CSSStyleDeclaration;
+          }
+          return origGetComputedStyle(el, pseudo);
+        },
+      );
+
+      smartPhoto.hidePhoto();
+
+      expect(img.style.transform).toBe(midTransition);
+      fireEvent.transitionEnd(
+        document.querySelector("dialog.smartphoto") as Element,
+      );
+    } finally {
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
   });
 });
 
@@ -408,19 +533,29 @@ describe("showAnimation: false 時の hidePhoto", () => {
     }
   });
 
-  it("画像に translateY の transform を設定しない", async () => {
-    const container = buildGallery();
-    const smartPhoto = track(
-      new SmartPhoto(".js-smartphoto", { showAnimation: false }),
-    );
-    await openViewer(container);
-    const img = document.querySelector(
-      ".current .smartphoto-img",
-    ) as HTMLElement;
+  it("閉じるスライド(li の transform)を設定しない", async () => {
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 700,
+      configurable: true,
+    });
+    try {
+      const container = buildGallery();
+      const smartPhoto = track(
+        new SmartPhoto(".js-smartphoto", { showAnimation: false }),
+      );
+      await openViewer(container);
+      const li = document.querySelector(
+        ".smartphoto-list li.current",
+      ) as HTMLElement;
+      const transformBeforeClose = li.style.transform;
 
-    smartPhoto.hidePhoto();
+      smartPhoto.hidePhoto();
 
-    expect(img.style.transform).not.toContain("translateY");
+      expect(li.style.transform).toBe(transformBeforeClose);
+    } finally {
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
   });
 
   it("dialog の transition を無効化し、即座に非表示にする", async () => {
@@ -600,6 +735,120 @@ describe("開いた直後のサイズ再同期(resyncSizeAfterOpen)", () => {
     }
   });
 
+  it("resizeStyle: fill でスライドを送っても、元のスライドの img に fill の transform が残らない", async () => {
+    // updatePhotoTransform() はカレントの img しか更新しないため、スライドを
+    // 送ると前のスライドの img に fill の scale(+ドラッグ位置の translate)が
+    // インラインで残留し、li から大きくはみ出した拡大画像の断片が現在の
+    // スライドの余白(上下/左右)に見えてしまう不具合があった。photoPos/
+    // scaleSize はカレント専用の viewer 状態なので、非カレントの img は
+    // render() が必ず素の transform に戻すことを保証する
+    withStubbedUserAgent(
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    );
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 390,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 700,
+      configurable: true,
+    });
+    try {
+      const smartPhoto = track(
+        new SmartPhoto(
+          [
+            { src: "/a.jpg", caption: "A", width: 867, height: 1997 },
+            { src: "/b.jpg", caption: "B", width: 1716, height: 1146 },
+          ],
+          { resizeStyle: "fill" },
+        ),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+      const firstImg = document.querySelector(
+        ".smartphoto-list li .smartphoto-img",
+      ) as HTMLElement;
+      // 開いた時点でカレント(1枚目)には fill の拡大率が掛かっている
+      expect(firstImg.style.transform).not.toContain("scale(1)");
+
+      smartPhoto.gotoSlide(1);
+      await waitFor(() => {
+        expect(document.querySelector(".smartphoto-caption")?.textContent).toBe(
+          "B",
+        );
+      });
+      // slideList() の遅延 commit(200ms)による再描画を待つ
+      await waitFor(() => {
+        expect(firstImg.style.transform).toBe("translate(0px,0px) scale(1)");
+      });
+    } finally {
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
+  });
+
+  it("resizeStyle: fill でスライドを送った先のスライドにも fill の拡大率が適用される", async () => {
+    // syncFillScale()(fill 倍率の再計算)は「setSizeByScreen() を呼ぶ箇所では
+    // 併せて呼ぶ」必要があるが、スライド送り(slideList)がこれを守っておらず、
+    // 送った先のスライドが fit サイズ(scaleSize=1)のまま表示され、その後の
+    // ロード完了時の initPhoto() 等で突然 fill サイズへ跳ねる(小さく出てから
+    // でっかくなる)不具合があった
+    withStubbedUserAgent(
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    );
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 390,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 700,
+      configurable: true,
+    });
+    try {
+      const smartPhoto = track(
+        new SmartPhoto(
+          [
+            { src: "/a.jpg", caption: "A", width: 867, height: 1997 },
+            { src: "/b.jpg", caption: "B", width: 1716, height: 1146 },
+          ],
+          { resizeStyle: "fill" },
+        ),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+
+      smartPhoto.gotoSlide(1);
+      await waitFor(() => {
+        expect(document.querySelector(".smartphoto-caption")?.textContent).toBe(
+          "B",
+        );
+      });
+      await waitFor(() => {
+        const img = document.querySelector(
+          ".current .smartphoto-img",
+        ) as HTMLElement;
+        const scale = Number(
+          img.style.transform.match(/scale\(([^)]+)\)/)?.[1],
+        );
+        // 横長 1716x1146 を 390x700 に fill: scaleBorder = 700 / (1146 * (390/1716))
+        expect(scale).toBeCloseTo(700 / (1146 * (390 / 1716)), 5);
+      });
+    } finally {
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
+  });
+
   it("resizeStyle: fill 使用中に open 直後のビューポート高さ変化があっても、fill の拡大率が正しい高さに追従する", async () => {
     // resyncSizeAfterOpen() は setSizeByScreen()(fit用の item.scale/x/y)は
     // 再計算するが、fill 用の viewer.scaleSize(scaleBorder() の結果)は
@@ -693,6 +942,81 @@ describe("headerHeight / footerHeight オプション", () => {
       // screenY = 800 - (200 + 100) = 500 → scale = 500 / 2000 = 0.25
       // (デフォルトの headerHeight/footerHeight=60/60 なら scale は 0.34 になり一致しない)
       expect(imgWrap.style.transform).toContain("scale(0.25)");
+    } finally {
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
+  });
+
+  it("スマホでもデスクトップと同様に headerHeight/footerHeight を予約して fit する", async () => {
+    // 一時期「PhotoSwipe に合わせてスマホは全ビューポート fit + UI オーバーレイ」に
+    // 変更したが、写真がキャプション/サムネイルバーに覆い被さって隠してしまう
+    // 見た目になったため元に戻した。スマホでも上下(既定 60+60px)を予約して
+    // ヘッダー/ナビと写真が重ならないことを保証する
+    withStubbedUserAgent(
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    );
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 390,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 700,
+      configurable: true,
+    });
+    try {
+      const smartPhoto = track(
+        new SmartPhoto([{ src: "/a.jpg", width: 867, height: 1997 }]),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+      const imgWrap = document.querySelector(
+        ".current .smartphoto-img-wrap",
+      ) as HTMLElement;
+      // screenY = 700 - (60 + 60) = 580 → scale = 580 / 1997
+      expect(imgWrap.style.transform).toContain(`scale(${580 / 1997})`);
+    } finally {
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
+  });
+
+  it("headerHeight/footerHeight を明示指定した場合は、スマホでもその予約を尊重する", async () => {
+    withStubbedUserAgent(
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    );
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 390,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 700,
+      configurable: true,
+    });
+    try {
+      const smartPhoto = track(
+        new SmartPhoto([{ src: "/a.jpg", width: 867, height: 1997 }], {
+          headerHeight: 50,
+          footerHeight: 50,
+        }),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+      const imgWrap = document.querySelector(
+        ".current .smartphoto-img-wrap",
+      ) as HTMLElement;
+      // screenY = 700 - (50 + 50) = 600 → scale = 600 / 1997
+      expect(imgWrap.style.transform).toContain(`scale(${600 / 1997})`);
     } finally {
       delete (document.documentElement as { clientWidth?: number }).clientWidth;
       delete (document.documentElement as { clientHeight?: number })
@@ -828,7 +1152,7 @@ describe("View Transitions API 経由で開く", () => {
   it("対応ブラウザではサムネイルとフル画像に同じ view-transition-name を設定する", async () => {
     const container = buildGallery();
     // finished は実ブラウザではアニメーション完了まで解決しない。即時解決させると
-    // view-transition-name の後始末(clearNames)が検証前に走ってしまうため、
+    // view-transition-name の後始末(cleanup)が検証前に走ってしまうため、
     // このテストでは意図的に解決しない Promise を返す
     const startViewTransition = vi.fn((callback: () => void) => {
       callback();
@@ -890,7 +1214,7 @@ describe("View Transitions API 経由で開く", () => {
     }
   });
 
-  it("finished 解決後に view-transition-name の後始末(clearNames)が行われる", async () => {
+  it("finished 解決後に view-transition-name の後始末(cleanup)が行われる", async () => {
     const container = buildGallery();
     const startViewTransition = vi.fn((callback: () => void) => {
       callback();
@@ -915,6 +1239,170 @@ describe("View Transitions API 経由で開く", () => {
     } finally {
       delete (document as unknown as { startViewTransition?: unknown })
         .startViewTransition;
+    }
+  });
+
+  it("モーフ中はレイアウト寸法を表示寸法に一致させ、finished 後に元へ戻す", async () => {
+    // WebKit は「レイアウトが巨大で transform で縮小表示している要素」のスナップ
+    // ショットをビューポート付近で切り取る(仕様上もビューポート外のラスタライズは
+    // 保証されない)ため、原寸幅がビューポートより大きい画像は開くモーフ中に
+    // 右側が黒く欠ける。トランジション中だけレイアウト幅を表示幅
+    // (item.width × item.scale)に、拡縮を scale(1) に切り替えて等倍レイアウトで
+    // スナップショットさせ、finished 後は通常のレンダリングへ戻すことを保証する
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 1000,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 800,
+      configurable: true,
+    });
+    const held: { resolve: () => void } = { resolve: () => {} };
+    const startViewTransition = vi.fn((callback: () => void) => {
+      callback();
+      return {
+        ready: Promise.resolve(),
+        finished: new Promise<void>((resolve) => {
+          held.resolve = resolve;
+        }),
+      };
+    });
+    (
+      document as unknown as { startViewTransition: typeof startViewTransition }
+    ).startViewTransition = startViewTransition;
+    try {
+      const smartPhoto = track(
+        new SmartPhoto([{ src: "/a.jpg", width: 1716, height: 1140 }]),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+      const img = document.querySelector(
+        ".current .smartphoto-img",
+      ) as HTMLElement;
+      const imgWrap = document.querySelector(
+        ".current .smartphoto-img-wrap",
+      ) as HTMLElement;
+      // fit の scale = 1000 / 1716 → 表示幅 = 1716 × (1000/1716) = 1000px
+      expect(img.style.width).toBe("1000px");
+      expect(imgWrap.style.transform).toContain("scale(1)");
+      held.resolve();
+      await waitFor(() => {
+        expect(img.style.width).toBe("1716px");
+      });
+      expect(imgWrap.style.transform).toContain(`scale(${1000 / 1716})`);
+    } finally {
+      delete (document as unknown as { startViewTransition?: unknown })
+        .startViewTransition;
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
+  });
+
+  it("WebKit では View Transitions API を使わず従来のクローン演出で開く", async () => {
+    // WebKit(Safari / iOS の全ブラウザ)には「view-transition-name を付けた要素が
+    // root スナップショットから除外されず、モーフ中に最終位置へ二重描画される」
+    // 実装バグがあり、開く演出が「一旦ずれた位置に出てから正位置へ戻る」ように
+    // 乱れて見える。WebKit 判定時は startViewTransition を呼ばず、実績のある
+    // クローン画像の transform 演出(addAppearEffect)へフォールバックすることを保証する
+    (
+      window as unknown as { webkitConvertPointFromNodeToPage?: unknown }
+    ).webkitConvertPointFromNodeToPage = () => ({});
+    const startViewTransition = vi.fn((callback: () => void) => {
+      callback();
+      return { ready: Promise.resolve(), finished: Promise.resolve() };
+    });
+    (
+      document as unknown as { startViewTransition: typeof startViewTransition }
+    ).startViewTransition = startViewTransition;
+    try {
+      const container = buildGallery();
+      track(new SmartPhoto(".js-smartphoto"));
+      await openViewer(container);
+      expect(startViewTransition).not.toHaveBeenCalled();
+      // クローン演出が使われている
+      expect(document.querySelector(".smartphoto-img-clone")).not.toBeNull();
+    } finally {
+      delete (
+        window as unknown as { webkitConvertPointFromNodeToPage?: unknown }
+      ).webkitConvertPointFromNodeToPage;
+      delete (document as unknown as { startViewTransition?: unknown })
+        .startViewTransition;
+    }
+  });
+
+  it("トランジション中のリサイズ再計算は finished まで遅延され、モーフ用レイアウトを壊さない", async () => {
+    // iOS Safari ではダイアログを開くとツールバーの伸縮で visualViewport の resize が
+    // 発火する。トランジション中にリサイズ経由の setSizeByScreen + commit() が走ると、
+    // (1) モーフの目標位置は古いビューポート基準のままなのに実要素だけ新しい位置へ
+    // 動き「一回上に行ってから適正位置に戻る」ように見え、(2) モーフ用レイアウト
+    // (applyViewTransitionLayout)も巻き戻されてスナップショットの切り取りが再発する。
+    // リサイズ由来の再計算はトランジション完了(finished)まで遅延することを保証する
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 1000,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 800,
+      configurable: true,
+    });
+    const held: { resolve: () => void } = { resolve: () => {} };
+    const startViewTransition = vi.fn((callback: () => void) => {
+      callback();
+      return {
+        ready: Promise.resolve(),
+        finished: new Promise<void>((resolve) => {
+          held.resolve = resolve;
+        }),
+      };
+    });
+    (
+      document as unknown as { startViewTransition: typeof startViewTransition }
+    ).startViewTransition = startViewTransition;
+    try {
+      const smartPhoto = track(
+        new SmartPhoto([{ src: "/a.jpg", width: 1716, height: 1140 }]),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+      const img = document.querySelector(
+        ".current .smartphoto-img",
+      ) as HTMLElement;
+      const imgWrap = document.querySelector(
+        ".current .smartphoto-img-wrap",
+      ) as HTMLElement;
+      expect(img.style.width).toBe("1000px");
+
+      // トランジション中にビューポートが 1000px → 800px へ変化
+      Object.defineProperty(document.documentElement, "clientWidth", {
+        value: 800,
+        configurable: true,
+      });
+      window.dispatchEvent(new Event("resize"));
+      // 遅延: モーフ用レイアウトは維持されたまま
+      expect(img.style.width).toBe("1000px");
+      expect(imgWrap.style.transform).toContain("scale(1)");
+
+      held.resolve();
+      await waitFor(() => {
+        // finished 後に新ビューポート基準で再計算・復元される
+        expect(img.style.width).toBe("1716px");
+      });
+      expect(imgWrap.style.transform).toContain(`scale(${800 / 1716})`);
+    } finally {
+      delete (document as unknown as { startViewTransition?: unknown })
+        .startViewTransition;
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
     }
   });
 

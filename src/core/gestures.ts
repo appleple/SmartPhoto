@@ -72,6 +72,7 @@ export function createGestures(
   let oldPos: { x: number; y: number } | null = null;
   let moveDir: "horizontal" | "vertical" | null = null;
   let swipeStartTime = 0;
+  let tapTarget: EventTarget | null = null;
 
   let photoSwipable = false;
   let firstPhotoPos: { x: number; y: number } | null = null;
@@ -230,6 +231,10 @@ export function createGestures(
     firstPos = pos;
     oldPos = pos;
     swipeStartTime = Date.now();
+    // onPointerDown の setPointerCapture 以降、pointerup はキャプチャ要素
+    // (content/list)へ再ターゲットされるため、タップが実際にどの要素に
+    // ヒットしたか(写真の上か背景か)は pointerdown の時点でしか分からない
+    tapTarget = e.target;
   }
 
   function startPhotoDrag(e: PointerEvent): void {
@@ -401,11 +406,11 @@ export function createGestures(
     const noMove = swipeWidth === 0 && swipeHeight === 0;
 
     if (!isSmartPhone() && noMove) {
-      callbacks.onTap();
+      callbacks.onTap(tapTarget);
       return;
     }
     if (Math.abs(offset) <= 500 && noMove) {
-      callbacks.onTap();
+      callbacks.onTap(tapTarget);
       return;
     }
     tapSecond = now;
