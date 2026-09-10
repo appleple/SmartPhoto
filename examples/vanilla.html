@@ -6,6 +6,18 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>SmartPhoto.js</title>
 	<link rel="stylesheet" href="/style.css">
+	<script>
+		// テスト用: ?mobile=1 が付いている場合のみ、isSmartPhoneFlag(UA判定)を
+		// スマートフォンとして扱えるよう navigator.userAgent を上書きする。
+		// PC のブラウザでスマホ側の挙動(fill のズームやジェスチャー分岐)を検証できる。
+		// SmartPhoto の生成(モジュール実行)より必ず先に実行させる必要がある
+		if (new URLSearchParams(location.search).get('mobile') === '1') {
+			Object.defineProperty(window.navigator, 'userAgent', {
+				value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+				configurable: true,
+			});
+		}
+	</script>
 </head>
 <body>
 	<div class="wrapper">
