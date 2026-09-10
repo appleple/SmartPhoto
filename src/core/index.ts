@@ -335,9 +335,19 @@ export default class SmartPhoto {
   }
 
   zoomOutPhoto(): void {
-    this.state.viewer.scaleSize = 1;
-    this.state.viewer.hideUi = false;
-    this.state.viewer.scale = false;
+    // fill(スマホ)は「fill 表示」が開いた時点の基準状態なので、ズーム解除の
+    // 戻り先も fit(1倍)ではなく fill にする。v1 から解除先は常に 1 だったが、
+    // ピンチの戻り先(基準 = fill、§gestures baselineOf)と食い違い、タップと
+    // ピンチで別の表示に戻ってしまうため、PhotoSwipe の initialZoomLevel の
+    // 作法に合わせて基準へ統一した
+    const item = currentItem(this.state);
+    const base =
+      this.state.options.resizeStyle === "fill" && this.isSmartPhoneFlag && item
+        ? scaleBorder(item, getWindowWidth(), getWindowHeight(), true)
+        : 1;
+    this.state.viewer.scaleSize = base;
+    this.state.viewer.hideUi = base > 1;
+    this.state.viewer.scale = base > 1;
     this.state.viewer.photoPosX = 0;
     this.state.viewer.photoPosY = 0;
     this.view.updatePhotoTransform(this.state);
@@ -963,10 +973,9 @@ export default class SmartPhoto {
   private openPhoto(item: Item, trigger: HTMLElement | null): void {
     // 文字列セレクタで構築した場合、開く直前に必ずグループをDOMの現在状態に
     // 合わせて再構築する(Ajax等による追加・削除・並び順の変化を反映)。
-    // item.index はこの中で正しい値に更新される可能性がある
-    const groupChanged = this.rootSelector
-      ? this.resyncGroupFromDom(item.groupId)
-      : false;
+    // item.index はこの中で正しい値に更新される可能性がある。
+    // セレクタ以外のモードの判定は resyncGroupFromDom 自身が行う(常に false)
+    const groupChanged = this.resyncGroupFromDom(item.groupId);
     this.lastTriggerElement = trigger;
     this.state.viewer.currentGroup = item.groupId;
     this.state.viewer.currentIndex = item.index;
@@ -1380,6 +1389,9 @@ export default class SmartPhoto {
         this.fireEvent("gestureend");
         this.view.updatePhotoTransform(this.state);
       },
+      // ピンチで基準倍率よりはっきり小さく縮めて離した = 閉じたい操作
+      // (PhotoSwipe の pinchToClose 相当)
+      onPinchClose: () => this.hidePhoto(),
       onPhotoDragMove: () => this.view.updatePhotoTransform(this.state),
       onPhotoDragEnd: (result) => {
         if (result === "zoom-out") {

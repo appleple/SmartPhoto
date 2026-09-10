@@ -197,6 +197,11 @@ Slide fields:
 		<td>true</td>
 	</tr>
 	<tr>
+		<td>pinchToClose</td>
+		<td>close the viewer when the photo is pinched in clearly below its base scale (fit/fill)</td>
+		<td>true</td>
+	</tr>
+	<tr>
 		<td>swipeOffset</td>
 		<td>minimum swipe distance (px) to trigger navigation/close</td>
 		<td>100</td>

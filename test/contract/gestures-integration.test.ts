@@ -255,7 +255,7 @@ describe("ピンチ(実結線)", () => {
     );
   });
 
-  it("縮小して離すと gestureend が発火しズーム状態が解除される", async () => {
+  it("少し縮小して離すと gestureend が発火しフィットへ戻る", async () => {
     const { content } = await buildAndOpen(zoomSlides);
     const gestureend = vi.fn();
     activeInstances[0].on("gestureend", gestureend);
@@ -266,7 +266,28 @@ describe("ピンチ(実結線)", () => {
     content.dispatchEvent(
       pointerEvent("pointerdown", { pointerId: 2, clientX: 500, clientY: 100 }),
     );
-    // 距離を大きく縮めて scaleSize を境界以下まで下げる
+    // 距離 400 → 380 で scaleSize 0.8(閉じる閾値 0.75 は下回らない)
+    content.dispatchEvent(
+      pointerEvent("pointermove", { pointerId: 2, clientX: 480, clientY: 100 }),
+    );
+    content.dispatchEvent(
+      pointerEvent("pointerup", { pointerId: 1, clientX: 100, clientY: 100 }),
+    );
+
+    expect(gestureend).toHaveBeenCalledTimes(1);
+    expect(document.querySelector("dialog.smartphoto")).toHaveAttribute("open");
+  });
+
+  it("大きく縮めて離すとビューアが閉じる(pinchToClose)", async () => {
+    const { content } = await buildAndOpen(zoomSlides);
+
+    content.dispatchEvent(
+      pointerEvent("pointerdown", { pointerId: 1, clientX: 100, clientY: 100 }),
+    );
+    content.dispatchEvent(
+      pointerEvent("pointerdown", { pointerId: 2, clientX: 500, clientY: 100 }),
+    );
+    // 距離を大きく縮めて scaleSize を閉じる閾値(基準の3/4)未満まで下げる
     content.dispatchEvent(
       pointerEvent("pointermove", { pointerId: 2, clientX: 105, clientY: 100 }),
     );
@@ -274,7 +295,11 @@ describe("ピンチ(実結線)", () => {
       pointerEvent("pointerup", { pointerId: 1, clientX: 100, clientY: 100 }),
     );
 
-    expect(gestureend).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(document.querySelector("dialog.smartphoto")).not.toHaveAttribute(
+        "open",
+      );
+    });
   });
 });
 

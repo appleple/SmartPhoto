@@ -7,8 +7,13 @@ function round(val: number, precision: number): number {
   return Math.round(val * digit) / digit;
 }
 
+// pageX/pageY(ページ座標)ではなく clientX/clientY(ビューポート座標)を使う。
+// スワイプ量・ピンチ距離などの「差分」はどちらでも同じだが、中点基準ズーム
+// (movePinch)は画像中心(ビューポート座標)との「絶対位置」比較のため、
+// ページ座標だとスクロール量が上乗せされ、スクロールした状態で開いて
+// ピンチすると画像がスクロール量ぶん大きくずれてしまう
 function getPos(e: PointerEvent): { x: number; y: number } {
-  return { x: e.pageX, y: e.pageY };
+  return { x: e.clientX, y: e.clientY };
 }
 
 function distance(
@@ -81,7 +86,10 @@ export function createGestures(
   let photoVY = 0;
 
   let pinching = false;
-  let oldDistance = 0;
+  // ピンチ開始時(または指の組が変わった時)の2本指の距離と倍率。
+  // 倍率は「開始倍率 × 現距離/開始距離」の比率で追従させる(§movePinch)
+  let pinchStartDistance = 0;
+  let pinchStartScale = 1;
   let pinchMoveFrame: number | null = null;
 
   let vx = 0;
@@ -100,6 +108,26 @@ export function createGestures(
     const { width, height } = windowSize();
     return scaleBorder(item, width, height, isSmartPhone());
   }
+
+  // ピンチの「戻る先」となる基準倍率。resizeStyle:'fill'(スマホ)は開いた時点で
+  // fill 倍率(scaleBorder)まで拡大して表示しているため、そこが基準になる
+  function baselineOf(item: Item): number {
+    return state.options.resizeStyle === "fill" && isSmartPhone()
+      ? borderOf(item)
+      : 1;
+  }
+
+  // ピンチで維持できる上限倍率。PhotoSwipe の maxZoomLevel 既定(fit の4倍)に
+  // 合わせる。タップズーム/fill の倍率(scaleBorder)がそれを超える環境では、
+  // タップで到達できる倍率をピンチで取り消さないようそちらを上限にする
+  const MAX_PINCH_SCALE = 4;
+  function maxScaleOf(item: Item): number {
+    return Math.max(MAX_PINCH_SCALE, borderOf(item));
+  }
+
+  // 基準倍率のこの割合より小さく縮めて離したら「閉じたい操作」とみなす
+  // (PhotoSwipe の pinchToClose 相当。僅かな縮小は基準へのスプリングバックに留める)
+  const PINCH_CLOSE_RATIO = 0.75;
 
   // 呼び出し元(endPhotoDrag)が currentItem の存在を確認済みのため non-null が保証される
   function registerElasticForce(flagX: number, flagY: number): void {
@@ -158,7 +186,10 @@ export function createGestures(
     }
     const power = getForceAndTheta(vx, vy);
     const force = power.force - state.options.registance;
-    if (Math.abs(force) < 0.5) {
+    // 勢いが抵抗を下回ったら停止する。旧実装(Math.abs(force) < 0.5)は
+    // force が -0.5 ちょうどのとき(勢いゼロで抵抗だけが残る静止状態)に
+    // 判定をすり抜け、負の力で逆方向へ僅かにドリフトし続けていた
+    if (force < 0.5) {
       return;
     }
     vx = Math.cos(power.theta) * force;
@@ -211,16 +242,31 @@ export function createGestures(
     );
   }
 
+  // ピンチの基準(開始距離・開始倍率)を現在の指の位置から取り直す。
+  // 開始時のほか、3本→2本のように指の組が変わった時にも呼ぶ。
+  // 取り直さないと、別の2点間の距離に対する比率計算になって倍率が不連続に跳ぶ
+  function rebasePinch(): void {
+    const points = Array.from(activePointers.values());
+    pinchStartDistance = distance(
+      points[0] as { x: number; y: number },
+      points[1] as { x: number; y: number },
+    );
+    pinchStartScale = state.viewer.scaleSize;
+  }
+
   function startPinch(): void {
     pinching = true;
     swiping = false;
     photoSwipable = false;
-    const points = Array.from(activePointers.values());
-    oldDistance = distance(
-      points[0] as { x: number; y: number },
-      points[1] as { x: number; y: number },
-    );
+    rebasePinch();
+    // 直前のドラッグの慣性(vx/vy)が残っていると、ピンチ終了後に慣性ループが
+    // その勢いで写真を流してしまうため、ピンチ開始で必ず打ち切る
+    vx = 0;
+    vy = 0;
     state.viewer.scale = true;
+    // ピンチ操作の間は矢印/ナビを隠す。表示に戻すかどうかは endPinch が
+    // 離した時点の倍率(基準へ戻る/ズーム維持)に応じて確定する
+    state.viewer.hideUi = true;
     callbacks.onGestureStart();
   }
 
@@ -294,31 +340,49 @@ export function createGestures(
 
   function movePinch(): void {
     const points = Array.from(activePointers.values());
-    const dist = distance(
-      points[0] as { x: number; y: number },
-      points[1] as { x: number; y: number },
-    );
-    const size = (dist - oldDistance) / 100;
+    const p0 = points[0] as { x: number; y: number };
+    const p1 = points[1] as { x: number; y: number };
+    const dist = distance(p0, p1);
+    // 2本の指が同一座標で始まった場合は比率を計算できない(0除算)。
+    // 距離が付いた時点を開始基準にして以降の move から追従させる
+    if (pinchStartDistance === 0) {
+      pinchStartDistance = dist;
+      pinchStartScale = state.viewer.scaleSize;
+      scheduleGestureMove();
+      return;
+    }
     const oldScaleSize = state.viewer.scaleSize;
-    const posX = state.viewer.photoPosX;
-    const posY = state.viewer.photoPosY;
-    state.viewer.scaleSize += round(size, 6);
+    // 業界標準(PhotoSwipe / iOS 写真)の「開始倍率 × 現距離/開始距離」。
+    // 距離の差分で線形に動かす方式(旧: ±dist/100)は、高倍率から戻す
+    // ピンチインで一気に閉じる閾値まで突き抜けてしまう
+    state.viewer.scaleSize = round(
+      (pinchStartScale * dist) / pinchStartDistance,
+      6,
+    );
     if (state.viewer.scaleSize < 0.2) {
       state.viewer.scaleSize = 0.2;
     }
-    if (state.viewer.scaleSize < oldScaleSize) {
-      state.viewer.photoPosX =
-        (1 + state.viewer.scaleSize - oldScaleSize) * posX;
-      state.viewer.photoPosY =
-        (1 + state.viewer.scaleSize - oldScaleSize) * posY;
-    }
+    // 業界標準(PhotoSwipe / iOS 写真)に合わせ、ピンチの中点を基準に拡大縮小する。
+    // 中点直下の絵柄が拡大後も中点に残るよう、倍率変化(ratio)に応じて
+    // 画像中心の位置(photoPos)を補正する。旧実装は常に画像中心基準だったため、
+    // 見たい場所をピンチしても中心が拡大されるだけだった
     const item = currentItem(state);
-    if (item) {
-      const border = borderOf(item);
-      state.viewer.hideUi =
-        state.viewer.scaleSize < 1 || state.viewer.scaleSize > border;
+    if (item && state.viewer.scaleSize !== oldScaleSize) {
+      const { width: winW, height: winH } = windowSize();
+      // フィット配置での画像中心(sizeItems の item.x/y と同じ基準)
+      const cx = winW / 2;
+      const cy =
+        state.options.headerHeight +
+        (winH - state.options.headerHeight - state.options.footerHeight) / 2;
+      // photoPos → 画面px の換算係数(§state.ts makeBound)
+      const k = item.scale;
+      const mid = { x: (p0.x + p1.x) / 2, y: (p0.y + p1.y) / 2 };
+      const ratio = state.viewer.scaleSize / oldScaleSize;
+      const dx = mid.x - (cx + state.viewer.photoPosX * k);
+      const dy = mid.y - (cy + state.viewer.photoPosY * k);
+      state.viewer.photoPosX = round((mid.x - dx * ratio - cx) / k, 6);
+      state.viewer.photoPosY = round((mid.y - dy * ratio - cy) / k, 6);
     }
-    oldDistance = dist;
     scheduleGestureMove();
   }
 
@@ -375,6 +439,13 @@ export function createGestures(
     moveSwipe(e);
   }
 
+  // 業界標準(PhotoSwipe / iOS 写真)の離し挙動:
+  // - 基準倍率(fit / fill)未満: 基準へスプリングバック。はっきり小さく
+  //   縮めた場合(基準の3/4未満)は「閉じたい操作」として閉じる(pinchToClose)
+  // - 基準以上・上限以下: その倍率を維持する(勝手に戻さない)
+  // - 上限(fit の4倍)超: 上限へスプリングバック
+  // 旧実装は「fill 倍率以下はすべてフィットへ戻す」だったため、中途半端に
+  // 拡大したズームが離すたびに取り消されていた
   function endPinch(): void {
     pinching = false;
     flushGestureMove();
@@ -382,15 +453,46 @@ export function createGestures(
     if (!item) {
       return;
     }
-    const border = borderOf(item);
-    if (state.viewer.scaleSize > border) {
+    const base = baselineOf(item);
+    if (state.viewer.scaleSize <= base) {
+      if (
+        state.options.pinchToClose &&
+        state.viewer.scaleSize < base * PINCH_CLOSE_RATIO
+      ) {
+        callbacks.onPinchClose();
+        return;
+      }
+      state.viewer.photoPosX = 0;
+      state.viewer.photoPosY = 0;
+      state.viewer.scaleSize = base;
+      // fill の基準はズーム表示そのもの(開いた時点と同じ状態)なので
+      // scale/hideUi は維持する。fit(base=1)は通常表示へ完全に戻す
+      state.viewer.scale = base > 1;
+      state.viewer.hideUi = base > 1;
+      callbacks.onGestureEnd();
       return;
     }
-    state.viewer.photoPosX = 0;
-    state.viewer.photoPosY = 0;
-    state.viewer.scale = false;
-    state.viewer.scaleSize = 1;
-    state.viewer.hideUi = false;
+    state.viewer.scaleSize = Math.min(state.viewer.scaleSize, maxScaleOf(item));
+    // ズームを維持して離した場合も、倍率変化で狭まった可動域の外に
+    // パン位置が残っていれば弾性で収める(endPhotoDrag と同じ扱い)
+    const bound = boundOf(item);
+    let flagX = 0;
+    let flagY = 0;
+    if (state.viewer.photoPosX > bound.maxX) {
+      flagX = -1;
+    } else if (state.viewer.photoPosX < bound.minX) {
+      flagX = 1;
+    }
+    if (state.viewer.photoPosY > bound.maxY) {
+      flagY = -1;
+    } else if (state.viewer.photoPosY < bound.minY) {
+      flagY = 1;
+    }
+    if (flagX !== 0 || flagY !== 0) {
+      registerElasticForce(flagX, flagY);
+    }
+    state.viewer.scale = true;
+    state.viewer.hideUi = true;
     callbacks.onGestureEnd();
   }
 
@@ -518,6 +620,13 @@ export function createGestures(
     if (pinching) {
       if (activePointers.size < 2) {
         endPinch();
+        // 残った1本の指は次の pointerdown まで追跡しない。スワイプや
+        // タップ(=zoom-out)として引き継ぐと、ピンチ直後の指の動きで
+        // リストが送られたりズームが解除されたりする誤動作になる
+        activePointers.clear();
+      } else {
+        // 3本→2本のように指の組が変わった場合は基準を取り直す(§rebasePinch)
+        rebasePinch();
       }
       return;
     }

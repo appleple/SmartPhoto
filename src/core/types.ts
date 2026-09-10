@@ -51,6 +51,9 @@ export interface ResolvedSmartPhotoOptions {
   useViewTransitionApi: boolean;
   swipeTopToClose: boolean;
   swipeBottomToClose: boolean;
+  // ピンチで基準倍率(fit / fill)よりはっきり小さく縮めて離したら閉じる
+  // (PhotoSwipe の pinchToClose 相当)
+  pinchToClose: boolean;
   swipeOffset: number;
   swipeVelocity: number;
   headerHeight: number;
@@ -197,6 +200,9 @@ export interface GestureCallbacks {
   onGestureStart(): void;
   onGestureMove(): void;
   onGestureEnd(): void;
+  // ピンチで基準倍率よりはっきり小さく縮めて離した(=閉じたい操作)通知。
+  // 閉じる処理自体はファサード側(hidePhoto)が担う
+  onPinchClose(): void;
   onPhotoDragMove(): void;
   onPhotoDragEnd(result: PhotoDragEndResult): void;
 }
