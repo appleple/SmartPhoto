@@ -674,8 +674,9 @@ export default class SmartPhoto {
 
   private supportsViewTransition(): boolean {
     return (
+      this.state.options.useViewTransition &&
       typeof (document as DocumentWithViewTransition).startViewTransition ===
-      "function"
+        "function"
     );
   }
 

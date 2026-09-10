@@ -820,6 +820,30 @@ describe("View Transitions API 経由で開く", () => {
         .startViewTransition;
     }
   });
+
+  it("useViewTransition: false の場合、ブラウザ対応時でも startViewTransition を呼ばずフォールバックする", async () => {
+    const container = buildGallery();
+    const startViewTransition = vi.fn((callback: () => void) => {
+      callback();
+      return {
+        ready: Promise.resolve(),
+        finished: new Promise<void>(() => {}),
+      };
+    });
+    (
+      document as unknown as { startViewTransition: typeof startViewTransition }
+    ).startViewTransition = startViewTransition;
+    try {
+      track(new SmartPhoto(".js-smartphoto", { useViewTransition: false }));
+      await openViewer(container);
+      expect(startViewTransition).not.toHaveBeenCalled();
+      // フォールバック(addAppearEffect のクローン)経由で開いたことを確認する
+      expect(document.querySelector(".smartphoto-img-clone")).not.toBeNull();
+    } finally {
+      delete (document as unknown as { startViewTransition?: unknown })
+        .startViewTransition;
+    }
+  });
 });
 
 describe("--smartphoto-icon-color(背景色に対する自動コントラスト計算)", () => {

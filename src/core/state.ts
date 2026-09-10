@@ -49,6 +49,7 @@ export const defaults: ResolvedSmartPhotoOptions = {
   verticalGravity: false,
   useOrientationApi: false,
   useHistoryApi: true,
+  useViewTransition: true,
   swipeTopToClose: false,
   swipeBottomToClose: true,
   swipeOffset: 100,
