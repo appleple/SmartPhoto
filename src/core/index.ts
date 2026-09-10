@@ -657,8 +657,7 @@ export default class SmartPhoto {
   // (fit用の item.scale/x/y)を再計算する箇所では、その結果に依存する
   // この fill 倍率も併せて再計算しないと、直後に古い倍率のまま固定されてしまう
   private syncFillScale(): void {
-    // TODO(temp): PCでも動作確認できるよう isSmartPhoneFlag チェックを一時的に外している。検証後に復元すること
-    if (this.state.options.resizeStyle !== "fill") {
+    if (this.state.options.resizeStyle !== "fill" || !this.isSmartPhoneFlag) {
       return;
     }
     const item = currentItem(this.state) as Item;
@@ -750,8 +749,7 @@ export default class SmartPhoto {
       toY - this.state.options.headerHeight - this.state.options.footerHeight;
     let scale = 1;
 
-    // TODO(temp): PCでも動作確認できるよう isSmartPhoneFlag チェックを一時的に外している。検証後に復元すること
-    if (this.state.options.resizeStyle === "fill") {
+    if (this.state.options.resizeStyle === "fill" && this.isSmartPhoneFlag) {
       if (width > height) {
         scale = toY / height;
       } else {
@@ -909,10 +907,20 @@ export default class SmartPhoto {
       // スライドアウトするように見えてしまうため、現在の scale を引き継ぐ
       const currentScale =
         img?.style.transform.match(/scale\(([^)]+)\)/)?.[1] ?? "1";
+      // img の translateY は親(imgWrap)の scale(item.scale) の内側で計算される
+      // ため、画面上での実際の移動量は「指定した値 × item.scale」に縮小される。
+      // 素の height をそのまま指定すると、item.scale が小さい(=フィットのため
+      // 大きく縮小されている縦長画像など)ほど画面上ではほとんど動かず、代わりに
+      // 巨大化された画像の別の部分(例: ライオンの口の奥側)が露出してしまい、
+      // 「スライドして消える」はずが「別の被写体が迫ってくる」ように見えていた。
+      // item.scale で割り、画面上での移動量が常に height になるよう補正する
+      const item = currentItem(this.state);
+      const itemScale = item?.scale ?? 1;
+      const distance = height / itemScale;
       const applied =
         dir === "top"
-          ? `translateY(-${height}px) scale(${currentScale})`
-          : `translateY(${height}px) scale(${currentScale})`;
+          ? `translateY(-${distance}px) scale(${currentScale})`
+          : `translateY(${distance}px) scale(${currentScale})`;
       // dialog 自体のフェードアウトは scss 側の :not([open]) + allow-discrete
       // transition(§8)で CSS だけで完結させている。ここでは画像のスライド
       // アウトだけを JS で担当する

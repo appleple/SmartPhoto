@@ -159,6 +159,54 @@ describe("hidePhoto の transitionend 完了", () => {
     );
   });
 
+  it("フィットのため大きく縮小された縦長画像でも、閉じるスライドが画面の高さ分きちんと移動する", async () => {
+    // img の translateY は親(imgWrap)の scale(item.scale) の内側で計算されるため、
+    // 素の height をそのまま指定すると画面上では height×item.scale しか動かない。
+    // item.scale が小さい(=フィットのため大きく縮小された縦長画像)ほど画面上では
+    // ほとんど動かず、代わりに巨大化された画像の別の部分が露出してしまい、
+    // 「スライドして消える」はずが「別の被写体が迫ってくる」ように見える不具合があった
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 390,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 700,
+      configurable: true,
+    });
+    try {
+      const smartPhoto = track(
+        new SmartPhoto([{ src: "/a.jpg", width: 867, height: 1997 }]),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+      // screenY = 700 - (60+60) = 580 → item.scale = 580/1997 ≈ 0.290436
+      const itemScale = 580 / 1997;
+
+      smartPhoto.hidePhoto();
+
+      const img = document.querySelector(
+        ".current .smartphoto-img",
+      ) as HTMLElement;
+      const translateY = Number(
+        img.style.transform.match(/translateY\(([^)]+)px\)/)?.[1],
+      );
+      // 画面上での実際の移動量(translateY × item.scale)が画面の高さ(700)分に
+      // なっていること = 補正なしの単純な 700px 指定になっていないことを確認する
+      expect(translateY * itemScale).toBeCloseTo(700, 1);
+      fireEvent.transitionEnd(
+        document.querySelector("dialog.smartphoto") as Element,
+      );
+    } finally {
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
+  });
+
   it("resizeStyle: fill でズームされた状態のまま閉じても、閉じた瞬間に等倍へスナップしない", async () => {
     // hidePhoto() は doHideEffect() の前に viewer.scaleSize を 1 にリセットするが、
     // img の実際の transform(DOM)にはまだ fill 倍率が残っている。ここで
