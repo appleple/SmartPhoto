@@ -117,6 +117,120 @@ describe("hidePhoto の transitionend 完了", () => {
     await waitFor(() => expect(close).toHaveBeenCalledTimes(1));
   });
 
+  it("dialog 以外の子要素(list等)の transitionend では早期に完了しない", async () => {
+    // dialog.addEventListener("transitionend", finish, true) は capture:true の
+    // ため、dialog 自身の opacity transition だけでなく、配下の任意の要素
+    // (list のスライド送りアニメーション等)の transitionend も拾ってしまう。
+    // 直前にスライド送り操作をした直後に閉じた場合など、無関係な子要素の
+    // transitionend で閉じるアニメーション(img の translateY)が早期に
+    // リセットされてしまう不具合があった
+    const container = buildGallery();
+    const smartPhoto = track(new SmartPhoto(".js-smartphoto"));
+    await openViewer(container);
+
+    smartPhoto.hidePhoto();
+    const img = document.querySelector(
+      ".current .smartphoto-img",
+    ) as HTMLElement;
+    const transformDuringClose = img.style.transform;
+    expect(transformDuringClose).toContain("translateY(");
+
+    // dialog 自身ではない、配下の list 要素で transitionend が発火しても
+    // finish() の後始末(transform リセット)が走ってはいけない
+    const list = document.querySelector(".smartphoto-list") as Element;
+    fireEvent.transitionEnd(list);
+    expect(img.style.transform).toBe(transformDuringClose);
+
+    // dialog 自身の transitionend で初めて後始末(transform リセット)が走る
+    fireEvent.transitionEnd(
+      document.querySelector("dialog.smartphoto") as Element,
+    );
+    await waitFor(() => expect(img.style.transform).toBe(""));
+  });
+
+  it("スライド送り直後(200ms以内)に閉じても、slideList() の遅延 commit で閉じるスライドが上書きされない", async () => {
+    // slideList() は送り操作のたびに 200ms 後の scheduleTimeout で commit()
+    // (render() + updatePhotoTransform())を実行するが、isOpen のガードがない。
+    // 送り直後にすぐ閉じると、この遅延 commit が「閉じた後」に実行され、
+    // updatePhotoTransform() が viewer.photoPosX/Y=0, scaleSize=1 を img の
+    // transform へ再適用してしまい、doHideEffect() が設定した閉じるスライド
+    // (translateY)を消してしまう不具合があった
+    const container = buildGallery();
+    const smartPhoto = track(new SmartPhoto(".js-smartphoto"));
+    await openViewer(container);
+
+    vi.useFakeTimers();
+    try {
+      // gotoSlide(0): 表示中と同じスライドへの送り(矢印の連打や nav クリック等でも
+      // 起こりうる)。すでに読み込み済みの img を使うため、send先が未ロードで
+      // img 自体が存在しないケース(その場合はそもそも close アニメーションが
+      // 掛からないだけで、以下の上書きの問題は起きない)を避けて検証する
+      smartPhoto.gotoSlide(0);
+      smartPhoto.hidePhoto();
+      const img = document.querySelector(
+        ".current .smartphoto-img",
+      ) as HTMLElement;
+      const transformDuringClose = img.style.transform;
+      expect(transformDuringClose).toContain("translateY(");
+
+      // slideList() の 200ms 遅延 commit を発火させる
+      vi.advanceTimersByTime(200);
+
+      expect(img.style.transform).toBe(transformDuringClose);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("zoomPhoto() 直後(300ms以内)に閉じても、遅延 updatePhotoTransform で閉じるスライドが上書きされない", async () => {
+    // zoomPhoto() は 300ms 後の scheduleTimeout で updatePhotoTransform() を
+    // 直接呼ぶが、isOpen のガードがない。ズーム操作直後にすぐ閉じると、この
+    // 遅延処理が「閉じた後」に実行され、viewer.photoPosX/Y・scaleSize を img の
+    // transform へ再適用してしまい、doHideEffect() が設定した閉じるスライド
+    // (translateY)を上書きしてしまう不具合があった
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 1024,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 768,
+      configurable: true,
+    });
+    try {
+      const smartPhoto = track(
+        new SmartPhoto([{ src: "/a.jpg", width: 2000, height: 1000 }]),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+
+      vi.useFakeTimers();
+      try {
+        smartPhoto.zoomPhoto();
+        smartPhoto.hidePhoto();
+        const img = document.querySelector(
+          ".current .smartphoto-img",
+        ) as HTMLElement;
+        const transformDuringClose = img.style.transform;
+        expect(transformDuringClose).toContain("translateY(");
+
+        // zoomPhoto() の 300ms 遅延 updatePhotoTransform を発火させる
+        vi.advanceTimersByTime(300);
+
+        expect(img.style.transform).toBe(transformDuringClose);
+      } finally {
+        vi.useRealTimers();
+      }
+    } finally {
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
+  });
+
   it("閉じるアニメーション完了前に再度開いても、遅延した close イベントで開いたばかりのモーダルを閉じない", async () => {
     // hidePhoto() は closeアニメーション完了(transitionend)を待って公開の
     // "close" イベントを発火するが、これはネイティブ dialog の "close" イベントと

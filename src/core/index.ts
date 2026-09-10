@@ -286,6 +286,12 @@ export default class SmartPhoto {
     this.state.viewer.photoPosY = 0;
     this.view.updatePhotoTransform(this.state);
     this.scheduleTimeout(() => {
+      // isOpen のガードがないと、ズーム操作直後(300ms以内)に閉じた場合、
+      // この遅延処理が閉じるアニメーション中に実行され、doHideEffect() が
+      // 設定した閉じるスライド(translateY)を上書きしてしまう
+      if (!this.state.viewer.isOpen) {
+        return;
+      }
       this.state.viewer.scale = true;
       this.view.updatePhotoTransform(this.state);
       this.fireEvent("zoomin");
@@ -941,8 +947,17 @@ export default class SmartPhoto {
       // して「閉じた瞬間のスライドだけ再オープン後に画面外へずれる」不具合に
       // なっていた。丸めの往復を一度通した値を比較の基準に保持する
       const stored = img ? img.style.transform : "";
-      const finish = () => {
+      const finish = (e?: Event) => {
         if (this.finishHideEffect !== finish) {
+          return;
+        }
+        // dialog へは capture:true で束縛しているため、dialog 自身の opacity
+        // transition だけでなく配下の任意の要素(list のスライド送りアニメーション
+        // 等)の transitionend も拾ってしまう。直前にスライド送りをした直後に
+        // 閉じた場合など、無関係な子要素の transitionend で閉じるアニメーションが
+        // 早期に打ち切られていたため、dialog 自身が対象の場合のみ完了させる
+        // (フォールバックのタイマー呼び出しには Event がなく、常に完了させる)
+        if (e && e.target !== dialog) {
           return;
         }
         this.finishHideEffect = null;
@@ -1050,7 +1065,14 @@ export default class SmartPhoto {
       const item = currentItem(this.state);
       this.state.viewer.onMove = false;
       setArrow(this.state);
-      this.commit();
+      // 送り操作の 200ms 後に必ず実行されるこの commit() には isOpen の
+      // ガードがなかったため、送り直後(200ms以内)に閉じると、閉じるアニメーション
+      // 中に commit() → updatePhotoTransform() が viewer.photoPosX/Y=0,
+      // scaleSize=1 を img の transform へ再適用してしまい、doHideEffect() が
+      // 設定した閉じるスライド(translateY)を上書きして消してしまっていた
+      if (this.state.viewer.isOpen) {
+        this.commit();
+      }
       if (this.state.viewer.oldIndex !== this.state.viewer.currentIndex) {
         this.fireEvent("change");
       }
@@ -1136,7 +1158,7 @@ export default class SmartPhoto {
   };
 
   private handleResize = (): void => {
-    if (!currentItems(this.state)) {
+    if (!this.state.viewer.isOpen || !currentItems(this.state)) {
       return;
     }
     // visualViewport 非対応環境では window の resize にこのハンドラを直接バインドしている
@@ -1163,7 +1185,7 @@ export default class SmartPhoto {
   };
 
   private handleOrientationChange = (): void => {
-    if (!currentItems(this.state)) {
+    if (!this.state.viewer.isOpen || !currentItems(this.state)) {
       return;
     }
     this.updateViewportHeight();
@@ -1177,6 +1199,9 @@ export default class SmartPhoto {
     const timeout = 500;
     const poll = (time: number): void => {
       this.scheduleTimeout(() => {
+        if (!this.state.viewer.isOpen) {
+          return;
+        }
         if (prevWidth !== getWindowWidth()) {
           this.updateViewportHeight();
           this.resetTranslateCurrent();
