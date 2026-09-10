@@ -607,7 +607,7 @@ describe("gestures", () => {
       expect(state.viewer.photoPosX).toBe(100);
     });
 
-    it("横方向の移動が無いリリースは zoom-out として扱う", () => {
+    it("x/y ともに移動が無いリリース(タップ)は zoom-out として扱う", () => {
       const { imgWrap, callbacks } = zoomedHarness();
       imgWrap.dispatchEvent(
         pointerEvent("pointerdown", { clientX: 100, clientY: 100 }),
@@ -616,6 +616,24 @@ describe("gestures", () => {
         pointerEvent("pointerup", { clientX: 100, clientY: 100 }),
       );
       expect(callbacks.onPhotoDragEnd).toHaveBeenCalledWith("zoom-out");
+    });
+
+    it("縦方向のみのドラッグは zoom-out ではなく通常のドラッグ終了として扱う", () => {
+      // 旧実装は x 座標の一致だけで「移動なし=タップ」と判定していたため、
+      // まっすぐ縦にパンした(x が変わらない)だけでズームが全解除され、
+      // 見ていた場所から fit 表示まで一気に戻ってしまっていた
+      const { state, imgWrap, callbacks } = zoomedHarness();
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", { clientX: 100, clientY: 300 }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointermove", { clientX: 100, clientY: 100 }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerup", { clientX: 100, clientY: 100 }),
+      );
+      expect(callbacks.onPhotoDragEnd).not.toHaveBeenCalledWith("zoom-out");
+      expect(state.viewer.photoPosY).not.toBe(0);
     });
 
     it("境界を超えてドラッグすると next/prev を通知する", () => {
@@ -1018,17 +1036,18 @@ describe("gestures", () => {
 
     it("反対方向にドラッグしても閾値未満なら弾性で戻す(縦方向含む)", () => {
       const { state, imgWrap, callbacks } = zoomedHarness();
-      // item 200x200, scaleSize=2, jsdom の window サイズは 0 のため
-      // bound.maxX/maxY は 400 になる。450 は maxX/maxY を超えるが
-      // offset(swipeOffset(100)*scaleSize(2)=200) 以内なので弾性で戻る対象になる。
+      // item 200x200(scale=1), scaleSize=2, jsdom の window サイズは 0 のため
+      // 可視サイズ 400 → bound.maxX/maxY は (400-0)/2 ÷ item.scale(1) = 200。
+      // 350 は maxX/maxY を超えるが offset(swipeOffset(100)*scaleSize(2)=200)
+      // 以内のオーバーランなので弾性で戻る対象になる。
       imgWrap.dispatchEvent(
         pointerEvent("pointerdown", { clientX: 0, clientY: 0 }),
       );
       imgWrap.dispatchEvent(
         pointerEvent("pointermove", { clientX: 10, clientY: 10 }),
       );
-      state.viewer.photoPosX = 450;
-      state.viewer.photoPosY = 450;
+      state.viewer.photoPosX = 350;
+      state.viewer.photoPosY = 350;
       imgWrap.dispatchEvent(
         pointerEvent("pointerup", { clientX: 10, clientY: 10 }),
       );
@@ -1044,15 +1063,15 @@ describe("gestures", () => {
       imgWrap.dispatchEvent(
         pointerEvent("pointermove", { clientX: 10, clientY: 10 }),
       );
-      state.viewer.photoPosX = -450;
-      state.viewer.photoPosY = -450;
+      state.viewer.photoPosX = -350;
+      state.viewer.photoPosY = -350;
       imgWrap.dispatchEvent(
         pointerEvent("pointerup", { clientX: 10, clientY: 10 }),
       );
       expect(callbacks.onPhotoDragEnd).toHaveBeenCalledWith(null);
       expect(state.viewer.elastic).toBe(true);
-      expect(state.viewer.photoPosX).toBeGreaterThan(-450);
-      expect(state.viewer.photoPosY).toBeGreaterThan(-450);
+      expect(state.viewer.photoPosX).toBeGreaterThan(-350);
+      expect(state.viewer.photoPosY).toBeGreaterThan(-350);
 
       // 300ms後に弾性状態を解除する
       vi.advanceTimersByTime(300);
@@ -1068,7 +1087,7 @@ describe("gestures", () => {
         pointerEvent("pointermove", { clientX: 10, clientY: 10 }),
       );
       state.viewer.photoPosX = 0;
-      state.viewer.photoPosY = 450;
+      state.viewer.photoPosY = 350;
       imgWrap.dispatchEvent(
         pointerEvent("pointerup", { clientX: 10, clientY: 10 }),
       );
@@ -1084,7 +1103,7 @@ describe("gestures", () => {
       imgWrap.dispatchEvent(
         pointerEvent("pointermove", { clientX: 10, clientY: 10 }),
       );
-      state.viewer.photoPosX = 450;
+      state.viewer.photoPosX = 350;
       state.viewer.photoPosY = 0;
       imgWrap.dispatchEvent(
         pointerEvent("pointerup", { clientX: 10, clientY: 10 }),

@@ -296,11 +296,17 @@ export function makeBound(
     maxY = (height - winHeight) / 2;
     minY = -1 * maxY;
   }
+  // photoPos の画面上の変位は「photoPos × item.scale」(imgWrap の scale(item.scale)
+  // の内側で translate されるため)。境界も同じ単位へ換算して返す。
+  // 旧実装(× viewer.scaleSize)は、デスクトップのタップズーム
+  // (scaleSize = 1/item.scale)ではたまたま一致するが、スマホの fill 基準ズーム
+  // (scaleBorder ≠ 1/item.scale)では境界が実際の可動域より狭く/広く計算され、
+  // ドラッグを離した際のクランプで画像が本来の位置を超えて中央側へ跳ね戻っていた
   return {
-    minX: round(minX, 6) * viewer.scaleSize,
-    minY: round(minY, 6) * viewer.scaleSize,
-    maxX: round(maxX, 6) * viewer.scaleSize,
-    maxY: round(maxY, 6) * viewer.scaleSize,
+    minX: round(minX, 6) / item.scale,
+    minY: round(minY, 6) / item.scale,
+    maxX: round(maxX, 6) / item.scale,
+    maxY: round(maxY, 6) / item.scale,
   };
 }
 

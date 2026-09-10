@@ -462,7 +462,10 @@ export function createGestures(
     photoSwipable = false;
     const oldPos_ = oldPhotoPos as { x: number; y: number };
     const firstPos_ = firstPhotoPos as { x: number; y: number };
-    if (oldPos_.x === firstPos_.x) {
+    // 「ズーム中のタップ = ズーム解除」の判定。x だけの比較だと、まっすぐ縦に
+    // パンした(x が変わらない)だけでズームが全解除され、見ていた場所から
+    // fit 表示まで一気に戻ってしまうため、x/y 両方の無移動をタップとみなす
+    if (oldPos_.x === firstPos_.x && oldPos_.y === firstPos_.y) {
       callbacks.onPhotoDragEnd("zoom-out");
       return;
     }

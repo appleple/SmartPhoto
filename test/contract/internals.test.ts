@@ -260,8 +260,12 @@ describe("hidePhoto の transitionend 完了", () => {
       configurable: true,
     });
     try {
+      // デフォルトの animationSpeed に依存しないよう明示指定する(旧実装の
+      // 固定 300ms とデフォルト値が偶然一致すると検証にならないため)
       const smartPhoto = track(
-        new SmartPhoto([{ src: "/a.jpg", width: 2000, height: 2000 }]),
+        new SmartPhoto([{ src: "/a.jpg", width: 2000, height: 2000 }], {
+          animationSpeed: 450,
+        }),
       );
       smartPhoto.show(0);
       await waitFor(() => {

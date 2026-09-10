@@ -335,11 +335,27 @@ describe("state", () => {
       expect(bound.maxY).toBe(600);
     });
 
-    it("scaleSize を反映する", () => {
+    it("scaleSize は可視サイズにのみ反映され、境界は photoPos 単位で返る", () => {
+      // photoPos の画面上の変位は「photoPos × item.scale」(imgWrap の scale の
+      // 内側で translate されるため)。境界も同じ単位で返さないと、ドラッグを
+      // 離した際のクランプ位置が実際の可動域とズレて、パンした画像が本来より
+      // 大きく中央側へ跳ね戻ってしまう
       const item = { width: 100, height: 100, scale: 1 };
       const viewer = { scaleSize: 2 };
       const bound = state.makeBound(item, viewer, 1000, 800);
-      expect(bound.maxX).toBe(800);
+      // 可視幅 = 100×1×2 = 200 → 画面上の遊び = (1000-200)/2 = 400 → ÷ item.scale(1)
+      expect(bound.maxX).toBe(400);
+    });
+
+    it("item.scale で縮小表示されている画像は境界を photoPos 単位へ換算する", () => {
+      const item = { width: 1000, height: 1000, scale: 0.5 };
+      const viewer = { scaleSize: 4 };
+      const bound = state.makeBound(item, viewer, 1000, 800);
+      // 可視幅 = 1000×0.5×4 = 2000 → 画面上の可動域 = (2000-1000)/2 = 500
+      // → photoPos 単位 = 500 ÷ 0.5 = 1000
+      expect(bound.maxX).toBe(1000);
+      // 可視高 = 2000 → (2000-800)/2 = 600 → ÷0.5 = 1200
+      expect(bound.maxY).toBe(1200);
     });
   });
 
