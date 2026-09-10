@@ -185,6 +185,23 @@ describe("gestures", () => {
       );
       expect(callbacks.onSwipeEnd).toHaveBeenCalledWith("stay");
     });
+
+    it("swipeVelocity を大きくすると同じ速さのフリックでも stay になる", () => {
+      // デフォルト(0.5)なら next になる 40px/40ms(1.0px/ms) のフリックが、
+      // swipeVelocity をそれより大きくすると isFlick 判定に入らなくなることを確認する
+      const { imgWrap, callbacks } = buildHarness({ swipeVelocity: 10 });
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", { clientX: 300, clientY: 100 }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointermove", { clientX: 260, clientY: 100 }),
+      );
+      vi.advanceTimersByTime(40);
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerup", { clientX: 260, clientY: 100 }),
+      );
+      expect(callbacks.onSwipeEnd).toHaveBeenCalledWith("stay");
+    });
   });
 
   describe("スワイプ(縦方向)", () => {
@@ -648,6 +665,50 @@ describe("gestures", () => {
 
     it("scale していなければ何もしない", () => {
       const { callbacks } = buildHarness();
+      callbacks.onPhotoDragMove.mockClear();
+      vi.advanceTimersByTime(50);
+      expect(callbacks.onPhotoDragMove).not.toHaveBeenCalled();
+    });
+
+    it("forceInterval を長くすると tick 間隔が伸びる", () => {
+      const { state, imgWrap, callbacks } = buildHarness({
+        forceInterval: 200,
+      });
+      state.viewer.scale = true;
+      state.viewer.scaleSize = 2;
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", { clientX: 1000, clientY: 100 }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointermove", { clientX: 950, clientY: 100 }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerup", { clientX: 950, clientY: 100 }),
+      );
+      callbacks.onPhotoDragMove.mockClear();
+      // デフォルト(10ms)なら発火するはずの 50ms 時点ではまだ tick していない
+      vi.advanceTimersByTime(50);
+      expect(callbacks.onPhotoDragMove).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(150);
+      expect(callbacks.onPhotoDragMove).toHaveBeenCalled();
+    });
+
+    it("registance が初速を上回ると慣性が働かない", () => {
+      // ドラッグにより初速 force=20 が設定される(scaleSize=2 × 50px 移動 ÷ 5)。
+      // registance をそれ以上にすると初回 tick で force が 0.5 未満になり、
+      // onPhotoDragMove を一度も呼ばずに慣性ループが止まることを確認する
+      const { state, imgWrap, callbacks } = buildHarness({ registance: 20 });
+      state.viewer.scale = true;
+      state.viewer.scaleSize = 2;
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerdown", { clientX: 1000, clientY: 100 }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointermove", { clientX: 950, clientY: 100 }),
+      );
+      imgWrap.dispatchEvent(
+        pointerEvent("pointerup", { clientX: 950, clientY: 100 }),
+      );
       callbacks.onPhotoDragMove.mockClear();
       vi.advanceTimersByTime(50);
       expect(callbacks.onPhotoDragMove).not.toHaveBeenCalled();

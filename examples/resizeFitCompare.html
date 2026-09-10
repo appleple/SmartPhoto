@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>SmartPhoto.js - resizeStyle: fill (v1 CDN vs v2) 比較</title>
+	<style>
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			margin: 0;
+			padding: 1.5rem;
+		}
+		h1 {
+			font-size: 1.2rem;
+		}
+		p {
+			color: #555;
+			font-size: 0.9rem;
+		}
+		.panes {
+			display: flex;
+			gap: 1rem;
+			height: 80vh;
+		}
+		.pane {
+			/* resizeStyle: 'fill' は isSmartPhoneFlag(UA)のみで分岐し、実際の
+			   ビューポート幅は見ない。ただし見た目をスマホに近づけるため
+			   iframe自体もスマホ相当の横幅に固定する */
+			flex: 0 0 390px;
+			display: flex;
+			flex-direction: column;
+		}
+		.pane h2 {
+			font-size: 0.95rem;
+			margin: 0 0 0.5rem;
+		}
+		.pane iframe {
+			flex: 1 1 auto;
+			width: 100%;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+		/* CSSクラス名の衝突を避けるため、それぞれ独立した iframe(≒別ドキュメント)
+		   として読み込む。同一ページに両方の smartphoto.css を直接読み込むと、
+		   同名クラスがどちらか一方のスタイルで上書きされ、正確な比較にならない */
+	</style>
+</head>
+<body>
+	<h1>resizeStyle: 'fill' 比較(左: v1.6.5 CDN / 右: 現在のdevビルド)</h1>
+	<p>
+		各iframeは <code>?mobile=1</code> 付きで読み込んでおり、navigator.userAgent を
+		iPhone相当に偽装して isSmartPhoneFlag を強制的に true にしています
+		(実機のUAエミュレーションが使えない自動テスト環境向けの診断用フラグ)。
+		画像タップ後の拡大表示のされ方・アニメーションの滑らかさを左右で見比べてください。
+	</p>
+	<div class="panes">
+		<div class="pane">
+			<h2>v1.6.5 (CDN)</h2>
+			<iframe src="./resizeFitV1.html?mobile=1" title="SmartPhoto v1.6.5 (CDN)"></iframe>
+		</div>
+		<div class="pane">
+			<h2>v2 (このリポジトリの現在のソース)</h2>
+			<iframe src="./resizeFit.html?mobile=1" title="SmartPhoto v2 (dev)"></iframe>
+		</div>
+	</div>
+</body>
+</html>

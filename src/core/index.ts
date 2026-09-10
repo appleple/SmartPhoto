@@ -595,6 +595,11 @@ export default class SmartPhoto {
 
   private syncDialog(): void {
     const { dialog, caption } = this.view.refs;
+    // dialog 自体の opacity/display フェード(§8のCSS transition)は showAnimation
+    // を関知しない stylesheet 側の指定のため、false のときは JS 側で明示的に
+    // transition を止めないと open/close どちらでもアニメーションしてしまう
+    dialog.style.transition =
+      this.state.options.showAnimation === false ? "none" : "";
     if (this.state.viewer.isOpen && !dialog.open) {
       // ホスト側 CSS の `dialog { display: block; }` 系ルールが
       // dialog:not([open]) の display:none を上書きしてしまっているケースの保険
@@ -611,6 +616,13 @@ export default class SmartPhoto {
 
   private commit(): void {
     this.view.render(this.state);
+    // render() は imgWrap 側(item.scale による fit 配置)しか更新しない。写真本体
+    // (img)の translate/scale は updatePhotoTransform() 側の専任だったため、
+    // 元々ズーム操作(zoomPhoto/gesture)経由でしか呼ばれておらず、resizeStyle:
+    // 'fill' で initPhoto() が設定した viewer.scaleSize が open 直後には一度も
+    // DOM へ反映されない(ズーム操作で初めて反映される)不具合があった。commit()
+    // を「状態を DOM へ完全に同期する」唯一の入口にし、ここに含める
+    this.view.updatePhotoTransform(this.state);
     this.syncDialog();
   }
 
@@ -637,17 +649,27 @@ export default class SmartPhoto {
     this.setPosByCurrentIndex();
     this.setSizeByScreen();
     setArrow(this.state);
-    if (this.state.options.resizeStyle === "fill" && this.isSmartPhoneFlag) {
-      const item = currentItem(this.state) as Item;
-      this.state.viewer.scale = true;
-      this.state.viewer.hideUi = true;
-      this.state.viewer.scaleSize = scaleBorder(
-        item,
-        getWindowWidth(),
-        getWindowHeight(),
-        this.isSmartPhoneFlag,
-      );
+    this.syncFillScale();
+  }
+
+  // resizeStyle: 'fill' はスマートフォンでのみ、画面を隙間なく覆うよう
+  // scaleBorder() の倍率を viewer.scaleSize に適用する。setSizeByScreen()
+  // (fit用の item.scale/x/y)を再計算する箇所では、その結果に依存する
+  // この fill 倍率も併せて再計算しないと、直後に古い倍率のまま固定されてしまう
+  private syncFillScale(): void {
+    // TODO(temp): PCでも動作確認できるよう isSmartPhoneFlag チェックを一時的に外している。検証後に復元すること
+    if (this.state.options.resizeStyle !== "fill") {
+      return;
     }
+    const item = currentItem(this.state) as Item;
+    this.state.viewer.scale = true;
+    this.state.viewer.hideUi = true;
+    this.state.viewer.scaleSize = scaleBorder(
+      item,
+      getWindowWidth(),
+      getWindowHeight(),
+      this.isSmartPhoneFlag,
+    );
   }
 
   private supportsViewTransition(): boolean {
@@ -727,7 +749,8 @@ export default class SmartPhoto {
       toY - this.state.options.headerHeight - this.state.options.footerHeight;
     let scale = 1;
 
-    if (this.state.options.resizeStyle === "fill" && this.isSmartPhoneFlag) {
+    // TODO(temp): PCでも動作確認できるよう isSmartPhoneFlag チェックを一時的に外している。検証後に復元すること
+    if (this.state.options.resizeStyle === "fill") {
       if (width > height) {
         scale = toY / height;
       } else {
@@ -834,7 +857,8 @@ export default class SmartPhoto {
       this.resetTranslateCurrent();
       this.setPosByCurrentIndex();
       this.setSizeByScreen();
-      this.view.render(this.state);
+      this.syncFillScale();
+      this.commit();
     });
   }
 
@@ -866,15 +890,39 @@ export default class SmartPhoto {
 
   private doHideEffect(dir: "top" | "bottom"): Promise<void> {
     return new Promise((resolve) => {
+      // showAnimation: false では syncDialog() が dialog の transition を
+      // 止めている(§8)ため、画像側のスライドアウトや transitionend/タイマー
+      // 待ちを行わずそのまま後始末へ進む
+      if (this.state.options.showAnimation === false) {
+        resolve();
+        return;
+      }
       const dialog = this.view.refs.dialog;
       const img = this.currentImgElement();
       const height = getWindowHeight();
+      // hidePhoto() は doHideEffect() 呼び出し前に viewer.scaleSize を 1 に
+      // リセットしているが、まだ再描画(updatePhotoTransform)前のため img の
+      // 現在の transform には resizeStyle: 'fill' 等で付いていた scale(...) が
+      // まだ残っている。ここで translateY だけの transform に上書きすると
+      // その scale が消え、閉じた瞬間に一旦「元の大きさ」へスナップしてから
+      // スライドアウトするように見えてしまうため、現在の scale を引き継ぐ
+      const currentScale =
+        img?.style.transform.match(/scale\(([^)]+)\)/)?.[1] ?? "1";
       const applied =
-        dir === "top" ? `translateY(-${height}px)` : `translateY(${height}px)`;
+        dir === "top"
+          ? `translateY(-${height}px) scale(${currentScale})`
+          : `translateY(${height}px) scale(${currentScale})`;
       // dialog 自体のフェードアウトは scss 側の :not([open]) + allow-discrete
       // transition(§8)で CSS だけで完結させている。ここでは画像のスライド
       // アウトだけを JS で担当する
       if (img) {
+        // resizeStyle: 'fill' 等でズーム中(viewer.scale=true)だった場合、
+        // img には .smartphoto-img-onmove(transition: none)が付いたままで、
+        // これが残っていると上の transform 変更が transition なしで即座に
+        // 適用されてしまう。巨大に拡大された画像を瞬時に translateY へ切り替える
+        // と、スライドではなく「一瞬別の位置(=別の切り取り範囲)へワープした
+        // ように見える(縮んだように錯覚する)」ため、ここで確実に外しておく
+        img.classList.remove(this.state.options.classNames.smartPhotoImgOnMove);
         img.style.transform = applied;
       }
       // 後始末の判定に applied をそのまま使わないのは、CSSOM が数値を丸めて

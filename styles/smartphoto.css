@@ -146,6 +146,19 @@ dialog.smartphoto:not([open]) {
   animation-timing-function: var(--smartphoto-animation-function, ease-out);
 }
 
+/* view-transition-name を付けなかった要素(サムネイル一覧のページ全体や、
+ * 新しく開く dialog の背景/矢印/キャプション等)は、既定では ::view-transition-*(root)
+ * が「開く前のページ」→「dialog が開いた後のページ」を丸ごとクロスフェードする。
+ * このクロスフェードは既定で mix-blend-mode: plus-lighter が掛かり、背景色が
+ * 大きく変わる(明るいページ→黒背景)場合に一瞬白っぽく光って見えたり、写真本体
+ * (smartphoto-hero)のモーフィングと重なって「一瞬消えてからまた出てくる」ように
+ * 見える原因になる。root 側のアニメーションは無効化し、写真の拡大だけを見せる */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 .smartphoto-close {
   opacity: 0;
 }

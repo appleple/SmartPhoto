@@ -4,12 +4,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="/style.css">
-	<title>SmartPhoto.js</title>
+	<!-- v1系(CDN, unpkg)をそのまま読み込む。v2の開発サーバーとCSSクラス名が
+	     衝突しないよう、このページ単体では v2 を一切読み込まない -->
+	<link rel="stylesheet" href="https://unpkg.com/smartphoto@1.6.5/css/smartphoto.min.css"
+		integrity="sha384-+WmIlgZ4AznsGTg1YV3bByhUGhU+HBu2+61vGr6TPU41tFuE4gks+OVGkYuiPRdz"
+		crossorigin="anonymous">
+	<link rel="stylesheet" href="/style.css">
+	<title>SmartPhoto.js v1 (CDN) - resizeStyle: fill</title>
 	<script>
-		// 診断用: ?mobile=1 が付いている場合のみ、isSmartPhoneFlag(UA判定)を
-		// スマートフォンとして扱えるよう navigator.userAgent を上書きする。
-		// SmartPhoto の生成(モジュール実行)より必ず先に実行させる必要がある
+		// 診断用: ?mobile=1 が付いている場合のみ、_isSmartPhone(UA判定)を
+		// スマートフォンとして扱えるよう navigator.userAgent を上書きする
 		if (new URLSearchParams(location.search).get('mobile') === '1') {
 			Object.defineProperty(window.navigator, 'userAgent', {
 				value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
@@ -20,7 +24,7 @@
 </head>
 <body>
 	<div class="wrapper">
-		<h1 class="title">SmartPhoto.js</h1>
+		<h1 class="title">SmartPhoto.js v1.6.5 (CDN) - resizeStyle: fill</h1>
 		<div class="masonry">
 			<div class="brick">
 				<a href="/large-lion.jpg" class="js-img-viewer" data-caption="Lion" data-id="lion">
@@ -54,6 +58,15 @@
 			</div>
 		</div>
 	</div>
-	<script type="module" src="./src/resizeFit.js"></script>
+	<script src="https://unpkg.com/smartphoto@1.6.5/js/smartphoto.min.js"
+		integrity="sha384-6EJSJtapGocf6XTyi7uy2h8fSCS9e0Isr7Z+tbk8/7GhptxMsS+/BukPw+ckWxzt"
+		crossorigin="anonymous"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			new SmartPhoto('.js-img-viewer', {
+				resizeStyle: 'fill',
+			});
+		});
+	</script>
 </body>
 </html>
