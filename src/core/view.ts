@@ -44,6 +44,7 @@ export interface View {
   syncSlides(items: Item[], state: State): void;
   updatePhotoTransform(state: State): void;
   applyViewTransitionLayout(state: State): void;
+  resetViewTransitionLayout(): void;
   updateListTransform(state: State): void;
   showAppearEffect(effect: AppearEffect): void;
   removeAppearEffect(): void;
@@ -453,6 +454,23 @@ export function createView(
     }
   }
 
+  // applyViewTransitionLayout() で差し替えたレイアウトを、state 由来の通常の
+  // width/transform へ戻す。render() を丸ごと呼ばないのは、トランジション中に
+  // スライドが送られていた場合、caption/count が slideList() の正規の反映
+  // (200ms 後の setArrow + commit)より先に更新され、「表示は次のスライドなのに
+  // viewer.prev/next はまだ古い」という時間窓を作ってしまうため。
+  // 全スライドを対象にするのは、差し替えを受けたスライドがその後の送りで
+  // 非カレントになっていても確実に復元するため(いずれも冪等な代入のみ)
+  function resetViewTransitionLayout(): void {
+    for (const [item, slideRefs] of refs.slides) {
+      const { img, imgWrap } = slideRefs;
+      if (img && imgWrap) {
+        imgWrap.style.transform = `translate(${item.x}px,${item.y}px) scale(${item.scale})`;
+        img.style.width = `${item.width}px`;
+      }
+    }
+  }
+
   function showAppearEffect(effect: AppearEffect): void {
     const clone = document.createElement("img");
     clone.className = classNames.smartPhotoImgClone;
@@ -480,6 +498,7 @@ export function createView(
     syncSlides,
     updatePhotoTransform,
     applyViewTransitionLayout,
+    resetViewTransitionLayout,
     updateListTransform,
     showAppearEffect,
     removeAppearEffect,

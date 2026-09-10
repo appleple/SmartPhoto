@@ -1079,6 +1079,33 @@ describe("空のギャラリーでの gotoSlide", () => {
   });
 });
 
+describe("範囲外 index への gotoSlide", () => {
+  it("範囲外の index は無視され、現在のスライドが維持される", async () => {
+    // viewer.prev/next は端(最初/最後)のスライドでは setArrow() が更新しないため
+    // -1 のままのことがあり、送り操作の直後(setArrow 反映前の 200ms 以内)に
+    // 逆方向へ送るとその -1 がそのまま gotoSlide へ渡り得る。currentIndex が
+    // -1 になると currentItem が見つからず、以降の送り・描画が壊れたままになる
+    // ため、範囲外は「送り先なし」として無視することを保証する
+    const smartPhoto = track(
+      new SmartPhoto([
+        { src: "/a.jpg", width: 10, height: 10 },
+        { src: "/b.jpg", width: 10, height: 10 },
+      ]),
+    );
+    smartPhoto.show(0);
+    await waitFor(() => {
+      expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+        "open",
+      );
+    });
+    smartPhoto.gotoSlide(-1);
+    expect(smartPhoto.currentIndex).toBe(0);
+    smartPhoto.gotoSlide(2);
+    expect(smartPhoto.currentIndex).toBe(0);
+    await new Promise((r) => setTimeout(r, 250));
+  });
+});
+
 describe("複数グループのギャラリー", () => {
   it("構築時に最後に追加されたグループ以外を開いても正しいスライドが表示される", async () => {
     const container = document.createElement("div");
@@ -1330,6 +1357,59 @@ describe("View Transitions API 経由で開く", () => {
       delete (
         window as unknown as { webkitConvertPointFromNodeToPage?: unknown }
       ).webkitConvertPointFromNodeToPage;
+      delete (document as unknown as { startViewTransition?: unknown })
+        .startViewTransition;
+    }
+  });
+
+  it("finished の後始末はレイアウト復元のみ行い、caption 等を先行して再描画しない", async () => {
+    // 後始末で view.render() を丸ごと呼ぶと、トランジション中に next() された場合に
+    // caption や count が slideList の正規の反映(200ms 後の setArrow + commit)より
+    // 先に更新されてしまう。utterance の見た目だけでなく、「caption は切り替わった
+    // のに viewer.prev はまだ古い」という時間窓が生まれ、その間の prev 操作が
+    // 範囲外 index へ飛ぶ原因になっていた(CI の E2E で顕在化)。後始末は
+    // モーフ用レイアウト(width/transform)の復元だけに限定することを保証する
+    const held: { resolve: () => void } = { resolve: () => {} };
+    const startViewTransition = vi.fn((callback: () => void) => {
+      callback();
+      return {
+        ready: Promise.resolve(),
+        finished: new Promise<void>((resolve) => {
+          held.resolve = resolve;
+        }),
+      };
+    });
+    (
+      document as unknown as { startViewTransition: typeof startViewTransition }
+    ).startViewTransition = startViewTransition;
+    try {
+      const smartPhoto = track(
+        new SmartPhoto([
+          { src: "/a.jpg", width: 10, height: 10, caption: "A" },
+          { src: "/b.jpg", width: 10, height: 10, caption: "B" },
+        ]),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+      const caption = document.querySelector(
+        ".smartphoto-caption",
+      ) as HTMLElement;
+      expect(caption.textContent).toBe("A");
+      // トランジション中に次のスライドへ送る(caption の更新は 200ms 後の commit が担う)
+      smartPhoto.next();
+      held.resolve();
+      await new Promise((r) => setTimeout(r, 20));
+      // 後始末が render() だとここで先行して "B" になってしまう
+      expect(caption.textContent).toBe("A");
+      // 正規の反映で "B" になる
+      await waitFor(() => {
+        expect(caption.textContent).toBe("B");
+      });
+    } finally {
       delete (document as unknown as { startViewTransition?: unknown })
         .startViewTransition;
     }

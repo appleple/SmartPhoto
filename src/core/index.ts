@@ -234,10 +234,18 @@ export default class SmartPhoto {
   }
 
   gotoSlide(index: number): void {
-    this.state.viewer.currentIndex = Number.parseInt(String(index), 10);
-    if (!this.state.viewer.currentIndex) {
-      this.state.viewer.currentIndex = 0;
+    const parsed = Number.parseInt(String(index), 10);
+    const next = Number.isNaN(parsed) ? 0 : parsed;
+    // viewer.prev/next は端(最初/最後)のスライドでは setArrow() が更新せず -1 の
+    // ままのことがあり、送り操作の直後(setArrow 反映前の 200ms 以内)に逆方向へ
+    // 送るとその -1 がここへ渡り得る。currentIndex を範囲外にすると currentItem
+    // が見つからず以降の送り・描画が壊れたままになるため、「送り先なし」として
+    // 何もしない
+    const total = currentItems(this.state)?.length ?? 0;
+    if (next < 0 || next >= total) {
+      return;
     }
+    this.state.viewer.currentIndex = next;
     this.slideList();
   }
 
@@ -781,7 +789,9 @@ export default class SmartPhoto {
         return;
       }
       this.pendingViewTransitionResync = false;
-      this.view.render(this.state);
+      // render() を丸ごと呼ばず、モーフ用レイアウトの復元だけに限定する
+      // (§view.ts resetViewTransitionLayout: caption/count の先行更新を避ける)
+      this.view.resetViewTransitionLayout();
     };
     const transition = (
       document as DocumentWithViewTransition
