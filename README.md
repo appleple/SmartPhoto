@@ -182,7 +182,7 @@ Slide fields:
 		<td>true</td>
 	</tr>
 	<tr>
-		<td>useViewTransition</td>
+		<td>useViewTransitionApi</td>
 		<td>use the View Transition API for the open animation when the browser supports it (falls back to the clone-based animation when disabled or unsupported)</td>
 		<td>true</td>
 	</tr>

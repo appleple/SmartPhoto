@@ -48,7 +48,7 @@ export interface ResolvedSmartPhotoOptions {
   verticalGravity: boolean;
   useOrientationApi: boolean;
   useHistoryApi: boolean;
-  useViewTransition: boolean;
+  useViewTransitionApi: boolean;
   swipeTopToClose: boolean;
   swipeBottomToClose: boolean;
   swipeOffset: number;

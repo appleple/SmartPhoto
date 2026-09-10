@@ -821,7 +821,7 @@ describe("View Transitions API 経由で開く", () => {
     }
   });
 
-  it("useViewTransition: false の場合、ブラウザ対応時でも startViewTransition を呼ばずフォールバックする", async () => {
+  it("useViewTransitionApi: false の場合、ブラウザ対応時でも startViewTransition を呼ばずフォールバックする", async () => {
     const container = buildGallery();
     const startViewTransition = vi.fn((callback: () => void) => {
       callback();
@@ -834,7 +834,7 @@ describe("View Transitions API 経由で開く", () => {
       document as unknown as { startViewTransition: typeof startViewTransition }
     ).startViewTransition = startViewTransition;
     try {
-      track(new SmartPhoto(".js-smartphoto", { useViewTransition: false }));
+      track(new SmartPhoto(".js-smartphoto", { useViewTransitionApi: false }));
       await openViewer(container);
       expect(startViewTransition).not.toHaveBeenCalled();
       // フォールバック(addAppearEffect のクローン)経由で開いたことを確認する
