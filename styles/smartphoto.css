@@ -132,6 +132,17 @@ dialog.smartphoto:not([open]) {
 
 .smartphoto::backdrop {
   background-color: var(--smartphoto-backdrop-color, rgba(0, 0, 0, 1));
+  /* iOS 26 Safari の「タブバー(下)」表示では、ページ本体はツールバーの背後
+   * (レイアウトビューポートの下端より下)までエッジツーエッジで描画されるのに対し、
+   * 既定の ::backdrop はビューポート下端で止まるため、サムネイルバーの下の帯から
+   * 裏のページが覗いてしまう。dialog 本体の高さを伸ばす方法は取らない
+   * (bottom:0 のサムネイルバーごとツールバーの背後に潜ってしまう)。
+   * レイアウトに影響しない ::backdrop 側だけを 100lvh + 下側セーフエリアまで
+   * 明示的に広げて帯を覆う。lvh 非対応ブラウザでは height 宣言ごと無効になり、
+   * 下の inset: 0 による従来のビューポート全面カバーにフォールバックする */
+  position: fixed;
+  inset: 0;
+  height: calc(100lvh + env(safe-area-inset-bottom, 0px));
 }
 
 /* View Transition(openPhotoWithViewTransition() 参照)の疑似要素ツリーは document の
