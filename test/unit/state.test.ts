@@ -384,7 +384,8 @@ describe("state", () => {
       ];
       state.sizeItems(items, 1000, 800, 60, 60);
       const item = items[0];
-      expect(item.scale).toBeCloseTo(680 / 2000, 5);
+      // screenY = 800 - (60+60) - FIT_MARGIN(24)*2 = 632
+      expect(item.scale).toBeCloseTo(632 / 2000, 5);
     });
 
     it("縮小後も幅が画面を超える場合は幅基準で再縮小する", () => {

@@ -943,9 +943,9 @@ describe("headerHeight / footerHeight オプション", () => {
       const imgWrap = document.querySelector(
         ".current .smartphoto-img-wrap",
       ) as HTMLElement;
-      // screenY = 800 - (200 + 100) = 500 → scale = 500 / 2000 = 0.25
-      // (デフォルトの headerHeight/footerHeight=60/60 なら scale は 0.34 になり一致しない)
-      expect(imgWrap.style.transform).toContain("scale(0.25)");
+      // screenY = 800 - (200 + 100) - FIT_MARGIN(24)*2 = 452 → scale = 452 / 2000 = 0.226
+      // (デフォルトの headerHeight/footerHeight=60/60 なら scale は異なる値になり一致しない)
+      expect(imgWrap.style.transform).toContain("scale(0.226)");
     } finally {
       delete (document.documentElement as { clientWidth?: number }).clientWidth;
       delete (document.documentElement as { clientHeight?: number })
@@ -982,8 +982,8 @@ describe("headerHeight / footerHeight オプション", () => {
       const imgWrap = document.querySelector(
         ".current .smartphoto-img-wrap",
       ) as HTMLElement;
-      // screenY = 700 - (60 + 60) = 580 → scale = 580 / 1997
-      expect(imgWrap.style.transform).toContain(`scale(${580 / 1997})`);
+      // screenY = 700 - (60 + 60) - FIT_MARGIN(24)*2 = 532 → scale = 532 / 1997
+      expect(imgWrap.style.transform).toContain(`scale(${532 / 1997})`);
     } finally {
       delete (document.documentElement as { clientWidth?: number }).clientWidth;
       delete (document.documentElement as { clientHeight?: number })
@@ -1019,8 +1019,8 @@ describe("headerHeight / footerHeight オプション", () => {
       const imgWrap = document.querySelector(
         ".current .smartphoto-img-wrap",
       ) as HTMLElement;
-      // screenY = 700 - (50 + 50) = 600 → scale = 600 / 1997
-      expect(imgWrap.style.transform).toContain(`scale(${600 / 1997})`);
+      // screenY = 700 - (50 + 50) - FIT_MARGIN(24)*2 = 552 → scale = 552 / 1997
+      expect(imgWrap.style.transform).toContain(`scale(${552 / 1997})`);
     } finally {
       delete (document.documentElement as { clientWidth?: number }).clientWidth;
       delete (document.documentElement as { clientHeight?: number })
@@ -1303,7 +1303,7 @@ describe("View Transitions API 経由で開く", () => {
     ).startViewTransition = startViewTransition;
     try {
       const smartPhoto = track(
-        new SmartPhoto([{ src: "/a.jpg", width: 1716, height: 1140 }]),
+        new SmartPhoto([{ src: "/a.jpg", width: 2000, height: 1140 }]),
       );
       smartPhoto.show(0);
       await waitFor(() => {
@@ -1317,14 +1317,14 @@ describe("View Transitions API 経由で開く", () => {
       const imgWrap = document.querySelector(
         ".current .smartphoto-img-wrap",
       ) as HTMLElement;
-      // fit の scale = 1000 / 1716 → 表示幅 = 1716 × (1000/1716) = 1000px
+      // fit の scale = 1000 / 2000 → 表示幅 = 2000 × (1000/2000) = 1000px
       expect(img.style.width).toBe("1000px");
       expect(imgWrap.style.transform).toContain("scale(1)");
       held.resolve();
       await waitFor(() => {
-        expect(img.style.width).toBe("1716px");
+        expect(img.style.width).toBe("2000px");
       });
-      expect(imgWrap.style.transform).toContain(`scale(${1000 / 1716})`);
+      expect(imgWrap.style.transform).toContain(`scale(${1000 / 2000})`);
     } finally {
       delete (document as unknown as { startViewTransition?: unknown })
         .startViewTransition;
@@ -1449,7 +1449,7 @@ describe("View Transitions API 経由で開く", () => {
     ).startViewTransition = startViewTransition;
     try {
       const smartPhoto = track(
-        new SmartPhoto([{ src: "/a.jpg", width: 1716, height: 1140 }]),
+        new SmartPhoto([{ src: "/a.jpg", width: 2000, height: 1140 }]),
       );
       smartPhoto.show(0);
       await waitFor(() => {
@@ -1478,9 +1478,9 @@ describe("View Transitions API 経由で開く", () => {
       held.resolve();
       await waitFor(() => {
         // finished 後に新ビューポート基準で再計算・復元される
-        expect(img.style.width).toBe("1716px");
+        expect(img.style.width).toBe("2000px");
       });
-      expect(imgWrap.style.transform).toContain(`scale(${800 / 1716})`);
+      expect(imgWrap.style.transform).toContain(`scale(${800 / 2000})`);
     } finally {
       delete (document as unknown as { startViewTransition?: unknown })
         .startViewTransition;
@@ -1936,6 +1936,22 @@ describe("スマートフォンでの window イベント", () => {
     await new Promise((r) => setTimeout(r, 30));
   });
 
+  it("orientationchange 直後は各スライドの transition を無効化し、旧位置からのアニメーションによる重なり表示を防ぐ", async () => {
+    withStubbedUserAgent(
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    );
+    const container = buildGallery();
+    track(new SmartPhoto(".js-smartphoto"));
+    await openViewer(container);
+    fireEvent(window, new Event("orientationchange"));
+    const slides = document.querySelectorAll(".smartphoto-list li");
+    expect(slides.length).toBeGreaterThan(0);
+    slides.forEach((li) => {
+      expect((li as HTMLElement).style.transition).toBe("none");
+    });
+    await new Promise((r) => setTimeout(r, 30));
+  });
+
   it("resize では何も起きない(スマートフォンでは resize を購読しない)", async () => {
     withStubbedUserAgent(
       "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
@@ -1964,6 +1980,62 @@ describe("スマートフォンでの window イベント", () => {
     });
     await new Promise((r) => setTimeout(r, 40));
     delete (document.documentElement as { clientWidth?: number }).clientWidth;
+  });
+
+  it("orientationchange 直後は幅が既に新値でも高さだけ遅れて確定する場合があり、高さの変化だけでも再計算する", async () => {
+    // clientWidth は回転直後にいち早く新しい値へ切り替わる一方、
+    // visualViewport.height 相当の高さは遅れて確定することがある。幅の変化だけを
+    // 監視していると、幅が一致してしまっているために高さが古いままの状態を
+    // 見逃し、縦横比が崩れたまま(画像が縦に間延びしフィルムストリップへ重なって
+    // 見える)固定されてしまっていた
+    withStubbedUserAgent(
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    );
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 800,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientHeight", {
+      value: 800,
+      configurable: true,
+    });
+    try {
+      const smartPhoto = track(
+        new SmartPhoto([{ src: "/a.jpg", width: 100, height: 2000 }]),
+      );
+      smartPhoto.show(0);
+      await waitFor(() => {
+        expect(document.querySelector("dialog.smartphoto")).toHaveAttribute(
+          "open",
+        );
+      });
+      // open 直後の resyncSizeAfterOpen() が次フレームで幅/高さの変化を
+      // チェックしてしまう(§resyncSizeAfterOpen)。ここではまだ寸法を変えて
+      // いないため無変化で解決させ、その後のorientationchange検証に影響しない
+      // ようにする
+      await new Promise((r) => setTimeout(r, 20));
+      fireEvent(window, new Event("orientationchange"));
+      // 幅はそのまま(800)、高さだけが遅れて新値(400)に切り替わる状況を再現する
+      Object.defineProperty(document.documentElement, "clientHeight", {
+        value: 400,
+        configurable: true,
+      });
+      await new Promise((r) => setTimeout(r, 40));
+      const imgWrap = document.querySelector(
+        ".current .smartphoto-img-wrap",
+      ) as HTMLElement;
+      const scale = Number(
+        imgWrap.style.transform.match(/scale\(([^)]+)\)/)?.[1],
+      );
+      // 高さ400基準(screenY=400-60-60-FIT_MARGIN(24)*2=232, scale=232/2000)に
+      // 再計算されていること。幅だけを監視する実装のままだと800基準のscaleの
+      // まま止まってしまう
+      expect(scale).toBeCloseTo(232 / 2000);
+    } finally {
+      delete (document.documentElement as { clientWidth?: number }).clientWidth;
+      delete (document.documentElement as { clientHeight?: number })
+        .clientHeight;
+    }
   });
 
   it("待機時間を超えたら再帰を止める", async () => {

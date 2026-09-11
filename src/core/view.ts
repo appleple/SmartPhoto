@@ -40,7 +40,7 @@ export interface ViewHandlers {
 export interface View {
   root: HTMLDivElement;
   refs: ViewRefs;
-  render(state: State): void;
+  render(state: State, options?: { immediate?: boolean }): void;
   syncSlides(items: Item[], state: State): void;
   updatePhotoTransform(state: State): void;
   applyViewTransitionLayout(state: State): void;
@@ -305,13 +305,19 @@ export function createView(
     }
   }
 
-  function render(state: State): void {
+  function render(state: State, options?: { immediate?: boolean }): void {
     const { viewer } = state;
     refs.count.textContent = `${viewer.currentIndex + 1}/${viewer.total}`;
 
     refs.slides.forEach((rawSlideRefs, item) => {
       const slideRefs = upgradeIfProcessed(item, rawSlideRefs);
       const isCurrent = item.index === viewer.currentIndex;
+      // resize/orientationchange 由来の再配置は、通常のスライド送りアニメーション
+      // (CSSの transition: all)を無効化しないと旧位置→新位置へ0.45sかけて動いて
+      // しまい、その途中で前後のスライドが画面内で重なって見える(iOS回転時の不具合)。
+      // options.immediate のときだけ transition を切り、それ以外は空文字に戻して
+      // CSS側の transition 指定(スライド送り時のアニメーション)を働かせる
+      slideRefs.li.style.transition = options?.immediate ? "none" : "";
       slideRefs.li.style.transform = `translate(${item.translateX}px,${item.translateY}px)`;
       slideRefs.li.classList.toggle("current", isCurrent);
       // 非カレントスライドは画面外に translate されているだけで支援技術には見えて

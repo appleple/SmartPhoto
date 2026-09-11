@@ -226,8 +226,8 @@ describe("View Transition の実行時境界", () => {
     try {
       const smartPhoto = track(
         new SmartPhoto([
-          { src: "/a.jpg", width: 1716, height: 1140, caption: "A" },
-          { src: "/b.jpg", width: 1716, height: 1140, caption: "B" },
+          { src: "/a.jpg", width: 2000, height: 1140, caption: "A" },
+          { src: "/b.jpg", width: 2000, height: 1140, caption: "B" },
         ]),
       );
       // 2枚目を直接開く: モーフ用レイアウトの適用ループが非カレント(1枚目)を
@@ -240,7 +240,7 @@ describe("View Transition の実行時境界", () => {
       expect(img.style.width).toBe("1000px");
       held.resolve();
       await waitFor(() => {
-        expect(img.style.width).toBe("1716px");
+        expect(img.style.width).toBe("2000px");
       });
     } finally {
       cleanup();
@@ -276,7 +276,7 @@ describe("View Transition の実行時境界", () => {
     const { held, cleanup } = heldViewTransition();
     try {
       const smartPhoto = track(
-        new SmartPhoto([{ src: "/a.jpg", width: 1716, height: 1140 }]),
+        new SmartPhoto([{ src: "/a.jpg", width: 2000, height: 1140 }]),
       );
       smartPhoto.show(0);
       await waitForOpen();
@@ -295,12 +295,12 @@ describe("View Transition の実行時境界", () => {
       expect(img.style.width).toBe("1000px");
       held.resolve();
       await waitFor(() => {
-        expect(img.style.width).toBe("1716px");
+        expect(img.style.width).toBe("2000px");
       });
       const imgWrap = document.querySelector(
         ".current .smartphoto-img-wrap",
       ) as HTMLElement;
-      expect(imgWrap.style.transform).toContain(`scale(${800 / 1716})`);
+      expect(imgWrap.style.transform).toContain(`scale(${800 / 2000})`);
     } finally {
       cleanup();
       restore();
@@ -362,7 +362,7 @@ describe("visualViewport / orientationchange の再計算境界", () => {
     const { held, cleanup } = heldViewTransition();
     try {
       const smartPhoto = track(
-        new SmartPhoto([{ src: "/a.jpg", width: 1716, height: 1140 }]),
+        new SmartPhoto([{ src: "/a.jpg", width: 2000, height: 1140 }]),
       );
       smartPhoto.show(0);
       await waitForOpen();
@@ -375,7 +375,7 @@ describe("visualViewport / orientationchange の再計算境界", () => {
       expect(img.style.width).toBe("1000px");
       held.resolve();
       await waitFor(() => {
-        expect(img.style.width).toBe("1716px");
+        expect(img.style.width).toBe("2000px");
       });
     } finally {
       cleanup();
@@ -392,7 +392,7 @@ describe("visualViewport / orientationchange の再計算境界", () => {
     const { held, cleanup } = heldViewTransition();
     try {
       const smartPhoto = track(
-        new SmartPhoto([{ src: "/a.jpg", width: 1716, height: 1140 }]),
+        new SmartPhoto([{ src: "/a.jpg", width: 2000, height: 1140 }]),
       );
       smartPhoto.show(0);
       await waitForOpen();
@@ -404,7 +404,7 @@ describe("visualViewport / orientationchange の再計算境界", () => {
       expect(img.style.width).toBe("1000px");
       held.resolve();
       await waitFor(() => {
-        expect(img.style.width).toBe("1716px");
+        expect(img.style.width).toBe("2000px");
       });
     } finally {
       cleanup();

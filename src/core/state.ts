@@ -311,6 +311,12 @@ export function makeBound(
   };
 }
 
+// header/footer の境界ぴったりまで画像を敷き詰めると、高さに余裕がない
+// (横向き回転時など)場合に写真がフッター側のサムネイルnavと視覚的に接触し、
+// 重なって見えてしまう(§実機での回転時の重なり表示)。上下に均等な余白が
+// 必ず残るよう、fit 計算上の可視高さをこの分だけ小さく見積もる
+const FIT_MARGIN = 24;
+
 // 旧 _setSizeByScreen の数式をそのまま移植(y を最終分岐で再計算しない挙動も含む)
 export function sizeItems(
   items: Item[],
@@ -319,7 +325,7 @@ export function sizeItems(
   headerHeight: number,
   footerHeight: number,
 ): void {
-  const screenY = winHeight - (headerHeight + footerHeight);
+  const screenY = winHeight - (headerHeight + footerHeight) - FIT_MARGIN * 2;
   items.forEach((item) => {
     if (!item.loaded) {
       return;

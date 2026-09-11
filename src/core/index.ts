@@ -680,8 +680,8 @@ export default class SmartPhoto {
     }
   }
 
-  private commit(): void {
-    this.view.render(this.state);
+  private commit(immediate = false): void {
+    this.view.render(this.state, { immediate });
     // render() は imgWrap 側(item.scale による fit 配置)しか更新しない。写真本体
     // (img)の translate/scale は updatePhotoTransform() 側の専任だったため、
     // 元々ズーム操作(zoomPhoto/gesture)経由でしか呼ばれておらず、resizeStyle:
@@ -795,7 +795,7 @@ export default class SmartPhoto {
         this.resetTranslateCurrent();
         this.setPosByCurrentIndex();
         this.setSizeByScreen();
-        this.commit();
+        this.commit(true);
         return;
       }
       this.pendingViewTransitionResync = false;
@@ -966,7 +966,7 @@ export default class SmartPhoto {
       this.resetTranslateCurrent();
       this.setPosByCurrentIndex();
       this.setSizeByScreen();
-      this.commit();
+      this.commit(true);
     });
   }
 
@@ -1255,7 +1255,7 @@ export default class SmartPhoto {
     this.resetTranslateCurrent();
     this.setPosByCurrentIndex();
     this.setSizeByScreen();
-    this.commit();
+    this.commit(true);
   };
 
   private handleResize = (): void => {
@@ -1272,7 +1272,7 @@ export default class SmartPhoto {
     this.resetTranslateCurrent();
     this.setPosByCurrentIndex();
     this.setSizeByScreen();
-    this.commit();
+    this.commit(true);
   };
 
   private handleKeydown = (e: KeyboardEvent): void => {
@@ -1302,22 +1302,31 @@ export default class SmartPhoto {
     this.setPosByCurrentIndex();
     this.setHashByCurrentIndex();
     this.setSizeByScreen();
-    this.commit();
+    this.commit(true);
 
     const prevWidth = getWindowWidth();
+    const prevHeight = getWindowHeight();
     const timeout = 500;
     const poll = (time: number): void => {
       this.scheduleTimeout(() => {
         if (!this.state.viewer.isOpen) {
           return;
         }
-        if (prevWidth !== getWindowWidth()) {
+        // clientWidth は回転直後にいち早く新しい値へ切り替わる一方、
+        // visualViewport.height(アドレスバーの伸縮を伴う)はそれより遅れて
+        // 確定することがある。幅だけを監視すると、幅は一致していても高さが
+        // 古いままの状態を見逃し、縦横比が崩れた(縦に間延びした)まま
+        // sizeItems() の結果が固定されてしまう(§実機での回転直後の重なり表示)
+        if (
+          prevWidth !== getWindowWidth() ||
+          prevHeight !== getWindowHeight()
+        ) {
           this.updateViewportHeight();
           this.resetTranslateCurrent();
           this.setPosByCurrentIndex();
           this.setHashByCurrentIndex();
           this.setSizeByScreen();
-          this.commit();
+          this.commit(true);
         } else if (time <= timeout) {
           poll(time + 25);
         }
