@@ -91,10 +91,22 @@ export const getWindowWidth = (): number => {
 // 掛かっている間、scale分だけ縮んだ値になる(2本指ピンチが touch-action:none を
 // すり抜けてブラウザ本体のズームも誘発するケースがある)。scale を掛けて相殺しないと、
 // そのタイミングの縮んだ値が --smartphoto-vh に固定され、ズーム後にdialogの下側が
-// 余って背景(黒)が見えてしまう
+// 余って背景(黒)が見えてしまう。
+// 相殺する倍率はレイアウトビューポート幅(clientWidth)と見えている幅
+// (visualViewport.width)の比で求める。ツールバーの伸縮は高さにしか影響しない
+// ため、幅の比は純粋にピンチ分の倍率になる。
+// Why not scale: iOS Safari のページ拡大率(ぁあメニュー、サイトごとに記憶)は
+// ページ全体を拡大表示する実装で、ピンチしていなくても scale が拡大率(例 1.15)
+// になる。scale を掛けると dialog が拡大率分だけ画面より高くなり、bottom:0 の
+// サムネイルバーが画面外へ押し出される
 export const getWindowHeight = (): number => {
   const visualViewport = window.visualViewport;
   if (visualViewport) {
+    const layoutWidth = document.documentElement.clientWidth;
+    if (visualViewport.width > 0 && layoutWidth > 0) {
+      return visualViewport.height * (layoutWidth / visualViewport.width);
+    }
+    // Why not 常に幅の比: 幅が取れない(0)環境では比が求まらないため従来どおり
     return visualViewport.height * visualViewport.scale;
   }
   return document.documentElement.clientHeight;

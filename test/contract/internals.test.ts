@@ -1727,6 +1727,63 @@ describe("--smartphoto-vh(実測ビューポート高さのCSS変数化)", () =>
     void smartPhoto;
   });
 
+  it("Safari のページ拡大率(ぁあメニュー)が 100% 以外でも、scale を掛けず CSS px の見えている高さを使う", () => {
+    // iOS Safari のページ拡大率はページ全体を拡大表示する実装のため、ピンチして
+    // いなくても visualViewport.scale が拡大率(例 1.15)になる。一方で
+    // visualViewport.height はすでに CSS px の見えている高さ(レイアウトビュー
+    // ポート幅と visualViewport.width が一致 = ピンチしていない)。scale を
+    // 掛けると dialog が拡大率分だけ画面より高くなり、bottom:0 のサムネイル
+    // バーが画面外へ押し出される(実際の不具合)
+    const stubViewport = {
+      width: 340,
+      height: 600,
+      scale: 1.15,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    } as unknown as VisualViewport;
+    Object.defineProperty(window, "visualViewport", {
+      value: stubViewport,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 340,
+      configurable: true,
+    });
+    const smartPhoto = track(new SmartPhoto([]));
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    expect(dialog.style.getPropertyValue("--smartphoto-vh")).toBe("600px");
+    delete (document.documentElement as { clientWidth?: number }).clientWidth;
+    delete (window as { visualViewport?: VisualViewport }).visualViewport;
+    void smartPhoto;
+  });
+
+  it("ページ拡大率が 100% 以外の状態でさらにピンチズームしても、ピンチ分だけを相殺した高さを使う", () => {
+    // 拡大率 115% (scale 1.15) の上から 2 倍にピンチすると scale は 2.3 になるが、
+    // CSS px で相殺すべきなのはピンチ分(レイアウトビューポート幅 / 見えている幅
+    // = 2)だけ。scale(2.3) を掛けると拡大率分だけ高くなりすぎる
+    const stubViewport = {
+      width: 170,
+      height: 300,
+      scale: 2.3,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    } as unknown as VisualViewport;
+    Object.defineProperty(window, "visualViewport", {
+      value: stubViewport,
+      configurable: true,
+    });
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      value: 340,
+      configurable: true,
+    });
+    const smartPhoto = track(new SmartPhoto([]));
+    const dialog = document.querySelector("dialog.smartphoto") as HTMLElement;
+    expect(dialog.style.getPropertyValue("--smartphoto-vh")).toBe("600px");
+    delete (document.documentElement as { clientWidth?: number }).clientWidth;
+    delete (window as { visualViewport?: VisualViewport }).visualViewport;
+    void smartPhoto;
+  });
+
   it("構築後にビューポート高さが変わってから開いた場合、開く時点の高さを反映する(#97)", async () => {
     // --smartphoto-vh は構築時と resize/orientationchange 時にのみ更新しており、
     // 「開く」タイミングでは再計算していなかった。構築後にページスクロール等で
